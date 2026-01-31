@@ -78,7 +78,7 @@ const thumbnailPairs: ThumbnailPair[] = [
 
 export default function StealModeShowcase() {
   return (
-    <section className="relative overflow-hidden bg-background py-20 text-white lg:py-28">
+    <section className="relative overflow-hidden bg-background pt-8 pb-20 text-white lg:pt-12 lg:pb-28">
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-4xl mx-auto">
           {/* Badge */}

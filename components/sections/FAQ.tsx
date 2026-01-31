@@ -8,7 +8,15 @@ interface FAQItem {
   answer: string | React.ReactNode;
 }
 
-const faqData: FAQItem[] = [
+interface FAQProps {
+  title?: string;
+  description?: string;
+  supportText?: string;
+  supportLinkText?: string;
+  faqData?: FAQItem[];
+}
+
+const defaultFaqData: FAQItem[] = [
   {
     id: "what-is-thumb-free",
     question: "What is Thumb-Free?",
@@ -48,7 +56,13 @@ const faqData: FAQItem[] = [
   },
 ];
 
-export default function FAQ() {
+export default function FAQ({
+  title = "Frequently Asked Questions",
+  description = "The most common questions, answered.",
+  supportText = "Anything else?",
+  supportLinkText = "Click here",
+  faqData = defaultFaqData,
+}: FAQProps) {
   const [openItems, setOpenItems] = useState<Set<string>>(
     new Set([faqData[0]?.id]),
   );
@@ -104,19 +118,19 @@ export default function FAQ() {
               "radial-gradient(at 50% 0%, rgb(255, 0, 0) 5%, rgb(240, 247, 245) 50%)",
           }}
         >
-          Frequently Asked Questions
+          {title}
         </h2>
         <button
           type="button"
           aria-label="Open chat to contact support"
           className="text-center hidden sm:block text-[#FFFFFF80] duration-300 text-sm lg:text-base focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 rounded-sm p-2 touch-action-manipulation"
         >
-          The most common questions, answered.
+          {description}
           <br />
           <span className="text-[#FFFFFFE6]">
-            Anything else?&nbsp;
+            {supportText}&nbsp;
             <span className="underline duration-300 hover:text-primary">
-              Click here
+              {supportLinkText}
             </span>{" "}
             to talk directly to the team.
           </span>
@@ -126,13 +140,13 @@ export default function FAQ() {
           aria-label="Open chat to contact support"
           className="text-center block sm:hidden text-[#FFFFFF80] duration-300 text-sm lg:text-base focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 rounded-sm p-2 touch-action-manipulation"
         >
-          The most common questions, answered.
+          {description}
           <br />
           <span className="text-[#FFFFFFE6]">
-            Anything else?
+            {supportText}
             <br />
             <span className="underline duration-300 hover:text-primary">
-              Click here
+              {supportLinkText}
             </span>{" "}
             to talk directly to the team.
           </span>
@@ -186,13 +200,9 @@ export default function FAQ() {
                   </div>
                   <h4
                     className={`text-sm flex-1 lg:text-base duration-300 group-hover:opacity-100 ${
-                      item.id === "what-is-thumb-free"
-                        ? isOpen
-                          ? "text-[#FF5555] font-bold opacity-90"
-                          : "text-[#FF5555] font-bold opacity-70 group-hover:opacity-100"
-                        : isOpen
-                          ? "text-primary font-medium opacity-90 group-hover:text-primary"
-                          : "font-medium opacity-70 group-hover:text-primary group-hover:opacity-100"
+                      isOpen
+                        ? "text-primary font-medium opacity-90 group-hover:text-primary"
+                        : "font-medium opacity-70 group-hover:text-primary group-hover:opacity-100"
                     }`}
                   >
                     {item.question}
