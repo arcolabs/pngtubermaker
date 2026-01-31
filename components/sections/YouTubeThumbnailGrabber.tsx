@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 
 interface Thumbnail {
@@ -185,17 +184,24 @@ export default function YouTubeThumbnailGrabber() {
                   }}
                 >
                   {/* Thumbnail Preview */}
-                  <div className="w-full rounded-lg overflow-hidden bg-background flex items-center justify-center p-2 mb-4" style={{ minHeight: '160px', maxHeight: '360px' }}>
-                    <div className="relative w-full flex items-center justify-center" style={{ minHeight: '160px', maxHeight: '360px' }}>
+                  <div
+                    className="w-full rounded-lg overflow-hidden bg-background flex items-center justify-center p-2 mb-4"
+                    style={{ minHeight: "160px", maxHeight: "360px" }}
+                  >
+                    <div
+                      className="relative w-full flex items-center justify-center"
+                      style={{ minHeight: "160px", maxHeight: "360px" }}
+                    >
+                      {/* biome-ignore lint/performance/noImgElement: Using native img for external YouTube URLs */}
                       <img
                         src={thumbnail.url}
                         alt={`${thumbnail.label} ${thumbnail.resolution}`}
                         className="max-w-full max-h-full w-auto h-auto object-contain group-hover:scale-105 transition-transform duration-300"
-                        style={{ 
-                          maxWidth: '100%',
-                          maxHeight: '360px',
-                          width: 'auto',
-                          height: 'auto'
+                        style={{
+                          maxWidth: "100%",
+                          maxHeight: "360px",
+                          width: "auto",
+                          height: "auto",
                         }}
                         loading="lazy"
                       />
@@ -206,7 +212,7 @@ export default function YouTubeThumbnailGrabber() {
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
                           <h4 className="text-white font-semibold text-base">
                             {thumbnail.label}
                           </h4>
@@ -224,7 +230,7 @@ export default function YouTubeThumbnailGrabber() {
                             {thumbnail.quality}
                           </span>
                         </div>
-                        <p className="text-sm text-[#FFFFFF80]">
+                        <p className="text-lg font-bold text-white tracking-tight">
                           {thumbnail.resolution}
                         </p>
                       </div>
@@ -256,22 +262,6 @@ export default function YouTubeThumbnailGrabber() {
                   </div>
                 </div>
               ))}
-            </div>
-
-            {/* Try Another Button */}
-            <div className="text-center pt-4">
-              <button
-                type="button"
-                onClick={() => {
-                  setShowResults(false);
-                  setVideoUrl("");
-                  setError(null);
-                  setThumbnails([]);
-                }}
-                className="text-[#FF5555] hover:text-[#FF0000] font-medium transition-colors duration-200"
-              >
-                Grab another thumbnail →
-              </button>
             </div>
           </div>
         )}
