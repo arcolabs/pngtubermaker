@@ -17,7 +17,8 @@ const faqData: FAQItem[] = [
   },
   {
     id: "why-choose-thumb-free",
-    question: "Why choose Thumb-Free over ChatGPT, Midjourney or other AI tools?",
+    question:
+      "Why choose Thumb-Free over ChatGPT, Midjourney or other AI tools?",
     answer:
       "Those tools generate images. Thumb-Free is built specifically for YouTube thumbnails & titles. Thumb-Free focuses on performance, not aesthetics.\n\nWhat Thumb-Free does that generic AI doesn't:\n01. Recreate thumbnails that already work\n02. Score thumbnails & titles with data-backed feedback\n03. Fix weak packaging in one click\n04. Stay consistent with Persona, FaceSwap & Style\n05. Generate titles optimized for CTR",
   },
@@ -71,17 +72,17 @@ export default function FAQ() {
 
     // Split by double newlines to create paragraphs
     const paragraphs = answer.split("\n\n");
-    return paragraphs.map((paragraph, index) => {
+    return paragraphs.map((paragraph) => {
       // Check if paragraph starts with numbered list (e.g., "01.")
       if (/^\d+\./.test(paragraph.trim())) {
         return (
-          <p key={index} className="mb-2">
+          <p key={paragraph.slice(0, 10)} className="mb-2">
             {paragraph}
           </p>
         );
       }
       return (
-        <p key={index} className={index < paragraphs.length - 1 ? "mb-4" : ""}>
+        <p key={paragraph.slice(0, 10)} className="mb-4">
           {paragraph}
         </p>
       );
@@ -177,6 +178,7 @@ export default function FAQ() {
                         viewBox="0 0 24 24"
                         fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
                       >
                         <path d="M11 11V6C11 5.44772 11.4477 5 12 5V5C12.5523 5 13 5.44772 13 6V11H18C18.5523 11 19 11.4477 19 12V12C19 12.5523 18.5523 13 18 13H13V18C13 18.5523 12.5523 19 12 19V19C11.4477 19 11 18.5523 11 18V13H6C5.44772 13 5 12.5523 5 12V12C5 11.4477 5.44772 11 6 11H11Z" />
                       </svg>
@@ -201,7 +203,6 @@ export default function FAQ() {
                     isOpen ? "max-h-96" : "max-h-0"
                   }`}
                   id={contentId}
-                  aria-labelledby={buttonId}
                 >
                   <div className="mb-4 text-[#FFFFFF80]">
                     {formatAnswer(item.answer)}

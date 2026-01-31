@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 // YouTube URL patterns to extract Video ID
 const YOUTUBE_PATTERNS = [
@@ -9,23 +9,46 @@ const YOUTUBE_PATTERNS = [
 
 // Thumbnail sizes in order of preference (highest to lowest)
 const THUMBNAIL_SIZES = [
-  { name: "maxresdefault", label: "HD Image", resolution: "1280x720", quality: "highest" },
-  { name: "hqdefault", label: "HQ Image", resolution: "480x360", quality: "high" },
-  { name: "sddefault", label: "SD Image", resolution: "640x480", quality: "medium" },
-  { name: "mqdefault", label: "MQ Image", resolution: "320x180", quality: "low" },
+  {
+    name: "maxresdefault",
+    label: "HD Image",
+    resolution: "1280x720",
+    quality: "highest",
+  },
+  {
+    name: "hqdefault",
+    label: "HQ Image",
+    resolution: "480x360",
+    quality: "high",
+  },
+  {
+    name: "sddefault",
+    label: "SD Image",
+    resolution: "640x480",
+    quality: "medium",
+  },
+  {
+    name: "mqdefault",
+    label: "MQ Image",
+    resolution: "320x180",
+    quality: "low",
+  },
 ];
 
 function extractVideoId(url: string): string | null {
   for (const pattern of YOUTUBE_PATTERNS) {
     const match = url.match(pattern);
-    if (match && match[1]) {
+    if (match?.[1]) {
       return match[1];
     }
   }
   return null;
 }
 
-async function checkThumbnailExists(videoId: string, size: string): Promise<boolean> {
+async function checkThumbnailExists(
+  videoId: string,
+  size: string,
+): Promise<boolean> {
   const url = `https://img.youtube.com/vi/${videoId}/${size}.jpg`;
   try {
     const response = await fetch(url, { method: "HEAD" });
@@ -54,7 +77,7 @@ export async function GET(request: NextRequest) {
   if (!videoId) {
     return NextResponse.json(
       { error: "Invalid YouTube URL. Please enter a valid YouTube video URL." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -70,7 +93,7 @@ export async function GET(request: NextRequest) {
         };
       }
       return null;
-    })
+    }),
   );
 
   // Filter out null values and return
@@ -78,8 +101,11 @@ export async function GET(request: NextRequest) {
 
   if (results.length === 0) {
     return NextResponse.json(
-      { error: "No thumbnails found for this video. It may be private or deleted." },
-      { status: 404 }
+      {
+        error:
+          "No thumbnails found for this video. It may be private or deleted.",
+      },
+      { status: 404 },
     );
   }
 

@@ -93,7 +93,11 @@ export default function CTA({
             </div>
           </button>
         ) : (
-          <Link href={buttonHref} className={buttonOuterClassName} aria-label={buttonText}>
+          <Link
+            href={buttonHref}
+            className={buttonOuterClassName}
+            aria-label={buttonText}
+          >
             <div className={buttonMiddleClassName}>
               <div
                 className={buttonInnerClassName}

@@ -103,13 +103,15 @@ export default function StealModeShowcase() {
 
           {/* Heading */}
           <h2 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl mb-6">
-            We solve AI originality: <span className="text-[#FF5555]">steal it</span>
+            We solve AI originality:{" "}
+            <span className="text-[#FF5555]">steal it</span>
           </h2>
 
           {/* Description */}
           <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg text-[#FFFFFF80] leading-relaxed">
             Upload any thumbnail as inspiration. Our AI captures the style,
-            composition, and vibe — then recreates it with your face and message.
+            composition, and vibe — then recreates it with your face and
+            message.
           </p>
         </div>
       </div>
@@ -131,54 +133,54 @@ export default function StealModeShowcase() {
           >
             {/* Duplicate items for seamless loop - need at least 2 sets for infinite scroll */}
             {[...thumbnailPairs, ...thumbnailPairs].map((pair, index) => (
-            <div
-              key={`${pair.id}-${index}`}
-              className="group shrink-0 rounded-2xl border border-border bg-[#1A1A1A]/50 p-4 backdrop-blur-sm hover:border-[#FF0000]/30 transition-all duration-300"
-            >
-              {/* Original thumbnail */}
-              <div className="relative aspect-video w-[200px] overflow-hidden rounded-lg sm:w-[240px] md:w-[280px]">
-                <Image
-                  src={pair.from}
-                  alt={pair.fromAlt}
-                  fill
-                  className="object-cover opacity-60 transition-opacity duration-300 group-hover:opacity-100"
-                  sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 280px"
-                />
-              </div>
+              <div
+                key={`${pair.id}-${index}`}
+                className="group shrink-0 rounded-2xl border border-border bg-[#1A1A1A]/50 p-4 backdrop-blur-sm hover:border-[#FF0000]/30 transition-all duration-300"
+              >
+                {/* Original thumbnail */}
+                <div className="relative aspect-video w-[200px] overflow-hidden rounded-lg sm:w-[240px] md:w-[280px]">
+                  <Image
+                    src={pair.from}
+                    alt={pair.fromAlt}
+                    fill
+                    className="object-cover opacity-60 transition-opacity duration-300 group-hover:opacity-100"
+                    sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 280px"
+                  />
+                </div>
 
-              {/* Arrow separator */}
-              <div className="my-4 flex items-center justify-center gap-4">
-                <div className="h-px flex-1 bg-border"></div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-[#FF5555]"
-                  aria-hidden="true"
-                >
-                  <path d="M12 5v14"></path>
-                  <path d="m19 12-7 7-7-7"></path>
-                </svg>
-                <div className="h-px flex-1 bg-border"></div>
-              </div>
+                {/* Arrow separator */}
+                <div className="my-4 flex items-center justify-center gap-4">
+                  <div className="h-px flex-1 bg-border"></div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-[#FF5555]"
+                    aria-hidden="true"
+                  >
+                    <path d="M12 5v14"></path>
+                    <path d="m19 12-7 7-7-7"></path>
+                  </svg>
+                  <div className="h-px flex-1 bg-border"></div>
+                </div>
 
-              {/* AI generated thumbnail */}
-              <div className="relative aspect-video w-[200px] overflow-hidden rounded-lg ring-2 ring-[#FF5555] ring-offset-2 ring-offset-background sm:w-[240px] md:w-[280px] transition-all duration-300 group-hover:ring-[#FF0000]">
-                <Image
-                  src={pair.to}
-                  alt={pair.toAlt}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 280px"
-                />
+                {/* AI generated thumbnail */}
+                <div className="relative aspect-video w-[200px] overflow-hidden rounded-lg ring-2 ring-[#FF5555] ring-offset-2 ring-offset-background sm:w-[240px] md:w-[280px] transition-all duration-300 group-hover:ring-[#FF0000]">
+                  <Image
+                    src={pair.to}
+                    alt={pair.toAlt}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 280px"
+                  />
+                </div>
               </div>
-            </div>
             ))}
           </div>
         </div>
@@ -187,7 +189,8 @@ export default function StealModeShowcase() {
       {/* Bottom text */}
       <div className="mt-12 flex items-center justify-center gap-2">
         <p className="leading-7 text-[#FFFFFF80]">
-          Same style. Your face. <span className="font-semibold text-white">Every time.</span>
+          Same style. Your face.{" "}
+          <span className="font-semibold text-white">Every time.</span>
         </p>
       </div>
     </section>
