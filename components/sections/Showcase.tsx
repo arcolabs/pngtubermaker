@@ -224,7 +224,7 @@ export default function Showcase({
               {/* First set of thumbnails */}
               {[...thumbnailsRow1, ...thumbnailsRow1].map((item, index) => (
                 <div
-                  key={`row1-${item.id}`}
+                  key={`row1-${item.id}-${index}`}
                   className="aspect-video w-40 h-24 sm:w-48 sm:h-28 md:w-56 md:h-32 rounded-lg bg-gradient-to-br flex-shrink-0 border border-border/50 shadow-lg"
                   style={{
                     background: `linear-gradient(135deg, rgba(255, 0, 0, ${0.2 + (index % 3) * 0.1}), rgba(42, 42, 42, ${0.2 + (index % 3) * 0.1}))`,
@@ -248,7 +248,7 @@ export default function Showcase({
               {/* Second set of thumbnails */}
               {[...thumbnailsRow2, ...thumbnailsRow2].map((item, index) => (
                 <div
-                  key={`row2-${item.id}`}
+                  key={`row2-${item.id}-${index}`}
                   className="aspect-video w-40 h-24 sm:w-48 sm:h-28 md:w-56 md:h-32 rounded-lg bg-gradient-to-br flex-shrink-0 border border-border/50 shadow-lg"
                   style={{
                     background: `linear-gradient(135deg, rgba(255, 0, 0, ${0.15 + (index % 3) * 0.1}), rgba(42, 42, 42, ${0.25 + (index % 3) * 0.1}))`,
@@ -291,7 +291,7 @@ export default function Showcase({
       </div>
 
       {/* Feature Buttons Row - Below video */}
-      <div className="max-w-screen-xl mx-auto px-4 pt-24 sm:pt-32 pb-8">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-8">
         <div className="flex flex-wrap items-center justify-center gap-3">
           {thumbnailFeatures.map((feature) => (
             <button

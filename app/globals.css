@@ -158,6 +158,22 @@
     letter-spacing: var(--letter-spacing-normal);
     color: var(--text-body);
   }
+
+  ::selection {
+    background-color: #ff0000;
+    color: #ffffff;
+  }
+
+  ::-moz-selection {
+    background-color: #ff0000;
+    color: #ffffff;
+  }
+
+  /* Navigation links hover effect */
+  nav a:hover,
+  footer a:hover {
+    color: #ff5555;
+  }
 }
 
 @layer utilities {
@@ -180,7 +196,7 @@
   }
 
   .animate-scroll-left {
-    animation: scroll-left 90s linear infinite;
+    animation: scroll-left 150s linear infinite;
     will-change: transform;
     animation-play-state: running;
   }
@@ -189,5 +205,33 @@
     animation: scroll-right 90s linear infinite;
     will-change: transform;
     animation-play-state: running;
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes marquee-fast {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 100s linear infinite;
+    will-change: transform;
+  }
+
+  .animate-marquee-fast {
+    animation: marquee-fast 50s linear infinite;
+    will-change: transform;
   }
 }

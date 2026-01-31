@@ -40,25 +40,25 @@ export default function Header() {
           <nav className="hidden lg:flex items-center gap-1">
             <Link
               href="#features"
-              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-all duration-200"
+              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
             >
               Features
             </Link>
             <Link
               href="#how-it-works"
-              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-all duration-200"
+              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
             >
               How It Works
             </Link>
             <Link
               href="#pricing"
-              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-all duration-200"
+              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
             >
               Pricing
             </Link>
             <Link
               href="/posts"
-              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-all duration-200"
+              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
             >
               Blog
             </Link>
@@ -115,28 +115,28 @@ export default function Header() {
             <Link
               href="#features"
               onClick={() => setIsOpen(false)}
-              className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-all duration-200"
+              className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
             >
               Features
             </Link>
             <Link
               href="#how-it-works"
               onClick={() => setIsOpen(false)}
-              className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-all duration-200"
+              className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
             >
               How It Works
             </Link>
             <Link
               href="#pricing"
               onClick={() => setIsOpen(false)}
-              className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-all duration-200"
+              className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
             >
               Pricing
             </Link>
             <Link
               href="/posts"
               onClick={() => setIsOpen(false)}
-              className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-all duration-200"
+              className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
             >
               Blog
             </Link>

@@ -1,7 +1,7 @@
 export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-background">
-      <div className="max-w-screen-xl mx-auto px-4 py-20 sm:py-32">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-32">
         <div className="text-center max-w-6xl mx-auto">
           {/* Overline */}
           <div className="text-sm text-[#FFFFFF80] uppercase tracking-wide mb-6">

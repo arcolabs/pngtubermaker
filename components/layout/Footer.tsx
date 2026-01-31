@@ -81,7 +81,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#features"
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   Features
                 </Link>
@@ -89,7 +89,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#how-it-works"
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   How It Works
                 </Link>
@@ -97,7 +97,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#pricing"
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   Pricing
                 </Link>
@@ -105,7 +105,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/posts"
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   Blog
                 </Link>
@@ -113,7 +113,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/auth/start"
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   Get Started
                 </Link>
@@ -130,7 +130,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/about"
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   About Us
                 </Link>
@@ -138,7 +138,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/contact"
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   Contact
                 </Link>
@@ -146,7 +146,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/careers"
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   Careers
                 </Link>
@@ -154,7 +154,7 @@ export default function Footer() {
               <li>
                 <a
                   href="mailto:support@thumb-free.com"
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   Support
                 </a>
@@ -171,7 +171,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/legal/terms"
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   Terms
                 </Link>
@@ -179,7 +179,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/legal/privacy"
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   Privacy
                 </Link>
@@ -194,14 +194,14 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
             <Link
               href="/legal/terms"
-              className="hover:text-foreground transition-colors duration-200"
+              className="hover:text-[#FF5555] transition-colors duration-200"
             >
               Terms of Service
             </Link>
             <span className="hidden sm:inline">•</span>
             <Link
               href="/legal/privacy"
-              className="hover:text-foreground transition-colors duration-200"
+              className="hover:text-[#FF5555] transition-colors duration-200"
             >
               Privacy Policy
             </Link>
