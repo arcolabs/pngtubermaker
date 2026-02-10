@@ -179,27 +179,39 @@ const VideoPlayer = memo(function VideoPlayer({
 });
 
 /**
- * Benefit badge component
+ * Benefit badge component - Tech style
  */
 const BenefitBadge = memo(function BenefitBadge({
   icon,
   label,
+  index,
 }: {
   icon: string;
   label: string;
+  index: number;
 }) {
   return (
     <span
-      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full 
-                 text-sm font-medium text-white/90 
+      className="group inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl 
+                 text-sm font-medium text-white/80 
                  bg-white/5 backdrop-blur-sm border border-white/10
                  hover:bg-white/10 hover:border-white/20 
-                 transition-all duration-300 whitespace-nowrap"
+                 hover:text-white
+                 shadow-[inset_0_0_16px_rgba(240,247,245,0.05)]
+                 hover:shadow-[inset_0_0_16px_rgba(240,247,245,0.1)]
+                 transition-all duration-300 ease-out whitespace-nowrap"
     >
-      <span className="text-lg" aria-hidden="true">
+      {/* Index number */}
+      <span className="text-[10px] font-mono text-white/30 group-hover:text-primary/50 transition-colors">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+      <span
+        className="text-base group-hover:scale-110 transition-transform duration-300"
+        aria-hidden="true"
+      >
         {icon}
       </span>
-      <span>{label}</span>
+      <span className="tracking-wide">{label}</span>
     </span>
   );
 });
@@ -254,9 +266,13 @@ export default function Showcase({
             className="flex flex-wrap items-center justify-center gap-3 sm:gap-4"
             aria-label="Product benefits"
           >
-            {FREE_BENEFITS.map((benefit) => (
+            {FREE_BENEFITS.map((benefit, index) => (
               <li key={benefit.label}>
-                <BenefitBadge icon={benefit.icon} label={benefit.label} />
+                <BenefitBadge
+                  icon={benefit.icon}
+                  label={benefit.label}
+                  index={index}
+                />
               </li>
             ))}
           </ul>

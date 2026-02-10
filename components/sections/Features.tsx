@@ -64,20 +64,33 @@ const SECONDARY_FEATURES: FeatureCard[] = [
 const FeatureCardComponent = memo(function FeatureCardComponent({
   feature,
   variant = "default",
+  index,
 }: {
   feature: FeatureCard;
   variant?: "default" | "compact";
+  index: number;
 }) {
   const isCompact = variant === "compact";
 
   return (
     <div
-      className="group relative bg-zinc-900/50 backdrop-blur-sm rounded-2xl overflow-hidden
-                 border border-white/10 hover:border-white/20
-                 transition-all duration-500 hover:scale-[1.02]
-                 hover:shadow-2xl hover:shadow-black/50"
+      className="group relative rounded-2xl overflow-hidden
+                 border border-white/10 
+                 shadow-[inset_0_0_16px_rgba(240,247,245,0.1)]
+                 hover:shadow-[inset_0_0_16px_rgba(240,247,245,0.2)]
+                 hover:border-white/20
+                 hover:bg-white/10
+                 transition-all duration-300 ease-in-out"
     >
-      {/* Image Container - matches actual image aspect ratios */}
+      {/* Gradient border effect */}
+      <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-white/20 via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+      {/* Number badge */}
+      <div className="absolute top-4 right-4 z-10 text-xs font-mono text-white/20 group-hover:text-primary/40 transition-colors duration-300">
+        {String(index + 1).padStart(2, "0")}
+      </div>
+
+      {/* Image Container */}
       <div
         className={`relative overflow-hidden ${
           isCompact ? "aspect-[4/3]" : "aspect-video"
@@ -103,9 +116,9 @@ const FeatureCardComponent = memo(function FeatureCardComponent({
       </div>
 
       {/* Content */}
-      <div className="p-6 sm:p-8">
+      <div className="relative p-6 sm:p-8">
         <h3
-          className={`font-bold text-white mb-3 ${
+          className={`font-semibold text-white mb-3 group-hover:text-primary/90 transition-colors duration-300 ${
             isCompact ? "text-lg sm:text-xl" : "text-xl sm:text-2xl"
           }`}
         >
@@ -115,13 +128,6 @@ const FeatureCardComponent = memo(function FeatureCardComponent({
           {feature.description}
         </p>
       </div>
-
-      {/* Hover Glow Effect */}
-      <div
-        className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#FF0033]/5 to-transparent
-                   opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        aria-hidden="true"
-      />
     </div>
   );
 });
@@ -131,44 +137,49 @@ const FeatureCardComponent = memo(function FeatureCardComponent({
 // ============================================================
 export default function Features() {
   return (
-    <section className="relative py-20 sm:py-28 lg:py-32 overflow-hidden">
-      {/* Background Elements */}
-      <div
-        className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-transparent"
-        aria-hidden="true"
-      />
-
+    <section
+      id="features"
+      className="relative py-20 sm:py-28 lg:py-32 overflow-hidden"
+    >
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
+          <h2
+            className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-center leading-[1.1] mb-6 bg-clip-text text-transparent"
+            style={{
+              backgroundImage:
+                "radial-gradient(at 50% 0%, rgb(255, 0, 0) 5%, rgb(240, 247, 245) 50%)",
+            }}
+          >
             Why creators choose Thumb-Free
           </h2>
 
-          <p className="text-lg sm:text-xl text-white/60 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-[#FFFFFF80] max-w-2xl mx-auto">
             The world's first completely free, unlimited AI thumbnail generator.
             No tricks. No limits. Just results.
           </p>
         </div>
 
         {/* Primary Features Grid - 2 columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
-          {PRIMARY_FEATURES.map((feature) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
+          {PRIMARY_FEATURES.map((feature, index) => (
             <FeatureCardComponent
               key={feature.id}
               feature={feature}
               variant="default"
+              index={index}
             />
           ))}
         </div>
 
         {/* Secondary Features Grid - 3 columns */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {SECONDARY_FEATURES.map((feature) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          {SECONDARY_FEATURES.map((feature, index) => (
             <FeatureCardComponent
               key={feature.id}
               feature={feature}
               variant="compact"
+              index={index + 2}
             />
           ))}
         </div>

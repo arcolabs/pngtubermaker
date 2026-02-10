@@ -3,6 +3,7 @@ import FAQ from "@/components/sections/FAQ";
 import Features from "@/components/sections/Features";
 import Hero from "@/components/sections/Hero";
 import Showcase from "@/components/sections/Showcase";
+import TargetAudience from "@/components/sections/TargetAudience";
 import Testimonials from "@/components/sections/Testimonials";
 
 export default function Home() {
@@ -11,6 +12,7 @@ export default function Home() {
       <Hero />
       <Showcase videoSrc="/videos/Thumbfree.mp4" />
       <Features />
+      <TargetAudience />
       {/* Placeholder for future sections */}
       <section id="how-it-works" className="scroll-mt-16" />
       <section id="pricing" className="scroll-mt-16" />
