@@ -1,9 +1,50 @@
+import type { Metadata } from "next";
 import CTA from "@/components/sections/CTA";
 import FAQ from "@/components/sections/FAQ";
 import StealModeShowcase from "@/components/sections/StealModeShowcase";
 import Testimonials from "@/components/sections/Testimonials";
 import YouTubeThumbnailGrabber from "@/components/sections/YouTubeThumbnailGrabber";
 import YouTubeThumbnailGrabberHero from "@/components/sections/YouTubeThumbnailGrabberHero";
+
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thumb-free.com";
+
+export const metadata: Metadata = {
+  title: "Free YouTube Thumbnail Grabber & Downloader",
+  description:
+    "Download YouTube thumbnails in HD quality (1280x720) for free. Grab thumbnails from any public YouTube video instantly. Multiple sizes available.",
+  keywords: [
+    "YouTube thumbnail downloader",
+    "YouTube thumbnail grabber",
+    "download YouTube thumbnails",
+    "YouTube thumbnail HD",
+    "free thumbnail downloader",
+    "YouTube video thumbnail",
+  ],
+  alternates: {
+    canonical: `${baseUrl}/youtube-thumbnail-grabber`,
+  },
+  openGraph: {
+    title: "Free YouTube Thumbnail Grabber & Downloader",
+    description:
+      "Download YouTube thumbnails in HD quality instantly. Free, fast, no registration required.",
+    url: `${baseUrl}/youtube-thumbnail-grabber`,
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "YouTube Thumbnail Grabber - Download HD thumbnails for free",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free YouTube Thumbnail Grabber",
+    description:
+      "Download YouTube thumbnails in HD quality instantly. Free and easy to use.",
+    images: ["/og-image.jpg"],
+  },
+};
 
 export default function YouTubeThumbnailGrabberPage() {
   return (

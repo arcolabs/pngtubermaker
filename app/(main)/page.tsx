@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import CTA from "@/components/sections/CTA";
 import FAQ from "@/components/sections/FAQ";
 import Features from "@/components/sections/Features";
@@ -5,10 +6,45 @@ import Hero from "@/components/sections/Hero";
 import Showcase from "@/components/sections/Showcase";
 import TargetAudience from "@/components/sections/TargetAudience";
 import Testimonials from "@/components/sections/Testimonials";
+import { SoftwareStructuredData } from "@/components/seo/StructuredData";
+
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thumb-free.com";
+
+export const metadata: Metadata = {
+  title: "Free AI YouTube Thumbnail Generator | Thumb-Free",
+  description:
+    "Create professional YouTube thumbnails in seconds with AI. 100% free, unlimited generations. No credit card required. Best AI thumbnail maker for creators.",
+  keywords: [
+    "AI thumbnail generator",
+    "YouTube thumbnail maker",
+    "free thumbnail creator",
+    "AI YouTube thumbnails",
+    "thumbnail generator free",
+    "create YouTube thumbnails",
+  ],
+  alternates: {
+    canonical: baseUrl,
+  },
+  openGraph: {
+    title: "Free AI YouTube Thumbnail Generator | Thumb-Free",
+    description:
+      "Create professional YouTube thumbnails in seconds with AI. 100% free, unlimited generations.",
+    url: baseUrl,
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Thumb-Free - Free AI YouTube Thumbnail Generator",
+      },
+    ],
+  },
+};
 
 export default function Home() {
   return (
     <>
+      <SoftwareStructuredData />
       <Hero />
       <Showcase videoSrc="/videos/Thumbfree.mp4" />
       <Features />
