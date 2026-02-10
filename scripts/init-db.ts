@@ -71,6 +71,39 @@ async function initDb() {
   `;
   console.log("✓ verification table created");
 
+  // Create images table (for R2 storage)
+  await sql`
+    CREATE TABLE IF NOT EXISTS "images" (
+      "id" TEXT PRIMARY KEY,
+      "user_id" TEXT NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
+      "type" TEXT NOT NULL,
+      "filename" TEXT NOT NULL,
+      "original_name" TEXT,
+      "mime_type" TEXT NOT NULL,
+      "size" TEXT NOT NULL,
+      "width" TEXT,
+      "height" TEXT,
+      "r2_key" TEXT NOT NULL,
+      "r2_url" TEXT NOT NULL,
+      "created_at" TIMESTAMP NOT NULL DEFAULT NOW()
+    )
+  `;
+  console.log("✓ images table created");
+
+  // Create generated_thumbnails table (for AI generation tracking)
+  await sql`
+    CREATE TABLE IF NOT EXISTS "generated_thumbnails" (
+      "id" TEXT PRIMARY KEY,
+      "user_id" TEXT NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
+      "source_image_id" TEXT REFERENCES "images"("id"),
+      "prompt" TEXT,
+      "result_image_id" TEXT REFERENCES "images"("id"),
+      "status" TEXT NOT NULL,
+      "created_at" TIMESTAMP NOT NULL DEFAULT NOW()
+    )
+  `;
+  console.log("✓ generated_thumbnails table created");
+
   console.log("\n✅ All tables created successfully!");
 }
 
