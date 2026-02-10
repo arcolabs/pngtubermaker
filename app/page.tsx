@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Showcase />
+      <Showcase videoSrc="/videos/Thumbfree.mp4" />
       {/* Placeholder for future sections */}
       <section id="features" className="scroll-mt-16" />
       <section id="how-it-works" className="scroll-mt-16" />

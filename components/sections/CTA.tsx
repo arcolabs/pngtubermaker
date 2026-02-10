@@ -28,7 +28,7 @@ export default function CTA({
     "relative z-10 rounded-full py-1.5 sm:py-2 pl-4 pr-5 flex items-center justify-center font-medium text-base sm:text-lg gap-2 border-[1.5px] border-white/50 group-hover:border-white/80 shadow-[inset_0_0_16px_rgba(255,255,255,0.2)] group-hover:shadow-[inset_0_0_16px_rgba(255,255,255,0.3)] transition-all duration-300";
 
   return (
-    <section className="relative w-full overflow-hidden flex flex-col items-center bg-white/[0.03] border border-primary/5 rounded-3xl lg:rounded-4xl py-12 sm:p-20 lg:py-32 my-8 sm:my-12 lg:my-16">
+    <section className="relative w-full overflow-hidden flex flex-col items-center bg-[#252525] border border-primary/5 rounded-3xl lg:rounded-4xl py-12 sm:p-20 lg:py-32 my-8 sm:my-12 lg:my-16">
       <div className="relative z-10 flex flex-col items-center sm:gap-4 gap-2">
         <h2
           className="leading-[1.1] bg-clip-text text-transparent text-3xl lg:text-4xl font-semibold tracking-tight text-center"
