@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { UserButton } from "@/components/auth/auth-buttons";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -66,12 +67,7 @@ export default function Header() {
 
           {/* Right side - Auth button */}
           <div className="flex items-center gap-3">
-            <Link
-              href="/auth/start"
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-[#FF0000] hover:bg-[#E60000] active:bg-[#CC0000] rounded-md transition-all duration-200 shadow-lg shadow-[#FF0000]/20 hover:shadow-xl hover:shadow-[#FF0000]/30"
-            >
-              Get Started
-            </Link>
+            <UserButton />
 
             {/* Mobile menu button */}
             <button
