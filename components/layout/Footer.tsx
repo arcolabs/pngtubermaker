@@ -1,5 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+
+function scrollToSection(sectionId: string) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
 
 export default function Footer() {
   return (
@@ -48,12 +57,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/#how-it-works"
-                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
+                <button
+                  type="button"
+                  onClick={() => scrollToSection("how-it-works")}
+                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200 bg-transparent border-0 p-0 text-left"
                 >
                   How It Works
-                </Link>
+                </button>
               </li>
               <li>
                 <Link

@@ -5,6 +5,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { UserButton } from "@/components/auth/auth-buttons";
 
+function scrollToSection(sectionId: string) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -45,12 +52,13 @@ export default function Header() {
             >
               Features
             </Link>
-            <Link
-              href="#how-it-works"
-              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
+            <button
+              type="button"
+              onClick={() => scrollToSection("how-it-works")}
+              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200 bg-transparent border-0"
             >
               How It Works
-            </Link>
+            </button>
             <Link
               href="#faq"
               className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
@@ -109,13 +117,16 @@ export default function Header() {
             >
               Features
             </Link>
-            <Link
-              href="#how-it-works"
-              onClick={() => setIsOpen(false)}
-              className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(false);
+                setTimeout(() => scrollToSection("how-it-works"), 100);
+              }}
+              className="block w-full text-left px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200 bg-transparent border-0"
             >
               How It Works
-            </Link>
+            </button>
             <Link
               href="#faq"
               onClick={() => setIsOpen(false)}
