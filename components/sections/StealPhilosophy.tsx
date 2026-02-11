@@ -82,8 +82,8 @@ export default function StealPhilosophy() {
       id="how-it-works"
       className="relative py-20 sm:py-28 lg:py-32 overflow-hidden scroll-mt-16"
     >
-      {/* Background subtle gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FF0033]/5 to-transparent pointer-events-none" />
+      {/* Background subtle gradient - smooth top transition */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FF0033]/[0.03] to-transparent pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
