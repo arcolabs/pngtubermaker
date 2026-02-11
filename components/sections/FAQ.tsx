@@ -19,46 +19,40 @@ interface FAQProps {
 const defaultFaqData: FAQItem[] = [
   {
     id: "free-no-signup",
-    question: "Is Thumb-Free free? Do I need to sign up?",
+    question: "Is Thumb-Free really 100% free? Do I need to sign up?",
     answer:
-      "Yes — Thumb-Free is 100% free with unlimited thumbnail generations.\n\nNo sign-up required. No credit card. No login. Just paste your prompt, add your reference, and generate. You can start creating thumbnails immediately.",
+      "Yes — Thumb-Free is completely free with unlimited thumbnail generations. Forever.\n\nNo sign-up required. No login. No credit card needed. Just visit the site, enter your video title, upload your photo, and generate professional YouTube thumbnails instantly. You can start creating immediately without creating an account.",
+  },
+  {
+    id: "no-login-required",
+    question: "Can I use Thumb-Free without logging in or creating an account?",
+    answer:
+      "Absolutely. Thumb-Free works without any login or account creation.\n\nUnlike other AI thumbnail generators that force you to sign up first, we believe in instant access. Just open thumbfree.com and start generating thumbnails right away. No email required. No password to remember. No account verification.",
+  },
+  {
+    id: "whats-the-catch",
+    question: "How is Thumb-Free free? What's the catch?",
+    answer:
+      "There's no catch. Thumb-Free is funded by optional premium features for power users who need advanced capabilities.\n\nThe core thumbnail generation — unlimited generations, face upload, basic editing — is 100% free for everyone. No hidden fees, no credit card required, no surprise charges. We believe every creator deserves access to professional tools regardless of budget.",
+  },
+  {
+    id: "vs-paid-tools",
+    question:
+      "Why use Thumb-Free instead of paid tools like Canva or Photoshop?",
+    answer:
+      "Thumb-Free is built specifically for YouTube thumbnails with AI at its core.\n\nWhile Canva and Photoshop are great general design tools, Thumb-Free focuses exclusively on YouTube performance:\n• AI-powered thumbnail generation from text prompts\n• Face consistency with Persona upload\n• CTR-optimized layouts based on viral thumbnails\n• Instant generation — no design skills needed\n• 100% free, no subscription required\n\nSave $20-50/month and get better results designed for YouTube.",
   },
   {
     id: "what-is-thumb-free",
-    question: "What is Thumb-Free?",
+    question: "What is Thumb-Free and how does it work?",
     answer:
-      "Thumb-Free is a YouTube thumbnail creation tool built to help creators create, test & iterate thumbnails & titles that get clicked.\n\nThis is not a generic image generator. Everything is designed around YouTube performance, CTR & repeatable results.\n\nNo designers. No photoshoots. No guesswork.",
+      "Thumb-Free is a free AI-powered YouTube thumbnail generator that helps creators make professional thumbnails without design skills.\n\nHow it works:\n1. Enter your video title\n2. Upload your photo (optional, for face consistency)\n3. Describe the style you want or use our templates\n4. AI generates multiple thumbnail options in seconds\n5. Download and use on your YouTube video\n\nNo software to install. Works in your browser on desktop, tablet, or mobile.",
   },
   {
-    id: "why-choose-thumb-free",
-    question:
-      "Why choose Thumb-Free over ChatGPT, Midjourney or other AI tools?",
+    id: "unlimited-generations",
+    question: "Is there a limit on how many thumbnails I can generate?",
     answer:
-      "Those tools generate images. Thumb-Free is built specifically for YouTube thumbnails & titles. Thumb-Free focuses on performance, not aesthetics.\n\nWhat Thumb-Free does that generic AI doesn't:\n01. Recreate thumbnails that already work\n02. Score thumbnails & titles with data-backed feedback\n03. Fix weak packaging in one click\n04. Stay consistent with Persona, FaceSwap & Style\n05. Generate titles optimized for CTR",
-  },
-  {
-    id: "use-own-face",
-    question: "Can I use Thumb-Free with my own face?",
-    answer:
-      "Yes.\n\nUpload a few photos once, create your Persona, then reuse your face consistently across all thumbnails.\n\nNo reshoots. No awkward poses. No photoshoot days.",
-  },
-  {
-    id: "design-skills",
-    question: "Do I need design skills to use Thumb-Free?",
-    answer:
-      "No.\n\nEverything works through simple prompts & text-based edits. You describe what you want changed, Thumb-Free handles the execution.",
-  },
-  {
-    id: "how-it-works",
-    question: "How does it work?",
-    answer:
-      "Simply enter your video title, upload your photo, and let Thumb-Free generate professional thumbnails in seconds. You can then iterate, optimize, and download your final design.",
-  },
-  {
-    id: "pricing",
-    question: "What are the pricing options?",
-    answer:
-      "Thumb-Free is 100% free — unlimited thumbnail generations, no hidden fees, no credits system. No pricing page. No checkout. Just create.",
+      "No limits. Generate as many thumbnails as you need.\n\nUnlike other AI tools that give you 10-50 free generations then force you to pay, Thumb-Free offers truly unlimited thumbnail creation. Create 10 thumbnails or 1,000 — it's always free. Perfect for A/B testing different thumbnail styles or creating thumbnails for your entire content calendar.",
   },
 ];
 

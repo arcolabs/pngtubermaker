@@ -5,6 +5,7 @@ import FAQ from "@/components/sections/FAQ";
 import Features from "@/components/sections/Features";
 import Hero from "@/components/sections/Hero";
 import Showcase from "@/components/sections/Showcase";
+import StealPhilosophy from "@/components/sections/StealPhilosophy";
 import TargetAudience from "@/components/sections/TargetAudience";
 import Testimonials from "@/components/sections/Testimonials";
 import { SoftwareStructuredData } from "@/components/seo/StructuredData";
@@ -59,6 +60,7 @@ export default function Home() {
         </div>
       </section>
       <Features />
+      <StealPhilosophy />
       <TargetAudience />
       {/* Placeholder for future sections */}
       <section id="how-it-works" className="scroll-mt-16" />
