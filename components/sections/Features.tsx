@@ -116,15 +116,17 @@ const FeatureCardComponent = memo(function FeatureCardComponent({
       </div>
 
       {/* Content */}
-      <div className="relative p-6 sm:p-8">
+      <div className="relative p-4 sm:p-6 lg:p-8">
         <h3
-          className={`font-semibold text-white mb-3 group-hover:text-primary/90 transition-colors duration-300 ${
-            isCompact ? "text-lg sm:text-xl" : "text-xl sm:text-2xl"
+          className={`font-semibold text-white mb-2 sm:mb-3 group-hover:text-primary/90 transition-colors duration-300 ${
+            isCompact
+              ? "text-base sm:text-lg lg:text-xl"
+              : "text-lg sm:text-xl lg:text-2xl"
           }`}
         >
           {feature.title}
         </h3>
-        <p className="text-white/60 text-sm sm:text-base leading-relaxed">
+        <p className="text-white/60 text-sm leading-relaxed">
           {feature.description}
         </p>
       </div>

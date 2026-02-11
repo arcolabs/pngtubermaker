@@ -14,10 +14,10 @@ export default function Footer() {
   return (
     <footer className="w-full pt-16 pb-8 px-4 sm:px-6 lg:px-8">
       {/* Card container with rounded corners */}
-      <div className="max-w-screen-xl mx-auto bg-[#1A1A1A] rounded-3xl p-8 sm:p-12 lg:p-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand Column */}
-          <div className="space-y-4">
+      <div className="max-w-screen-xl mx-auto bg-[#1A1A1A] rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-6">
+          {/* Brand Column - full width on mobile, spans 2 cols on sm */}
+          <div className="space-y-4 sm:col-span-2 md:col-span-1">
             <Link
               href="/"
               className="flex items-center gap-2.5 group select-none"
@@ -36,18 +36,18 @@ export default function Footer() {
               </h3>
             </Link>
             <p className="text-sm text-muted-foreground">
-              Thumb-Free AI Thumbnail Generator: The World's First{" "}
+              Thumb-Free AI Thumbnail Generator: The World&apos;s First{" "}
               <span className="text-white font-medium">Free</span>, Unlimited AI
               Engine Built for Grow Your Channel.
             </p>
           </div>
 
-          {/* Product Links */}
-          <div>
-            <h4 className="mb-4 text-white font-normal text-[20px] leading-[26px] tracking-[-0.8px]">
+          {/* Product Links - merged with Tools on mobile */}
+          <div className="sm:col-span-1">
+            <h4 className="mb-4 text-white font-normal text-lg sm:text-[20px] leading-[26px] tracking-[-0.8px]">
               Product
             </h4>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2.5 sm:space-y-2 text-sm">
               <li>
                 <Link
                   href="/#features"
@@ -74,14 +74,31 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
+
+            {/* Tools section - inline on mobile, separate on md+ */}
+            <div className="mt-6 sm:mt-6 md:hidden">
+              <h4 className="mb-3 text-white font-normal text-lg leading-[26px] tracking-[-0.8px]">
+                Tools
+              </h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <Link
+                    href="/youtube-thumbnail-grabber"
+                    className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
+                  >
+                    YouTube Thumbnail Grabber
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
 
           {/* Legal Links */}
           <div>
-            <h4 className="mb-4 text-white font-normal text-[20px] leading-[26px] tracking-[-0.8px]">
+            <h4 className="mb-4 text-white font-normal text-lg sm:text-[20px] leading-[26px] tracking-[-0.8px]">
               Legal
             </h4>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2.5 sm:space-y-2 text-sm">
               <li>
                 <Link
                   href="/legal/terms"
@@ -101,8 +118,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Tools Links */}
-          <div>
+          {/* Tools Links - hidden on mobile/sm, shown on md+ */}
+          <div className="hidden md:block">
             <h4 className="mb-4 text-white font-normal text-[20px] leading-[26px] tracking-[-0.8px]">
               Tools
             </h4>

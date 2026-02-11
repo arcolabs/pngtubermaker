@@ -335,8 +335,8 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
 
         {/* Reference Modules */}
         <div
-          className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${
-            activeModuleType ? "mb-6" : ""
+          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 ${
+            activeModuleType ? "mb-4 sm:mb-6" : ""
           }`}
         >
           <ReferenceModule
@@ -393,14 +393,14 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
         )}
 
         {/* Aspect Ratio & Submit Button */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/10">
-          <div className="flex flex-wrap gap-3">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-between gap-4 pt-4 border-t border-white/10">
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             {SIZE_PRESETS.map((size) => (
               <button
                 key={size.id}
                 type="button"
                 onClick={() => onFormChange({ size })}
-                className={`group relative px-4 py-3 rounded-xl border transition-all duration-300
+                className={`group relative px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border transition-all duration-300
                   ${
                     formState.size?.id === size.id
                       ? "border-[#FF0033]/50 bg-[#FF0033]/10"
@@ -433,8 +433,8 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
             type="button"
             onClick={handleSubmit}
             disabled={!formState.prompt.trim() || isGenerating}
-            className={`group relative inline-flex flex-shrink-0 items-center gap-3
-                     rounded-xl px-8 py-4
+            className={`group relative inline-flex flex-shrink-0 items-center justify-center gap-2 sm:gap-3
+                     rounded-xl px-4 sm:px-8 py-3 sm:py-4 w-full sm:w-auto
                      border transition-all duration-300 ease-out
                      whitespace-nowrap
                      ${
@@ -446,7 +446,7 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
             {isGenerating ? (
               <>
                 <svg
-                  className="animate-spin h-5 w-5 text-white"
+                  className="animate-spin h-4 w-4 sm:h-5 sm:w-5 text-white"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -507,7 +507,7 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
                 <span className="relative font-bold tracking-wide">
                   Generate Thumbnail
                 </span>
-                <span className="relative rounded-full bg-white/25 backdrop-blur-sm px-3 py-1 text-sm font-bold text-white border border-white/40">
+                <span className="relative rounded-full bg-white/25 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm font-bold text-white border border-white/40">
                   Free
                 </span>
               </>

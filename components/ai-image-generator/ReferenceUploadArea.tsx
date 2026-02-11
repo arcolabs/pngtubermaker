@@ -146,14 +146,14 @@ const ReferenceUploadArea = memo(function ReferenceUploadArea({
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {/* Upload area and gallery */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         {/* Upload zone */}
-        <div className="h-[164px]">{uploadZone}</div>
+        <div className="h-[120px] sm:h-[164px]">{uploadZone}</div>
 
         {/* Gallery */}
-        <div className="min-w-0 md:col-span-2 h-[164px]">
+        <div className="min-w-0 sm:col-span-2 h-[120px] sm:h-[164px]">
           <div className="relative w-full h-full rounded-xl border-2 border-dashed border-white/10 bg-white/5 overflow-hidden">
             <div className="absolute top-2 right-2 z-10 rounded-full bg-black/60 backdrop-blur-sm px-2 py-1 text-xs font-mono text-white/80">
               {uploadedImages.length}/{MAX_IMAGES}
@@ -182,14 +182,14 @@ const ReferenceUploadArea = memo(function ReferenceUploadArea({
               </div>
             ) : (
               <div className="h-full overflow-y-auto p-2 custom-scrollbar">
-                <div className="columns-4 sm:columns-5 md:columns-6 lg:columns-7 xl:columns-8 gap-2 space-y-2">
+                <div className="columns-5 sm:columns-5 md:columns-6 lg:columns-7 xl:columns-8 gap-1.5 sm:gap-2 space-y-1.5 sm:space-y-2">
                   {uploadedImages.map((file) => (
                     // biome-ignore lint/a11y/useSemanticElements: div with role=button is used for drag-and-drop functionality
                     <div
                       role="button"
                       tabIndex={0}
                       key={file.fileKey}
-                      className="relative break-inside-avoid rounded-md overflow-hidden border border-white/10 group cursor-move w-[60px] sm:w-[70px] text-left"
+                      className="relative break-inside-avoid rounded-md overflow-hidden border border-white/10 group cursor-move w-[50px] sm:w-[70px] text-left"
                       draggable
                       onDragStart={(e) =>
                         e.dataTransfer.setData(

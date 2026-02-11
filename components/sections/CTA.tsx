@@ -60,7 +60,7 @@ const CTAButton = memo(function CTAButton({
   );
 
   const buttonClassName = `group relative inline-flex items-center justify-center gap-2 
-    rounded-full px-8 py-4
+    rounded-full px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto
     bg-gradient-to-r from-[#FF0033] via-[#FF2244] to-[#FF3355]
     border border-white/30
     shadow-lg shadow-[#FF0033]/25
@@ -102,8 +102,8 @@ export default function CTA({
   onButtonClick,
 }: CTAProps) {
   return (
-    <section className="relative py-20 sm:py-28 lg:py-32 overflow-hidden">
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative py-16 sm:py-20 lg:py-32 overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <div className="relative rounded-3xl overflow-hidden">
           {/* Background gradient */}
           <div
@@ -131,31 +131,31 @@ export default function CTA({
           <div className="absolute inset-0 rounded-3xl p-[1px] bg-gradient-to-br from-white/20 via-transparent to-white/10 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
           {/* Content */}
-          <div className="relative py-16 sm:py-20 lg:py-24 px-6 sm:px-12 lg:px-16 text-center">
+          <div className="relative py-12 sm:py-16 lg:py-24 px-4 sm:px-8 lg:px-16 text-center">
             {/* Tag */}
             <span
-              className="inline-block px-4 py-1.5 rounded-full text-sm font-medium
+              className="inline-block px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium
                            bg-[#FF0033]/10 text-[#FF0033] border border-[#FF0033]/20
-                           mb-6"
+                           mb-4 sm:mb-6"
             >
               Get Started Today
             </span>
 
             {/* Heading */}
             <h2
-              className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-center leading-[1.1] mb-6 bg-clip-text text-transparent"
+              className="text-2xl sm:text-3xl lg:text-5xl font-semibold text-center leading-[1.1] mb-4 sm:mb-6 bg-clip-text text-transparent"
               style={{
                 backgroundImage:
                   "radial-gradient(at 50% 0%, rgb(255, 0, 0) 5%, rgb(240, 247, 245) 50%)",
               }}
             >
               {title}
-              <br />
-              <span className="mt-2 inline-block">{subtitle}</span>
+              <br className="hidden sm:block" />
+              <span className="mt-1 sm:mt-2 inline-block">{subtitle}</span>
             </h2>
 
             {/* Description */}
-            <p className="text-lg sm:text-xl text-[#FFFFFF80] max-w-2xl mx-auto mb-10">
+            <p className="text-base sm:text-lg lg:text-xl text-[#FFFFFF80] max-w-2xl mx-auto mb-8 sm:mb-10">
               {description}
             </p>
 
@@ -167,7 +167,7 @@ export default function CTA({
             />
 
             {/* Trust badges */}
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4 text-sm text-white/50">
+            <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-white/50">
               <span className="flex items-center gap-2">
                 <svg
                   className="w-4 h-4 text-primary"

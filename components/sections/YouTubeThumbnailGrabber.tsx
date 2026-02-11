@@ -156,8 +156,8 @@ export default function YouTubeThumbnailGrabber() {
               <button
                 type="submit"
                 disabled={!videoUrl.trim() || isLoading}
-                className="group relative inline-flex items-center justify-center gap-3
-                         rounded-xl px-8 py-4
+                className="group relative inline-flex items-center justify-center gap-2 sm:gap-3
+                         rounded-xl px-4 sm:px-8 py-3 sm:py-4 w-full sm:w-auto
                          bg-gradient-to-r from-[#FF0033] via-[#FF2244] to-[#FF3355]
                          border border-white/20
                          shadow-lg shadow-[#FF0033]/20

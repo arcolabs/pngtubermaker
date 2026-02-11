@@ -288,4 +288,45 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
   }
+
+  /* Mobile touch optimization */
+  @media (hover: none) and (pointer: coarse) {
+    /* Increase touch targets on mobile */
+    button,
+    a {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    /* Disable hover effects on touch devices */
+    .group:hover {
+      transform: none;
+    }
+
+    /* Optimize tap highlight */
+    * {
+      -webkit-tap-highlight-color: rgba(255, 0, 51, 0.1);
+    }
+  }
+
+  /* Prevent text zoom on iOS */
+  @supports (-webkit-touch-callout: none) {
+    input,
+    textarea,
+    select {
+      font-size: 16px;
+    }
+  }
+
+  /* Mobile-safe animations */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-scroll-left,
+    .animate-scroll-right,
+    .animate-marquee,
+    .animate-marquee-fast,
+    .animate-fade-in-up,
+    .animate-pulse-glow {
+      animation: none;
+    }
+  }
 }

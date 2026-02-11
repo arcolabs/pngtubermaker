@@ -206,11 +206,11 @@ export default function StealPhilosophy() {
 
         {/* How it Works Steps */}
         <div className="relative mb-16">
-          <div className="text-center mb-12">
-            <h3 className="text-2xl sm:text-3xl font-semibold text-white mb-3">
+          <div className="text-center mb-10 sm:mb-12">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white mb-2 sm:mb-3">
               How It Works
             </h3>
-            <p className="text-white/50">
+            <p className="text-sm sm:text-base text-white/50">
               Three simple steps to thumbnail mastery
             </p>
           </div>

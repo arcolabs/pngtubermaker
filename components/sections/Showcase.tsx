@@ -73,8 +73,8 @@ const ThumbnailCard = memo(function ThumbnailCard({
 }) {
   return (
     <div
-      className="relative aspect-video w-40 h-32 sm:w-48 sm:h-36 md:w-56 md:h-40 lg:w-64 lg:h-44 
-                 rounded-xl flex-shrink-0 border border-white/10 shadow-xl overflow-hidden
+      className="relative aspect-video w-32 h-24 sm:w-40 sm:h-32 md:w-56 md:h-40 lg:w-64 lg:h-44 
+                 rounded-lg sm:rounded-xl flex-shrink-0 border border-white/10 shadow-xl overflow-hidden
                  bg-zinc-900 group"
     >
       <Image
@@ -192,8 +192,8 @@ const BenefitBadge = memo(function BenefitBadge({
 }) {
   return (
     <span
-      className="group inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl 
-                 text-sm font-medium text-white/80 
+      className="group inline-flex items-center gap-1.5 sm:gap-2.5 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl 
+                 text-xs sm:text-sm font-medium text-white/80 
                  bg-white/5 backdrop-blur-sm border border-white/10
                  hover:bg-white/10 hover:border-white/20 
                  hover:text-white
@@ -202,11 +202,11 @@ const BenefitBadge = memo(function BenefitBadge({
                  transition-all duration-300 ease-out whitespace-nowrap"
     >
       {/* Index number */}
-      <span className="text-[10px] font-mono text-white/30 group-hover:text-primary/50 transition-colors">
+      <span className="hidden sm:inline text-[10px] font-mono text-white/30 group-hover:text-primary/50 transition-colors">
         {String(index + 1).padStart(2, "0")}
       </span>
       <span
-        className="text-base group-hover:scale-110 transition-transform duration-300"
+        className="text-sm sm:text-base group-hover:scale-110 transition-transform duration-300"
         aria-hidden="true"
       >
         {icon}
@@ -263,7 +263,7 @@ export default function Showcase({
         {/* Benefits section */}
         <div className="mt-2 sm:mt-3">
           <ul
-            className="flex flex-wrap items-center justify-center gap-3 sm:gap-4"
+            className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 lg:gap-4"
             aria-label="Product benefits"
           >
             {FREE_BENEFITS.map((benefit, index) => (
