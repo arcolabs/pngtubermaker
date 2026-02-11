@@ -52,16 +52,10 @@ export default function Header() {
               How It Works
             </Link>
             <Link
-              href="#pricing"
+              href="#faq"
               className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
             >
-              Pricing
-            </Link>
-            <Link
-              href="/posts"
-              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
-            >
-              Blog
+              FAQ
             </Link>
           </nav>
 
@@ -123,18 +117,11 @@ export default function Header() {
               How It Works
             </Link>
             <Link
-              href="#pricing"
+              href="#faq"
               onClick={() => setIsOpen(false)}
               className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
             >
-              Pricing
-            </Link>
-            <Link
-              href="/posts"
-              onClick={() => setIsOpen(false)}
-              className="block px-3 py-2 text-sm font-medium text-muted-foreground hover:text-[#FF5555] hover:bg-muted/50 rounded-md transition-all duration-200"
-            >
-              Blog
+              FAQ
             </Link>
           </nav>
         </div>

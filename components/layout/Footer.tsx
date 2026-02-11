@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="w-full pt-16 pb-8 px-4 sm:px-6 lg:px-8">
       {/* Card container with rounded corners */}
       <div className="max-w-screen-xl mx-auto bg-[#1A1A1A] rounded-3xl p-8 sm:p-12 lg:p-16">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Column */}
           <div className="space-y-4">
             <Link
@@ -57,68 +57,11 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#pricing"
+                  href="#faq"
                   className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
-                  Pricing
+                  FAQ
                 </Link>
-              </li>
-              <li>
-                <Link
-                  href="/posts"
-                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
-                >
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/auth/start"
-                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
-                >
-                  Get Started
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Company Links */}
-          <div>
-            <h4 className="mb-4 text-white font-normal text-[20px] leading-[26px] tracking-[-0.8px]">
-              Company
-            </h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link
-                  href="/about"
-                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact"
-                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
-                >
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/careers"
-                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
-                >
-                  Careers
-                </Link>
-              </li>
-              <li>
-                <a
-                  href="mailto:support@thumb-free.com"
-                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
-                >
-                  Support
-                </a>
               </li>
             </ul>
           </div>
