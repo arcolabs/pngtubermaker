@@ -62,8 +62,6 @@ export default function Home() {
       <Features />
       <StealPhilosophy />
       <TargetAudience />
-      {/* Placeholder for future sections */}
-      <section id="how-it-works" className="scroll-mt-16" />
       <section id="pricing" className="scroll-mt-16" />
       <Testimonials />
       <div className="max-w-screen-xl mx-auto w-full px-4 sm:px-6 lg:px-8">

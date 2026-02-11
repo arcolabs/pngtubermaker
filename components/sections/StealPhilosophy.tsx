@@ -78,7 +78,10 @@ const StepCard = memo(function StepCard({
 // ============================================================
 export default function StealPhilosophy() {
   return (
-    <section className="relative py-20 sm:py-28 lg:py-32 overflow-hidden">
+    <section
+      id="how-it-works"
+      className="relative py-20 sm:py-28 lg:py-32 overflow-hidden scroll-mt-16"
+    >
       {/* Background subtle gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FF0033]/5 to-transparent pointer-events-none" />
 

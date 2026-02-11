@@ -41,7 +41,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
-                  href="#features"
+                  href="/#features"
                   className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   Features
@@ -49,7 +49,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#how-it-works"
+                  href="/#how-it-works"
                   className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   How It Works
@@ -57,7 +57,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#faq"
+                  href="/#faq"
                   className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
                 >
                   FAQ
