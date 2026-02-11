@@ -113,7 +113,7 @@ const ReferenceModule = memo(function ReferenceModule({
 
   return (
     <div
-      className={`relative rounded-xl overflow-hidden border transition-all duration-300
+      className={`relative rounded-xl overflow-visible border transition-all duration-300
         ${
           isActive
             ? "border-[#FF0033]/50 bg-[#FF0033]/5 shadow-[0_0_20px_rgba(255,0,51,0.15)] animate-pulse-glow"
@@ -122,7 +122,7 @@ const ReferenceModule = memo(function ReferenceModule({
     >
       <button
         type="button"
-        className={`group w-full flex items-stretch h-24 cursor-pointer transition-colors duration-200 text-left ${
+        className={`group w-full flex items-stretch min-h-[96px] cursor-pointer transition-colors duration-200 text-left ${
           isActive ? "bg-[#FF0033]/5" : "hover:bg-white/5"
         }`}
         onClick={handleClick}
@@ -131,14 +131,14 @@ const ReferenceModule = memo(function ReferenceModule({
         aria-label={`${config.title} module - click to activate or drag image here`}
       >
         {/* Left: Module Content */}
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-4 min-w-0">
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0 mt-0.5">{config.icon}</div>
             <div className="flex-1 min-w-0">
-              <h4 className="text-sm font-semibold text-white mb-0.5">
+              <h4 className="text-sm font-semibold text-white mb-1">
                 {config.title}
               </h4>
-              <p className="text-xs text-white/50 truncate">
+              <p className="text-xs text-white/50 leading-relaxed">
                 {config.description}
               </p>
             </div>
@@ -146,9 +146,9 @@ const ReferenceModule = memo(function ReferenceModule({
         </div>
 
         {/* Right: Thumbnail area */}
-        <div className="w-24 h-24 flex-shrink-0 pointer-events-none">
+        <div className="w-20 h-20 flex-shrink-0 pointer-events-none m-2">
           {isActive || uploadedFiles.length > 0 ? (
-            <div className="pointer-events-auto w-full h-full">
+            <div className="pointer-events-auto w-full h-full overflow-visible">
               <ReferenceImageSelector
                 files={uploadedFiles}
                 onRemove={onRemoveFile}

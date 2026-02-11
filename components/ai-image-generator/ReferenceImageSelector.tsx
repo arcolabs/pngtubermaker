@@ -29,7 +29,7 @@ const ReferenceImageSelector = memo(function ReferenceImageSelector({
   const remainingCount = validFiles.length - maxFiles;
   const count = displayFiles.length;
 
-  // Calculate symmetric layout based on count
+  // Calculate symmetric layout based on count - adjusted for smaller container
   const getCardStyle = (index: number) => {
     const isHovered = hoveredIndex === index;
 
@@ -39,7 +39,7 @@ const ReferenceImageSelector = memo(function ReferenceImageSelector({
         rotation: 0,
         offsetX: 0,
         offsetY: 0,
-        scale: isHovered ? 1.1 : 1,
+        scale: isHovered ? 1.15 : 1,
         zIndex: 10,
       };
     }
@@ -48,10 +48,10 @@ const ReferenceImageSelector = memo(function ReferenceImageSelector({
       // Two cards - symmetric left/right
       const isLeft = index === 0;
       return {
-        rotation: isLeft ? -8 : 8,
-        offsetX: isLeft ? -12 : 12,
-        offsetY: 2,
-        scale: isHovered ? 1.15 : 0.92,
+        rotation: isLeft ? -6 : 6,
+        offsetX: isLeft ? -8 : 8,
+        offsetY: 0,
+        scale: isHovered ? 1.2 : 0.9,
         zIndex: isHovered ? 20 : 10 - index,
       };
     }
@@ -62,33 +62,33 @@ const ReferenceImageSelector = memo(function ReferenceImageSelector({
       return {
         rotation: 0,
         offsetX: 0,
-        offsetY: 0,
-        scale: isHovered ? 1.12 : 0.95,
+        offsetY: -2,
+        scale: isHovered ? 1.18 : 0.92,
         zIndex: 15,
       };
     }
     if (index === 0) {
       // Left card
       return {
-        rotation: -10,
-        offsetX: -16,
-        offsetY: 4,
-        scale: isHovered ? 1.15 : 0.88,
+        rotation: -8,
+        offsetX: -10,
+        offsetY: 2,
+        scale: isHovered ? 1.2 : 0.85,
         zIndex: isHovered ? 20 : 10,
       };
     }
     // Right card
     return {
-      rotation: 10,
-      offsetX: 16,
-      offsetY: 4,
-      scale: isHovered ? 1.15 : 0.88,
+      rotation: 8,
+      offsetX: 10,
+      offsetY: 2,
+      scale: isHovered ? 1.2 : 0.85,
       zIndex: isHovered ? 20 : 10,
     };
   };
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center p-2">
+    <div className="relative w-full h-full flex items-center justify-center">
       {displayFiles.map((file, index) => {
         const isExternalUrl =
           file.url.startsWith("https://") || file.url.startsWith("http://");
@@ -98,10 +98,10 @@ const ReferenceImageSelector = memo(function ReferenceImageSelector({
         // Expand effect on hover - cards spread out more
         const expandX = isHovered
           ? count === 3
-            ? (index - 1) * 24
+            ? (index - 1) * 16
             : index === 0
-              ? -8
-              : 8
+              ? -6
+              : 6
           : 0;
 
         return (
@@ -114,10 +114,10 @@ const ReferenceImageSelector = memo(function ReferenceImageSelector({
                        transition-all duration-350 ease-out cursor-pointer group
                        hover:shadow-2xl hover:shadow-[#FF0033]/25"
             style={{
-              width: "54px",
-              height: "54px",
-              left: `calc(50% - 27px + ${style.offsetX}px + ${expandX}px)`,
-              top: `calc(50% - 27px + ${style.offsetY}px)`,
+              width: "48px",
+              height: "48px",
+              left: `calc(50% - 24px + ${style.offsetX}px + ${expandX}px)`,
+              top: `calc(50% - 24px + ${style.offsetY}px)`,
               transform: `rotate(${style.rotation}deg) scale(${style.scale})`,
               zIndex: style.zIndex,
               borderColor: isHovered
@@ -135,7 +135,7 @@ const ReferenceImageSelector = memo(function ReferenceImageSelector({
               alt={file.fileName}
               fill
               className="object-cover"
-              sizes="54px"
+              sizes="48px"
               unoptimized={isExternalUrl}
             />
 
