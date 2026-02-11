@@ -184,8 +184,10 @@ const ReferenceUploadArea = memo(function ReferenceUploadArea({
               <div className="h-full overflow-y-auto p-2 custom-scrollbar">
                 <div className="columns-4 sm:columns-5 md:columns-6 lg:columns-7 xl:columns-8 gap-2 space-y-2">
                   {uploadedImages.map((file) => (
-                    <button
-                      type="button"
+                    // biome-ignore lint/a11y/useSemanticElements: div with role=button is used for drag-and-drop functionality
+                    <div
+                      role="button"
+                      tabIndex={0}
                       key={file.fileKey}
                       className="relative break-inside-avoid rounded-md overflow-hidden border border-white/10 group cursor-move w-[60px] sm:w-[70px] text-left"
                       draggable
@@ -226,13 +228,22 @@ const ReferenceUploadArea = memo(function ReferenceUploadArea({
                           </svg>
                         </div>
                       )}
-                      <button
-                        type="button"
+                      {/* biome-ignore lint/a11y/useSemanticElements: div with role=button is used for consistency */}
+                      <div
+                        role="button"
+                        tabIndex={0}
                         onClick={(e) => {
                           e.stopPropagation();
                           onRemoveImage(file.fileKey);
                         }}
-                        className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 hover:bg-red-500/80 flex items-center justify-center transition-colors duration-200 opacity-0 group-hover:opacity-100 z-10"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onRemoveImage(file.fileKey);
+                          }
+                        }}
+                        className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 hover:bg-red-500/80 flex items-center justify-center transition-colors duration-200 opacity-0 group-hover:opacity-100 z-10 cursor-pointer"
                         aria-label="Remove image"
                       >
                         <svg
@@ -249,8 +260,8 @@ const ReferenceUploadArea = memo(function ReferenceUploadArea({
                             d="M6 18L18 6M6 6l12 12"
                           />
                         </svg>
-                      </button>
-                    </button>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>

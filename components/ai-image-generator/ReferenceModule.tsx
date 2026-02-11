@@ -22,8 +22,8 @@ const MODULE_CONFIGS: Record<ReferenceModuleProps["type"], ModuleConfig> = {
         />
       </svg>
     ),
-    title: "Image Prompts",
-    description: "Click or drag to add",
+    title: "Image Reference",
+    description: "Upload an existing cover to edit or improve",
   },
   "style-reference": {
     icon: (
@@ -42,8 +42,8 @@ const MODULE_CONFIGS: Record<ReferenceModuleProps["type"], ModuleConfig> = {
         />
       </svg>
     ),
-    title: "Style References",
-    description: "Reference from images or YouTube videos",
+    title: "Style Stealer",
+    description: "Paste a URL or image to replicate the 'banger' aesthetic.",
   },
   "omni-reference": {
     icon: (
@@ -62,8 +62,8 @@ const MODULE_CONFIGS: Record<ReferenceModuleProps["type"], ModuleConfig> = {
         />
       </svg>
     ),
-    title: "Person Reference",
-    description: "Use a person's likeness",
+    title: "The Face",
+    description: "Ensure the AI uses a specific face for your brand",
   },
 };
 
@@ -85,6 +85,7 @@ const ReferenceModule = memo(function ReferenceModule({
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
+      e.stopPropagation();
       const fileDataStr = e.dataTransfer.getData("application/json");
       if (!fileDataStr) return;
       try {
@@ -97,24 +98,40 @@ const ReferenceModule = memo(function ReferenceModule({
     [onDropFile],
   );
 
+  // Prevent click when clicking on remove button inside ReferenceImageSelector
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      // Check if the click target is inside the thumbnail selector but not on a remove button
+      const target = e.target as HTMLElement;
+      if (target.closest('[data-action="remove"]')) {
+        return;
+      }
+      onClick?.();
+    },
+    [onClick],
+  );
+
   return (
     <div
       className={`relative rounded-xl overflow-hidden border transition-all duration-300
         ${
           isActive
-            ? "border-[#FF0033]/50 bg-[#FF0033]/5"
+            ? "border-[#FF0033]/50 bg-[#FF0033]/5 shadow-[0_0_20px_rgba(255,0,51,0.15)] animate-pulse-glow"
             : "border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20"
         }`}
     >
-      <div className="group flex items-stretch h-24">
-        {/* Left: Module Content - Clickable area */}
-        <button
-          type="button"
-          className={`flex-1 p-4 cursor-pointer transition-colors duration-200 text-left ${
-            isActive ? "bg-[#FF0033]/5" : "group-hover:bg-white/5"
-          }`}
-          onClick={onClick}
-        >
+      <button
+        type="button"
+        className={`group w-full flex items-stretch h-24 cursor-pointer transition-colors duration-200 text-left ${
+          isActive ? "bg-[#FF0033]/5" : "hover:bg-white/5"
+        }`}
+        onClick={handleClick}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+        aria-label={`${config.title} module - click to activate or drag image here`}
+      >
+        {/* Left: Module Content */}
+        <div className="flex-1 p-4">
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0 mt-0.5">{config.icon}</div>
             <div className="flex-1 min-w-0">
@@ -126,30 +143,21 @@ const ReferenceModule = memo(function ReferenceModule({
               </p>
             </div>
           </div>
-        </button>
+        </div>
 
-        {/* Right: Thumbnail area - Clickable & Droppable */}
-        {/* biome-ignore lint/a11y/useSemanticElements: div with role=button is used for drag-and-drop functionality */}
-        <div
-          role="button"
-          tabIndex={0}
-          className={`w-24 h-24 cursor-pointer flex-shrink-0 transition-colors duration-200 ${
-            isActive ? "bg-[#FF0033]/5" : "group-hover:bg-white/5"
-          }`}
-          onClick={onClick}
-          onKeyUp={(e) => (e.key === "Enter" || e.key === " ") && onClick?.()}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
+        {/* Right: Thumbnail area */}
+        <div className="w-24 h-24 flex-shrink-0 pointer-events-none">
           {isActive || uploadedFiles.length > 0 ? (
-            <ReferenceImageSelector
-              files={uploadedFiles}
-              onRemove={onRemoveFile}
-              maxFiles={3}
-            />
+            <div className="pointer-events-auto w-full h-full">
+              <ReferenceImageSelector
+                files={uploadedFiles}
+                onRemove={onRemoveFile}
+                maxFiles={3}
+              />
+            </div>
           ) : null}
         </div>
-      </div>
+      </button>
     </div>
   );
 });

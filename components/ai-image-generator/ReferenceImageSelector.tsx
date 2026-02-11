@@ -12,7 +12,7 @@ const ReferenceImageSelector = memo(function ReferenceImageSelector({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const handleRemove = useCallback(
-    (e: React.MouseEvent, file: (typeof files)[0]) => {
+    (e: React.MouseEvent | React.KeyboardEvent, file: (typeof files)[0]) => {
       e.stopPropagation();
       onRemove(file);
     },
@@ -140,12 +140,20 @@ const ReferenceImageSelector = memo(function ReferenceImageSelector({
             />
 
             {/* Remove button - shows on hover */}
-            <button
-              type="button"
+            {/* biome-ignore lint/a11y/useSemanticElements: div with role=button is used for consistency with parent */}
+            <div
+              role="button"
+              tabIndex={0}
               onClick={(e) => handleRemove(e, file)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleRemove(e, file);
+                }
+              }}
               className="absolute top-1 right-1 w-4.5 h-4.5 rounded-full bg-black/75 hover:bg-red-500
                        flex items-center justify-center transition-all duration-200
-                       opacity-0 group-hover:opacity-100 shadow-md"
+                       opacity-0 group-hover:opacity-100 shadow-md cursor-pointer"
               aria-label="Remove image"
             >
               <svg
@@ -162,7 +170,7 @@ const ReferenceImageSelector = memo(function ReferenceImageSelector({
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
-            </button>
+            </div>
 
             {/* Subtle index badge */}
             <div

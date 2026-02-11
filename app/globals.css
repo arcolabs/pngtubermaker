@@ -250,6 +250,21 @@
     animation: fade-in-up 0.5s ease-out forwards;
   }
 
+  /* Glow effect for active reference modules */
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 20px rgba(255, 0, 51, 0.15);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(255, 0, 51, 0.25);
+    }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
   /* Custom scrollbar for image gallery */
   .custom-scrollbar {
     scrollbar-width: thin;

@@ -10,6 +10,7 @@ import type {
   ModuleType,
   UploadedFile,
 } from "./types";
+import YouTubeUrlInput, { type YouTubeThumbnail } from "./YouTubeUrlInput";
 
 const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
   formState,
@@ -59,7 +60,9 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
     externalOmniReferenceFile ?? internalOmniReferenceFile;
   const uploadedImages = externalUploadedImages ?? internalUploadedImages;
   const styleReferenceYoutubeUrl =
-    externalStyleReferenceYoutubeUrl ?? internalStyleReferenceYoutubeUrl;
+    externalStyleReferenceYoutubeUrl !== undefined
+      ? externalStyleReferenceYoutubeUrl
+      : internalStyleReferenceYoutubeUrl;
 
   const promptRef = useAutoResizeTextarea(formState.prompt, {
     minHeight: 48,
@@ -205,6 +208,28 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
     [onRemoveUploadedImage, internalOmniReferenceFile],
   );
 
+  // Handle YouTube thumbnail fetched from URL
+  const handleYouTubeThumbnailFetched = useCallback(
+    (thumbnail: YouTubeThumbnail) => {
+      // Convert thumbnail to UploadedFile format
+      const uploadedFile: UploadedFile = {
+        url: thumbnail.url,
+        fileKey: `youtube-${thumbnail.videoId}-${thumbnail.name}`,
+        fileName: `youtube-${thumbnail.videoId}-${thumbnail.name}.jpg`,
+      };
+
+      // Check if already exists
+      const exists = uploadedImages.some(
+        (f) => f.fileKey === uploadedFile.fileKey,
+      );
+      if (exists) return;
+
+      // Add to uploaded images
+      handleImageUploaded(uploadedFile);
+    },
+    [uploadedImages, handleImageUploaded],
+  );
+
   return (
     <div
       className="relative rounded-2xl overflow-hidden
@@ -273,36 +298,18 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
 
         {/* YouTube URL Input - Only for style-reference module, shown above upload area */}
         {activeModuleType === "style-reference" && (
-          <div className="space-y-1">
-            <label
-              htmlFor="youtube-url-input-main"
-              className="text-xs text-white/60 ml-1"
-            >
-              YouTube URL (auto-fetch thumbnail)
-            </label>
-            <div className="relative">
-              <input
-                id="youtube-url-input-main"
-                type="text"
-                inputMode="url"
-                autoComplete="off"
-                value={styleReferenceYoutubeUrl}
-                onChange={(e) => {
-                  if (onStyleReferenceYoutubeUrlChange) {
-                    onStyleReferenceYoutubeUrlChange(e.target.value);
-                  } else {
-                    setInternalStyleReferenceYoutubeUrl(e.target.value);
-                  }
-                }}
-                placeholder="Paste YouTube URL to fetch thumbnail..."
-                className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl
-                         text-white placeholder-white/40
-                         focus:outline-none focus:ring-2 focus:ring-[#FF0033]/50 focus:border-[#FF0033]/50
-                         transition-all duration-200"
-                aria-label="YouTube video URL for style reference"
-              />
-            </div>
-          </div>
+          <YouTubeUrlInput
+            value={styleReferenceYoutubeUrl}
+            onChange={(value) => {
+              if (onStyleReferenceYoutubeUrlChange) {
+                onStyleReferenceYoutubeUrlChange(value);
+              } else {
+                setInternalStyleReferenceYoutubeUrl(value);
+              }
+            }}
+            onThumbnailFetched={handleYouTubeThumbnailFetched}
+            disabled={isGenerating}
+          />
         )}
 
         {/* Upload Area - Only show when a module is active */}
@@ -357,26 +364,16 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
             type="button"
             onClick={handleSubmit}
             disabled={!formState.prompt.trim() || isGenerating}
-            className="group relative inline-flex flex-shrink-0 items-center gap-3
+            className={`group relative inline-flex flex-shrink-0 items-center gap-3
                      rounded-xl px-8 py-4
-                     bg-gradient-to-r from-[#FF0033] via-[#FF2244] to-[#FF3355]
-                     border border-white/20
-                     shadow-lg shadow-[#FF0033]/20
-                     transition-all duration-300 ease-out
-                     hover:scale-[1.02] hover:shadow-xl hover:shadow-[#FF0033]/30
-                     hover:border-white/30
-                     active:scale-[0.98]
-                     disabled:bg-white/10 disabled:text-white/40 disabled:cursor-not-allowed
-                     disabled:hover:scale-100 disabled:shadow-none
-                     overflow-hidden whitespace-nowrap"
+                     border transition-all duration-300 ease-out
+                     whitespace-nowrap
+                     ${
+                       !formState.prompt.trim() && !isGenerating
+                         ? "bg-white/5 border-white/10 cursor-not-allowed opacity-60"
+                         : "bg-gradient-to-r from-[#FF0033] via-[#FF2244] to-[#FF3355] border-white/20 shadow-lg shadow-[#FF0033]/20 hover:scale-[1.02] hover:shadow-xl hover:shadow-[#FF0033]/30 hover:border-white/30 active:scale-[0.98]"
+                     }`}
           >
-            {/* Animated shine */}
-            <div
-              className="absolute inset-0 -translate-x-full group-hover:translate-x-full
-                        bg-gradient-to-r from-transparent via-white/20 to-transparent
-                        transition-transform duration-1000 ease-in-out"
-            />
-
             {isGenerating ? (
               <>
                 <svg
@@ -401,6 +398,26 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
                   />
                 </svg>
                 <span className="relative font-semibold">Generating...</span>
+              </>
+            ) : !formState.prompt.trim() ? (
+              <>
+                <svg
+                  className="w-5 h-5 text-white/50 relative"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
+                </svg>
+                <span className="relative font-bold tracking-wide text-white/70">
+                  Enter prompt first
+                </span>
               </>
             ) : (
               <>
