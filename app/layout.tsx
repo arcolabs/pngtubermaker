@@ -1,4 +1,5 @@
 import { GeistMono } from "geist/font/mono";
+import { GeistPixelGrid } from "geist/font/pixel";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import "./globals.css";
@@ -106,7 +107,7 @@ export default function RootLayout({
         <WebsiteStructuredData />
       </head>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased flex flex-col min-h-screen`}
+        className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelGrid.variable} font-sans antialiased flex flex-col min-h-screen`}
       >
         {children}
       </body>
