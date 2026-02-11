@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AIImageGenerator } from "@/components/ai-image-generator";
 import CTA from "@/components/sections/CTA";
 import FAQ from "@/components/sections/FAQ";
 import Features from "@/components/sections/Features";
@@ -47,6 +48,16 @@ export default function Home() {
       <SoftwareStructuredData />
       <Hero />
       <Showcase videoSrc="/videos/Thumbfree.mp4" />
+
+      {/* AI Image Generator Section */}
+      <section
+        id="image-generator"
+        className="pt-4 sm:pt-6 pb-16 sm:pb-20 scroll-mt-16"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AIImageGenerator />
+        </div>
+      </section>
       <Features />
       <TargetAudience />
       {/* Placeholder for future sections */}

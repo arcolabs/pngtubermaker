@@ -1,21 +1,11 @@
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import {
   OrganizationStructuredData,
   WebsiteStructuredData,
 } from "@/components/seo/StructuredData";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thumb-free.com";
 
@@ -116,7 +106,7 @@ export default function RootLayout({
         <WebsiteStructuredData />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+        className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased flex flex-col min-h-screen`}
       >
         {children}
       </body>

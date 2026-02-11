@@ -71,8 +71,11 @@ export async function deleteObject(key: string): Promise<void> {
  */
 export function getPublicUrl(key: string): string {
   if (R2_PUBLIC_URL) {
-    // 使用自定义域名
-    return `${R2_PUBLIC_URL}/${key}`;
+    // 确保自定义域名有协议前缀
+    const publicUrl = R2_PUBLIC_URL.startsWith("http")
+      ? R2_PUBLIC_URL
+      : `https://${R2_PUBLIC_URL}`;
+    return `${publicUrl}/${key}`;
   }
   // 使用 R2.dev 子域名
   return `${R2_ENDPOINT}/${bucketName}/${key}`;

@@ -116,7 +116,7 @@ const ThumbnailRow = memo(function ThumbnailRow({
     direction === "left" ? "animate-scroll-left" : "animate-scroll-right";
 
   return (
-    <div className="flex mb-4 whitespace-nowrap overflow-hidden">
+    <div className="flex mb-2 whitespace-nowrap overflow-hidden">
       <div
         className={`flex gap-4 flex-shrink-0 ${animationClass}`}
         style={{ willChange: "transform" }}
@@ -239,15 +239,15 @@ export default function Showcase({
       />
 
       {/* Thumbnail rows - positioned as background */}
-      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 py-4">
-        <div className="space-y-4 opacity-60">
+      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 py-0">
+        <div className="space-y-2 opacity-60">
           <ThumbnailRow items={thumbnailsRow1} direction="left" rowId="row1" />
           <ThumbnailRow items={thumbnailsRow2} direction="right" rowId="row2" />
         </div>
       </div>
 
       {/* Main content container */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-3 pb-8 sm:pb-10 lg:pb-12">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-4 sm:pb-5">
         {/* Video showcase */}
         <div className="max-w-4xl mx-auto">
           <div
@@ -261,7 +261,7 @@ export default function Showcase({
         </div>
 
         {/* Benefits section */}
-        <div className="mt-4 sm:mt-5">
+        <div className="mt-2 sm:mt-3">
           <ul
             className="flex flex-wrap items-center justify-center gap-3 sm:gap-4"
             aria-label="Product benefits"
