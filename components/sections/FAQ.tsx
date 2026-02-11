@@ -18,6 +18,12 @@ interface FAQProps {
 
 const defaultFaqData: FAQItem[] = [
   {
+    id: "free-no-signup",
+    question: "Is Thumb-Free free? Do I need to sign up?",
+    answer:
+      "Yes — Thumb-Free is 100% free with unlimited thumbnail generations.\n\nNo sign-up required. No credit card. No login. Just paste your prompt, add your reference, and generate. You can start creating thumbnails immediately.",
+  },
+  {
     id: "what-is-thumb-free",
     question: "What is Thumb-Free?",
     answer:
@@ -52,7 +58,7 @@ const defaultFaqData: FAQItem[] = [
     id: "pricing",
     question: "What are the pricing options?",
     answer:
-      "Thumb-Free offers flexible pricing plans to suit creators of all sizes. Check our pricing page for the latest plans and features.",
+      "Thumb-Free is 100% free — unlimited thumbnail generations, no hidden fees, no credits system. No pricing page. No checkout. Just create.",
   },
 ];
 

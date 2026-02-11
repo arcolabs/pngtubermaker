@@ -1,8 +1,9 @@
 "use client";
 
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { SIZE_PRESETS } from "./constants";
 import { useAutoResizeTextarea } from "./hooks/useAutoResizeTextarea";
+import { useAIGeneratorPersistentState } from "./hooks/usePersistentState";
 import ReferenceModule from "./ReferenceModule";
 import ReferenceUploadArea from "./ReferenceUploadArea";
 import type {
@@ -33,6 +34,17 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
   styleReferenceYoutubeUrl: externalStyleReferenceYoutubeUrl = "",
   onStyleReferenceYoutubeUrlChange,
 }: AIImageGeneratorFormProps) {
+  // Check if using external (controlled) mode or internal (persistent) mode
+  const isControlled =
+    externalActiveModuleType !== undefined ||
+    externalImagePromptFiles !== undefined ||
+    externalStyleReferenceFiles !== undefined ||
+    externalOmniReferenceFile !== undefined ||
+    externalUploadedImages !== undefined;
+
+  // Use persistent state only in uncontrolled mode
+  const persistentState = useAIGeneratorPersistentState();
+
   // Internal state for reference modules (if not provided externally)
   const [internalActiveModuleType, setInternalActiveModuleType] =
     useState<ModuleType | null>(null);
@@ -51,18 +63,43 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
     setInternalStyleReferenceYoutubeUrl,
   ] = useState("");
 
+  const hasSyncedRef = useRef(false);
+
+  // Sync persistent state to internal state on mount (for uncontrolled mode) - only once
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We use hasSyncedRef to ensure this only runs once on mount
+  useEffect(() => {
+    // Skip if already synced, in controlled mode, or still loading
+    if (hasSyncedRef.current || isControlled || persistentState.isLoading)
+      return;
+
+    hasSyncedRef.current = true;
+    setInternalActiveModuleType(persistentState.activeModuleType);
+    setInternalImagePromptFiles(persistentState.imagePromptFiles);
+    setInternalStyleReferenceFiles(persistentState.styleReferenceFiles);
+    setInternalOmniReferenceFile(persistentState.omniReferenceFile);
+    setInternalUploadedImages(persistentState.uploadedImages);
+    setInternalStyleReferenceYoutubeUrl(persistentState.youtubeUrl);
+  }, [isControlled, persistentState.isLoading]);
+
   // Use external or internal state
-  const activeModuleType = externalActiveModuleType ?? internalActiveModuleType;
-  const imagePromptFiles = externalImagePromptFiles ?? internalImagePromptFiles;
-  const styleReferenceFiles =
-    externalStyleReferenceFiles ?? internalStyleReferenceFiles;
-  const omniReferenceFile =
-    externalOmniReferenceFile ?? internalOmniReferenceFile;
-  const uploadedImages = externalUploadedImages ?? internalUploadedImages;
-  const styleReferenceYoutubeUrl =
-    externalStyleReferenceYoutubeUrl !== undefined
-      ? externalStyleReferenceYoutubeUrl
-      : internalStyleReferenceYoutubeUrl;
+  const activeModuleType = isControlled
+    ? (externalActiveModuleType ?? null)
+    : internalActiveModuleType;
+  const imagePromptFiles = isControlled
+    ? (externalImagePromptFiles ?? [])
+    : internalImagePromptFiles;
+  const styleReferenceFiles = isControlled
+    ? (externalStyleReferenceFiles ?? [])
+    : internalStyleReferenceFiles;
+  const omniReferenceFile = isControlled
+    ? externalOmniReferenceFile
+    : internalOmniReferenceFile;
+  const uploadedImages = isControlled
+    ? (externalUploadedImages ?? [])
+    : internalUploadedImages;
+  const styleReferenceYoutubeUrl = isControlled
+    ? externalStyleReferenceYoutubeUrl
+    : internalStyleReferenceYoutubeUrl;
 
   const promptRef = useAutoResizeTextarea(formState.prompt, {
     minHeight: 48,
@@ -92,9 +129,11 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
         externalOnModuleTypeChange(newType);
       } else {
         setInternalActiveModuleType(newType);
+        // Persist to IndexedDB
+        persistentState.setActiveModuleType(newType);
       }
     },
-    [activeModuleType, externalOnModuleTypeChange],
+    [activeModuleType, externalOnModuleTypeChange, persistentState],
   );
 
   // Remove file handlers
@@ -103,12 +142,14 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
       if (onRemoveImagePrompt) {
         onRemoveImagePrompt(file);
       } else {
-        setInternalImagePromptFiles((prev) =>
-          prev.filter((f) => f.fileKey !== file.fileKey),
-        );
+        setInternalImagePromptFiles((prev) => {
+          const newFiles = prev.filter((f) => f.fileKey !== file.fileKey);
+          persistentState.setImagePromptFiles(newFiles);
+          return newFiles;
+        });
       }
     },
-    [onRemoveImagePrompt],
+    [onRemoveImagePrompt, persistentState],
   );
 
   const handleRemoveStyleReference = useCallback(
@@ -116,12 +157,14 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
       if (onRemoveStyleReference) {
         onRemoveStyleReference(file);
       } else {
-        setInternalStyleReferenceFiles((prev) =>
-          prev.filter((f) => f.fileKey !== file.fileKey),
-        );
+        setInternalStyleReferenceFiles((prev) => {
+          const newFiles = prev.filter((f) => f.fileKey !== file.fileKey);
+          persistentState.setStyleReferenceFiles(newFiles);
+          return newFiles;
+        });
       }
     },
-    [onRemoveStyleReference],
+    [onRemoveStyleReference, persistentState],
   );
 
   const handleRemoveOmniReference = useCallback(
@@ -130,9 +173,10 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
         onRemoveOmniReference(file);
       } else {
         setInternalOmniReferenceFile(null);
+        persistentState.setOmniReferenceFile(null);
       }
     },
-    [onRemoveOmniReference],
+    [onRemoveOmniReference, persistentState],
   );
 
   // Drop to module handler
@@ -146,7 +190,11 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
             if (
               !internalImagePromptFiles.find((f) => f.fileKey === file.fileKey)
             ) {
-              setInternalImagePromptFiles((prev) => [...prev, file]);
+              setInternalImagePromptFiles((prev) => {
+                const newFiles = [...prev, file];
+                persistentState.setImagePromptFiles(newFiles);
+                return newFiles;
+              });
             }
             break;
           case "style-reference":
@@ -155,16 +203,26 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
                 (f) => f.fileKey === file.fileKey,
               )
             ) {
-              setInternalStyleReferenceFiles((prev) => [...prev, file]);
+              setInternalStyleReferenceFiles((prev) => {
+                const newFiles = [...prev, file];
+                persistentState.setStyleReferenceFiles(newFiles);
+                return newFiles;
+              });
             }
             break;
           case "omni-reference":
             setInternalOmniReferenceFile(file);
+            persistentState.setOmniReferenceFile(file);
             break;
         }
       }
     },
-    [onDropToModule, internalImagePromptFiles, internalStyleReferenceFiles],
+    [
+      onDropToModule,
+      internalImagePromptFiles,
+      internalStyleReferenceFiles,
+      persistentState,
+    ],
   );
 
   // Image uploaded handler
@@ -173,7 +231,11 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
       if (onImageUploaded) {
         onImageUploaded(file);
       } else {
-        setInternalUploadedImages((prev) => [...prev, file]);
+        setInternalUploadedImages((prev) => {
+          const newFiles = [...prev, file];
+          persistentState.setUploadedImages(newFiles);
+          return newFiles;
+        });
 
         // Auto-add to active module
         if (activeModuleType) {
@@ -181,7 +243,7 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
         }
       }
     },
-    [onImageUploaded, activeModuleType, handleDropToModule],
+    [onImageUploaded, activeModuleType, handleDropToModule, persistentState],
   );
 
   // Remove uploaded image handler
@@ -190,22 +252,29 @@ const AIImageGeneratorForm = memo(function AIImageGeneratorForm({
       if (onRemoveUploadedImage) {
         onRemoveUploadedImage(fileKey);
       } else {
-        setInternalUploadedImages((prev) =>
-          prev.filter((f) => f.fileKey !== fileKey),
-        );
+        setInternalUploadedImages((prev) => {
+          const newFiles = prev.filter((f) => f.fileKey !== fileKey);
+          persistentState.setUploadedImages(newFiles);
+          return newFiles;
+        });
         // Also remove from modules
-        setInternalImagePromptFiles((prev) =>
-          prev.filter((f) => f.fileKey !== fileKey),
-        );
-        setInternalStyleReferenceFiles((prev) =>
-          prev.filter((f) => f.fileKey !== fileKey),
-        );
+        setInternalImagePromptFiles((prev) => {
+          const newFiles = prev.filter((f) => f.fileKey !== fileKey);
+          persistentState.setImagePromptFiles(newFiles);
+          return newFiles;
+        });
+        setInternalStyleReferenceFiles((prev) => {
+          const newFiles = prev.filter((f) => f.fileKey !== fileKey);
+          persistentState.setStyleReferenceFiles(newFiles);
+          return newFiles;
+        });
         if (internalOmniReferenceFile?.fileKey === fileKey) {
           setInternalOmniReferenceFile(null);
+          persistentState.setOmniReferenceFile(null);
         }
       }
     },
-    [onRemoveUploadedImage, internalOmniReferenceFile],
+    [onRemoveUploadedImage, internalOmniReferenceFile, persistentState],
   );
 
   // Handle YouTube thumbnail fetched from URL
