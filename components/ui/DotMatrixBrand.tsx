@@ -1,8 +1,14 @@
+import { brand } from "@/lib/brand";
+
 export default function DotMatrixBrand() {
+  if (!brand.ascii.enabled) {
+    return null;
+  }
+
   return (
     <div className="w-full overflow-hidden" aria-hidden="true">
       <div
-        className="w-full text-center font-black text-white/15 select-none whitespace-nowrap uppercase pointer-events-none"
+        className="w-full text-center font-black text-base-content/15 select-none whitespace-nowrap uppercase pointer-events-none"
         style={{
           fontFamily: "var(--font-geist-sans), sans-serif",
           fontSize: "clamp(100px, 16vw, 320px)",
@@ -18,7 +24,7 @@ export default function DotMatrixBrand() {
           WebkitMaskComposite: "source-in",
         }}
       >
-        THUMB-FREE
+        {brand.ascii.text}
       </div>
     </div>
   );

@@ -1,65 +1,62 @@
 "use client";
 
-import Image from "next/image";
+import { Cloud, Code, Database, Palette, Shield, Zap } from "lucide-react";
 import { memo } from "react";
 
-// ============================================================
-// Types
-// ============================================================
 interface FeatureCard {
   id: string;
   title: string;
   description: string;
-  image: string;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
-// ============================================================
-// Data
-// ============================================================
 const PRIMARY_FEATURES: FeatureCard[] = [
   {
-    id: "instant-generation",
-    title: "100% Free. Unlimited Forever.",
+    id: "modern-stack",
+    title: "Modern Tech Stack",
     description:
-      "No hidden fees. No credits. No limits. Generate as many stunning thumbnails as you need, completely free.",
-    image: "/images/features/01.JPG",
+      "Built with Next.js 16, React 19, and Tailwind CSS v4. Stay up to date with the latest web technologies.",
+    icon: Zap,
   },
   {
-    id: "viral-templates",
-    title: "Title + Photo = Pro Thumbnail",
+    id: "auth-ready",
+    title: "Authentication Ready",
     description:
-      "Just enter your video title and upload your photo. Our AI creates scroll-stopping thumbnails in seconds.",
-    image: "/images/features/02.JPG",
+      "Complete authentication system with better-auth. Email/password and OAuth providers included.",
+    icon: Shield,
   },
 ];
 
 const SECONDARY_FEATURES: FeatureCard[] = [
   {
-    id: "face-detection",
-    title: "AI-powered face enhancement",
+    id: "database",
+    title: "Database Integration",
     description:
-      "Smart detection captures your best expressions and creates professional-looking results automatically.",
-    image: "/images/features/03.JPG",
+      "Neon PostgreSQL with Drizzle ORM. Type-safe queries and serverless scaling.",
+    icon: Database,
   },
   {
-    id: "ab-testing",
-    title: "Multiple variations, zero wait",
+    id: "storage",
+    title: "Cloud Storage",
     description:
-      "Generate endless variations instantly to A/B test and find the thumbnail that drives maximum clicks.",
-    image: "/images/features/04.JPG",
+      "R2-compatible object storage for media files with presigned URLs.",
+    icon: Cloud,
   },
   {
-    id: "4k-exports",
-    title: "Ready for YouTube & Shorts",
+    id: "typesafe",
+    title: "Type Safe",
     description:
-      "Download high-resolution thumbnails optimized perfectly for YouTube, TikTok, and all major platforms.",
-    image: "/images/features/05.JPG",
+      "Full TypeScript support. Type-safe database queries and API routes.",
+    icon: Code,
+  },
+  {
+    id: "styling",
+    title: "Modern Styling",
+    description:
+      "Tailwind CSS v4 with daisyUI. Dark mode ready design system.",
+    icon: Palette,
   },
 ];
-
-// ============================================================
-// Sub-components
-// ============================================================
 
 const FeatureCardComponent = memo(function FeatureCardComponent({
   feature,
@@ -71,99 +68,60 @@ const FeatureCardComponent = memo(function FeatureCardComponent({
   index: number;
 }) {
   const isCompact = variant === "compact";
+  const Icon = feature.icon;
 
   return (
-    <div
-      className="group relative rounded-2xl overflow-hidden
-                 border border-white/10 
-                 shadow-[inset_0_0_16px_rgba(240,247,245,0.1)]
-                 hover:shadow-[inset_0_0_16px_rgba(240,247,245,0.2)]
-                 hover:border-white/20
-                 hover:bg-white/10
-                 transition-all duration-300 ease-in-out"
-    >
-      {/* Gradient border effect */}
-      <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-white/20 via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+    <div className="card border border-base-content/10 hover:border-primary/40 transition-colors">
+      <div className="card-body">
+        <div className="flex justify-between items-start">
+          <div
+            className={`badge badge-primary badge-outline ${
+              isCompact ? "badge-sm" : ""
+            }`}
+          >
+            {String(index + 1).padStart(2, "0")}
+          </div>
+        </div>
 
-      {/* Number badge */}
-      <div className="absolute top-4 right-4 z-10 text-xs font-mono text-white/20 group-hover:text-primary/40 transition-colors duration-300">
-        {String(index + 1).padStart(2, "0")}
-      </div>
-
-      {/* Image Container */}
-      <div
-        className={`relative overflow-hidden ${
-          isCompact ? "aspect-[4/3]" : "aspect-video"
-        }`}
-      >
-        <Image
-          src={feature.image}
-          alt={feature.title}
-          fill
-          sizes={
-            isCompact
-              ? "(max-width: 768px) 100vw, 33vw"
-              : "(max-width: 768px) 100vw, 50vw"
-          }
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
-          loading="lazy"
-        />
-        {/* Gradient Overlay */}
         <div
-          className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/20 to-transparent"
-          aria-hidden="true"
-        />
-      </div>
+          className={`mt-2 ${
+            isCompact ? "w-10 h-10" : "w-12 h-12"
+          } rounded-lg bg-primary/10 flex items-center justify-center`}
+        >
+          <Icon
+            className={`${isCompact ? "w-5 h-5" : "w-6 h-6"} text-primary`}
+          />
+        </div>
 
-      {/* Content */}
-      <div className="relative p-4 sm:p-6 lg:p-8">
         <h3
-          className={`font-semibold text-white mb-2 sm:mb-3 group-hover:text-primary/90 transition-colors duration-300 ${
-            isCompact
-              ? "text-base sm:text-lg lg:text-xl"
-              : "text-lg sm:text-xl lg:text-2xl"
+          className={`card-title text-base-content ${
+            isCompact ? "text-lg" : "text-xl"
           }`}
         >
           {feature.title}
         </h3>
-        <p className="text-white/60 text-sm leading-relaxed">
-          {feature.description}
-        </p>
+        <p className="text-base-content/60 text-sm">{feature.description}</p>
       </div>
     </div>
   );
 });
 
-// ============================================================
-// Main Component
-// ============================================================
 export default function Features() {
   return (
-    <section
-      id="features"
-      className="relative py-20 sm:py-28 lg:py-32 overflow-hidden"
-    >
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-          <h2
-            className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-center leading-[1.1] mb-6 bg-clip-text text-transparent"
-            style={{
-              backgroundImage:
-                "radial-gradient(at 50% 0%, rgb(255, 0, 0) 5%, rgb(240, 247, 245) 50%)",
-            }}
-          >
-            Why creators choose Thumb-Free
+    <section id="features" className="py-20">
+      <div className="container mx-auto px-4">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="text-4xl font-bold text-base-content mb-6">
+            Everything You Need
           </h2>
 
-          <p className="text-lg sm:text-xl text-[#FFFFFF80] max-w-2xl mx-auto">
-            The world's first completely free, unlimited AI thumbnail generator.
-            No tricks. No limits. Just results.
+          <p className="text-lg text-base-content/60 max-w-2xl mx-auto">
+            A complete starter template with production-ready features. Focus on
+            building your product, not the infrastructure.
           </p>
         </div>
 
-        {/* Primary Features Grid - 2 columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {PRIMARY_FEATURES.map((feature, index) => (
             <FeatureCardComponent
               key={feature.id}
@@ -174,8 +132,7 @@ export default function Features() {
           ))}
         </div>
 
-        {/* Secondary Features Grid - 3 columns */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {SECONDARY_FEATURES.map((feature, index) => (
             <FeatureCardComponent
               key={feature.id}

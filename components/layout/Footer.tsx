@@ -2,158 +2,91 @@
 
 import Image from "next/image";
 import Link from "next/link";
-
-function scrollToSection(sectionId: string) {
-  const element = document.getElementById(sectionId);
-  if (element) {
-    element.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-}
+import { brand } from "@/lib/brand";
 
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="w-full pt-16 pb-8 px-4 sm:px-6 lg:px-8">
-      {/* Card container with rounded corners */}
-      <div className="max-w-screen-xl mx-auto bg-[#1A1A1A] rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-6">
-          {/* Brand Column - full width on mobile, spans 2 cols on sm */}
-          <div className="space-y-4 sm:col-span-2 md:col-span-1">
-            <Link
-              href="/"
-              className="flex items-center gap-2.5 group select-none"
-            >
+    <footer className="bg-base-100 text-base-content">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+          <div className="col-span-2 md:col-span-1">
+            <Link href="/" className="flex items-center gap-2.5 group">
               <Image
-                src="/logo.svg"
-                alt="Thumb-Free Logo"
+                src={brand.logo.svgPath}
+                alt={brand.logo.alt}
                 width={40}
                 height={40}
-                className="h-10 w-10 transition-transform duration-200 group-hover:scale-105 pointer-events-none select-none"
+                className="h-10 w-10"
                 priority
                 draggable={false}
               />
-              <h3 className="text-white font-semibold text-xl tracking-tight group-hover:text-white/90 transition-colors duration-200">
-                Thumb-Free
-              </h3>
+              <span className="font-semibold text-xl">{brand.name}</span>
             </Link>
-            <p className="text-sm text-muted-foreground">
-              Thumb-Free AI Thumbnail Generator: The World&apos;s First{" "}
-              <span className="text-white font-medium">Free</span>, Unlimited AI
-              Engine Built for Grow Your Channel.
+            <p className="text-sm text-base-content/50 mt-3 max-w-xs">
+              {brand.description}
             </p>
           </div>
 
-          {/* Product Links - merged with Tools on mobile */}
-          <div className="sm:col-span-1">
-            <h4 className="mb-4 text-white font-normal text-lg sm:text-[20px] leading-[26px] tracking-[-0.8px]">
-              Product
-            </h4>
-            <ul className="space-y-2.5 sm:space-y-2 text-sm">
-              <li>
-                <Link
-                  href="/#features"
-                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
-                >
-                  Features
-                </Link>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => scrollToSection("how-it-works")}
-                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200 bg-transparent border-0 p-0 text-left"
-                >
-                  How It Works
-                </button>
-              </li>
-              <li>
-                <Link
-                  href="/#faq"
-                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
-                >
-                  FAQ
-                </Link>
-              </li>
-            </ul>
+          <nav className="flex flex-col gap-2">
+            <h6 className="footer-title">Product</h6>
+            <Link href="/dashboard" className="link link-hover text-sm">
+              Dashboard
+            </Link>
+          </nav>
 
-            {/* Tools section - inline on mobile, separate on md+ */}
-            <div className="mt-6 sm:mt-6 md:hidden">
-              <h4 className="mb-3 text-white font-normal text-lg leading-[26px] tracking-[-0.8px]">
-                Tools
-              </h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link
-                    href="/youtube-thumbnail-grabber"
-                    className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
-                  >
-                    YouTube Thumbnail Grabber
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Legal Links */}
-          <div>
-            <h4 className="mb-4 text-white font-normal text-lg sm:text-[20px] leading-[26px] tracking-[-0.8px]">
-              Legal
-            </h4>
-            <ul className="space-y-2.5 sm:space-y-2 text-sm">
-              <li>
-                <Link
-                  href="/legal/terms"
-                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
-                >
-                  Terms
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/legal/privacy"
-                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
-                >
-                  Privacy
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Tools Links - hidden on mobile/sm, shown on md+ */}
-          <div className="hidden md:block">
-            <h4 className="mb-4 text-white font-normal text-[20px] leading-[26px] tracking-[-0.8px]">
-              Tools
-            </h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link
-                  href="/youtube-thumbnail-grabber"
-                  className="text-muted-foreground hover:text-[#FF5555] transition-colors duration-200"
-                >
-                  YouTube Thumbnail Grabber
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-border/50 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} Thumb-Free. All rights reserved.</p>
-          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+          <nav className="flex flex-col gap-2">
+            <h6 className="footer-title">Resources</h6>
             <Link
-              href="/legal/terms"
-              className="hover:text-[#FF5555] transition-colors duration-200"
+              href="https://nextjs.org/docs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link link-hover text-sm"
             >
+              Documentation
+            </Link>
+            <Link
+              href={brand.social.github || "https://github.com"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link link-hover text-sm"
+            >
+              GitHub
+            </Link>
+            {brand.social.discord && (
+              <Link
+                href={brand.social.discord}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link link-hover text-sm"
+              >
+                Discord
+              </Link>
+            )}
+          </nav>
+
+          <nav className="flex flex-col gap-2">
+            <h6 className="footer-title">Legal</h6>
+            <Link href="/legal/terms" className="link link-hover text-sm">
               Terms of Service
             </Link>
-            <span className="hidden sm:inline">•</span>
-            <Link
-              href="/legal/privacy"
-              className="hover:text-[#FF5555] transition-colors duration-200"
-            >
+            <Link href="/legal/privacy" className="link link-hover text-sm">
               Privacy Policy
             </Link>
-          </div>
+          </nav>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 mt-16">
+          <p className="text-sm text-base-content/40">
+            © {currentYear} {brand.name}. All rights reserved.
+          </p>
+          <a
+            href={`mailto:${brand.contact.email}`}
+            className="link link-hover text-sm text-base-content/40"
+          >
+            {brand.contact.email}
+          </a>
         </div>
       </div>
     </footer>

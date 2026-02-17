@@ -1,32 +1,19 @@
 import { GeistMono } from "geist/font/mono";
-import { GeistPixelGrid } from "geist/font/pixel";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import "./globals.css";
-import {
-  OrganizationStructuredData,
-  WebsiteStructuredData,
-} from "@/components/seo/StructuredData";
-
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thumb-free.com";
+import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: {
-    default: "Thumb-Free - Free AI YouTube Thumbnail Generator",
-    template: "%s | Thumb-Free",
+    default: brand.name,
+    template: `%s | ${brand.name}`,
   },
-  description:
-    "Create professional YouTube thumbnails in seconds with AI. 100% free, unlimited thumbnail generation. No credit card required.",
-  keywords: [
-    "YouTube thumbnail generator",
-    "AI thumbnail maker",
-    "free thumbnail creator",
-    "YouTube thumbnail downloader",
-    "AI YouTube thumbnails",
-  ],
-  authors: [{ name: "Thumb-Free" }],
-  creator: "Thumb-Free",
-  publisher: "Thumb-Free",
+  description: brand.description,
+  keywords: ["Next.js", "React", "Tailwind CSS", "template", "starter"],
+  authors: [{ name: brand.name }],
+  creator: brand.name,
+  publisher: brand.name,
   robots: {
     index: true,
     follow: true,
@@ -39,7 +26,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: baseUrl,
+    canonical: brand.contact.website,
   },
   icons: {
     icon: [
@@ -59,37 +46,29 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Thumb-Free",
+    title: brand.name,
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: baseUrl,
-    siteName: "Thumb-Free",
-    title: "Thumb-Free - Free AI YouTube Thumbnail Generator",
-    description:
-      "Create professional YouTube thumbnails in seconds with AI. 100% free, unlimited thumbnail generation.",
+    url: brand.contact.website,
+    siteName: brand.name,
+    title: brand.name,
+    description: brand.description,
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Thumb-Free AI Thumbnail Generator - Create professional YouTube thumbnails",
+        alt: brand.name,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Thumb-Free - Free AI YouTube Thumbnail Generator",
-    description:
-      "Create professional YouTube thumbnails in seconds with AI. 100% free, unlimited.",
+    title: brand.name,
+    description: brand.description,
     images: ["/og-image.jpg"],
-    creator: "@thumbfree",
-  },
-  verification: {
-    // Add verification tokens when you have them:
-    // google: "your-google-verification-code",
-    // bing: "your-bing-verification-code",
   },
   category: "technology",
   classification: "Software",
@@ -101,13 +80,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <head>
-        <OrganizationStructuredData />
-        <WebsiteStructuredData />
-      </head>
+    <html lang="en" data-theme="black">
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelGrid.variable} font-sans antialiased flex flex-col min-h-screen`}
+        className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased flex flex-col min-h-screen`}
       >
         {children}
       </body>

@@ -22,8 +22,10 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-white/60">
+          <h1 className="text-3xl font-bold text-base-content mb-2">
+            Welcome Back
+          </h1>
+          <p className="text-base-content/60">
             Sign in to start creating amazing thumbnails
           </p>
         </div>
@@ -32,12 +34,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={signInWithGoogle}
-            className="w-full group relative inline-flex items-center justify-center gap-3 rounded-xl 
-                       bg-white px-6 py-4
-                       transition-all duration-300 ease-out
-                       hover:scale-[1.02] hover:shadow-lg
-                       active:scale-[0.98] active:duration-100
-                       border border-white/20"
+            className="btn btn-block bg-white text-neutral-900 border-base-content/20 hover:bg-white/90 gap-3 h-14"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <title>Google</title>
@@ -58,45 +55,33 @@ export default function LoginPage() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            <span className="font-semibold text-gray-900">
-              Continue with Google
-            </span>
+            Continue with Google
           </button>
 
           <button
             type="button"
             onClick={signInWithGithub}
-            className="w-full group relative inline-flex items-center justify-center gap-3 rounded-xl 
-                       bg-[#24292e] px-6 py-4
-                       transition-all duration-300 ease-out
-                       hover:scale-[1.02] hover:shadow-lg
-                       active:scale-[0.98] active:duration-100
-                       border border-white/20"
+            className="btn btn-block btn-neutral gap-3 h-14"
           >
             <svg
-              className="w-5 h-5 text-white"
+              className="w-5 h-5"
               fill="currentColor"
               viewBox="0 0 24 24"
             >
               <title>GitHub</title>
               <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
             </svg>
-            <span className="font-semibold text-white">
-              Continue with GitHub
-            </span>
+            Continue with GitHub
           </button>
         </div>
 
-        <p className="text-center text-white/40 text-sm">
+        <p className="text-center text-base-content/40 text-sm">
           By signing in, you agree to our{" "}
-          <Link href="/legal/terms" className="text-[#FF5555] hover:underline">
+          <Link href="/legal/terms" className="link link-primary">
             Terms of Service
           </Link>{" "}
           and{" "}
-          <Link
-            href="/legal/privacy"
-            className="text-[#FF5555] hover:underline"
-          >
+          <Link href="/legal/privacy" className="link link-primary">
             Privacy Policy
           </Link>
         </p>
