@@ -1,186 +1,232 @@
-# Next.js Template
+# Next.js Template - Agent Handoff Guide
 
-A production-ready starter template built with Next.js 16, React 19, and Tailwind CSS v4.
+Production-ready Next.js 16 starter with React 19, Tailwind v4, Drizzle ORM, better-auth, and R2.
 
-## Tech Stack
+**TL;DR**: Clone → `bun install` → `cp .env.example .env` → `bun run scripts/init-db.ts` → `bun run dev`
 
-| Category | Technology |
-|----------|------------|
+---
+
+## Stack
+
+| Layer | Tech |
+|-------|------|
 | Framework | Next.js 16.1.3 (App Router) |
-| React | 19.2.3 |
-| Styling | Tailwind CSS v4 |
-| Database | Neon (PostgreSQL) + Drizzle ORM |
-| Auth | better-auth |
-| Storage | Cloudflare R2 (S3-compatible) |
-| State | Zustand |
+| UI | React 19.2.3, Tailwind v4, Geist font |
+| DB | Neon PostgreSQL + Drizzle ORM |
+| Auth | better-auth (email + OAuth) |
+| Storage | Cloudflare R2 |
 | Forms | react-hook-form + zod |
+| State | Zustand |
 | Icons | lucide-react |
-| Fonts | Geist |
-| Linting | Biome |
+| Lint | Biome |
 
-## Getting Started
+---
 
-### 1. Install dependencies
+## Workflow (Agent Protocol)
 
-```bash
-bun install
-```
+**Role**: Technical Co-Founder. Build real, launchable products—not prototypes.
 
-### 2. Configure environment variables
+### 1. Discovery
+- Ask clarifying questions about the actual problem, not the stated solution
+- Challenge assumptions that add complexity without value
+- Separate "must-have v1" from "nice-to-have later"
+- Flag scope creep early—suggest smaller starting points
 
-Copy `.env.example` to `.env` and fill in your values:
+### 2. Planning
+- Define v1 scope in plain terms
+- List technical decisions and external dependencies (APIs, auth providers, etc.)
+- Estimate: simple (days) / medium (week) / ambitious (weeks)
+- Show a rough outline/screenshot of the finished v1
 
-```bash
-cp .env.example .env
-```
+### 3. Building
+- Build in visible stages; stop at decision points
+- Explain trade-offs when options exist—don't just pick
+- Test before moving on
+- Commit incrementally with clear messages
 
-Required variables:
-- `DATABASE_URL` - Neon PostgreSQL connection string
-- `BETTER_AUTH_SECRET` - Secret key for authentication
-- `R2_*` - Cloudflare R2 storage credentials (optional)
+### 4. Polish
+- Real UI, not hackathon-grade
+- Handle errors gracefully (loading, empty, error states)
+- Responsive if relevant
+- Fast (>90 Lighthouse)
 
-### 3. Initialize database
+### 5. Handoff
+- Deploy if requested
+- Document: how to run, maintain, and extend
+- Suggest v2 features
 
-Run the database migrations/schema:
-
-```bash
-bun run scripts/init-db.ts
-```
-
-### 4. Start development server
-
-```bash
-bun run dev
-```
-
-Visit http://localhost:3000
+---
 
 ## Project Structure
 
 ```
-├── app/                    # Next.js App Router
-│   ├── layout.tsx          # Root layout
-│   ├── page.tsx            # Home page
-│   ├── not-found.tsx       # 404 page
-│   ├── api/                # API routes
-│   └── login/              # Authentication pages
-├── components/
-│   ├── layout/              # Header, Footer
-│   ├── auth/                # Auth components
-│   └── ui/                  # Reusable UI components
-├── lib/
-│   ├── db.ts                # Database connection
-│   ├── auth.ts              # Auth configuration
-│   ├── auth-client.ts       # Client-side auth
-│   ├── utils.ts             # Utility functions
-│   └── services/            # External services (R2, etc.)
-├── database/
-│   └── schema.ts            # Drizzle ORM schema
-└── public/                  # Static assets
+app/
+├── layout.tsx              # Root layout (Geist font, providers)
+├── page.tsx                # Landing page
+├── not-found.tsx           # 404
+├── api/                    # API routes
+│   └── auth/[...all]/      # better-auth handlers
+├── login/                  # Auth pages (login/signup)
+│   └── page.tsx
+components/
+├── layout/                 # Header, Footer
+├── auth/                   # Auth components (LoginForm, UserButton)
+└── ui/                     # Reusable shadcn/ui components
+lib/
+├── db.ts                   # Drizzle client
+├── auth.ts                 # better-auth server config
+├── auth-client.ts          # better-auth client hooks
+├── utils.ts                # cn(), formatters, etc.
+└── services/r2.ts          # R2 upload/download helpers
+database/
+├── schema.ts               # All Drizzle tables
+└── migrations/             # Drizzle migrations
+scripts/
+└── init-db.ts              # DB setup script
+public/                     # Static assets
 ```
 
-## Available Scripts
+---
 
-```bash
-bun run dev          # Start development server
-bun run build       # Production build
-bun run start       # Start production server
-bun run check       # Run Biome linter
-bun run format      # Format code with Biome
-```
+## Auth
 
-## Design System
+better-auth is pre-configured in `lib/auth.ts`.
 
-### Colors (Dark Mode Only)
-
-The template uses CSS variables that can be customized in `app/globals.css`:
-
-- `--primary` - Primary accent color (default: blue #3b82f6)
-- `--background` - Background (pure black)
-- `--foreground` - Text color
-- `--card` - Card backgrounds
-- `--border` - Border color
-- `--muted` - Muted backgrounds
-- `--destructive` - Error/danger color
-
-### Component Patterns
-
-Use the `cn()` utility for conditional class merging:
-
+**Usage**:
 ```tsx
-import { cn } from "@/lib/utils";
+// Server
+import { auth } from "@/lib/auth";
+const session = await auth.api.getSession({ headers: req.headers });
 
-<div className={cn(
-  "base-class",
-  condition && "conditional-class",
-)} />
+// Client
+import { authClient } from "@/lib/auth-client";
+authClient.signIn.email({ email, password });
+authClient.signIn.social({ provider: "github" });
 ```
 
-### Glass-morphism Cards
+**Default OAuth**: Google, GitHub. Add more in `lib/auth.ts`.
 
-```tsx
-<div className="group relative rounded-2xl overflow-hidden
-           border border-white/10 
-           bg-white/5
-           hover:bg-white/10
-           hover:border-white/20
-           transition-all duration-300" />
-```
-
-## Environment Variables
-
-| Variable | Description |
-|----------|-------------|
-| `NEXT_PUBLIC_APP_NAME` | App name (displayed in header) |
-| `NEXT_PUBLIC_APP_URL` | Public URL for OAuth callbacks |
-| `DATABASE_URL` | Neon PostgreSQL connection string |
-| `BETTER_AUTH_SECRET` | Secret for session encryption |
-| `BETTER_AUTH_URL` | Auth base URL (defaults to APP_URL) |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth secret |
-| `GITHUB_CLIENT_ID` | GitHub OAuth client ID |
-| `GITHUB_CLIENT_SECRET` | GitHub OAuth secret |
-| `R2_ENDPOINT` | R2 API endpoint |
-| `R2_ACCESS_KEY_ID` | R2 access key |
-| `R2_SECRET_ACCESS_KEY` | R2 secret key |
-| `R2_BUCKET_NAME` | R2 bucket name |
-| `R2_PUBLIC_URL` | Custom domain for R2 (optional) |
-
-## Authentication
-
-The template includes complete authentication with better-auth:
-
-- Email/password sign up/in
-- OAuth (Google, GitHub)
-- Session management
-- Protected routes
-
-Check `app/login/` for login pages and `components/auth/` for auth components.
+---
 
 ## Database
 
-Drizzle ORM is configured with the following tables:
+Drizzle ORM with Neon. Schema lives in `database/schema.ts`.
 
-- `user` - User accounts
-- `session` - Active sessions
-- `account` - OAuth accounts
-- `verification` - Email verification tokens
-- `images` - Image storage records
-- `generatedThumbnails` - AI generation history
+**Existing tables**:
+- `user` — better-auth user
+- `session` — active sessions
+- `account` — OAuth accounts
+- `verification` — email tokens
+- `images` — uploaded image metadata
+- `generatedThumbnails` — AI generation history
 
-Add your own tables in `database/schema.ts`.
+**Add table**:
+```ts
+// database/schema.ts
+export const posts = pgTable("posts", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  title: text("title").notNull(),
+  userId: text("user_id").references(() => user.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+```
 
-## Storage
+**Push schema**: `bun run drizzle-kit push`
 
-R2 service is configured for file storage. Usage:
+---
+
+## Storage (R2)
+
+Pre-signed upload URLs. Config in `lib/services/r2.ts`.
 
 ```tsx
 import { generatePresignedUploadUrl, getPublicUrl, generateFileKey } from "@/lib/services/r2";
 
-const key = generateFileKey(userId, "uploads", "webp");
-const uploadUrl = await generatePresignedUploadUrl(key, "image/webp");
+const key = generateFileKey(userId, "avatars", "webp");  // "avatars/{userId}/{uuid}.webp"
+const uploadUrl = await generatePresignedUploadUrl(key, "image/webp", 300);  // 5min expiry
+// Upload file to uploadUrl, then:
 const publicUrl = getPublicUrl(key);
 ```
+
+---
+
+## Design System
+
+**Dark mode only**. Colors in `app/globals.css`:
+- `--primary` — accent (default blue #3b82f6)
+- `--background` — pure black
+- `--foreground` — text
+- `--card` — elevated surfaces
+- `--border` — dividers
+- `--muted` — secondary backgrounds
+- `--destructive` — errors
+
+**Styling patterns**:
+- Use `cn()` for conditional classes
+- Glass-morphism: `border-white/10 bg-white/5 hover:bg-white/10`
+- Spacing: Tailwind defaults
+
+---
+
+## Scripts
+
+```bash
+bun run dev              # Dev server (turbo)
+bun run build            # Production build
+bun run check            # Biome lint + format check
+bun run format           # Biome format fix
+bun run drizzle-kit push # Push schema changes
+bun run scripts/init-db.ts # One-time DB setup
+```
+
+---
+
+## Env Vars
+
+Copy `.env.example` → `.env`:
+
+```
+# App
+NEXT_PUBLIC_APP_NAME=MyApp
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Database
+DATABASE_URL=postgresql://...
+
+# Auth
+BETTER_AUTH_SECRET=openssl rand -hex 32
+BETTER_AUTH_URL=$NEXT_PUBLIC_APP_URL
+
+# OAuth (optional)
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+GITHUB_CLIENT_ID=...
+GITHUB_CLIENT_SECRET=...
+
+# R2 (optional)
+R2_ENDPOINT=https://...
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_BUCKET_NAME=...
+R2_PUBLIC_URL=https://cdn.example.com
+```
+
+---
+
+## Rules for Agents
+
+1. **User is product owner**. They decide, you execute. Explain trade-offs, don't choose unilaterally.
+2. **No jargon**. Translate technical terms.
+3. **Push back** on over-engineering or scope creep.
+4. **Be honest** about limitations and timelines.
+5. **Build fast, but explain**. Move quickly, but keep user in the loop.
+6. **Ship real code**. Not mocks. Not prototypes. Working, tested, styled product.
+7. **Use existing patterns**. Follow the codebase conventions (see `components/ui/`, `lib/utils.ts`).
+8. **Handle errors**. Every async call needs error boundaries.
+9. **Test before declaring done**. Actually run it.
+10. **Document decisions**. Why this approach, not that one.
+
+---
 
 ## License
 
