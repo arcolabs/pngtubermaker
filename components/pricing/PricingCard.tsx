@@ -31,7 +31,6 @@ export function PricingCard({
   onSubscribe,
 }: PricingCardProps) {
   const price = cycle === "monthly" ? monthlyPrice : yearlyPrice;
-  const monthlyEquivalent = cycle === "yearly" ? yearlyPrice / 12 : null;
 
   return (
     <div
@@ -54,18 +53,41 @@ export function PricingCard({
       </div>
 
       <div className="mb-6">
-        <div className="flex items-baseline gap-2">
-          <span className="text-4xl font-bold text-base-content">
-            {formatPrice(price)}
-          </span>
-          <span className="text-base-content/50">
-            /{cycle === "monthly" ? "mo" : "yr"}
-          </span>
-        </div>
-        {monthlyEquivalent && (
-          <p className="mt-1 text-sm text-base-content/50">
-            {formatPrice(monthlyEquivalent)}/month billed annually
-          </p>
+        {tier === "free" ? (
+          <div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-bold text-base-content">$0</span>
+              <span className="text-base-content/50">forever</span>
+            </div>
+            <p className="mt-1 text-sm text-base-content/50">
+              No credit card required
+            </p>
+          </div>
+        ) : (
+          <div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-bold text-base-content">
+                {formatPrice(price)}
+              </span>
+              <span className="text-base-content/50">
+                /{cycle === "monthly" ? "mo" : "yr"}
+              </span>
+            </div>
+            {cycle === "yearly" ? (
+              <p className="mt-1 text-sm text-success">
+                Save{" "}
+                {Math.round(
+                  ((monthlyPrice * 12 - yearlyPrice) / (monthlyPrice * 12)) *
+                    100,
+                )}
+                % vs monthly
+              </p>
+            ) : (
+              <p className="mt-1 text-sm text-base-content/50">
+                {formatPrice(yearlyPrice / 12)}/mo when billed annually
+              </p>
+            )}
+          </div>
         )}
       </div>
 
@@ -84,10 +106,20 @@ export function PricingCard({
         disabled={isLoading}
         className={cn(
           "w-full rounded-xl py-3 font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 disabled:opacity-50",
-          highlighted ? "btn btn-primary" : "btn btn-outline",
+          tier === "free"
+            ? "btn btn-outline btn-primary"
+            : highlighted
+              ? "btn btn-primary"
+              : "btn btn-outline",
         )}
       >
-        {isLoading ? "Loading..." : `Subscribe to ${name}`}
+        {isLoading
+          ? "Loading..."
+          : tier === "free"
+            ? "Get Started Free"
+            : cycle === "yearly"
+              ? `Subscribe Yearly`
+              : `Subscribe Monthly`}
       </button>
     </div>
   );

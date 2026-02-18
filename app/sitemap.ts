@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thumb-free.com";
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://pngtubermaker.com";
 
 interface SitemapRoute {
   path: string;
@@ -27,7 +27,7 @@ const staticRoutes: SitemapRoute[] = [
     changeFrequency: "daily",
   },
   {
-    path: "/youtube-thumbnail-grabber",
+    path: "/pricing",
     priority: 0.9,
     changeFrequency: "weekly",
   },

@@ -1,54 +1,21 @@
 "use client";
 
 import { Wand2 } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
 
 const exampleImages = [
-  {
-    src: "/images/showcase/1.WEBP",
-    alt: "Character example 1",
-  },
-  {
-    src: "/images/showcase/2.WEBP",
-    alt: "Character example 2",
-  },
-  {
-    src: "/images/showcase/3.WEBP",
-    alt: "Character example 3",
-  },
-  {
-    src: "/images/showcase/4.WEBP",
-    alt: "Character example 4",
-  },
-  {
-    src: "/images/showcase/5.WEBP",
-    alt: "Character example 5",
-  },
-  {
-    src: "/images/showcase/6.WEBP",
-    alt: "Character example 6",
-  },
-  {
-    src: "/images/showcase/7.WEBP",
-    alt: "Character example 7",
-  },
-  {
-    src: "/images/showcase/8.WEBP",
-    alt: "Character example 8",
-  },
+  { id: "1", src: "/images/showcase/1.WEBP", alt: "Character example 1" },
+  { id: "2", src: "/images/showcase/2.WEBP", alt: "Character example 2" },
+  { id: "3", src: "/images/showcase/3.WEBP", alt: "Character example 3" },
+  { id: "4", src: "/images/showcase/4.WEBP", alt: "Character example 4" },
+  { id: "5", src: "/images/showcase/5.WEBP", alt: "Character example 5" },
+  { id: "6", src: "/images/showcase/6.WEBP", alt: "Character example 6" },
+  { id: "7", src: "/images/showcase/7.WEBP", alt: "Character example 7" },
+  { id: "8", src: "/images/showcase/8.WEBP", alt: "Character example 8" },
 ];
 
 export default function CharacterShowcase() {
   const [inputValue, setInputValue] = useState("");
-
-  // Split images into 4 columns (2 images per column)
-  const columns = [
-    [exampleImages[0], exampleImages[1]],
-    [exampleImages[2], exampleImages[3]],
-    [exampleImages[4], exampleImages[5]],
-    [exampleImages[6], exampleImages[7]],
-  ];
 
   return (
     <section className="py-24">
@@ -94,29 +61,26 @@ export default function CharacterShowcase() {
           </div>
         </div>
 
-        {/* Character Examples Gallery */}
+        {/* Character Examples Gallery - Masonry Layout */}
         <div className="relative mt-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl mx-auto">
-            {columns.map((column, colIndex) => (
-              <div key={colIndex} className="flex flex-col gap-4">
-                {column.map((image, imgIndex) => (
-                  <div
-                    key={imgIndex}
-                    className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300"
-                  >
-                    <div className="relative overflow-hidden rounded-xl bg-white aspect-square">
-                      <Image
-                        src={image.src}
-                        alt={image.alt}
-                        fill
-                        className="object-cover rounded-xl transition-transform duration-300 group-hover:scale-110"
-                        loading="lazy"
-                        sizes="(max-width: 768px) 50vw, 25vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30 opacity-100 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none" />
-                    </div>
-                  </div>
-                ))}
+          <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 w-full max-w-6xl mx-auto">
+            {exampleImages.map((image, index) => (
+              <div
+                key={image.id}
+                className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 break-inside-avoid animate-fade-in"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className="w-full h-auto rounded-xl transition-transform duration-500 ease-out group-hover:scale-105"
+                  loading="lazy"
+                />
+                {/* Hover Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none rounded-xl" />
+                {/* Subtle Border */}
+                <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-black/5 group-hover:ring-black/10 transition-all duration-300 pointer-events-none" />
               </div>
             ))}
           </div>

@@ -149,6 +149,7 @@ export default function AITools() {
                       return (
                         <button
                           key={tool.id}
+                          type="button"
                           onClick={() => scrollToSection(tool.id)}
                           className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium transition-all duration-200 whitespace-nowrap ${
                             isActive
@@ -177,6 +178,7 @@ export default function AITools() {
                     return (
                       <button
                         key={tool.id}
+                        type="button"
                         onClick={() => scrollToSection(tool.id)}
                         className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                           isActive
@@ -254,11 +256,11 @@ export default function AITools() {
 
                           {/* Feature Grid */}
                           <div className="grid grid-cols-2 gap-2 md:grid-cols-2 md:gap-3 mb-4 md:mb-6">
-                            {tool.features.map((feature, idx) => {
+                            {tool.features.map((feature) => {
                               const FeatureIcon = feature.icon;
                               return (
                                 <div
-                                  key={idx}
+                                  key={feature.text}
                                   className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-base-200 rounded-lg"
                                 >
                                   <div className="text-primary flex-shrink-0">

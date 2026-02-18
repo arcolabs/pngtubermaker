@@ -23,7 +23,8 @@ export default function Header() {
               alt={brand.logo.alt}
               width={120}
               height={48}
-              className="h-10 sm:h-12 w-auto transition-transform duration-200 group-hover:scale-105 pointer-events-none select-none"
+              className="h-10 sm:h-12 transition-transform duration-200 group-hover:scale-105 pointer-events-none select-none"
+              style={{ width: "auto" }}
               priority
               draggable={false}
               onContextMenu={(e) => e.preventDefault()}

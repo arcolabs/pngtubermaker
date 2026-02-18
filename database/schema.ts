@@ -64,7 +64,7 @@ export const images = pgTable("images", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  type: text("type").notNull(), // 'thumbnail' | 'upload' | 'avatar'
+  type: text("type").notNull(), // 'avatar' | 'expression' | 'animation' | 'upload'
   filename: text("filename").notNull(),
   originalName: text("original_name"),
   mimeType: text("mime_type").notNull(),
@@ -87,10 +87,6 @@ export type Verification = InferSelectModel<typeof verification>;
 export type NewVerification = InferInsertModel<typeof verification>;
 export type Image = InferSelectModel<typeof images>;
 export type NewImage = InferInsertModel<typeof images>;
-export type GeneratedThumbnail = InferSelectModel<typeof generatedThumbnails>;
-export type NewGeneratedThumbnail = InferInsertModel<
-  typeof generatedThumbnails
->;
 
 // 用户钱包余额表
 export const wallets = pgTable("wallets", {
@@ -127,6 +123,8 @@ export const transactions = pgTable("transactions", {
 
 export type Transaction = InferSelectModel<typeof transactions>;
 export type NewTransaction = InferInsertModel<typeof transactions>;
+export type GeneratedAvatar = InferSelectModel<typeof generatedAvatars>;
+export type NewGeneratedAvatar = InferInsertModel<typeof generatedAvatars>;
 
 // 订阅表
 export const subscriptions = pgTable("subscriptions", {
@@ -138,7 +136,7 @@ export const subscriptions = pgTable("subscriptions", {
   stripeSubscriptionId: text("stripe_subscription_id").notNull().unique(),
   stripePriceId: text("stripe_price_id").notNull(),
   status: text("status").notNull(), // 'active' | 'canceled' | 'past_due' | 'unpaid' | 'trialing'
-  tier: text("tier").notNull(), // 'basic' | 'pro'
+  tier: text("tier").notNull(), // 'free' | 'start' | 'pro'
   currentPeriodStart: timestamp("current_period_start"),
   currentPeriodEnd: timestamp("current_period_end"),
   cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
@@ -160,8 +158,8 @@ export const webhookEvents = pgTable("webhook_events", {
 export type WebhookEvent = InferSelectModel<typeof webhookEvents>;
 export type NewWebhookEvent = InferInsertModel<typeof webhookEvents>;
 
-// 缩略图生成记录
-export const generatedThumbnails = pgTable("generated_thumbnails", {
+// AI生成记录表（头像、表情、动画等）
+export const generatedAvatars = pgTable("generated_avatars", {
   id: text("id").primaryKey(),
   userId: text("user_id")
     .notNull()

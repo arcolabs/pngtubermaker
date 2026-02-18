@@ -22,15 +22,14 @@ export default function Hero() {
           </p>
 
           {/* Video Player - 16:9 aspect ratio, auto loop, no controls */}
-          <div className="relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden border border-gray-200">
+          <div className="relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden border border-gray-200 bg-white">
             <div className="aspect-video">
               <video
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover opacity-0 animate-video-fade-in"
                 autoPlay
                 loop
                 muted
                 playsInline
-                poster="/images/showcase/1.WEBP"
                 preload="metadata"
               >
                 <source src="/videos/Thumbfree.mp4" type="video/mp4" />

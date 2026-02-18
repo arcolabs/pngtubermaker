@@ -1,8 +1,22 @@
-# Next.js Template - Agent Handoff Guide
+# PNGTuberMaker - Agent Handoff Guide
 
-Production-ready Next.js 16 starter with React 19, Tailwind v4, DaisyUI v5, Drizzle ORM, better-auth, Stripe, and R2.
+AI-powered PNGTuber avatar generator for streamers. Production-ready Next.js 16 with React 19, Tailwind v4, DaisyUI v5, Drizzle ORM, better-auth, Stripe, and R2.
 
-**TL;DR**: Clone → `bun install` → `cp .env.example .env` → `bun run scripts/init-db.ts` → `bun run dev`
+**TL;DR**: `bun install` → `cp .env.example .env` → `bun run scripts/init-db.ts` → `bun run dev`
+
+---
+
+## Business Context
+
+**PNGTuberMaker** helps Twitch/YouTube/Discord streamers create professional PNG avatars:
+- AI avatar generation from text/image prompts
+- Expression packs (happy/angry/sad/surprised)
+- Animation generation (blinking, mouth movement)
+- HD/4K upscale and variations
+
+**Target Users**: Streamers, VTubers, content creators who want custom avatars without hiring artists.
+
+**Value Prop**: Create avatars in minutes, not weeks. Save hundreds vs traditional commissions.
 
 ---
 
@@ -13,49 +27,24 @@ Production-ready Next.js 16 starter with React 19, Tailwind v4, DaisyUI v5, Driz
 | Framework | Next.js 16.1.3 (App Router) |
 | UI | React 19.2.3, Tailwind v4, DaisyUI v5, Geist font |
 | DB | Neon PostgreSQL + Drizzle ORM |
-| Auth | better-auth (email + OAuth) |
-| Payment | Stripe (subscriptions + wallet top-up) |
+| Auth | better-auth (Google/GitHub/Discord/Twitch OAuth) |
+| Payment | Stripe (3-tier subscriptions: Free/Start/Pro) |
 | Storage | Cloudflare R2 |
 | Forms | react-hook-form + zod |
-| State | Zustand |
-| Images | sharp |
 | Icons | lucide-react |
 | Lint | Biome |
 
 ---
 
-## Workflow (Agent Protocol)
+## Pricing Tiers
 
-**Role**: Technical Co-Founder. Build real, launchable products—not prototypes.
+| Tier | Price | Generations | Features |
+|------|-------|-------------|----------|
+| **Free** | $0 | 3/month | Watermarked, low-res export, community support |
+| **Start** | $9/mo | 50/month | HD export (1080p), no watermark, basic expressions, email support |
+| **Pro** | $30/mo | Unlimited | 4K export, all expressions & animations, commercial license, priority queue, avatar library |
 
-### 1. Discovery
-- Ask clarifying questions about the actual problem, not the stated solution
-- Challenge assumptions that add complexity without value
-- Separate "must-have v1" from "nice-to-have later"
-- Flag scope creep early—suggest smaller starting points
-
-### 2. Planning
-- Define v1 scope in plain terms
-- List technical decisions and external dependencies (APIs, auth providers, etc.)
-- Estimate: simple (days) / medium (week) / ambitious (weeks)
-- Show a rough outline/screenshot of the finished v1
-
-### 3. Building
-- Build in visible stages; stop at decision points
-- Explain trade-offs when options exist—don't just pick
-- Test before moving on
-- Commit incrementally with clear messages
-
-### 4. Polish
-- Real UI, not hackathon-grade
-- Handle errors gracefully (loading, empty, error states)
-- Responsive if relevant
-- Fast (>90 Lighthouse)
-
-### 5. Handoff
-- Deploy if requested
-- Document: how to run, maintain, and extend
-- Suggest v2 features
+Yearly billing saves 20%.
 
 ---
 
@@ -63,217 +52,200 @@ Production-ready Next.js 16 starter with React 19, Tailwind v4, DaisyUI v5, Driz
 
 ```
 app/
-├── layout.tsx                 # Root layout (Geist font, providers)
-├── page.tsx                   # Landing page
-├── not-found.tsx              # 404 page
-├── globals.css                # Global styles (Tailwind v4 + DaisyUI)
-├── sitemap.ts                 # Sitemap generation
-├── robots.ts                  # Robots.txt generation
-├── (main)/                    # Main route group
-│   ├── layout.tsx             # Main layout
-│   ├── page.tsx               # Home page
-│   ├── pricing/               # Pricing page
-│   │   └── page.tsx
-│   └── legal/                 # Legal pages
-│       ├── privacy/
-│       └── terms/
-├── login/                     # Auth pages
-│   ├── layout.tsx
-│   └── page.tsx
+├── (main)/
+│   ├── layout.tsx             # Main layout (Header + Footer + DotMatrixBrand)
+│   ├── page.tsx               # Landing page (Hero → CharacterShowcase → AITools → Comparison → Pricing → Testimonials → FAQ → DiscordCTA)
+│   ├── pricing/page.tsx       # Pricing page with success/cancel handling
+│   └── legal/                 # Terms & Privacy pages
+├── login/
+│   └── page.tsx               # OAuth login (Google/GitHub/Discord/Twitch)
 └── api/
     ├── auth/[...all]/         # better-auth handlers
-    ├── payments/              # Payment endpoints
-    │   ├── subscribe/route.ts # Create subscription checkout
-    │   └── topup/route.ts     # Create wallet top-up checkout
-    └── webhooks/
-        └── stripe/route.ts    # Stripe webhook handler
+    ├── payments/
+    │   ├── subscribe/route.ts # Create Stripe checkout
+    │   └── topup/route.ts     # Wallet top-up (future)
+    └── webhooks/stripe/       # Stripe webhook handler
+
 components/
-├── layout/                    # Header, Footer
-├── auth/                      # Auth components (LoginForm, UserButton)
-├── ui/                        # Reusable UI components
-├── pricing/                   # Pricing components
-│   ├── PricingCard.tsx
-│   ├── PricingSection.tsx
-│   └── PricingToggle.tsx
-└── sections/                  # Page sections
-    ├── Hero.tsx
-    ├── Features.tsx
-    ├── Testimonials.tsx
-    ├── FAQ.tsx
-    └── CTA.tsx
-hooks/
-└── use-stripe.ts              # Stripe subscription & top-up hooks
+├── layout/
+│   ├── Header.tsx             # Navigation with auth buttons
+│   └── Footer.tsx             # Links + Discord + Email
+├── sections/                  # Landing page sections
+│   ├── Hero.tsx               # Main hero with video showcase
+│   ├── CharacterShowcase.tsx  # Avatar gallery + generation input
+│   ├── AITools.tsx           # 4 AI features with sticky tabs
+│   ├── Comparison.tsx        # vs Traditional commission
+│   ├── Testimonials.tsx      # User reviews
+│   ├── FAQ.tsx               # Frequently asked questions
+│   └── DiscordCTA.tsx        # Discord community CTA
+├── pricing/
+│   ├── PricingSection.tsx    # 3-tier pricing display
+│   ├── PricingCard.tsx       # Individual tier card (supports Free $0)
+│   └── PricingToggle.tsx     # Monthly/yearly switch
+└── ui/                        # Reusable components (UserCountBadge, DotMatrixBrand, etc.)
+
 lib/
+├── brand.ts                   # Brand config (PNGTuberMaker)
+├── stripe.ts                  # PRICING_CONFIG + Stripe helpers
+├── auth.ts                    # better-auth server config (4 OAuth providers)
+├── auth-client.ts             # Client auth hooks
 ├── db.ts                      # Drizzle client
-├── auth.ts                    # better-auth server config
-├── auth-client.ts             # better-auth client hooks
-├── stripe.ts                  # Stripe client & helpers
-├── brand.ts                   # Brand configuration
 ├── utils.ts                   # cn(), formatters, etc.
 └── services/
-    └── r2.ts                  # R2 upload/download helpers
+    └── r2.ts                  # Cloudflare R2 upload helpers
+
 database/
-├── schema.ts                  # All Drizzle tables
+├── schema.ts                  # Drizzle tables (user, subscriptions, generatedAvatars, images, etc.)
 └── migrations/                # Drizzle migrations
-scripts/
-├── init-db.ts                 # DB setup script
-└── test-upload.ts             # R2 upload test
-public/                        # Static assets
+
+public/
+├── images/
+│   ├── showcase/              # Avatar examples (1.WEBP - 8.WEBP)
+│   ├── AITools/               # Feature screenshots
+│   └── comparison_*.jpg       # Comparison section images
+└── videos/                    # Demo videos (Thumbfree.mp4)
 ```
 
 ---
 
-## Auth
+## Key Business Logic
 
-better-auth is pre-configured in `lib/auth.ts`.
+### Pricing Configuration (`lib/stripe.ts`)
 
-**Usage**:
-```tsx
-// Server
-import { auth } from "@/lib/auth";
-const session = await auth.api.getSession({ headers: req.headers });
-
-// Client
-import { authClient } from "@/lib/auth-client";
-authClient.signIn.email({ email, password });
-authClient.signIn.social({ provider: "github" });
+```typescript
+export const PRICING_CONFIG = {
+  free: {
+    name: "Free",
+    monthlyPrice: 0,
+    yearlyPrice: 0,
+    features: [
+      "3 avatar generations/month",
+      "Basic avatar generation", 
+      "Low resolution export",
+      "PNGTuber watermark",
+      "Community support",
+    ],
+  },
+  start: {
+    name: "Start",
+    monthlyPrice: 9,
+    yearlyPrice: 86.4,
+    features: [
+      "50 avatar generations/month",
+      "HD export (1080p)",
+      "No watermark",
+      "Basic expressions pack",
+      "Standard generation queue",
+      "Email support",
+    ],
+  },
+  pro: {
+    name: "Pro", 
+    monthlyPrice: 30,
+    yearlyPrice: 288,
+    features: [
+      "Unlimited avatar generations",
+      "4K HD export",
+      "No watermark",
+      "All expressions & animations",
+      "Priority generation queue",
+      "Full commercial license",
+      "Access to avatar library",
+      "Priority email support",
+    ],
+  },
+};
 ```
 
-**Default OAuth**: Google, GitHub. Add more in `lib/auth.ts`.
+### Database Schema (`database/schema.ts`)
+
+Key tables for the business:
+- `user` — User accounts with stripeCustomerId
+- `subscriptions` — Active subscriptions (tier: 'free' | 'start' | 'pro')
+- `generatedAvatars` — AI generation history (avatar, expression, animation)
+- `images` — Stored image metadata (avatars, uploads)
+- `wallets` — Credit balance (for future pay-per-generation model)
+
+### Auth (`lib/auth.ts`)
+
+Configured OAuth providers (all relevant to streamers):
+- **Google** — General users
+- **GitHub** — Developer creators  
+- **Discord** — Community-focused streamers
+- **Twitch** — Primary streaming platform
 
 ---
 
-## Database
+## Workflow (Agent Protocol)
 
-Drizzle ORM with Neon. Schema lives in `database/schema.ts`.
+### 1. Discovery
+- Understand the feature's purpose for streamers/creators
+- Consider pricing tier: Free demo feature? Start tier? Pro only?
+- Challenge scope creep — suggest core avatar features first
 
-**Existing tables**:
-- `user` — better-auth user (with stripeCustomerId)
-- `session` — active sessions
-- `account` — OAuth accounts
-- `verification` — email tokens
-- `images` — uploaded image metadata
-- `wallets` — user wallet balance for top-ups
-- `transactions` — payment & top-up history
-- `subscriptions` — Stripe subscription status
-- `webhookEvents` — Stripe webhook idempotency tracking
-- `generatedThumbnails` — AI generation history
+### 2. Planning
+- Define which pricing tier this belongs to
+- Consider auth requirements (generation requires login)
+- Plan UI: new section? integrate into existing flow?
+- Identify external APIs needed (AI generation, image processing)
 
-**Add table**:
-```ts
-// database/schema.ts
-export const posts = pgTable("posts", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  title: text("title").notNull(),
-  userId: text("user_id").references(() => user.id).notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-```
+### 3. Building
+- Follow existing patterns in `components/sections/`
+- Use DaisyUI classes: `bg-base-100`, `text-primary`, `btn-primary`
+- Handle all states: loading, error, empty, success
+- Test pricing display with Free/Start/Pro
 
-**Push schema**: `bun run db:push`
+### 4. Polish
+- Mobile-first responsive design
+- Light theme consistency (not dark mode)
+- Update SEO metadata if new pages
+- Add to sitemap if new routes
 
----
-
-## Storage (R2)
-
-Pre-signed upload URLs. Config in `lib/services/r2.ts`.
-
-```tsx
-import { generatePresignedUploadUrl, getPublicUrl, generateFileKey } from "@/lib/services/r2";
-
-const key = generateFileKey(userId, "avatars", "webp");  // "avatars/{userId}/{uuid}.webp"
-const uploadUrl = await generatePresignedUploadUrl(key, "image/webp", 300);  // 5min expiry
-// Upload file to uploadUrl, then:
-const publicUrl = getPublicUrl(key);
-```
-
----
-
-## Payment (Stripe)
-
-Built-in Stripe integration for subscriptions and wallet top-ups.
-
-**Tables:**
-- `subscriptions` — User subscription status
-- `wallets` — Balance tracking for top-ups
-- `transactions` — Payment history
-- `webhookEvents` — Idempotency tracking
-
-**Client Hooks:**
-```tsx
-// Subscription
-import { useSubscription } from "@/hooks/use-stripe";
-const { subscribe, isLoading, error } = useSubscription();
-await subscribe("pro", "monthly"); // tier: 'basic' | 'pro', cycle: 'monthly' | 'yearly'
-
-// Wallet Top-up
-import { useTopup } from "@/hooks/use-stripe";
-const { topup, isLoading, error } = useTopup();
-await topup(1000); // amount in cents ($10.00)
-```
-
-**Server Helpers:**
-```tsx
-import { 
-  createSubscriptionCheckoutSession, 
-  createTopupCheckoutSession,
-  createCustomerPortalSession,
-  cancelSubscription 
-} from "@/lib/stripe";
-```
-
-**Setup:**
-1. Add Stripe keys to `.env`
-2. Create Price IDs in Stripe Dashboard (Basic & Pro, Monthly & Yearly)
-3. Set webhook endpoint to `/api/webhooks/stripe`
-4. Push schema: `bun run db:push`
-
-**Pricing Page:**
-- Visit `/pricing` to see the pricing page
-- Supports monthly/yearly toggle with 20% savings
-- Uses Stripe Checkout for secure payments
-- Built-in components in `components/pricing/`
+### 5. Handoff
+- Run `bun run check` to verify
+- Document new env vars
+- Update pricing features if applicable
+- Test the full user flow
 
 ---
 
 ## Design System
 
-**Dark mode only** using DaisyUI's "black" theme. Styles in `app/globals.css`:
+**Theme**: Light theme with cyan primary (`#06b6d4`)
 
-**DaisyUI Theme Classes** (via `data-theme="black"`):
-- `bg-base-100` — background
-- `bg-base-200` — elevated surfaces
-- `bg-base-300` — borders/dividers
-- `text-base-content` — primary text
-- `text-primary` — accent text
-- `btn-primary` — primary button
-- `btn-ghost` — subtle button
-- `card` — card component
-- `badge` — badge component
+**DaisyUI Classes**:
+- `bg-base-100` — Main background (white/light gray)
+- `bg-base-200` — Elevated surfaces (cards)
+- `text-primary` — Brand cyan color
+- `btn-primary` — Primary actions (cyan bg)
+- `btn-outline` — Secondary actions
 
-**Custom Utilities**:
-- Glass-morphism: `border-white/10 bg-white/5 hover:bg-white/10`
-- Use `cn()` from `lib/utils.ts` for conditional classes
+**Custom Patterns**:
 
-**Tailwind v4 Import**:
-```css
-@import "tailwindcss";
-@import "tw-animate-css";
-@plugin "daisyui" {
-  themes: black --default;
-}
+```tsx
+// Glass card effect
+<div className="border border-white/10 bg-white/5 backdrop-blur-xl" />
+
+// Primary gradient background
+<div className="bg-gradient-to-br from-primary/10 to-base-200" />
+
+// Cyan glow shadow
+<div className="shadow-[0_4px_30px_rgba(6,182,212,0.25)]" />
+
+// Hover state
+<div className="hover:shadow-[0_8px_40px_rgba(6,182,212,0.35)] transition-all" />
 ```
 
 ---
 
-## Scripts
+## Available Scripts
 
 ```bash
-bun run dev                  # Dev server
+bun run dev                  # Dev server on :3000
 bun run build                # Production build
 bun run check                # Biome lint + format check
 bun run format               # Biome format fix
-bun run db:push              # Push schema changes
+bun run db:push              # Push schema changes to Neon
 bun run db:generate          # Generate migration files
 bun run db:migrate           # Run migrations
 bun run scripts/init-db.ts   # One-time DB setup
@@ -281,59 +253,88 @@ bun run scripts/init-db.ts   # One-time DB setup
 
 ---
 
-## Env Vars
+## Environment Variables
 
-Copy `.env.example` → `.env`:
-
-```
-# App
-NEXT_PUBLIC_APP_NAME=MyApp
+### Required
+```bash
+NEXT_PUBLIC_APP_NAME=PNGTuberMaker
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_CONTACT_EMAIL=support@pngtubermaker.com
+NEXT_PUBLIC_SOCIAL_DISCORD=https://discord.gg/zysPAnvP8f
 
-# Database
 DATABASE_URL=postgresql://...
-
-# Auth
 BETTER_AUTH_SECRET=openssl rand -hex 32
-BETTER_AUTH_URL=$NEXT_PUBLIC_APP_URL
+BETTER_AUTH_URL=http://localhost:3000
+```
 
-# OAuth (optional)
+### OAuth (for streamer-friendly login)
+```bash
+# All 4 providers enabled
 GOOGLE_CLIENT_ID=...
 GOOGLE_CLIENT_SECRET=...
 GITHUB_CLIENT_ID=...
 GITHUB_CLIENT_SECRET=...
+DISCORD_CLIENT_ID=...
+DISCORD_CLIENT_SECRET=...
+TWITCH_CLIENT_ID=...
+TWITCH_CLIENT_SECRET=...
+```
 
-# R2 (optional)
-R2_ENDPOINT=https://...
-R2_ACCESS_KEY_ID=...
-R2_SECRET_ACCESS_KEY=...
-R2_BUCKET_NAME=...
-R2_PUBLIC_URL=https://cdn.example.com
-
-# Stripe (optional)
+### Stripe (for 3-tier subscriptions)
+```bash
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 STRIPE_PUBLISHABLE_KEY=pk_test_...
-STRIPE_PRICE_BASIC_MONTHLY=price_...
-STRIPE_PRICE_BASIC_YEARLY=price_...
+STRIPE_PRICE_START_MONTHLY=price_...
+STRIPE_PRICE_START_YEARLY=price_...
 STRIPE_PRICE_PRO_MONTHLY=price_...
 STRIPE_PRICE_PRO_YEARLY=price_...
 ```
+
+### R2 Storage (for avatar storage)
+```bash
+R2_ENDPOINT=...
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_BUCKET_NAME=...
+R2_PUBLIC_URL=...
+```
+
+---
+
+## Important Business Rules
+
+1. **Pricing Tiers**: Always consider tier allocation. Free = teaser, Start = hobbyists, Pro = serious creators.
+
+2. **Auth Required**: Avatar generation features require login. Check `authClient.getSession()` before API calls.
+
+3. **Discord Community**: Official server is `https://discord.gg/zysPAnvP8f`. Linked in Footer, FAQ, and DiscordCTA.
+
+4. **Domain**: Production is `pngtubermaker.com`. Local dev uses `localhost:3000`.
+
+5. **Brand Voice**: 
+   - "Create in minutes, not weeks"
+   - "Save hundreds vs commissions"
+   - Target: streamers, VTubers, content creators
+
+6. **Image Storage**: All uploads to R2. Use `generateFileKey()` and `generatePresignedUploadUrl()`.
+
+7. **Generation Limits**: Enforce tier limits in API layer (3/month Free, 50/month Start, unlimited Pro).
 
 ---
 
 ## Rules for Agents
 
-1. **User is product owner**. They decide, you execute. Explain trade-offs, don't choose unilaterally.
-2. **No jargon**. Translate technical terms.
-3. **Push back** on over-engineering or scope creep.
+1. **User is product owner**. They decide, you execute. Explain trade-offs.
+2. **No jargon**. Translate technical terms for non-technical stakeholders.
+3. **Push back** on over-engineering. Suggest simpler solutions first.
 4. **Be honest** about limitations and timelines.
-5. **Build fast, but explain**. Move quickly, but keep user in the loop.
-6. **Ship real code**. Not mocks. Not prototypes. Working, tested, styled product.
-7. **Use existing patterns**. Follow the codebase conventions (see `components/ui/`, `lib/utils.ts`).
-8. **Handle errors**. Every async call needs error boundaries.
-9. **Test before declaring done**. Actually run it.
-10. **Document decisions**. Why this approach, not that one.
+5. **Build fast, but explain**. Keep user in the loop at decision points.
+6. **Ship real code**. Not mocks. Working, tested, styled product.
+7. **Use existing patterns**. Follow conventions in `components/ui/` and `lib/utils.ts`.
+8. **Handle errors**. Every async call needs loading/error states.
+9. **Test before declaring done**. Actually run `bun run dev` and click through.
+10. **Document decisions**. Why this approach, not alternatives.
 
 ---
 

@@ -70,11 +70,10 @@ const defaultFaqData: FAQItem[] = [
 
 export default function FAQ({
   title = "Frequently Asked Questions",
-  description = "Everything you need to know about PNGTuberMaker.",
   supportText = "Have more questions?",
   supportLinkText = "Contact us",
   faqData = defaultFaqData,
-}: FAQProps) {
+}: Omit<FAQProps, "description">) {
   const [openId, setOpenId] = useState<string | null>(null);
 
   const toggleFaq = (id: string) => {

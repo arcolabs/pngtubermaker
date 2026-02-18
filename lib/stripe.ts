@@ -40,43 +40,61 @@ export const STRIPE_PRICE_PRO_YEARLY =
 
 // Pricing configuration
 export const PRICING_CONFIG = {
-  basic: {
-    name: "Starter",
-    description: "Perfect for individuals getting started",
+  free: {
+    name: "Free",
+    description: "Perfect for trying out PNGTuberMaker",
+    monthlyPrice: 0,
+    yearlyPrice: 0,
+    monthlyPriceId: "",
+    yearlyPriceId: "",
+    features: [
+      "3 avatar generations/month",
+      "Basic avatar generation",
+      "Low resolution export",
+      "PNGTuber watermark",
+      "Community support",
+    ],
+    highlighted: false,
+  },
+  start: {
+    name: "Start",
+    description: "For casual streamers and hobbyists",
     monthlyPrice: 9,
-    yearlyPrice: 86.4,
+    yearlyPrice: 86.4, // 20% savings
     monthlyPriceId: STRIPE_PRICE_BASIC_MONTHLY,
     yearlyPriceId: STRIPE_PRICE_BASIC_YEARLY,
     features: [
-      "Up to 10 projects",
-      "Basic analytics",
+      "50 avatar generations/month",
+      "HD export (1080p)",
+      "No watermark",
+      "Basic expressions pack",
+      "Standard generation queue",
       "Email support",
-      "1GB storage",
-      "Standard API access",
     ],
     highlighted: false,
   },
   pro: {
     name: "Pro",
-    description: "For professionals and growing teams",
+    description: "For serious streamers and content creators",
     monthlyPrice: 30,
-    yearlyPrice: 288,
+    yearlyPrice: 288, // 20% savings
     monthlyPriceId: STRIPE_PRICE_PRO_MONTHLY,
     yearlyPriceId: STRIPE_PRICE_PRO_YEARLY,
     features: [
-      "Unlimited projects",
-      "Advanced analytics",
-      "Priority support",
-      "50GB storage",
-      "Advanced API access",
-      "Custom integrations",
-      "Team collaboration",
+      "Unlimited avatar generations",
+      "4K HD export",
+      "No watermark",
+      "All expressions & animations",
+      "Priority generation queue",
+      "Full commercial license",
+      "Access to avatar library",
+      "Priority email support",
     ],
     highlighted: true,
   },
 };
 
-export type Tier = "basic" | "pro";
+export type Tier = "free" | "start" | "pro";
 export type BillingCycle = "monthly" | "yearly";
 
 export function isStripeConfigured(): boolean {

@@ -39,12 +39,12 @@ export default function Comparison() {
         <div className="mt-8 gap-6 sm:mt-12 md:flex md:justify-center">
           {/* With PNGTuberMaker Card */}
           <div className="w-full rounded-lg border border-primary/15 bg-white p-6 md:p-8 shadow-lg lg:max-w-lg">
-            <div className="relative w-full aspect-video rounded-lg ring-1 ring-gray-200 overflow-hidden">
+            <div className="relative w-full aspect-[2/1] rounded-lg ring-1 ring-gray-200 overflow-hidden bg-gray-50">
               <Image
                 src="/images/comparison_left.jpg"
                 alt="PNGTuberMaker AI generation process"
                 fill
-                className="object-cover"
+                className="object-contain"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
@@ -109,12 +109,12 @@ export default function Comparison() {
 
           {/* Traditional Commission Card */}
           <div className="mt-4 w-full rounded-lg border border-gray-200/50 bg-white p-6 md:p-8 shadow-lg md:mt-0 lg:max-w-lg">
-            <div className="relative w-full aspect-video rounded-lg ring-1 ring-gray-200 overflow-hidden">
+            <div className="relative w-full aspect-[2/1] rounded-lg ring-1 ring-gray-200 overflow-hidden bg-gray-50">
               <Image
                 src="/images/comparison_right.jpg"
                 alt="Traditional art commission process"
                 fill
-                className="object-cover"
+                className="object-contain"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>

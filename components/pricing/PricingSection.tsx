@@ -46,15 +46,28 @@ export function PricingSection({
           />
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-8 md:grid-cols-3">
           <PricingCard
-            tier="basic"
-            name={PRICING_CONFIG.basic.name}
-            description={PRICING_CONFIG.basic.description}
-            monthlyPrice={PRICING_CONFIG.basic.monthlyPrice}
-            yearlyPrice={PRICING_CONFIG.basic.yearlyPrice}
-            features={PRICING_CONFIG.basic.features}
-            highlighted={PRICING_CONFIG.basic.highlighted}
+            tier="free"
+            name={PRICING_CONFIG.free.name}
+            description={PRICING_CONFIG.free.description}
+            monthlyPrice={PRICING_CONFIG.free.monthlyPrice}
+            yearlyPrice={PRICING_CONFIG.free.yearlyPrice}
+            features={PRICING_CONFIG.free.features}
+            highlighted={PRICING_CONFIG.free.highlighted}
+            cycle={cycle}
+            isLoading={isLoading}
+            onSubscribe={handleSubscribe}
+          />
+
+          <PricingCard
+            tier="start"
+            name={PRICING_CONFIG.start.name}
+            description={PRICING_CONFIG.start.description}
+            monthlyPrice={PRICING_CONFIG.start.monthlyPrice}
+            yearlyPrice={PRICING_CONFIG.start.yearlyPrice}
+            features={PRICING_CONFIG.start.features}
+            highlighted={PRICING_CONFIG.start.highlighted}
             cycle={cycle}
             isLoading={isLoading}
             onSubscribe={handleSubscribe}

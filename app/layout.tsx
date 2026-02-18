@@ -7,11 +7,22 @@ import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: {
-    default: brand.name,
+    default: `${brand.name} - AI PNGTuber Avatar Generator`,
     template: `%s | ${brand.name}`,
   },
   description: brand.description,
-  keywords: ["Next.js", "React", "Tailwind CSS", "template", "starter"],
+  keywords: [
+    "PNGTuber",
+    "VTuber",
+    "avatar generator",
+    "AI avatar",
+    "streaming",
+    "Twitch avatar",
+    "YouTube avatar",
+    "Discord avatar",
+    "virtual character",
+    "PNG avatar",
+  ],
   authors: [{ name: brand.name }],
   creator: brand.name,
   publisher: brand.name,

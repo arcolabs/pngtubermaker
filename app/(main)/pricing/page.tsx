@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { PricingSection } from "@/components/pricing/PricingSection";
 import { useSubscription } from "@/hooks/use-stripe";
 import { authClient } from "@/lib/auth-client";
 import type { BillingCycle, Tier } from "@/lib/stripe";
 
-export default function PricingPage() {
+function PricingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { subscribe, isLoading, error: subscribeError } = useSubscription();
@@ -92,5 +92,19 @@ export default function PricingPage() {
 
       <PricingSection onSubscribe={handleSubscribe} isLoading={isLoading} />
     </div>
+  );
+}
+
+export default function PricingPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-base-100 flex items-center justify-center">
+          Loading...
+        </div>
+      }
+    >
+      <PricingContent />
+    </Suspense>
   );
 }
