@@ -45,6 +45,14 @@ export default function Header() {
                 Dashboard
               </Link>
             </li>
+            <li>
+              <Link
+                href="/pricing"
+                className="text-base-content/70 hover:text-primary hover:bg-primary/10"
+              >
+                Pricing
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -86,11 +94,13 @@ export default function Header() {
             {isOpen && (
               <ul className="dropdown-content menu bg-base-200 rounded-box z-[1] mt-2 w-52 p-2 shadow-xl border border-base-content/10">
                 <li>
-                  <Link
-                    href="/dashboard"
-                    onClick={() => setIsOpen(false)}
-                  >
+                  <Link href="/dashboard" onClick={() => setIsOpen(false)}>
                     Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/pricing" onClick={() => setIsOpen(false)}>
+                    Pricing
                   </Link>
                 </li>
               </ul>

@@ -10,7 +10,11 @@ interface CTAProps {
   onButtonClick?: () => void;
 }
 
-const HIGHLIGHTS = ["No credit card required", "Open source", "Production ready"];
+const HIGHLIGHTS = [
+  "No credit card required",
+  "Open source",
+  "Production ready",
+];
 
 export default function CTA({
   title = "Ready to Get Started?",

@@ -1,5 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
+import * as schema from "@/database/schema";
 
 let sql: ReturnType<typeof neon> | undefined;
 let db: ReturnType<typeof drizzle> | undefined;
@@ -13,7 +14,7 @@ export function getDatabase() {
     sql = neon(databaseUrl);
   }
   if (!db) {
-    db = drizzle({ client: sql });
+    db = drizzle({ client: sql, schema });
   }
   return db;
 }

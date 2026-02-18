@@ -65,11 +65,7 @@ export default function FAQ({
   const [openId, setOpenId] = useState<string | null>(faqData[0]?.id ?? null);
 
   return (
-    <section
-      id="faq"
-      className="py-20"
-      aria-labelledby="faq-heading"
-    >
+    <section id="faq" className="py-20" aria-labelledby="faq-heading">
       <div className="max-w-3xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2
@@ -95,9 +91,7 @@ export default function FAQ({
                 type="radio"
                 name="faq-accordion"
                 checked={openId === item.id}
-                onChange={() =>
-                  setOpenId(openId === item.id ? null : item.id)
-                }
+                onChange={() => setOpenId(openId === item.id ? null : item.id)}
               />
               <div className="collapse-title font-medium text-base-content">
                 {item.question}

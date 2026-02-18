@@ -52,8 +52,7 @@ const SECONDARY_FEATURES: FeatureCard[] = [
   {
     id: "styling",
     title: "Modern Styling",
-    description:
-      "Tailwind CSS v4 with daisyUI. Dark mode ready design system.",
+    description: "Tailwind CSS v4 with daisyUI. Dark mode ready design system.",
     icon: Palette,
   },
 ];

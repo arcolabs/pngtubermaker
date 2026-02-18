@@ -1,6 +1,6 @@
 # Next.js Template - Agent Handoff Guide
 
-Production-ready Next.js 16 starter with React 19, Tailwind v4, Drizzle ORM, better-auth, and R2.
+Production-ready Next.js 16 starter with React 19, Tailwind v4, DaisyUI v5, Drizzle ORM, better-auth, Stripe, and R2.
 
 **TL;DR**: Clone → `bun install` → `cp .env.example .env` → `bun run scripts/init-db.ts` → `bun run dev`
 
@@ -11,12 +11,14 @@ Production-ready Next.js 16 starter with React 19, Tailwind v4, Drizzle ORM, bet
 | Layer | Tech |
 |-------|------|
 | Framework | Next.js 16.1.3 (App Router) |
-| UI | React 19.2.3, Tailwind v4, Geist font |
+| UI | React 19.2.3, Tailwind v4, DaisyUI v5, Geist font |
 | DB | Neon PostgreSQL + Drizzle ORM |
 | Auth | better-auth (email + OAuth) |
+| Payment | Stripe (subscriptions + wallet top-up) |
 | Storage | Cloudflare R2 |
 | Forms | react-hook-form + zod |
 | State | Zustand |
+| Images | sharp |
 | Icons | lucide-react |
 | Lint | Biome |
 
@@ -61,29 +63,62 @@ Production-ready Next.js 16 starter with React 19, Tailwind v4, Drizzle ORM, bet
 
 ```
 app/
-├── layout.tsx              # Root layout (Geist font, providers)
-├── page.tsx                # Landing page
-├── not-found.tsx           # 404
-├── api/                    # API routes
-│   └── auth/[...all]/      # better-auth handlers
-├── login/                  # Auth pages (login/signup)
+├── layout.tsx                 # Root layout (Geist font, providers)
+├── page.tsx                   # Landing page
+├── not-found.tsx              # 404 page
+├── globals.css                # Global styles (Tailwind v4 + DaisyUI)
+├── sitemap.ts                 # Sitemap generation
+├── robots.ts                  # Robots.txt generation
+├── (main)/                    # Main route group
+│   ├── layout.tsx             # Main layout
+│   ├── page.tsx               # Home page
+│   ├── pricing/               # Pricing page
+│   │   └── page.tsx
+│   └── legal/                 # Legal pages
+│       ├── privacy/
+│       └── terms/
+├── login/                     # Auth pages
+│   ├── layout.tsx
 │   └── page.tsx
+└── api/
+    ├── auth/[...all]/         # better-auth handlers
+    ├── payments/              # Payment endpoints
+    │   ├── subscribe/route.ts # Create subscription checkout
+    │   └── topup/route.ts     # Create wallet top-up checkout
+    └── webhooks/
+        └── stripe/route.ts    # Stripe webhook handler
 components/
-├── layout/                 # Header, Footer
-├── auth/                   # Auth components (LoginForm, UserButton)
-└── ui/                     # Reusable shadcn/ui components
+├── layout/                    # Header, Footer
+├── auth/                      # Auth components (LoginForm, UserButton)
+├── ui/                        # Reusable UI components
+├── pricing/                   # Pricing components
+│   ├── PricingCard.tsx
+│   ├── PricingSection.tsx
+│   └── PricingToggle.tsx
+└── sections/                  # Page sections
+    ├── Hero.tsx
+    ├── Features.tsx
+    ├── Testimonials.tsx
+    ├── FAQ.tsx
+    └── CTA.tsx
+hooks/
+└── use-stripe.ts              # Stripe subscription & top-up hooks
 lib/
-├── db.ts                   # Drizzle client
-├── auth.ts                 # better-auth server config
-├── auth-client.ts          # better-auth client hooks
-├── utils.ts                # cn(), formatters, etc.
-└── services/r2.ts          # R2 upload/download helpers
+├── db.ts                      # Drizzle client
+├── auth.ts                    # better-auth server config
+├── auth-client.ts             # better-auth client hooks
+├── stripe.ts                  # Stripe client & helpers
+├── brand.ts                   # Brand configuration
+├── utils.ts                   # cn(), formatters, etc.
+└── services/
+    └── r2.ts                  # R2 upload/download helpers
 database/
-├── schema.ts               # All Drizzle tables
-└── migrations/             # Drizzle migrations
+├── schema.ts                  # All Drizzle tables
+└── migrations/                # Drizzle migrations
 scripts/
-└── init-db.ts              # DB setup script
-public/                     # Static assets
+├── init-db.ts                 # DB setup script
+└── test-upload.ts             # R2 upload test
+public/                        # Static assets
 ```
 
 ---
@@ -113,11 +148,15 @@ authClient.signIn.social({ provider: "github" });
 Drizzle ORM with Neon. Schema lives in `database/schema.ts`.
 
 **Existing tables**:
-- `user` — better-auth user
+- `user` — better-auth user (with stripeCustomerId)
 - `session` — active sessions
 - `account` — OAuth accounts
 - `verification` — email tokens
 - `images` — uploaded image metadata
+- `wallets` — user wallet balance for top-ups
+- `transactions` — payment & top-up history
+- `subscriptions` — Stripe subscription status
+- `webhookEvents` — Stripe webhook idempotency tracking
 - `generatedThumbnails` — AI generation history
 
 **Add table**:
@@ -131,7 +170,7 @@ export const posts = pgTable("posts", {
 });
 ```
 
-**Push schema**: `bun run drizzle-kit push`
+**Push schema**: `bun run db:push`
 
 ---
 
@@ -150,33 +189,94 @@ const publicUrl = getPublicUrl(key);
 
 ---
 
+## Payment (Stripe)
+
+Built-in Stripe integration for subscriptions and wallet top-ups.
+
+**Tables:**
+- `subscriptions` — User subscription status
+- `wallets` — Balance tracking for top-ups
+- `transactions` — Payment history
+- `webhookEvents` — Idempotency tracking
+
+**Client Hooks:**
+```tsx
+// Subscription
+import { useSubscription } from "@/hooks/use-stripe";
+const { subscribe, isLoading, error } = useSubscription();
+await subscribe("pro", "monthly"); // tier: 'basic' | 'pro', cycle: 'monthly' | 'yearly'
+
+// Wallet Top-up
+import { useTopup } from "@/hooks/use-stripe";
+const { topup, isLoading, error } = useTopup();
+await topup(1000); // amount in cents ($10.00)
+```
+
+**Server Helpers:**
+```tsx
+import { 
+  createSubscriptionCheckoutSession, 
+  createTopupCheckoutSession,
+  createCustomerPortalSession,
+  cancelSubscription 
+} from "@/lib/stripe";
+```
+
+**Setup:**
+1. Add Stripe keys to `.env`
+2. Create Price IDs in Stripe Dashboard (Basic & Pro, Monthly & Yearly)
+3. Set webhook endpoint to `/api/webhooks/stripe`
+4. Push schema: `bun run db:push`
+
+**Pricing Page:**
+- Visit `/pricing` to see the pricing page
+- Supports monthly/yearly toggle with 20% savings
+- Uses Stripe Checkout for secure payments
+- Built-in components in `components/pricing/`
+
+---
+
 ## Design System
 
-**Dark mode only**. Colors in `app/globals.css`:
-- `--primary` — accent (default blue #3b82f6)
-- `--background` — pure black
-- `--foreground` — text
-- `--card` — elevated surfaces
-- `--border` — dividers
-- `--muted` — secondary backgrounds
-- `--destructive` — errors
+**Dark mode only** using DaisyUI's "black" theme. Styles in `app/globals.css`:
 
-**Styling patterns**:
-- Use `cn()` for conditional classes
+**DaisyUI Theme Classes** (via `data-theme="black"`):
+- `bg-base-100` — background
+- `bg-base-200` — elevated surfaces
+- `bg-base-300` — borders/dividers
+- `text-base-content` — primary text
+- `text-primary` — accent text
+- `btn-primary` — primary button
+- `btn-ghost` — subtle button
+- `card` — card component
+- `badge` — badge component
+
+**Custom Utilities**:
 - Glass-morphism: `border-white/10 bg-white/5 hover:bg-white/10`
-- Spacing: Tailwind defaults
+- Use `cn()` from `lib/utils.ts` for conditional classes
+
+**Tailwind v4 Import**:
+```css
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "daisyui" {
+  themes: black --default;
+}
+```
 
 ---
 
 ## Scripts
 
 ```bash
-bun run dev              # Dev server (turbo)
-bun run build            # Production build
-bun run check            # Biome lint + format check
-bun run format           # Biome format fix
-bun run drizzle-kit push # Push schema changes
-bun run scripts/init-db.ts # One-time DB setup
+bun run dev                  # Dev server
+bun run build                # Production build
+bun run check                # Biome lint + format check
+bun run format               # Biome format fix
+bun run db:push              # Push schema changes
+bun run db:generate          # Generate migration files
+bun run db:migrate           # Run migrations
+bun run scripts/init-db.ts   # One-time DB setup
 ```
 
 ---
@@ -209,6 +309,15 @@ R2_ACCESS_KEY_ID=...
 R2_SECRET_ACCESS_KEY=...
 R2_BUCKET_NAME=...
 R2_PUBLIC_URL=https://cdn.example.com
+
+# Stripe (optional)
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_PRICE_BASIC_MONTHLY=price_...
+STRIPE_PRICE_BASIC_YEARLY=price_...
+STRIPE_PRICE_PRO_MONTHLY=price_...
+STRIPE_PRICE_PRO_YEARLY=price_...
 ```
 
 ---

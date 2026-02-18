@@ -34,6 +34,9 @@ export default function Footer() {
             <Link href="/dashboard" className="link link-hover text-sm">
               Dashboard
             </Link>
+            <Link href="/pricing" className="link link-hover text-sm">
+              Pricing
+            </Link>
           </nav>
 
           <nav className="flex flex-col gap-2">
