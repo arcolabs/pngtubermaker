@@ -15,23 +15,20 @@ export default function Header() {
         <div className="navbar-start">
           <Link
             href="/"
-            className="flex items-center gap-2.5 group select-none"
+            className="flex items-center group select-none"
             onContextMenu={(e) => e.preventDefault()}
           >
             <Image
               src={brand.logo.svgPath}
               alt={brand.logo.alt}
-              width={48}
+              width={120}
               height={48}
-              className="h-10 w-10 sm:h-12 sm:w-12 transition-transform duration-200 group-hover:scale-105 pointer-events-none select-none"
+              className="h-10 sm:h-12 w-auto transition-transform duration-200 group-hover:scale-105 pointer-events-none select-none"
               priority
               draggable={false}
               onContextMenu={(e) => e.preventDefault()}
               onDragStart={(e) => e.preventDefault()}
             />
-            <span className="text-lg sm:text-xl font-semibold text-base-content tracking-tight group-hover:text-primary transition-colors duration-200 select-none">
-              {brand.name}
-            </span>
           </Link>
         </div>
 

@@ -45,9 +45,9 @@ export default function PricingPage() {
   const displayError = subscribeError || cancelMessage;
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-base-100">
       {success && (
-        <div className="fixed left-1/2 top-4 z-50 w-full max-w-md -translate-x-1/2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-6 py-4 text-emerald-400 shadow-lg">
+        <div className="fixed left-1/2 top-4 z-50 w-full max-w-md -translate-x-1/2 rounded-xl border border-success/30 bg-success/10 px-6 py-4 text-success shadow-lg">
           <div className="flex items-center gap-3">
             <svg
               className="h-5 w-5 shrink-0"
@@ -69,7 +69,7 @@ export default function PricingPage() {
       )}
 
       {displayError && (
-        <div className="fixed left-1/2 top-4 z-50 w-full max-w-md -translate-x-1/2 rounded-xl border border-red-500/30 bg-red-500/10 px-6 py-4 text-red-400 shadow-lg">
+        <div className="fixed left-1/2 top-4 z-50 w-full max-w-md -translate-x-1/2 rounded-xl border border-error/30 bg-error/10 px-6 py-4 text-error shadow-lg">
           <div className="flex items-center gap-3">
             <svg
               className="h-5 w-5 shrink-0"

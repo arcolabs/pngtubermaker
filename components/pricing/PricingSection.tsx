@@ -29,10 +29,10 @@ export function PricingSection({
     <section className="w-full py-24">
       <div className="container mx-auto max-w-5xl px-4">
         <div className="mb-16 text-center">
-          <h2 className="mb-4 text-4xl font-bold text-white md:text-5xl">
+          <h2 className="mb-4 text-4xl font-bold text-base-content md:text-5xl">
             Simple, transparent pricing
           </h2>
-          <p className="mx-auto max-w-2xl text-lg text-zinc-400">
+          <p className="mx-auto max-w-2xl text-lg text-base-content/60">
             Choose the plan that fits your needs. Upgrade or downgrade at any
             time.
           </p>
@@ -75,7 +75,7 @@ export function PricingSection({
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-base-content/50">
             All plans include a 14-day free trial. No credit card required.
           </p>
         </div>

@@ -39,31 +39,31 @@ export function PricingCard({
         "relative flex flex-col rounded-2xl p-8 transition-all duration-300",
         highlighted
           ? "border-2 border-primary bg-gradient-to-b from-primary/10 to-transparent"
-          : "border border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10",
+          : "border border-base-content/10 bg-base-200/50 hover:border-base-content/20 hover:bg-base-200",
       )}
     >
       {highlighted && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-xs font-semibold text-white">
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-xs font-semibold text-primary-content">
           Most Popular
         </div>
       )}
 
       <div className="mb-6">
-        <h3 className="mb-2 text-xl font-bold text-white">{name}</h3>
-        <p className="text-sm text-zinc-400">{description}</p>
+        <h3 className="mb-2 text-xl font-bold text-base-content">{name}</h3>
+        <p className="text-sm text-base-content/60">{description}</p>
       </div>
 
       <div className="mb-6">
         <div className="flex items-baseline gap-2">
-          <span className="text-4xl font-bold text-white">
+          <span className="text-4xl font-bold text-base-content">
             {formatPrice(price)}
           </span>
-          <span className="text-zinc-500">
+          <span className="text-base-content/50">
             /{cycle === "monthly" ? "mo" : "yr"}
           </span>
         </div>
         {monthlyEquivalent && (
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-base-content/50">
             {formatPrice(monthlyEquivalent)}/month billed annually
           </p>
         )}
@@ -73,7 +73,7 @@ export function PricingCard({
         {features.map((feature) => (
           <li key={feature} className="flex items-start gap-3">
             <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-            <span className="text-sm text-zinc-300">{feature}</span>
+            <span className="text-sm text-base-content/70">{feature}</span>
           </li>
         ))}
       </ul>
@@ -83,10 +83,8 @@ export function PricingCard({
         onClick={() => onSubscribe(tier)}
         disabled={isLoading}
         className={cn(
-          "w-full rounded-xl py-3 font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:opacity-50",
-          highlighted
-            ? "bg-primary text-white hover:bg-primary/90"
-            : "border border-white/20 bg-white/5 text-white hover:bg-white/10",
+          "w-full rounded-xl py-3 font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 disabled:opacity-50",
+          highlighted ? "btn btn-primary" : "btn btn-outline",
         )}
       >
         {isLoading ? "Loading..." : `Subscribe to ${name}`}

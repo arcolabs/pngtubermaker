@@ -1,13 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import { memo } from "react";
 
 interface Testimonial {
   id: string;
   name: string;
   role: string;
-  company?: string;
+  platform?: string;
   content: string;
+  avatar: string;
 }
 
 interface TestimonialsProps {
@@ -19,27 +21,30 @@ interface TestimonialsProps {
 const DEFAULT_TESTIMONIALS: Testimonial[] = [
   {
     id: "1",
-    name: "Alex Thompson",
-    role: "Full Stack Developer",
-    company: "Tech Startup",
+    name: "Kira Stream",
+    role: "VTuber",
+    platform: "Twitch",
     content:
-      "This template saved me hours of setup time. Everything is configured and ready to go. I was able to ship my MVP in a fraction of the time.",
+      "Finally found the perfect tool to create my PNGTuber avatar! The expressions are so smooth and my viewers love the new look. Set up took less than 10 minutes.",
+    avatar: "/avatar/avatar_003.jpg",
   },
   {
     id: "2",
-    name: "Jordan Lee",
-    role: "Indie Hacker",
-    company: "Solo Founder",
+    name: "PixelGamer",
+    role: "Content Creator",
+    platform: "YouTube",
     content:
-      "The authentication and database setup was seamless. Finally, a starter template that actually works out of the box.",
+      "As someone who can't draw, this is a game-changer. My avatar looks professional and the auto-generated expressions match my voice perfectly. Highly recommend!",
+    avatar: "/avatar/avatar_004.jpg",
   },
   {
     id: "3",
-    name: "Sam Rivera",
-    role: "Engineering Lead",
-    company: "Digital Agency",
+    name: "LunaLive",
+    role: "Indie Streamer",
+    platform: "Kick",
     content:
-      "We use this template for all our client projects. The code quality is excellent and it's easy to customize. Highly recommended.",
+      "Switched from a complex Live2D setup to this and never looked back. It's lightweight, looks great, and saves me so much time. Best decision for my channel!",
+    avatar: "/avatar/avatar_005.jpg",
   },
 ];
 
@@ -51,7 +56,7 @@ const TestimonialCard = memo(function TestimonialCard({
   index: number;
 }) {
   return (
-    <div className="card border border-base-content/10 hover:border-base-content/20 transition-colors">
+    <div className="card border border-base-content/10 hover:border-primary/30 transition-all duration-300 hover:shadow-lg bg-white">
       <div className="card-body">
         <div className="flex justify-between items-start">
           <div className="text-primary/30">
@@ -70,16 +75,20 @@ const TestimonialCard = memo(function TestimonialCard({
           </span>
         </div>
 
-        <p className="text-base-content/70 leading-relaxed text-sm lg:text-base flex-1">
+        <p className="text-base-content/70 leading-relaxed text-sm lg:text-base flex-1 mt-4">
           "{testimonial.content}"
         </p>
 
-        <div className="flex items-center gap-4 mt-4">
-          <div className="avatar placeholder">
-            <div className="bg-primary/10 text-primary border border-primary/20 w-12 rounded-full">
-              <span className="text-lg">
-                {testimonial.name.charAt(0).toUpperCase()}
-              </span>
+        <div className="flex items-center gap-4 mt-6">
+          <div className="avatar">
+            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/20 relative">
+              <Image
+                src={testimonial.avatar}
+                alt={testimonial.name}
+                fill
+                className="object-cover"
+                sizes="48px"
+              />
             </div>
           </div>
           <div className="flex-1 min-w-0">
@@ -88,7 +97,7 @@ const TestimonialCard = memo(function TestimonialCard({
             </h4>
             <p className="text-base-content/50 text-xs lg:text-sm truncate">
               {testimonial.role}
-              {testimonial.company && ` \u00B7 ${testimonial.company}`}
+              {testimonial.platform && ` · ${testimonial.platform}`}
             </p>
           </div>
         </div>
@@ -98,12 +107,12 @@ const TestimonialCard = memo(function TestimonialCard({
 });
 
 export default function Testimonials({
-  title = "What Developers Are Saying",
-  description = "Join thousands of developers who use this template for their projects.",
+  title = "Loved by Streamers Worldwide",
+  description = "Join thousands of content creators who transformed their streaming presence with PNGTuber avatars.",
   testimonials = DEFAULT_TESTIMONIALS,
 }: TestimonialsProps) {
   return (
-    <section className="py-20">
+    <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-[1.1] text-base-content mb-6">
@@ -114,7 +123,7 @@ export default function Testimonials({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (
             <TestimonialCard
               key={testimonial.id}

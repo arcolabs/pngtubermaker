@@ -1,5 +1,6 @@
 "use client";
 
+import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
 
 interface FAQItem {
@@ -18,102 +19,131 @@ interface FAQProps {
 
 const defaultFaqData: FAQItem[] = [
   {
-    id: "free",
-    question: "Is this template really free to use?",
+    id: "1",
+    question: "What is PNGTuberMaker and how does it work?",
     answer:
-      "Yes — this template is completely free and open source. Use it for personal projects, commercial products, or anything else. No attribution required.",
+      "PNGTuberMaker is an AI-powered tool that lets you create custom PNG avatars for streaming. Just describe your character or upload a reference image, and our AI will generate multiple avatar options — complete with expressions and optional animations. No art skills needed.",
   },
   {
-    id: "tech-stack",
-    question: "What technologies are included in this template?",
+    id: "2",
+    question: "Do I need to know how to draw to use PNGTuberMaker?",
     answer:
-      "The template includes Next.js 16, React 19, Tailwind CSS v4, Drizzle ORM, better-auth for authentication, and R2-compatible storage. Everything you need to ship a production app.",
+      'Not at all! PNGTuberMaker is designed for everyone — from complete beginners to experienced creators. You can simply write a short description (e.g. "anime cat girl with blue hair") or upload a reference picture, and the AI handles the rest.',
   },
   {
-    id: "customize",
-    question: "How easy is it to customize?",
+    id: "3",
+    question: "Can I upload my own sketches or reference images?",
     answer:
-      "Very easy. All brand-specific content uses environment variables. Just update the config and replace the placeholder content with your own. The component structure is modular and easy to extend.",
+      "Yes. You can upload sketches, character references, or screenshots. The AI will use them to match your style and keep your character consistent across expressions and animations.",
   },
   {
-    id: "deployment",
-    question: "How do I deploy this?",
+    id: "4",
+    question: "What file formats do you export?",
     answer:
-      "The template is optimized for Vercel deployment but works with any platform that supports Next.js. Database uses Neon which is serverless-ready, and R2 works great with Vercel or Cloudflare.",
+      "We support transparent PNG for static avatars and GIF / MP4 / WebM for animations. Perfect for OBS, Discord, or Twitch overlays.",
   },
   {
-    id: "database",
-    question: "Do I need to set up a database?",
+    id: "5",
+    question: "Are the avatars I generate unique and safe to use?",
     answer:
-      "Yes, you'll need a Neon PostgreSQL database. The template includes the schema and all the necessary setup scripts. Just create a project on Neon and add your connection string to .env.",
+      "Yes. All avatars are generated from your own inputs and are unique. You get a full license to use them for streaming, content creation, and commercial use.",
   },
   {
-    id: "auth",
-    question: "Is authentication included?",
+    id: "6",
+    question: "Can I use the avatars commercially?",
     answer:
-      "Yes, better-auth is configured and ready to use. It supports email/password, OAuth (Google, GitHub), and session management. Just configure your OAuth credentials in the environment variables.",
+      "Absolutely. The Pro plan comes with a full commercial license. You can use your avatars in streams, videos, thumbnails, merchandise, or even resell to clients.",
+  },
+  {
+    id: "7",
+    question: "What's included in the free plan?",
+    answer:
+      "The free plan lets you try PNGTuberMaker with 3 avatar generations per month (with watermark and low resolution). It's perfect for testing the tool before upgrading to Pro to unlock HD export, watermark-free assets, and unlimited expression packs.",
+  },
+  {
+    id: "8",
+    question: "How long does it take to generate an avatar?",
+    answer:
+      "Most avatars are generated in under 1 minute. Expression packs and short animations take 1–3 minutes depending on complexity. You can preview, pick your favorite, and refine instantly.",
   },
 ];
 
 export default function FAQ({
   title = "Frequently Asked Questions",
-  description = "The most common questions, answered.",
+  description = "Everything you need to know about PNGTuberMaker.",
   supportText = "Have more questions?",
-  supportLinkText = "Open an issue",
+  supportLinkText = "Contact us",
   faqData = defaultFaqData,
 }: FAQProps) {
-  const [openId, setOpenId] = useState<string | null>(faqData[0]?.id ?? null);
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  const toggleFaq = (id: string) => {
+    setOpenId(openId === id ? null : id);
+  };
 
   return (
-    <section id="faq" className="py-20" aria-labelledby="faq-heading">
-      <div className="max-w-3xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2
-            id="faq-heading"
-            className="font-semibold text-2xl lg:text-4xl leading-[1.1] text-base-content mb-3"
-          >
-            {title}
-          </h2>
-          <p className="text-base-content/50">{description}</p>
-        </div>
+    <section id="faq" className="py-20 bg-white" aria-labelledby="faq-heading">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2
+          id="faq-heading"
+          className="text-center text-3xl font-bold text-gray-900 mb-16"
+        >
+          {title}
+        </h2>
 
-        <div className="flex flex-col gap-2">
+        <div className="space-y-4">
           {faqData.map((item) => (
             <div
               key={item.id}
-              className={`collapse collapse-arrow border border-base-content/10 transition-colors ${
+              className={`border rounded-lg bg-white shadow-sm transition-all duration-200 ${
                 openId === item.id
-                  ? "collapse-open border-primary/30"
-                  : "collapse-close"
+                  ? "border-gray-400"
+                  : "border-gray-200 hover:border-gray-300"
               }`}
             >
-              <input
-                type="radio"
-                name="faq-accordion"
-                checked={openId === item.id}
-                onChange={() => setOpenId(openId === item.id ? null : item.id)}
-              />
-              <div className="collapse-title font-medium text-base-content">
-                {item.question}
-              </div>
-              <div className="collapse-content text-base-content/60">
-                {typeof item.answer === "string" ? (
-                  <p>{item.answer}</p>
-                ) : (
-                  item.answer
-                )}
+              <button
+                type="button"
+                onClick={() => toggleFaq(item.id)}
+                className="w-full text-left p-6 flex items-center justify-between text-gray-800 hover:text-gray-900 transition-colors outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus:ring-0"
+                aria-expanded={openId === item.id}
+              >
+                <span className="text-lg font-medium pr-8">
+                  {item.question}
+                </span>
+                <span className="flex-shrink-0">
+                  {openId === item.id ? (
+                    <Minus className="w-6 h-6" />
+                  ) : (
+                    <Plus className="w-6 h-6" />
+                  )}
+                </span>
+              </button>
+              <div
+                className={`grid transition-all duration-300 ease-in-out ${
+                  openId === item.id ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="border-t border-gray-200 p-6 text-gray-700 leading-relaxed">
+                    {typeof item.answer === "string" ? (
+                      <p>{item.answer}</p>
+                    ) : (
+                      item.answer
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-12 text-center text-sm text-base-content/50">
+        <div className="mt-12 text-center text-sm text-gray-500">
           {supportText}{" "}
           <a
-            href="https://github.com"
+            href="https://discord.gg/zysPAnvP8f"
             target="_blank"
             rel="noopener noreferrer"
-            className="link link-primary"
+            className="text-primary hover:underline font-medium"
           >
             {supportLinkText}
           </a>

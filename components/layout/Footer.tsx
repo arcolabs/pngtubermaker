@@ -12,17 +12,16 @@ export default function Footer() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5 group">
+            <Link href="/" className="flex items-center group">
               <Image
                 src={brand.logo.svgPath}
                 alt={brand.logo.alt}
-                width={40}
+                width={120}
                 height={40}
-                className="h-10 w-10"
+                className="h-10 w-auto"
                 priority
                 draggable={false}
               />
-              <span className="font-semibold text-xl">{brand.name}</span>
             </Link>
             <p className="text-sm text-base-content/50 mt-3 max-w-xs">
               {brand.description}

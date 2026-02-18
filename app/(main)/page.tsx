@@ -6,9 +6,11 @@ import {
   PricingSection,
   type Tier,
 } from "@/components/pricing";
-import CTA from "@/components/sections/CTA";
+import AITools from "@/components/sections/AITools";
+import CharacterShowcase from "@/components/sections/CharacterShowcase";
+import Comparison from "@/components/sections/Comparison";
+import DiscordCTA from "@/components/sections/DiscordCTA";
 import FAQ from "@/components/sections/FAQ";
-import Features from "@/components/sections/Features";
 import Hero from "@/components/sections/Hero";
 import Testimonials from "@/components/sections/Testimonials";
 import { useSubscription } from "@/hooks/use-stripe";
@@ -30,11 +32,13 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Features />
+      <CharacterShowcase />
+      <AITools />
+      <Comparison />
       <PricingSection onSubscribe={handleSubscribe} isLoading={isLoading} />
       <Testimonials />
-      <CTA />
       <FAQ />
+      <DiscordCTA />
     </>
   );
 }

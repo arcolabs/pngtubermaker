@@ -36,7 +36,7 @@ export const brand = {
   },
 
   theme: {
-    primaryColor: process.env.NEXT_PUBLIC_PRIMARY_COLOR || "#3b82f6",
+    primaryColor: process.env.NEXT_PUBLIC_PRIMARY_COLOR || "#06b6d4",
   },
 } as const;
 

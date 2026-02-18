@@ -11,6 +11,8 @@ export function useSubscription() {
     setIsLoading(true);
     setError(null);
 
+    const controller = new AbortController();
+
     try {
       const response = await fetch("/api/payments/subscribe", {
         method: "POST",
@@ -18,6 +20,7 @@ export function useSubscription() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ tier, cycle }),
+        signal: controller.signal,
       });
 
       const data = await response.json();
@@ -30,6 +33,9 @@ export function useSubscription() {
         window.location.href = data.url;
       }
     } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        return;
+      }
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setIsLoading(false);
@@ -47,6 +53,8 @@ export function useTopup() {
     setIsLoading(true);
     setError(null);
 
+    const controller = new AbortController();
+
     try {
       const response = await fetch("/api/payments/topup", {
         method: "POST",
@@ -54,6 +62,7 @@ export function useTopup() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ amount: amountInCents }),
+        signal: controller.signal,
       });
 
       const data = await response.json();
@@ -66,6 +75,9 @@ export function useTopup() {
         window.location.href = data.url;
       }
     } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        return;
+      }
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setIsLoading(false);

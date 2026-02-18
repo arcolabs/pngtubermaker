@@ -17,6 +17,7 @@ async function initDb() {
       "email" TEXT NOT NULL UNIQUE,
       "email_verified" BOOLEAN NOT NULL,
       "image" TEXT,
+      "stripe_customer_id" TEXT UNIQUE,
       "created_at" TIMESTAMP NOT NULL,
       "updated_at" TIMESTAMP NOT NULL
     )
@@ -103,6 +104,67 @@ async function initDb() {
     )
   `;
   console.log("✓ generated_thumbnails table created");
+
+  // Create wallets table (for user wallet balance)
+  await sql`
+    CREATE TABLE IF NOT EXISTS "wallets" (
+      "id" TEXT PRIMARY KEY,
+      "user_id" TEXT NOT NULL UNIQUE REFERENCES "user"("id") ON DELETE CASCADE,
+      "balance" INTEGER NOT NULL DEFAULT 0,
+      "currency" TEXT NOT NULL DEFAULT 'usd',
+      "created_at" TIMESTAMP NOT NULL DEFAULT NOW(),
+      "updated_at" TIMESTAMP NOT NULL DEFAULT NOW()
+    )
+  `;
+  console.log("✓ wallets table created");
+
+  // Create transactions table (for payment history)
+  await sql`
+    CREATE TABLE IF NOT EXISTS "transactions" (
+      "id" TEXT PRIMARY KEY,
+      "user_id" TEXT NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
+      "type" TEXT NOT NULL,
+      "status" TEXT NOT NULL,
+      "amount" TEXT NOT NULL,
+      "currency" TEXT NOT NULL DEFAULT 'usd',
+      "description" TEXT,
+      "stripe_session_id" TEXT,
+      "stripe_payment_intent_id" TEXT,
+      "metadata" TEXT,
+      "created_at" TIMESTAMP NOT NULL DEFAULT NOW()
+    )
+  `;
+  console.log("✓ transactions table created");
+
+  // Create subscriptions table (for Stripe subscriptions)
+  await sql`
+    CREATE TABLE IF NOT EXISTS "subscriptions" (
+      "id" TEXT PRIMARY KEY,
+      "user_id" TEXT NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
+      "stripe_customer_id" TEXT NOT NULL,
+      "stripe_subscription_id" TEXT NOT NULL UNIQUE,
+      "stripe_price_id" TEXT NOT NULL,
+      "status" TEXT NOT NULL,
+      "tier" TEXT NOT NULL,
+      "current_period_start" TIMESTAMP,
+      "current_period_end" TIMESTAMP,
+      "cancel_at_period_end" BOOLEAN NOT NULL DEFAULT FALSE,
+      "canceled_at" TIMESTAMP,
+      "created_at" TIMESTAMP NOT NULL DEFAULT NOW(),
+      "updated_at" TIMESTAMP NOT NULL DEFAULT NOW()
+    )
+  `;
+  console.log("✓ subscriptions table created");
+
+  // Create webhook_events table (for Stripe webhook idempotency)
+  await sql`
+    CREATE TABLE IF NOT EXISTS "webhook_events" (
+      "id" TEXT PRIMARY KEY,
+      "type" TEXT NOT NULL,
+      "processed_at" TIMESTAMP NOT NULL DEFAULT NOW()
+    )
+  `;
+  console.log("✓ webhook_events table created");
 
   console.log("\n✅ All tables created successfully!");
 }
