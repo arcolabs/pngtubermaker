@@ -15,7 +15,7 @@ import {
   grantSubscriptionCredits,
   TOPUP_PACKAGES,
 } from "@/lib/services/credits";
-import { notifyNewSubscription } from "@/lib/services/lark";
+import { notifyNewSubscription, notifyTopup } from "@/lib/services/lark";
 import {
   PRICING_CONFIG,
   STRIPE_WEBHOOK_SECRET,
@@ -203,6 +203,32 @@ async function handleCheckoutSessionCompleted(
       `Credit top-up: ${creditsToGrant} credits`,
       { stripeSessionId: session.id, packageId },
     );
+
+    // Notify team via Lark (non-blocking)
+    const topupUser = await db
+      .select({ email: user.email, name: user.name })
+      .from(user)
+      .where(eq(user.id, userId))
+      .limit(1);
+
+    if (topupUser[0]) {
+      const packageNames: Record<string, string> = {
+        starter: "Starter",
+        value: "Value",
+        power: "Power",
+      };
+
+      notifyTopup({
+        userId,
+        email: topupUser[0].email,
+        name: topupUser[0].name,
+        packageName: packageId
+          ? packageNames[packageId] || packageId
+          : "Custom",
+        creditsGranted: creditsToGrant,
+        amountPaid: `$${(amount / 100).toFixed(2)}`,
+      }).catch(() => {}); // fire-and-forget
+    }
   }
 }
 
