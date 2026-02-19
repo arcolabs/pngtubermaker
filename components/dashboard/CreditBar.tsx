@@ -5,86 +5,52 @@ import {
   Clock,
   Coins,
   Crown,
-  ExternalLink,
+  Gift,
   Settings,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSubscriptionStore } from "@/hooks/use-subscription-store";
+import { formatDate, getDaysUntil } from "@/lib/utils";
 
-interface CreditBalance {
-  total: number;
-  subscription: number;
-  purchased: number;
-  expiresAt?: string;
-}
-
-interface Subscription {
-  tier: "free" | "start" | "pro";
-  expiresAt?: string;
-}
-
-interface CreditBarProps {
-  balance: CreditBalance | null;
-  subscription: Subscription | null;
-  creditsUsed: number;
-  monthlyLimit: number;
-  loading?: boolean;
-}
-
-function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-}
-
-function getDaysUntil(dateStr: string): number {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffMs = date.getTime() - now.getTime();
-  return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-}
-
-export default function CreditBar({
-  balance,
-  subscription,
-  creditsUsed,
-  monthlyLimit,
-  loading = false,
-}: CreditBarProps) {
-  const tier = subscription?.tier ?? "free";
-  const totalCredits = balance?.total ?? 0;
+export default function CreditBar() {
+  const { credits, subscription, isLoaded, refresh } = useSubscriptionStore();
   const [portalLoading, setPortalLoading] = useState(false);
 
-  const usagePercentage = useMemo(() => {
-    if (monthlyLimit <= 0) return 0;
-    return Math.min(100, Math.round((creditsUsed / monthlyLimit) * 100));
-  }, [creditsUsed, monthlyLimit]);
+  // Self-hydrate: fetch data on mount if not already loaded
+  useEffect(() => {
+    if (!isLoaded) refresh();
+  }, [isLoaded, refresh]);
+
+  const tier = subscription?.tier ?? "free";
+  const totalCredits = credits?.total ?? 0;
+  const subCredits = credits?.subscription ?? 0;
+  const purchasedCredits = credits?.purchased ?? 0;
+  const expiresAt = credits?.subscriptionExpiresAt;
+
+  const monthlyLimit = subscription?.monthlyCredits ?? 0;
 
   const expirationInfo = useMemo(() => {
-    if (!subscription?.expiresAt) return null;
-    const daysLeft = getDaysUntil(subscription.expiresAt);
-    const isExpiringSoon = daysLeft <= 7;
+    if (!expiresAt) return null;
+    const daysLeft = getDaysUntil(expiresAt);
     return {
-      date: formatDate(subscription.expiresAt),
+      date: formatDate(expiresAt),
       daysLeft,
-      isExpiringSoon,
+      isExpiringSoon: daysLeft <= 7,
     };
-  }, [subscription?.expiresAt]);
+  }, [expiresAt]);
 
-  if (loading) {
+  // For the segmented bar: calculate proportions
+  const barSegments = useMemo(() => {
+    if (totalCredits <= 0) return { sub: 0, purchased: 0 };
+    return {
+      sub: Math.round((subCredits / totalCredits) * 100),
+      purchased: Math.round((purchasedCredits / totalCredits) * 100),
+    };
+  }, [totalCredits, subCredits, purchasedCredits]);
+
+  if (!isLoaded) {
     return (
       <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-gray-200/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)] animate-pulse">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -138,6 +104,16 @@ export default function CreditBar({
     }
   }
 
+  // Determine subscription row label/color based on tier
+  const isFreeUser = tier === "free";
+  const subLabel = isFreeUser ? "Welcome Credits" : "Subscription Credits";
+  const SubIcon = isFreeUser ? Gift : Sparkles;
+  // Cyan for paid subscription, violet for free welcome
+  const subBarColor = isFreeUser
+    ? "bg-violet-400"
+    : "bg-gradient-to-r from-primary to-cyan-400";
+  const subDotColor = isFreeUser ? "bg-violet-400" : "bg-primary";
+
   return (
     <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-gray-200/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)]">
       {/* Top: Credits + Tier */}
@@ -158,40 +134,78 @@ export default function CreditBar({
 
         <div className="sm:ml-auto flex flex-col items-start sm:items-end gap-2">
           {getTierBadge()}
-          {expirationInfo && tier !== "free" && (
+        </div>
+      </div>
+
+      {/* Segmented credit bar */}
+      <div className="mt-5">
+        <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden flex">
+          {barSegments.sub > 0 && (
             <div
-              className={`flex items-center gap-1.5 text-xs ${expirationInfo.isExpiringSoon ? "text-amber-600" : "text-gray-400"}`}
-            >
-              <Clock className="w-3.5 h-3.5" />
-              <span>
-                {expirationInfo.isExpiringSoon
-                  ? `Renews in ${expirationInfo.daysLeft} day${expirationInfo.daysLeft !== 1 ? "s" : ""}`
-                  : `Renews ${expirationInfo.date}`}
-              </span>
-            </div>
+              className={`h-full ${subBarColor} transition-all duration-700 ease-out`}
+              style={{ width: `${barSegments.sub}%` }}
+            />
+          )}
+          {barSegments.purchased > 0 && (
+            <div
+              className="h-full bg-emerald-400 transition-all duration-700 ease-out"
+              style={{ width: `${barSegments.purchased}%` }}
+            />
           )}
         </div>
       </div>
 
-      {/* Usage progress bar */}
-      <div className="mt-5">
-        <div className="flex justify-between text-sm mb-2">
-          <span className="text-gray-500">Credits used this month</span>
-          <span className="font-semibold text-gray-900">
-            {creditsUsed.toLocaleString()} / {monthlyLimit.toLocaleString()}
-          </span>
+      {/* Legend rows */}
+      <div className="mt-3 space-y-2">
+        {/* Subscription / Welcome row */}
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center gap-2 text-gray-600">
+            <span
+              className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${subDotColor}`}
+            />
+            <SubIcon className="w-3.5 h-3.5" />
+            <span>{subLabel}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-gray-900">
+              {subCredits.toLocaleString()}
+              {!isFreeUser && monthlyLimit > 0 && (
+                <span className="text-gray-400 font-normal">
+                  {" "}
+                  / {monthlyLimit.toLocaleString()}
+                </span>
+              )}
+            </span>
+            {expirationInfo && (
+              <span
+                className={`inline-flex items-center gap-1 text-xs ${expirationInfo.isExpiringSoon ? "text-amber-600" : "text-gray-400"}`}
+              >
+                <Clock className="w-3 h-3" />
+                {isFreeUser
+                  ? expirationInfo.daysLeft <= 0
+                    ? "expired"
+                    : `expires ${expirationInfo.date}`
+                  : expirationInfo.isExpiringSoon
+                    ? `renews in ${expirationInfo.daysLeft}d`
+                    : `renews ${expirationInfo.date}`}
+              </span>
+            )}
+          </div>
         </div>
-        <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all duration-700 ease-out ${
-              usagePercentage > 80
-                ? "bg-gradient-to-r from-red-400 to-red-500"
-                : usagePercentage > 50
-                  ? "bg-gradient-to-r from-amber-400 to-amber-500"
-                  : "bg-gradient-to-r from-primary to-cyan-400"
-            }`}
-            style={{ width: `${Math.min(usagePercentage, 100)}%` }}
-          />
+
+        {/* Top-up row */}
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center gap-2 text-gray-600">
+            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-emerald-400" />
+            <ArrowUpCircle className="w-3.5 h-3.5" />
+            <span>Top-up Credits</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-gray-900">
+              {purchasedCredits.toLocaleString()}
+            </span>
+            <span className="text-xs text-gray-400">never expires</span>
+          </div>
         </div>
       </div>
 

@@ -1,62 +1,11 @@
-import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import AvatarGrid from "@/components/dashboard/AvatarGrid";
 import CreditBar from "@/components/dashboard/CreditBar";
 import QuickActionCard from "@/components/dashboard/QuickActionCard";
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import { subscriptions } from "@/database/schema";
 import { auth } from "@/lib/auth";
-import { getDatabase } from "@/lib/db";
 import { listUserAvatars } from "@/lib/services/avatars";
-import { getBalance, TIER_CREDITS } from "@/lib/services/credits";
-
-interface CreditBalance {
-  total: number;
-  subscription: number;
-  purchased: number;
-  expiresAt?: string;
-}
-
-interface Subscription {
-  tier: "free" | "start" | "pro";
-  expiresAt?: string;
-}
-
-async function getCreditBalance(userId: string): Promise<CreditBalance | null> {
-  try {
-    const balance = await getBalance(userId);
-    return {
-      total: balance.total,
-      subscription: balance.subscription,
-      purchased: balance.purchased,
-      expiresAt: balance.subscriptionExpiresAt?.toISOString(),
-    };
-  } catch {
-    return null;
-  }
-}
-
-async function getSubscription(userId: string): Promise<Subscription | null> {
-  try {
-    const db = getDatabase();
-    const sub = await db
-      .select()
-      .from(subscriptions)
-      .where(eq(subscriptions.userId, userId))
-      .limit(1);
-
-    if (!sub[0] || sub[0].status !== "active") {
-      return { tier: "free" };
-    }
-    return {
-      tier: sub[0].tier as "free" | "start" | "pro",
-      expiresAt: sub[0].currentPeriodEnd?.toISOString(),
-    };
-  } catch {
-    return null;
-  }
-}
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -70,15 +19,7 @@ export default async function DashboardPage() {
   if (!session) redirect("/login");
 
   const userId = session.user.id;
-  const [balance, subscription, recentAvatars] = await Promise.all([
-    getCreditBalance(userId),
-    getSubscription(userId),
-    listUserAvatars(userId, 6).catch(() => []),
-  ]);
-
-  const tier = (subscription?.tier ?? "free") as keyof typeof TIER_CREDITS;
-  const monthlyLimit = TIER_CREDITS[tier] || TIER_CREDITS.free;
-  const creditsUsed = balance?.subscription ?? 0;
+  const recentAvatars = await listUserAvatars(userId, 6).catch(() => []);
 
   return (
     <div className="min-h-screen bg-base-100">
@@ -100,12 +41,7 @@ export default async function DashboardPage() {
         <QuickActionCard />
 
         {/* Credits + Usage — full width */}
-        <CreditBar
-          balance={balance}
-          subscription={subscription}
-          creditsUsed={creditsUsed}
-          monthlyLimit={monthlyLimit}
-        />
+        <CreditBar />
 
         {/* Recent Avatars */}
         <div>

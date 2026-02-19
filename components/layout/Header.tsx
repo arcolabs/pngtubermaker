@@ -22,6 +22,7 @@ import {
 } from "@/hooks/use-subscription-store";
 import { brand } from "@/lib/brand";
 import type { Tier } from "@/lib/stripe";
+import { formatCreditsCompact } from "@/lib/utils";
 
 function useClickOutside(
   ref: React.RefObject<HTMLElement | null>,
@@ -58,13 +59,6 @@ const TIER_DISPLAY: Record<
     className: "bg-amber-100 text-amber-700 border-amber-200",
   },
 };
-
-function formatCredits(num: number): string {
-  if (num >= 1000) {
-    return `${(num / 1000).toFixed(1)}k`;
-  }
-  return num.toString();
-}
 
 function getCreditProgress(
   balance: CreditBalance | null,
@@ -257,10 +251,10 @@ export default function Header() {
                           <span>Credits</span>
                         </div>
                         <span className="text-sm font-semibold">
-                          {formatCredits(credits?.total ?? 0)}
+                          {formatCreditsCompact(credits?.total ?? 0)}
                           {monthlyCredits > 0 && (
                             <span className="text-xs text-base-content/40 font-normal ml-1">
-                              / {formatCredits(monthlyCredits)}
+                              / {formatCreditsCompact(monthlyCredits)}
                             </span>
                           )}
                         </span>

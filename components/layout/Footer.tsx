@@ -46,13 +46,8 @@ export default function Footer() {
             >
               Discord
             </Link>
-            <Link
-              href={brand.social.github || "https://github.com"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="link link-hover text-sm"
-            >
-              GitHub
+            <Link href="/partners" className="link link-hover text-sm">
+              Partners
             </Link>
           </nav>
 
@@ -95,13 +90,8 @@ export default function Footer() {
             >
               Discord
             </Link>
-            <Link
-              href={brand.social.github || "https://github.com"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="link link-hover"
-            >
-              GitHub
+            <Link href="/partners" className="link link-hover">
+              Partners
             </Link>
             <Link href="/legal/terms" className="link link-hover">
               Terms

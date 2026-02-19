@@ -14,6 +14,20 @@ export function formatDate(date: Date | string): string {
   }).format(d);
 }
 
+export function getDaysUntil(dateStr: string): number {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = date.getTime() - now.getTime();
+  return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+}
+
+export function formatCreditsCompact(num: number): string {
+  if (num >= 1000) {
+    return `${(num / 1000).toFixed(1)}k`;
+  }
+  return num.toString();
+}
+
 export function formatBytes(bytes: number, decimals = 2): string {
   if (bytes === 0) return "0 Bytes";
 

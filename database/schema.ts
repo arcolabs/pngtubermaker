@@ -210,6 +210,25 @@ export const avatarExpressions = pgTable("avatar_expressions", {
 });
 
 // ============================================================================
+// Partners (link exchange)
+// ============================================================================
+
+export const partners = pgTable("partners", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  url: text("url").notNull(),
+  description: text("description"),
+  // Either a logo image URL (uploaded to R2) or raw badge HTML from partner
+  logoUrl: text("logo_url"),
+  logoR2Key: text("logo_r2_key"),
+  badgeHtml: text("badge_html"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// ============================================================================
 // Legacy table (kept for migration compatibility, no longer used)
 // ============================================================================
 
@@ -266,6 +285,10 @@ export type Avatar = InferSelectModel<typeof avatars>;
 export type NewAvatar = InferInsertModel<typeof avatars>;
 export type AvatarExpression = InferSelectModel<typeof avatarExpressions>;
 export type NewAvatarExpression = InferInsertModel<typeof avatarExpressions>;
+
+// Partners
+export type Partner = InferSelectModel<typeof partners>;
+export type NewPartner = InferInsertModel<typeof partners>;
 
 // Legacy (deprecated)
 export type GeneratedAvatar = InferSelectModel<typeof generatedAvatars>;
