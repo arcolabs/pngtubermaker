@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/hooks/use-auth-store";
 import { brand } from "@/lib/brand";
@@ -35,6 +36,7 @@ function useClickOutside(
 }
 
 export default function Header() {
+  const pathname = usePathname();
   const { user, isHydrated, hydrate, signOut } = useAuthStore();
   const [isAvatarOpen, setIsAvatarOpen] = useState(false);
   const [creditBalance, setCreditBalance] = useState<CreditBalance | null>(
@@ -131,7 +133,11 @@ export default function Header() {
               <li>
                 <Link
                   href="/dashboard"
-                  className="text-base-content/70 hover:text-primary hover:bg-primary/10"
+                  className={
+                    pathname === "/dashboard"
+                      ? "text-primary font-medium bg-primary/10"
+                      : "text-base-content/70 hover:text-primary hover:bg-primary/10"
+                  }
                 >
                   Dashboard
                 </Link>
@@ -140,7 +146,11 @@ export default function Header() {
             <li>
               <Link
                 href="/pricing"
-                className="text-base-content/70 hover:text-primary hover:bg-primary/10"
+                className={
+                  pathname === "/pricing"
+                    ? "text-primary font-medium bg-primary/10"
+                    : "text-base-content/70 hover:text-primary hover:bg-primary/10"
+                }
               >
                 Pricing
               </Link>

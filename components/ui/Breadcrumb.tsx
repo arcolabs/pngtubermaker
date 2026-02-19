@@ -1,4 +1,6 @@
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { Fragment } from "react";
 
 interface BreadcrumbItem {
   label: string;
@@ -11,26 +13,25 @@ interface BreadcrumbProps {
 
 export default function Breadcrumb({ items }: BreadcrumbProps) {
   return (
-    <div className="breadcrumbs text-sm mb-8">
-      <ul>
-        {items.map((item) => {
-          const isLast = item === items[items.length - 1];
-
-          return (
-            <li key={`${item.label}-${item.href || "last"}`}>
-              {isLast ? (
-                <span className="text-base-content font-medium">
-                  {item.label}
-                </span>
-              ) : item.href ? (
-                <Link href={item.href}>{item.label}</Link>
-              ) : (
-                <span>{item.label}</span>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+    <nav className="flex items-center gap-1.5 text-sm text-gray-400 mb-6">
+      {items.map((item, i) => {
+        const key = item.href || item.label;
+        return (
+          <Fragment key={key}>
+            {i > 0 && <ChevronRight className="w-3.5 h-3.5" />}
+            {item.href ? (
+              <Link
+                href={item.href}
+                className="hover:text-primary transition-colors"
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <span className="text-gray-700 font-medium">{item.label}</span>
+            )}
+          </Fragment>
+        );
+      })}
+    </nav>
   );
 }
