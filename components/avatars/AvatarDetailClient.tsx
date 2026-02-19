@@ -63,7 +63,6 @@ export default function AvatarDetailClient({
   };
 
   const handleAddExpression = () => {
-    // TODO: Open expression selection modal
     console.log("Add expression");
   };
 
@@ -80,69 +79,76 @@ export default function AvatarDetailClient({
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap gap-3">
-        <button
-          type="button"
-          className="btn btn-primary gap-2"
-          onClick={handleDownload}
-          disabled={downloading}
-        >
-          <Download className="w-4 h-4" />
-          {downloading ? "Preparing..." : "Download ZIP"}
-        </button>
-
-        <select
-          className="select select-bordered select-sm"
-          value={selectedSize}
-          onChange={(e) => setSelectedSize(Number(e.target.value))}
-        >
-          <option value={512}>512x512 (Free)</option>
-          <option value={1080}>1080x1080 (Start+)</option>
-          <option value={2160}>2160x2160 (Pro)</option>
-        </select>
-
-        {canAddMore && (
+      <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm">
+        <h3 className="font-semibold text-gray-900 mb-4">Download</h3>
+        <div className="flex flex-wrap items-center gap-3">
+          <select
+            className="select select-bordered select-sm bg-white"
+            value={selectedSize}
+            onChange={(e) => setSelectedSize(Number(e.target.value))}
+          >
+            <option value={512}>512×512</option>
+            <option value={1080}>1080×1080</option>
+            <option value={2160}>2160×2160 (4K)</option>
+          </select>
           <button
             type="button"
-            className="btn btn-outline btn-sm gap-1"
-            onClick={handleAddExpression}
+            className="btn btn-sm border-0 text-white bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all"
+            onClick={handleDownload}
+            disabled={downloading}
           >
-            <Plus className="w-4 h-4" />
-            Add Expression
+            <Download className="w-4 h-4" />
+            {downloading ? "Preparing..." : "Download ZIP"}
           </button>
-        )}
-
-        <button
-          type="button"
-          className="btn btn-outline btn-sm btn-error gap-1"
-          onClick={() => setShowDeleteConfirm(true)}
-        >
-          <Trash2 className="w-4 h-4" />
-          Delete
-        </button>
+          {canAddMore && (
+            <button
+              type="button"
+              className="btn btn-sm btn-outline border-gray-200 hover:border-primary hover:text-primary"
+              onClick={handleAddExpression}
+            >
+              <Plus className="w-4 h-4" />
+              Add Expression
+            </button>
+          )}
+          <button
+            type="button"
+            className="btn btn-sm btn-ghost text-red-500 hover:bg-red-50 hover:text-red-600 ml-auto"
+            onClick={() => setShowDeleteConfirm(true)}
+          >
+            <Trash2 className="w-4 h-4" />
+            Delete
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {expressions.map((expression) => (
           <div key={expression.id} className="space-y-2">
-            <div className="aspect-square rounded-xl overflow-hidden bg-base-200 relative">
+            <div className="group relative aspect-square rounded-xl overflow-hidden bg-gray-50">
               {expression.status === "completed" && expression.imageUrl ? (
-                <img
-                  src={expression.imageUrl}
-                  alt={expressionLabels[expression.type] || expression.type}
-                  className="w-full h-full object-cover"
-                />
+                <>
+                  <img
+                    src={expression.imageUrl}
+                    alt={expressionLabels[expression.type] || expression.type}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-3">
+                    <span className="text-white text-xs font-medium">
+                      {expressionLabels[expression.type] || expression.type}
+                    </span>
+                  </div>
+                </>
               ) : expression.status === "generating" ? (
                 <div className="w-full h-full flex items-center justify-center">
                   <span className="loading loading-spinner loading-md text-primary" />
                 </div>
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-base-content/30">
+                <div className="w-full h-full flex items-center justify-center text-gray-300">
                   <span className="text-2xl">⏳</span>
                 </div>
               )}
             </div>
-            <p className="text-center text-sm capitalize">
+            <p className="text-center text-sm capitalize text-gray-500">
               {expressionLabels[expression.type] || expression.type}
             </p>
           </div>
@@ -152,23 +158,27 @@ export default function AvatarDetailClient({
       <div className="divider" />
 
       <div>
-        <h3 className="font-semibold mb-4">Generation Details</h3>
+        <h3 className="font-semibold mb-4 text-gray-900">Generation Details</h3>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
-            <dt className="text-base-content/60">Prompt</dt>
-            <dd className="mt-1">{avatar.prompt}</dd>
+            <dt className="text-gray-400">Prompt</dt>
+            <dd className="mt-1 text-gray-700">{avatar.prompt}</dd>
           </div>
           <div>
-            <dt className="text-base-content/60">Style</dt>
-            <dd className="mt-1 capitalize">{avatar.style}</dd>
+            <dt className="text-gray-400">Style</dt>
+            <dd className="mt-1 capitalize text-gray-700">{avatar.style}</dd>
           </div>
           <div>
-            <dt className="text-base-content/60">Credits used</dt>
-            <dd className="mt-1">{avatar.creditsUsed.toLocaleString()}</dd>
+            <dt className="text-gray-400">Credits used</dt>
+            <dd className="mt-1 text-gray-700">
+              {avatar.creditsUsed.toLocaleString()}
+            </dd>
           </div>
           <div>
-            <dt className="text-base-content/60">Created</dt>
-            <dd className="mt-1">{formatDate(avatar.createdAt)}</dd>
+            <dt className="text-gray-400">Created</dt>
+            <dd className="mt-1 text-gray-700">
+              {formatDate(avatar.createdAt)}
+            </dd>
           </div>
         </dl>
       </div>

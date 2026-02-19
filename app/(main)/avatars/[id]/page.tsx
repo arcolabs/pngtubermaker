@@ -1,8 +1,8 @@
-import { ArrowLeft } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import AvatarDetailClient from "@/components/avatars/AvatarDetailClient";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import { auth } from "@/lib/auth";
 
 interface AvatarDetail {
@@ -63,17 +63,18 @@ export default async function AvatarDetailPage({
   return (
     <div className="min-h-screen bg-base-100">
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <Link
-          href="/avatars"
-          className="inline-flex items-center gap-2 text-base-content/60 hover:text-base-content mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to My Avatars
-        </Link>
+        <Breadcrumb
+          items={[
+            { label: "My Avatars", href: "/avatars" },
+            { label: data.avatar.name },
+          ]}
+        />
 
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold">{data.avatar.name}</h1>
-          <p className="text-base-content/60">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            {data.avatar.name}
+          </h1>
+          <p className="text-gray-500">
             Created{" "}
             {new Date(data.avatar.createdAt).toLocaleDateString("en-US", {
               year: "numeric",

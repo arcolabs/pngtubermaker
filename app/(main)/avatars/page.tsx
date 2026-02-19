@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import AvatarGrid from "@/components/dashboard/AvatarGrid";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import { authClient } from "@/lib/auth-client";
 
 interface Avatar {
@@ -48,7 +49,12 @@ export default function AvatarsPage() {
     return (
       <div className="min-h-screen bg-base-100">
         <div className="max-w-6xl mx-auto px-4 py-8">
-          <div className="skeleton h-8 w-32 mb-8" />
+          <Breadcrumb
+            items={[
+              { label: "Dashboard", href: "/dashboard" },
+              { label: "My Avatars" },
+            ]}
+          />
           <AvatarGrid avatars={[]} loading />
         </div>
       </div>
@@ -58,9 +64,19 @@ export default function AvatarsPage() {
   return (
     <div className="min-h-screen bg-base-100">
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold">My Avatars</h1>
-          <Link href="/create" className="btn btn-primary btn-sm gap-2">
+        <Breadcrumb
+          items={[
+            { label: "Dashboard", href: "/dashboard" },
+            { label: "My Avatars" },
+          ]}
+        />
+
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">My Avatars</h1>
+          <Link
+            href="/create"
+            className="btn btn-sm border-0 text-white bg-gradient-to-r from-primary to-cyan-400"
+          >
             <Sparkles className="w-4 h-4" />
             Create New
           </Link>
@@ -72,10 +88,13 @@ export default function AvatarsPage() {
               <Sparkles className="w-10 h-10 text-primary" />
             </div>
             <h3 className="text-xl font-semibold mb-2">No avatars yet</h3>
-            <p className="text-base-content/60 max-w-md mx-auto mb-6">
+            <p className="text-gray-500 max-w-md mx-auto mb-6">
               Create your first PNGTuber and it will appear here
             </p>
-            <Link href="/create" className="btn btn-primary">
+            <Link
+              href="/create"
+              className="btn border-0 text-white bg-gradient-to-r from-primary to-cyan-400"
+            >
               Create PNGTuber
             </Link>
           </div>
