@@ -7,7 +7,7 @@ export function UserCountBadge() {
         {/* Sparkle icon */}
         <span className="text-amber-500">✨</span>
         <span className="font-medium text-gray-700">
-          Create avatars in minutes, not weeks
+          Sign up now & get 500 free credits!
         </span>
       </div>
     </div>

@@ -8,3 +8,8 @@ export {
   STORAGE_KEYS,
   usePersistentState,
 } from "./use-persistent-state";
+export {
+  type CreditBalance,
+  type SubscriptionInfo,
+  useSubscriptionStore,
+} from "./use-subscription-store";

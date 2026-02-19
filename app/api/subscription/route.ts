@@ -8,11 +8,11 @@ import { getDatabase } from "@/lib/db";
 /**
  * GET /api/subscription
  *
- * Get current user's active subscription tier.
- * Returns { tier: "free" } if no active subscription found.
+ * Get current user's active subscription info.
+ * Returns { tier: "free", ... } if no active subscription found.
  *
  * Auth: Required
- * Response: { tier, status?, currentPeriodEnd?, cancelAtPeriodEnd? }
+ * Response: { tier, status, monthlyCredits, currentPeriodEnd?, cancelAtPeriodEnd }
  */
 export async function GET(req: NextRequest) {
   try {
@@ -32,13 +32,19 @@ export async function GET(req: NextRequest) {
     const sub = activeSub[0];
 
     if (!sub || sub.status !== "active") {
-      return NextResponse.json({ tier: "free" });
+      return NextResponse.json({
+        tier: "free",
+        status: "inactive",
+        monthlyCredits: 0,
+        cancelAtPeriodEnd: false,
+      });
     }
 
     return NextResponse.json({
       tier: sub.tier,
       status: sub.status,
-      currentPeriodEnd: sub.currentPeriodEnd,
+      monthlyCredits: sub.monthlyCredits ?? 0,
+      currentPeriodEnd: sub.currentPeriodEnd?.toISOString(),
       cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
     });
   } catch (error) {

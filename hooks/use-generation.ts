@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { useSubscriptionStore } from "@/hooks/use-subscription-store";
 
 export type CreateStep =
   | "describe"
@@ -56,21 +57,16 @@ const INITIAL_STATE: GenerationState = {
  */
 export function useGeneration() {
   const [state, setState] = useState<GenerationState>(INITIAL_STATE);
-  const [creditBalance, setCreditBalance] = useState<number | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
-  // Fetch credit balance
+  const credits = useSubscriptionStore((s) => s.credits);
+  const refreshStore = useSubscriptionStore((s) => s.refresh);
+  const creditBalance = credits?.total ?? null;
+
+  // Refresh credits from centralized store
   const fetchBalance = useCallback(async () => {
-    try {
-      const res = await fetch("/api/credits/balance");
-      if (res.ok) {
-        const data = await res.json();
-        setCreditBalance(data.total);
-      }
-    } catch {
-      // Silently fail — balance will show as null
-    }
-  }, []);
+    await refreshStore();
+  }, [refreshStore]);
 
   // Step 1 → Step 2: Generate character
   const generateCharacter = useCallback(async () => {
