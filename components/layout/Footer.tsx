@@ -9,16 +9,17 @@ export default function Footer() {
 
   return (
     <footer className="bg-base-100 text-base-content">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
-          <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center group">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-16">
+        {/* Mobile: compact single-column / Desktop: 4-col grid */}
+        <div className="hidden md:grid md:grid-cols-4 gap-10">
+          <div>
+            <Link href="/" className="inline-block">
               <Image
                 src={brand.logo.svgPath}
                 alt={brand.logo.alt}
                 width={120}
                 height={40}
-                className="h-10 w-auto"
+                className="h-8 w-auto"
                 priority
                 draggable={false}
               />
@@ -30,9 +31,6 @@ export default function Footer() {
 
           <nav className="flex flex-col gap-2">
             <h6 className="footer-title">Product</h6>
-            <Link href="/dashboard" className="link link-hover text-sm">
-              Dashboard
-            </Link>
             <Link href="/pricing" className="link link-hover text-sm">
               Pricing
             </Link>
@@ -41,12 +39,12 @@ export default function Footer() {
           <nav className="flex flex-col gap-2">
             <h6 className="footer-title">Resources</h6>
             <Link
-              href="https://nextjs.org/docs"
+              href={brand.social.discord || "https://discord.com"}
               target="_blank"
               rel="noopener noreferrer"
               className="link link-hover text-sm"
             >
-              Documentation
+              Discord
             </Link>
             <Link
               href={brand.social.github || "https://github.com"}
@@ -56,32 +54,67 @@ export default function Footer() {
             >
               GitHub
             </Link>
-            {brand.social.discord && (
-              <Link
-                href={brand.social.discord}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="link link-hover text-sm"
-              >
-                Discord
-              </Link>
-            )}
           </nav>
 
           <nav className="flex flex-col gap-2">
             <h6 className="footer-title">Legal</h6>
             <Link href="/legal/terms" className="link link-hover text-sm">
-              Terms of Service
+              Terms
             </Link>
             <Link href="/legal/privacy" className="link link-hover text-sm">
-              Privacy Policy
+              Privacy
             </Link>
           </nav>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 mt-16">
+        {/* Mobile layout */}
+        <div className="md:hidden space-y-5">
+          <Link href="/" className="inline-block">
+            <Image
+              src={brand.logo.svgPath}
+              alt={brand.logo.alt}
+              width={120}
+              height={40}
+              className="h-7 w-auto"
+              priority
+              draggable={false}
+            />
+          </Link>
+          <p className="text-sm text-base-content/50 max-w-xs">
+            {brand.description}
+          </p>
+          <nav className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+            <Link href="/pricing" className="link link-hover">
+              Pricing
+            </Link>
+            <Link
+              href={brand.social.discord || "https://discord.com"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link link-hover"
+            >
+              Discord
+            </Link>
+            <Link
+              href={brand.social.github || "https://github.com"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link link-hover"
+            >
+              GitHub
+            </Link>
+            <Link href="/legal/terms" className="link link-hover">
+              Terms
+            </Link>
+            <Link href="/legal/privacy" className="link link-hover">
+              Privacy
+            </Link>
+          </nav>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 mt-6 sm:mt-10 pt-5 sm:pt-8 border-t border-base-content/10">
           <p className="text-sm text-base-content/40">
-            © {currentYear} {brand.name}. All rights reserved.
+            © {currentYear} {brand.name}
           </p>
           <a
             href={`mailto:${brand.contact.email}`}

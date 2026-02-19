@@ -253,14 +253,39 @@ export async function grantSubscriptionCredits(
 }
 
 /**
- * Grant purchased credits (top-up or welcome bonus, never expire).
+ * Grant purchased credits (top-up or welcome bonus).
+ * By default, these credits never expire. Use expiresAt to set an expiration date (e.g., welcome credits).
+ * When expiresAt is provided, credits are stored in subscription_credits pool for automatic expiration handling.
  */
 export async function grantPurchasedCredits(
   userId: string,
   amount: number,
   description: string,
   metadata?: Record<string, unknown>,
+  expiresAt?: Date,
 ): Promise<void> {
+  // If expiresAt is provided, use subscription credits pool for automatic expiration
+  if (expiresAt) {
+    await grantSubscriptionCredits(userId, amount, expiresAt);
+    // Update the transaction type to reflect this is a welcome/grant purchase, not a monthly subscription
+    const db = getDatabase();
+    // Get the most recent transaction for this user
+    const recentTx = await db
+      .select()
+      .from(creditTransactions)
+      .where(eq(creditTransactions.userId, userId))
+      .orderBy(desc(creditTransactions.createdAt))
+      .limit(1);
+
+    if (recentTx.length > 0 && recentTx[0]?.type === "grant_subscription") {
+      await db
+        .update(creditTransactions)
+        .set({ type: "grant_purchase", description })
+        .where(eq(creditTransactions.id, recentTx[0].id));
+    }
+    return;
+  }
+
   const db = getDatabase();
 
   const existing = await db

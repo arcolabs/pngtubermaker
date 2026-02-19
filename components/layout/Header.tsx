@@ -1,13 +1,105 @@
 "use client";
 
+import {
+  Coins,
+  ImagePlus,
+  LayoutDashboard,
+  LogOut,
+  Sparkles,
+  Tag,
+  User,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { UserButton } from "@/components/auth/auth-buttons";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useAuthStore } from "@/hooks/use-auth-store";
 import { brand } from "@/lib/brand";
 
+interface CreditBalance {
+  total: number;
+}
+
+function useClickOutside(
+  ref: React.RefObject<HTMLElement | null>,
+  onClose: () => void,
+) {
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [ref, onClose]);
+}
+
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { user, isHydrated, hydrate, signOut } = useAuthStore();
+  const [isAvatarOpen, setIsAvatarOpen] = useState(false);
+  const [creditBalance, setCreditBalance] = useState<CreditBalance | null>(
+    null,
+  );
+
+  const avatarRef = useRef<HTMLDivElement>(null);
+  const closeAvatar = useCallback(() => setIsAvatarOpen(false), []);
+  useClickOutside(avatarRef, closeAvatar);
+
+  useEffect(() => {
+    if (!isHydrated) {
+      hydrate();
+    }
+  }, [isHydrated, hydrate]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    let cancelled = false;
+
+    const fetchCreditBalance = async () => {
+      try {
+        const res = await fetch("/api/credits/balance");
+        if (!cancelled && res.ok) {
+          const data = await res.json();
+          setCreditBalance(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch credit balance:", error);
+      }
+    };
+
+    fetchCreditBalance();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const handleFocus = async () => {
+      try {
+        const res = await fetch("/api/credits/balance");
+        if (res.ok) {
+          const data = await res.json();
+          setCreditBalance(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch credit balance:", error);
+      }
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [user]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    window.location.href = "/";
+  };
+
+  const isLoggedIn = !!user;
 
   return (
     <header className="sticky top-0 z-50 bg-base-100/80 backdrop-blur-sm">
@@ -35,14 +127,16 @@ export default function Header() {
 
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">
-            <li>
-              <Link
-                href="/dashboard"
-                className="text-base-content/70 hover:text-primary hover:bg-primary/10"
-              >
-                Dashboard
-              </Link>
-            </li>
+            {isLoggedIn && (
+              <li>
+                <Link
+                  href="/dashboard"
+                  className="text-base-content/70 hover:text-primary hover:bg-primary/10"
+                >
+                  Dashboard
+                </Link>
+              </li>
+            )}
             <li>
               <Link
                 href="/pricing"
@@ -54,56 +148,107 @@ export default function Header() {
           </ul>
         </div>
 
-        <div className="navbar-end gap-2 sm:gap-3">
-          <UserButton />
+        <div className="navbar-end gap-2">
+          {isLoggedIn ? (
+            <>
+              <div className="hidden lg:flex items-center gap-2">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-base-200 rounded-full">
+                  <Coins className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium">
+                    {creditBalance?.total?.toLocaleString() ?? "..."}
+                  </span>
+                </div>
+                <Link href="/create" className="btn btn-primary btn-sm">
+                  Create
+                </Link>
+              </div>
 
-          <div className="dropdown dropdown-end lg:hidden">
-            <button
-              type="button"
-              tabIndex={0}
-              className="btn btn-ghost btn-square"
-              aria-label="Toggle menu"
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="h-5 w-5"
-                aria-hidden="true"
-              >
-                {isOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                  />
+              <div className="relative" ref={avatarRef}>
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-circle avatar"
+                  onClick={() => setIsAvatarOpen(!isAvatarOpen)}
+                >
+                  {user?.image ? (
+                    <div className="w-9 rounded-full">
+                      <img
+                        src={user.image}
+                        alt={user.name ?? "User"}
+                        className="w-9 rounded-full"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-9 rounded-full bg-primary/20 flex items-center justify-center">
+                      <User className="w-5 h-5 text-primary" />
+                    </div>
+                  )}
+                </button>
+                {isAvatarOpen && (
+                  <ul className="absolute right-0 mt-2 w-56 menu bg-base-200 rounded-box p-2 shadow-xl border border-base-content/10 z-50">
+                    <li>
+                      <div className="flex items-center gap-2 px-2 py-1.5 bg-base-300 rounded-lg pointer-events-none">
+                        <Coins className="w-4 h-4 text-primary" />
+                        <span className="text-sm font-medium">
+                          {creditBalance?.total?.toLocaleString() ?? "..."}{" "}
+                          credits
+                        </span>
+                      </div>
+                    </li>
+                    <li>
+                      <Link href="/create" onClick={closeAvatar}>
+                        <Sparkles className="w-4 h-4" />
+                        Create New
+                      </Link>
+                    </li>
+                    <div className="divider my-1" />
+                    <li>
+                      <Link href="/avatars" onClick={closeAvatar}>
+                        <ImagePlus className="w-4 h-4" />
+                        My Avatars
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/dashboard" onClick={closeAvatar}>
+                        <LayoutDashboard className="w-4 h-4" />
+                        Dashboard
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/pricing" onClick={closeAvatar}>
+                        <Tag className="w-4 h-4" />
+                        Pricing
+                      </Link>
+                    </li>
+                    <div className="divider my-1" />
+                    <li>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          closeAvatar();
+                          handleSignOut();
+                        }}
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Log Out
+                      </button>
+                    </li>
+                  </ul>
                 )}
-              </svg>
-            </button>
-            {isOpen && (
-              <ul className="dropdown-content menu bg-base-200 rounded-box z-[1] mt-2 w-52 p-2 shadow-xl border border-base-content/10">
-                <li>
-                  <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-                    Dashboard
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pricing" onClick={() => setIsOpen(false)}>
-                    Pricing
-                  </Link>
-                </li>
-              </ul>
-            )}
-          </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/pricing"
+                className="text-base-content/70 hover:text-primary text-sm font-medium hidden sm:inline-flex px-3 py-1.5"
+              >
+                Pricing
+              </Link>
+              <Link href="/login" className="btn btn-primary btn-sm">
+                Get Started Free
+              </Link>
+            </>
+          )}
         </div>
       </nav>
     </header>

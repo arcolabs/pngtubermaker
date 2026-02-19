@@ -42,6 +42,18 @@ function PricingContent() {
     await subscribe(tier, cycle);
   };
 
+  const handleTopUp = async (credits: number, price: number) => {
+    // Check auth status before attempting top-up
+    const session = await authClient.getSession();
+    if (!session.data?.user) {
+      router.push("/login");
+      return;
+    }
+
+    // TODO: Implement top-up checkout flow
+    console.log("Top up:", credits, "credits for", price);
+  };
+
   const displayError = subscribeError || cancelMessage;
 
   return (
@@ -90,7 +102,11 @@ function PricingContent() {
         </div>
       )}
 
-      <PricingSection onSubscribe={handleSubscribe} isLoading={isLoading} />
+      <PricingSection
+        onSubscribe={handleSubscribe}
+        onTopUp={handleTopUp}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

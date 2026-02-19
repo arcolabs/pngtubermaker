@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   type BillingCycle,
   getYearlySavings,
@@ -9,20 +9,47 @@ import {
 } from "@/lib/stripe";
 import { PricingCard } from "./PricingCard";
 import { PricingToggle } from "./PricingToggle";
+import TopUpPackages from "./TopUpPackages";
 
 interface PricingSectionProps {
   onSubscribe: (tier: Tier, cycle: BillingCycle) => void;
+  onTopUp?: (credits: number, price: number) => void;
   isLoading?: boolean;
 }
 
 export function PricingSection({
   onSubscribe,
+  onTopUp,
   isLoading = false,
 }: PricingSectionProps) {
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
+  const [currentTier, setCurrentTier] = useState<Tier | null>(null);
+
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      try {
+        const res = await fetch("/api/subscription");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.tier) {
+            setCurrentTier(data.tier);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch subscription:", error);
+      }
+    };
+    fetchSubscription();
+  }, []);
 
   const handleSubscribe = (tier: Tier) => {
     onSubscribe(tier, cycle);
+  };
+
+  const handleTopUp = (credits: number, price: number) => {
+    if (onTopUp) {
+      onTopUp(credits, price);
+    }
   };
 
   return (
@@ -57,6 +84,7 @@ export function PricingSection({
             highlighted={PRICING_CONFIG.free.highlighted}
             cycle={cycle}
             isLoading={isLoading}
+            isCurrentPlan={currentTier === "free"}
             onSubscribe={handleSubscribe}
           />
 
@@ -70,6 +98,7 @@ export function PricingSection({
             highlighted={PRICING_CONFIG.start.highlighted}
             cycle={cycle}
             isLoading={isLoading}
+            isCurrentPlan={currentTier === "start"}
             onSubscribe={handleSubscribe}
           />
 
@@ -83,9 +112,14 @@ export function PricingSection({
             highlighted={PRICING_CONFIG.pro.highlighted}
             cycle={cycle}
             isLoading={isLoading}
+            isCurrentPlan={currentTier === "pro"}
             onSubscribe={handleSubscribe}
           />
         </div>
+
+        {onTopUp && (
+          <TopUpPackages onPurchase={handleTopUp} isLoading={isLoading} />
+        )}
 
         <div className="mt-12 text-center">
           <p className="text-sm text-base-content/50">

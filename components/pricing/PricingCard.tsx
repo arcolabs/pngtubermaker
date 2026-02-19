@@ -15,6 +15,7 @@ interface PricingCardProps {
   highlighted?: boolean;
   cycle: BillingCycle;
   isLoading?: boolean;
+  isCurrentPlan?: boolean;
   onSubscribe: (tier: Tier) => void;
 }
 
@@ -28,6 +29,7 @@ export function PricingCard({
   highlighted = false,
   cycle,
   isLoading = false,
+  isCurrentPlan = false,
   onSubscribe,
 }: PricingCardProps) {
   const price = cycle === "monthly" ? monthlyPrice : yearlyPrice;
@@ -100,27 +102,33 @@ export function PricingCard({
         ))}
       </ul>
 
-      <button
-        type="button"
-        onClick={() => onSubscribe(tier)}
-        disabled={isLoading}
-        className={cn(
-          "w-full rounded-xl py-3 font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 disabled:opacity-50",
-          tier === "free"
-            ? "btn btn-outline btn-primary"
-            : highlighted
-              ? "btn btn-primary"
-              : "btn btn-outline",
-        )}
-      >
-        {isLoading
-          ? "Loading..."
-          : tier === "free"
-            ? "Get Started Free"
-            : cycle === "yearly"
-              ? `Subscribe Yearly`
-              : `Subscribe Monthly`}
-      </button>
+      {isCurrentPlan ? (
+        <div className="w-full rounded-xl py-3 font-semibold text-center bg-success/10 text-success">
+          Current Plan
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => onSubscribe(tier)}
+          disabled={isLoading}
+          className={cn(
+            "w-full rounded-xl py-3 font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 disabled:opacity-50",
+            tier === "free"
+              ? "btn btn-outline btn-primary"
+              : highlighted
+                ? "btn btn-primary"
+                : "btn btn-outline",
+          )}
+        >
+          {isLoading
+            ? "Loading..."
+            : tier === "free"
+              ? "Get Started Free"
+              : cycle === "yearly"
+                ? `Subscribe Yearly`
+                : `Subscribe Monthly`}
+        </button>
+      )}
     </div>
   );
 }
