@@ -34,48 +34,53 @@ export function StepChooseBase({
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold mb-2">Choose your favorite</h2>
-        <p className="text-sm text-base-content/60">
+        <p className="text-sm text-gray-500">
           Select one of the 4 generated options as your base character.
         </p>
       </div>
 
-      {/* Candidate grid */}
       <div className="grid grid-cols-2 gap-4">
         {candidates.map((url, i) => (
           <button
             key={url}
             type="button"
             onClick={() => onSelect(i)}
-            className={`relative aspect-square rounded-xl overflow-hidden cursor-pointer transition-all duration-200 ${
+            className={`group relative aspect-square rounded-xl overflow-hidden transition-all duration-300 ${
               selectedIndex === i
-                ? "ring-4 ring-primary shadow-[0_4px_30px_rgba(6,182,212,0.25)] scale-[1.02]"
-                : "hover:ring-2 hover:ring-primary/50 hover:shadow-md"
+                ? "ring-[3px] ring-primary shadow-[0_4px_20px_rgba(6,182,212,0.25)] scale-[1.02]"
+                : "ring-1 ring-gray-200 hover:ring-gray-300"
             }`}
+            style={{ animationDelay: `${i * 100}ms` }}
           >
             <img
               src={url}
               alt={`Option ${i + 1}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
+
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+            <div className="absolute bottom-0 inset-x-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+              <span className="text-white text-sm font-medium">
+                Option {i + 1}
+              </span>
+            </div>
+
             {selectedIndex === i && (
-              <div className="absolute top-2 right-2 bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center">
-                <Check className="w-4 h-4" />
+              <div className="absolute top-3 right-3 w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-lg animate-[scaleIn_0.2s_ease-out]">
+                <Check className="w-4 h-4 text-white" />
               </div>
             )}
-            <div className="absolute bottom-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
-              Option {i + 1}
-            </div>
           </button>
         ))}
       </div>
 
-      {/* Regenerate */}
       <div className="text-center">
         <button
           type="button"
           onClick={onRegenerate}
           disabled={isRegenerating}
-          className="btn btn-ghost btn-sm text-base-content/60"
+          className="btn btn-ghost btn-sm text-gray-500"
         >
           {isRegenerating ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -86,7 +91,6 @@ export function StepChooseBase({
         </button>
       </div>
 
-      {/* Insufficient credits warning for next step */}
       {insufficientForExpressions && selectedIndex !== null && (
         <div className="alert alert-warning text-sm">
           <span>
@@ -100,7 +104,6 @@ export function StepChooseBase({
         </div>
       )}
 
-      {/* Navigation */}
       <div className="flex gap-3">
         <button
           type="button"
@@ -112,7 +115,7 @@ export function StepChooseBase({
         </button>
         <button
           type="button"
-          className="btn btn-primary flex-1"
+          className="btn border-0 text-white flex-1 bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-200"
           disabled={!canProceed}
           onClick={onNext}
         >

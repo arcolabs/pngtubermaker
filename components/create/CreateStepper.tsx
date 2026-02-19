@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { Check } from "lucide-react";
+import { Fragment, useEffect } from "react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import type { CreateStep } from "@/hooks/use-generation";
 import { useGeneration } from "@/hooks/use-generation";
 import { StepChooseBase } from "./StepChooseBase";
@@ -24,37 +26,78 @@ export function CreateStepper() {
   const { state } = generation;
   const currentStepIndex = getStepIndex(state.step);
 
-  // Fetch credit balance on mount
   useEffect(() => {
     generation.fetchBalance();
   }, [generation.fetchBalance]);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      {/* Step indicator */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-6">Create PNGTuber</h1>
-        <ul className="steps steps-horizontal w-full">
-          {STEPS.map((step, i) => (
-            <li
-              key={step.id}
-              className={`step ${i <= currentStepIndex ? "step-primary" : ""}`}
-            >
-              {step.label}
-            </li>
-          ))}
-        </ul>
+      <Breadcrumb
+        items={[
+          { label: "Dashboard", href: "/dashboard" },
+          { label: "Create PNGTuber" },
+        ]}
+      />
+
+      <div className="flex items-center justify-between mb-10">
+        {STEPS.map((step, i) => {
+          const status =
+            i < currentStepIndex
+              ? "completed"
+              : i === currentStepIndex
+                ? "current"
+                : "upcoming";
+          return (
+            <Fragment key={step.id}>
+              {i > 0 && (
+                <div
+                  className={`flex-1 h-0.5 mx-3 rounded-full transition-colors duration-500 ${
+                    i <= currentStepIndex ? "bg-primary" : "bg-gray-200"
+                  }`}
+                />
+              )}
+              <div className="flex flex-col items-center gap-1.5">
+                <div
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
+                    status === "completed"
+                      ? "bg-primary text-white"
+                      : status === "current"
+                        ? "bg-primary text-white shadow-[0_0_0_4px_rgba(6,182,212,0.15)]"
+                        : "bg-gray-100 text-gray-400"
+                  }`}
+                >
+                  {status === "completed" ? (
+                    <Check className="w-4 h-4" />
+                  ) : (
+                    step.number
+                  )}
+                </div>
+                <span
+                  className={`text-xs font-medium hidden sm:block ${
+                    status === "current" ? "text-primary" : "text-gray-400"
+                  }`}
+                >
+                  {step.label}
+                </span>
+              </div>
+            </Fragment>
+          );
+        })}
       </div>
 
-      {/* Error display */}
       {state.error && (
         <div className="alert alert-error mb-6">
           <span>{state.error}</span>
         </div>
       )}
 
-      {/* Step content */}
-      <div className="min-h-[400px]">
+      <div
+        className="min-h-[400px] bg-white/70 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-gray-200/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)]"
+        key={state.step}
+        style={{
+          animation: "fadeInUp 0.3s ease-out",
+        }}
+      >
         {state.step === "describe" && (
           <StepDescribe
             prompt={state.prompt}

@@ -11,21 +11,15 @@ interface StepExpressionsProps {
 }
 
 function ExpressionCard({ expression }: { expression: ExpressionState }) {
-  const isIdle = expression.type === "idle";
-
   if (expression.status === "completed" && expression.imageUrl) {
     return (
-      <div className="relative aspect-square rounded-xl overflow-hidden">
+      <div className="relative aspect-square rounded-xl overflow-hidden animate-[fadeInScale_0.3s_ease-out]">
         <img
           src={expression.imageUrl}
           alt={expression.type}
           className="w-full h-full object-cover"
         />
-        <div
-          className={`absolute bottom-0 inset-x-0 text-white text-center py-1 text-sm font-medium capitalize ${
-            isIdle ? "bg-success/90" : "bg-primary/90"
-          }`}
-        >
+        <div className="absolute bottom-0 inset-x-0 text-white text-center py-1 text-sm font-medium capitalize bg-primary/90">
           {expression.type} ✓
         </div>
       </div>
@@ -34,34 +28,35 @@ function ExpressionCard({ expression }: { expression: ExpressionState }) {
 
   if (expression.status === "generating") {
     return (
-      <div className="aspect-square rounded-xl bg-base-200 flex flex-col items-center justify-center animate-pulse">
-        <Loader2 className="w-8 h-8 animate-spin text-primary mb-2" />
-        <span className="text-sm font-medium capitalize">
-          {expression.type}
-        </span>
-        <span className="text-xs text-base-content/50">Generating...</span>
+      <div className="aspect-square rounded-xl overflow-hidden relative bg-gray-100">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent -translate-x-full animate-[shimmer_1.5s_infinite]" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <Loader2 className="w-6 h-6 animate-spin text-primary mb-2" />
+          <span className="text-sm font-medium capitalize text-gray-700">
+            {expression.type}
+          </span>
+        </div>
       </div>
     );
   }
 
   if (expression.status === "failed") {
     return (
-      <div className="aspect-square rounded-xl bg-error/10 border border-error/30 flex flex-col items-center justify-center">
+      <div className="aspect-square rounded-xl bg-red-50 border border-red-200 flex flex-col items-center justify-center">
         <span className="text-2xl mb-2">✕</span>
         <span className="text-sm capitalize">{expression.type}</span>
-        <span className="text-xs text-error">Failed</span>
+        <span className="text-xs text-red-500">Failed</span>
       </div>
     );
   }
 
-  // Pending
   return (
-    <div className="aspect-square rounded-xl bg-base-200 flex flex-col items-center justify-center">
+    <div className="aspect-square rounded-xl bg-gray-50 flex flex-col items-center justify-center">
       <span className="text-2xl mb-2">⏳</span>
-      <span className="text-sm text-base-content/50 capitalize">
+      <span className="text-sm text-gray-400 capitalize">
         {expression.type}
       </span>
-      <span className="text-xs text-base-content/30">Waiting...</span>
+      <span className="text-xs text-gray-300">Waiting...</span>
     </div>
   );
 }
@@ -88,31 +83,31 @@ export function StepExpressions({
         </h2>
       </div>
 
-      {/* Progress bar */}
       {isGenerating && (
-        <div className="space-y-2">
+        <div className="space-y-3">
           <div className="flex justify-between text-sm">
-            <span>Generating expressions...</span>
-            <span>
+            <span className="text-gray-600 font-medium">
+              Generating expressions...
+            </span>
+            <span className="text-primary font-semibold">
               {completedCount}/{totalCount}
             </span>
           </div>
-          <progress
-            className="progress progress-primary w-full"
-            value={completedCount}
-            max={totalCount}
-          />
+          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-primary to-cyan-400 rounded-full transition-all duration-700 ease-out"
+              style={{ width: `${(completedCount / totalCount) * 100}%` }}
+            />
+          </div>
         </div>
       )}
 
-      {/* Expression grid */}
       <div className="grid grid-cols-2 gap-4">
         {expressions.map((expr) => (
           <ExpressionCard key={expr.id} expression={expr} />
         ))}
       </div>
 
-      {/* Navigation */}
       <div className="flex gap-3">
         <button
           type="button"
@@ -125,7 +120,7 @@ export function StepExpressions({
         </button>
         <button
           type="button"
-          className="btn btn-primary flex-1"
+          className="btn border-0 text-white flex-1 bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-200"
           disabled={!allComplete}
           onClick={onNext}
         >

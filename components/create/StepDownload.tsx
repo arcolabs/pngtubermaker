@@ -26,7 +26,6 @@ export function StepDownload({
     setIsDownloading(true);
 
     try {
-      // TODO: Wire up to download API when Engineer A implements it
       const res = await fetch(
         `/api/avatars/${avatarId}/download?format=${format}&size=${selectedSize}`,
       );
@@ -49,13 +48,16 @@ export function StepDownload({
 
   return (
     <div className="space-y-6">
-      {/* Celebration header */}
-      <div className="text-center space-y-2">
-        <div className="text-4xl">🎉</div>
-        <h2 className="text-2xl font-bold">Your PNGTuber is ready!</h2>
+      <div className="text-center space-y-3 py-4">
+        <div className="text-5xl animate-bounce">🎉</div>
+        <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-cyan-400 bg-clip-text text-transparent">
+          Your PNGTuber is ready!
+        </h2>
+        <p className="text-gray-500">
+          Name your character and download the expression pack
+        </p>
       </div>
 
-      {/* Name input */}
       <div className="form-control">
         <label className="label" htmlFor="avatar-name">
           <span className="label-text font-medium">Name your character</span>
@@ -71,28 +73,28 @@ export function StepDownload({
         />
       </div>
 
-      {/* Expression preview grid */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="flex sm:grid sm:grid-cols-4 gap-3 overflow-x-auto pb-2 sm:pb-0 snap-x snap-mandatory sm:snap-none">
         {expressions
           .filter((e) => e.status === "completed" && e.imageUrl)
           .map((expr) => (
             <div
               key={expr.id}
-              className="aspect-square rounded-lg overflow-hidden"
+              className="flex-shrink-0 w-24 sm:w-auto snap-center"
             >
-              <img
-                src={expr.imageUrl ?? ""}
-                alt={expr.type}
-                className="w-full h-full object-cover"
-              />
-              <div className="text-center text-xs text-base-content/60 mt-1 capitalize">
-                {expr.type}
+              <div className="aspect-square rounded-xl overflow-hidden ring-1 ring-gray-200">
+                <img
+                  src={expr.imageUrl ?? ""}
+                  alt={expr.type}
+                  className="w-full h-full object-cover"
+                />
               </div>
+              <p className="text-center text-xs text-gray-500 mt-1.5 capitalize font-medium">
+                {expr.type}
+              </p>
             </div>
           ))}
       </div>
 
-      {/* Size selector */}
       <div className="space-y-2">
         <div className="label">
           <span className="label-text font-medium">Export Size</span>
@@ -104,10 +106,10 @@ export function StepDownload({
         ].map((opt) => (
           <label
             key={opt.size}
-            className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer ${
+            className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all ${
               selectedSize === opt.size
                 ? "bg-primary/10 ring-1 ring-primary"
-                : "bg-base-200"
+                : "bg-gray-50 hover:bg-gray-100"
             }`}
           >
             <input
@@ -123,26 +125,24 @@ export function StepDownload({
         ))}
       </div>
 
-      {/* Download buttons */}
       <div className="flex gap-3">
         <button
           type="button"
-          className="btn btn-primary flex-1"
+          className="btn w-full border-0 text-white h-12 bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-200"
           onClick={() => handleDownload("zip")}
           disabled={isDownloading}
         >
           <Download className="w-4 h-4" />
-          {isDownloading ? "Downloading..." : "Download ZIP"}
+          {isDownloading ? "Preparing..." : "Download ZIP"}
         </button>
       </div>
 
-      {/* Quick setup guides placeholder */}
       <div className="divider" />
 
       <div className="space-y-2">
         <h3 className="font-semibold">What&apos;s next?</h3>
         <div className="join join-vertical w-full">
-          <div className="collapse collapse-arrow join-item bg-base-200">
+          <div className="collapse collapse-arrow join-item bg-gray-50">
             <input type="radio" name="guide" />
             <div className="collapse-title font-medium">
               Use with veadotube mini
@@ -151,7 +151,7 @@ export function StepDownload({
               <p>Setup guide coming soon...</p>
             </div>
           </div>
-          <div className="collapse collapse-arrow join-item bg-base-200">
+          <div className="collapse collapse-arrow join-item bg-gray-50">
             <input type="radio" name="guide" />
             <div className="collapse-title font-medium">
               Use with PNGTuber Plus
@@ -160,7 +160,7 @@ export function StepDownload({
               <p>Setup guide coming soon...</p>
             </div>
           </div>
-          <div className="collapse collapse-arrow join-item bg-base-200">
+          <div className="collapse collapse-arrow join-item bg-gray-50">
             <input type="radio" name="guide" />
             <div className="collapse-title font-medium">
               Use with Discord Reactive
@@ -172,12 +172,14 @@ export function StepDownload({
         </div>
       </div>
 
-      {/* Navigation */}
       <div className="flex gap-3">
         <Link href="/create" className="btn btn-outline flex-1">
           Create Another
         </Link>
-        <Link href="/avatars" className="btn btn-primary flex-1">
+        <Link
+          href="/avatars"
+          className="btn border-0 text-white flex-1 bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all"
+        >
           Go to My Avatars
         </Link>
       </div>
