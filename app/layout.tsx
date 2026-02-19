@@ -3,6 +3,7 @@ import { GeistPixelSquare } from "geist/font/pixel";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import "./globals.css";
+import { ToastProvider } from "@/components/ui/ToastProvider";
 import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
@@ -97,6 +98,7 @@ export default function RootLayout({
         className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable} font-sans antialiased flex flex-col min-h-screen`}
       >
         {children}
+        <ToastProvider />
       </body>
     </html>
   );

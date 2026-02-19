@@ -1,4 +1,5 @@
 import { MockAdapter } from "./mock-adapter";
+import { ProductionAdapter } from "./production-adapter";
 import type { GenerationAdapter } from "./types";
 
 export type { GenerationAdapter } from "./types";
@@ -29,11 +30,8 @@ export function getGenerationAdapter(): GenerationAdapter {
   const adapterType = process.env.GENERATION_ADAPTER || "mock";
 
   if (adapterType === "production") {
-    // TODO: Implement production adapter when API docs are provided
-    // Will combine MidjourneyAdapter (character) + NanoBananaAdapter (expressions)
-    throw new Error(
-      "Production adapter not yet implemented. Set GENERATION_ADAPTER=mock for development.",
-    );
+    _adapter = new ProductionAdapter();
+    return _adapter;
   }
 
   _adapter = new MockAdapter();

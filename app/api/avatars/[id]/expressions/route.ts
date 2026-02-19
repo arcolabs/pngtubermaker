@@ -160,6 +160,7 @@ export async function POST(
         baseImageUrl: a.baseImageUrl,
         expression: record.type,
         style: a.style as "anime" | "chibi",
+        prompt: a.prompt,
       });
 
       if (result.status === "completed" && result.imageUrl) {

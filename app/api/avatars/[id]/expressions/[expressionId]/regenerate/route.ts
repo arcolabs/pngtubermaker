@@ -124,6 +124,7 @@ export async function POST(
         | "angry"
         | "surprised",
       style: a.style as "anime" | "chibi",
+      prompt: a.prompt,
     });
 
     if (result.status !== "completed" || !result.imageUrl) {

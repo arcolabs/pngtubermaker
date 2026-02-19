@@ -51,6 +51,8 @@ export interface GenerateExpressionRequest {
   expression: ExpressionType;
   /** Art style for consistency */
   style: ArtStyle;
+  /** Original character prompt (used by text-only adapters for consistency) */
+  prompt?: string;
 }
 
 export interface GenerateExpressionResult {
