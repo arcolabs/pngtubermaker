@@ -29,10 +29,10 @@ export const STRIPE_PUBLISHABLE_KEY =
 export const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || "";
 
 // Price IDs from environment
-export const STRIPE_PRICE_BASIC_MONTHLY =
-  process.env.STRIPE_PRICE_BASIC_MONTHLY || "";
-export const STRIPE_PRICE_BASIC_YEARLY =
-  process.env.STRIPE_PRICE_BASIC_YEARLY || "";
+export const STRIPE_PRICE_START_MONTHLY =
+  process.env.STRIPE_PRICE_START_MONTHLY || "";
+export const STRIPE_PRICE_START_YEARLY =
+  process.env.STRIPE_PRICE_START_YEARLY || "";
 export const STRIPE_PRICE_PRO_MONTHLY =
   process.env.STRIPE_PRICE_PRO_MONTHLY || "";
 export const STRIPE_PRICE_PRO_YEARLY =
@@ -63,8 +63,8 @@ export const PRICING_CONFIG = {
     monthlyPrice: 9,
     yearlyPrice: 86.4, // 20% savings
     monthlyCredits: 12_000,
-    monthlyPriceId: STRIPE_PRICE_BASIC_MONTHLY,
-    yearlyPriceId: STRIPE_PRICE_BASIC_YEARLY,
+    monthlyPriceId: STRIPE_PRICE_START_MONTHLY,
+    yearlyPriceId: STRIPE_PRICE_START_YEARLY,
     features: [
       "12,000 credits/month ($12 value)",
       "HD export (1080p)",

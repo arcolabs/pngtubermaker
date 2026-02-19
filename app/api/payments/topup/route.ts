@@ -52,8 +52,8 @@ export async function POST(req: NextRequest) {
     const checkoutSession = await createTopupCheckoutSession({
       customerId: stripeCustomerId,
       amountInCents: amount,
-      successUrl: `${appUrl}/wallet?success=true`,
-      cancelUrl: `${appUrl}/wallet?canceled=true`,
+      successUrl: `${appUrl}/dashboard?topup=success`,
+      cancelUrl: `${appUrl}/pricing?canceled=true`,
       metadata: {
         userId: session.user.id,
       },

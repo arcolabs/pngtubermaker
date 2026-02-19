@@ -40,7 +40,8 @@ export default function AvatarDetailClient({
   const [selectedSize, setSelectedSize] = useState(1080);
   const [downloading, setDownloading] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [expressions] = useState(initialExpressions);
+  const [expressions, setExpressions] = useState(initialExpressions);
+  const [addingExpression, setAddingExpression] = useState(false);
 
   const handleDownload = async () => {
     setDownloading(true);
@@ -62,12 +63,50 @@ export default function AvatarDetailClient({
     router.push("/avatars");
   };
 
-  const handleAddExpression = () => {
-    console.log("Add expression");
+  const handleAddExpression = async (types: string[]) => {
+    if (!types.length) return;
+    setAddingExpression(true);
+
+    try {
+      const res = await fetch(`/api/avatars/${avatar.id}/expressions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ expressions: types }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        if (data.error === "insufficient_credits") {
+          alert(
+            `Not enough credits. Balance: ${data.balance}, Required: ${data.required}`,
+          );
+          return;
+        }
+        throw new Error(data.error || "Failed to generate expressions");
+      }
+
+      const data = await res.json();
+      setExpressions((prev) => [...prev, ...data.expressions]);
+    } catch (error) {
+      console.error("Failed to add expression:", error);
+      alert(
+        error instanceof Error ? error.message : "Failed to add expression",
+      );
+    } finally {
+      setAddingExpression(false);
+    }
   };
 
   const existingTypes = new Set(expressions.map((e) => e.type));
-  const canAddMore = existingTypes.size < 6;
+  const availableTypes = [
+    "idle",
+    "talking",
+    "happy",
+    "sad",
+    "angry",
+    "surprised",
+  ].filter((t) => !existingTypes.has(t));
+  const canAddMore = availableTypes.length > 0;
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("en-US", {
@@ -101,14 +140,29 @@ export default function AvatarDetailClient({
             {downloading ? "Preparing..." : "Download ZIP"}
           </button>
           {canAddMore && (
-            <button
-              type="button"
-              className="btn btn-sm btn-outline border-gray-200 hover:border-primary hover:text-primary"
-              onClick={handleAddExpression}
-            >
-              <Plus className="w-4 h-4" />
-              Add Expression
-            </button>
+            <div className="dropdown dropdown-bottom">
+              <button
+                type="button"
+                tabIndex={0}
+                className="btn btn-sm btn-outline border-gray-200 hover:border-primary hover:text-primary"
+                disabled={addingExpression}
+              >
+                <Plus className="w-4 h-4" />
+                {addingExpression ? "Generating..." : "Add Expression"}
+              </button>
+              <ul className="dropdown-content z-10 menu p-2 shadow-lg bg-white rounded-xl w-52 mt-2">
+                {availableTypes.map((type) => (
+                  <li key={type}>
+                    <button
+                      type="button"
+                      onClick={() => handleAddExpression([type])}
+                    >
+                      {expressionLabels[type] || type}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
           <button
             type="button"

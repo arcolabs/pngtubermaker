@@ -13,8 +13,10 @@ import type {
  * Set GENERATION_ADAPTER=mock in .env to use this.
  */
 
-// Placeholder images (anime-style PNGTuber examples from public domain)
-// In development, these are the showcase images already in the project
+function getBaseUrl(): string {
+  return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+}
+
 const MOCK_CHARACTER_IMAGES = [
   "/images/showcase/1.WEBP",
   "/images/showcase/2.WEBP",
@@ -50,10 +52,11 @@ export class MockAdapter implements GenerationAdapter {
 
     // Return 4 random images from our showcase
     const candidates = shuffle(MOCK_CHARACTER_IMAGES).slice(0, 4);
+    const baseUrl = getBaseUrl();
 
     return {
       status: "completed",
-      images: candidates,
+      images: candidates.map((img) => `${baseUrl}${img}`),
     };
   }
 
@@ -65,10 +68,11 @@ export class MockAdapter implements GenerationAdapter {
 
     // In mock mode, return a random showcase image as the "edited" expression
     const mockImages = shuffle(MOCK_CHARACTER_IMAGES);
+    const baseUrl = getBaseUrl();
 
     return {
       status: "completed",
-      imageUrl: mockImages[0] ?? "/images/showcase/1.WEBP",
+      imageUrl: `${baseUrl}${mockImages[0] ?? "/images/showcase/1.WEBP"}`,
     };
   }
 }

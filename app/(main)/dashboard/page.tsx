@@ -1,11 +1,15 @@
+import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import AvatarGrid from "@/components/dashboard/AvatarGrid";
 import CreditBar from "@/components/dashboard/CreditBar";
 import QuickActionCard from "@/components/dashboard/QuickActionCard";
 import UsageStats from "@/components/dashboard/UsageStats";
+import { subscriptions } from "@/database/schema";
 import { auth } from "@/lib/auth";
-import { TIER_CREDITS } from "@/lib/services/credits";
+import { getDatabase } from "@/lib/db";
+import { listUserAvatars } from "@/lib/services/avatars";
+import { getBalance, TIER_CREDITS } from "@/lib/services/credits";
 
 interface CreditBalance {
   total: number;
@@ -18,57 +22,35 @@ interface Subscription {
   tier: "free" | "start" | "pro";
 }
 
-interface Avatar {
-  id: string;
-  name: string;
-  thumbnailUrl: string | null;
-  expressionCount: number;
-  createdAt: string;
-}
-
-async function getCreditBalance(): Promise<CreditBalance | null> {
+async function getCreditBalance(userId: string): Promise<CreditBalance | null> {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/credits/balance`,
-      {
-        cache: "no-store",
-      },
-    );
-    if (!res.ok) return null;
-    return res.json();
+    const balance = await getBalance(userId);
+    return {
+      total: balance.total,
+      subscription: balance.subscription,
+      purchased: balance.purchased,
+      expiresAt: balance.subscriptionExpiresAt?.toISOString(),
+    };
   } catch {
     return null;
   }
 }
 
-async function getSubscription(): Promise<Subscription | null> {
+async function getSubscription(userId: string): Promise<Subscription | null> {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/subscription`,
-      {
-        cache: "no-store",
-      },
-    );
-    if (!res.ok) return null;
-    return res.json();
+    const db = getDatabase();
+    const sub = await db
+      .select()
+      .from(subscriptions)
+      .where(eq(subscriptions.userId, userId))
+      .limit(1);
+
+    if (!sub[0] || sub[0].status !== "active") {
+      return { tier: "free" };
+    }
+    return { tier: sub[0].tier as "free" | "start" | "pro" };
   } catch {
     return null;
-  }
-}
-
-async function getAvatars(): Promise<Avatar[]> {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/avatars?limit=6`,
-      {
-        cache: "no-store",
-      },
-    );
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.avatars || [];
-  } catch {
-    return [];
   }
 }
 
@@ -83,10 +65,11 @@ export default async function DashboardPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
 
-  const [balance, subscription, avatars] = await Promise.all([
-    getCreditBalance(),
-    getSubscription(),
-    getAvatars(),
+  const userId = session.user.id;
+  const [balance, subscription, recentAvatars] = await Promise.all([
+    getCreditBalance(userId),
+    getSubscription(userId),
+    listUserAvatars(userId, 6).catch(() => []),
   ]);
 
   const tier = (subscription?.tier ?? "free") as keyof typeof TIER_CREDITS;
@@ -117,13 +100,13 @@ export default async function DashboardPage() {
           <h2 className="text-lg font-semibold mb-4 text-gray-900">
             Recent Avatars
           </h2>
-          <AvatarGrid avatars={avatars} />
+          <AvatarGrid avatars={recentAvatars} />
         </div>
 
         <UsageStats
           creditsUsed={creditsUsed}
           monthlyLimit={monthlyLimit}
-          avatarsCreated={avatars.length}
+          avatarsCreated={recentAvatars.length}
           periodEnd={balance?.expiresAt}
         />
       </div>

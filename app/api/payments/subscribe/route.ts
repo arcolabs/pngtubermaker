@@ -23,9 +23,9 @@ export async function POST(req: NextRequest) {
 
     const { tier, cycle = "monthly" } = await req.json();
 
-    if (!["basic", "pro"].includes(tier)) {
+    if (!["start", "pro"].includes(tier)) {
       return NextResponse.json(
-        { error: "Invalid tier. Must be 'basic' or 'pro'" },
+        { error: "Invalid tier. Must be 'start' or 'pro'" },
         { status: 400 },
       );
     }

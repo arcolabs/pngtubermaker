@@ -3,14 +3,19 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { PricingSection } from "@/components/pricing/PricingSection";
-import { useSubscription } from "@/hooks/use-stripe";
+import { useSubscription, useTopup } from "@/hooks/use-stripe";
 import { authClient } from "@/lib/auth-client";
 import type { BillingCycle, Tier } from "@/lib/stripe";
 
 function PricingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { subscribe, isLoading, error: subscribeError } = useSubscription();
+  const {
+    subscribe,
+    isLoading: subscribeLoading,
+    error: subscribeError,
+  } = useSubscription();
+  const { topup, isLoading: topupLoading, error: topupError } = useTopup();
   const [success, setSuccess] = useState(false);
   const [cancelMessage, setCancelMessage] = useState<string | null>(null);
 
@@ -32,7 +37,6 @@ function PricingContent() {
   }, [searchParams]);
 
   const handleSubscribe = async (tier: Tier, cycle: BillingCycle) => {
-    // Check auth status before attempting subscribe
     const session = await authClient.getSession();
     if (!session.data?.user) {
       router.push("/login");
@@ -42,19 +46,17 @@ function PricingContent() {
     await subscribe(tier, cycle);
   };
 
-  const handleTopUp = async (credits: number, price: number) => {
-    // Check auth status before attempting top-up
+  const handleTopUp = async (_credits: number, price: number) => {
     const session = await authClient.getSession();
     if (!session.data?.user) {
       router.push("/login");
       return;
     }
 
-    // TODO: Implement top-up checkout flow
-    console.log("Top up:", credits, "credits for", price);
+    await topup(price * 100);
   };
 
-  const displayError = subscribeError || cancelMessage;
+  const displayError = subscribeError || topupError || cancelMessage;
 
   return (
     <div className="min-h-screen bg-base-100">
@@ -105,7 +107,7 @@ function PricingContent() {
       <PricingSection
         onSubscribe={handleSubscribe}
         onTopUp={handleTopUp}
-        isLoading={isLoading}
+        isLoading={subscribeLoading || topupLoading}
       />
     </div>
   );

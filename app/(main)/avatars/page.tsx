@@ -1,65 +1,17 @@
-"use client";
-
 import { Sparkles } from "lucide-react";
+import { headers } from "next/headers";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
 import AvatarGrid from "@/components/dashboard/AvatarGrid";
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import { authClient } from "@/lib/auth-client";
+import { auth } from "@/lib/auth";
+import { listUserAvatars } from "@/lib/services/avatars";
 
-interface Avatar {
-  id: string;
-  name: string;
-  thumbnailUrl: string | null;
-  expressionCount: number;
-  createdAt: string;
-}
+export default async function AvatarsPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) redirect("/login");
 
-export default function AvatarsPage() {
-  const router = useRouter();
-  const [avatars, setAvatars] = useState<Avatar[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchAvatars = async () => {
-      try {
-        const res = await fetch("/api/avatars");
-        if (res.ok) {
-          const data = await res.json();
-          setAvatars(data.avatars || []);
-        }
-      } catch (error) {
-        console.error("Failed to fetch avatars:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    authClient.getSession().then((session) => {
-      if (!session) {
-        router.push("/login");
-      } else {
-        fetchAvatars();
-      }
-    });
-  }, [router]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-base-100">
-        <div className="max-w-6xl mx-auto px-4 py-8">
-          <Breadcrumb
-            items={[
-              { label: "Dashboard", href: "/dashboard" },
-              { label: "My Avatars" },
-            ]}
-          />
-          <AvatarGrid avatars={[]} loading />
-        </div>
-      </div>
-    );
-  }
+  const avatarList = await listUserAvatars(session.user.id).catch(() => []);
 
   return (
     <div className="min-h-screen bg-base-100">
@@ -82,7 +34,7 @@ export default function AvatarsPage() {
           </Link>
         </div>
 
-        {avatars.length === 0 ? (
+        {avatarList.length === 0 ? (
           <div className="text-center py-16">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-6">
               <Sparkles className="w-10 h-10 text-primary" />
@@ -99,7 +51,7 @@ export default function AvatarsPage() {
             </Link>
           </div>
         ) : (
-          <AvatarGrid avatars={avatars} />
+          <AvatarGrid avatars={avatarList} />
         )}
       </div>
     </div>

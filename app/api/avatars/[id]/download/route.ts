@@ -2,6 +2,7 @@ import archiver from "archiver";
 import { and, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import sharp from "sharp";
 import { z } from "zod";
 import { avatarExpressions, avatars, subscriptions } from "@/database/schema";
 import { auth } from "@/lib/auth";
@@ -68,13 +69,34 @@ async function getUserTier(userId: string): Promise<Tier> {
 
 /**
  * Apply watermark to image buffer (Free tier)
- * TODO: Implement actual watermarking with sharp composite
+ * Uses sharp to composite a semi-transparent text watermark at the bottom
  */
 async function applyWatermark(buffer: Buffer): Promise<Buffer> {
-  // Placeholder: return original buffer
-  // In production: use sharp to composite watermark
-  console.log("[Download] Watermark applied (placeholder)");
-  return buffer;
+  const image = sharp(buffer);
+  const metadata = await image.metadata();
+  const width = metadata.width || 512;
+  const height = metadata.height || 512;
+
+  // Create a text watermark SVG overlay
+  const fontSize = Math.max(Math.round(width * 0.06), 16);
+  const watermarkSvg = Buffer.from(`
+    <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .watermark {
+          fill: rgba(255, 255, 255, 0.35);
+          font-size: ${fontSize}px;
+          font-family: Arial, sans-serif;
+          font-weight: bold;
+        }
+      </style>
+      <text x="50%" y="92%" text-anchor="middle" class="watermark">PNGTuberMaker</text>
+    </svg>
+  `);
+
+  return image
+    .composite([{ input: watermarkSvg, gravity: "south" }])
+    .png()
+    .toBuffer();
 }
 
 export async function GET(

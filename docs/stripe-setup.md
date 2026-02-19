@@ -82,8 +82,8 @@
 
 | 套餐 | 周期 | 价格 | 对应环境变量 |
 |------|------|------|-------------|
-| Starter | Monthly | $9/mo | `STRIPE_PRICE_BASIC_MONTHLY` |
-| Starter | Yearly | $86.40/yr | `STRIPE_PRICE_BASIC_YEARLY` |
+| Starter | Monthly | $9/mo | `STRIPE_PRICE_START_MONTHLY` |
+| Starter | Yearly | $86.40/yr | `STRIPE_PRICE_START_YEARLY` |
 | Pro | Monthly | $30/mo | `STRIPE_PRICE_PRO_MONTHLY` |
 | Pro | Yearly | $288/yr | `STRIPE_PRICE_PRO_YEARLY` |
 
@@ -125,8 +125,8 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxx
 STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxxxxxxxxxxxxx
 
 # Stripe Price IDs
-STRIPE_PRICE_BASIC_MONTHLY=price_xxxxxxxxxxxxxxxx
-STRIPE_PRICE_BASIC_YEARLY=price_xxxxxxxxxxxxxxxx
+STRIPE_PRICE_START_MONTHLY=price_xxxxxxxxxxxxxxxx
+STRIPE_PRICE_START_YEARLY=price_xxxxxxxxxxxxxxxx
 STRIPE_PRICE_PRO_MONTHLY=price_xxxxxxxxxxxxxxxx
 STRIPE_PRICE_PRO_YEARLY=price_xxxxxxxxxxxxxxxx
 ```
