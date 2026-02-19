@@ -52,49 +52,59 @@ export default function UsageStats({
 
   if (loading) {
     return (
-      <div className="bg-base-200 rounded-2xl p-4 sm:p-6 animate-pulse">
-        <div className="h-6 w-48 bg-base-content/10 rounded mb-4" />
-        <div className="h-4 w-full bg-base-content/10 rounded mb-2" />
-        <div className="h-4 w-32 bg-base-content/10 rounded" />
+      <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-gray-200/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)] animate-pulse">
+        <div className="h-6 w-48 bg-gray-200 rounded mb-4" />
+        <div className="h-2.5 w-full bg-gray-200 rounded mb-2" />
+        <div className="h-4 w-32 bg-gray-200 rounded" />
       </div>
     );
   }
 
   return (
-    <div className="bg-base-200 rounded-2xl p-4 sm:p-6">
-      <div className="flex items-center justify-between mb-4">
-        <span className="font-medium">Usage This Month</span>
-      </div>
-
-      <div className="mb-4">
-        <div className="flex justify-between text-sm mb-2">
-          <span>
-            Credits used: {creditsUsed.toLocaleString()} /{" "}
-            {monthlyLimit.toLocaleString()}
-          </span>
-          <span className="text-base-content/60">{percentage}%</span>
+    <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-gray-200/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.04)]">
+      <h3 className="font-semibold text-gray-900 mb-4">This Month</h3>
+      <div className="space-y-4">
+        <div>
+          <div className="flex justify-between text-sm mb-2">
+            <span className="text-gray-500">Credits used</span>
+            <span className="font-semibold text-gray-900">
+              {creditsUsed.toLocaleString()} / {monthlyLimit.toLocaleString()}
+            </span>
+          </div>
+          <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-700 ease-out ${
+                percentage > 80
+                  ? "bg-gradient-to-r from-red-400 to-red-500"
+                  : percentage > 50
+                    ? "bg-gradient-to-r from-amber-400 to-amber-500"
+                    : "bg-gradient-to-r from-primary to-cyan-400"
+              }`}
+              style={{ width: `${Math.min(percentage, 100)}%` }}
+            />
+          </div>
         </div>
-        <progress
-          className={`progress ${
-            percentage > 80
-              ? "progress-error"
-              : percentage > 50
-                ? "progress-warning"
-                : "progress-primary"
-          } w-full`}
-          value={percentage}
-          max={100}
-        />
-      </div>
-
-      <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-base-content/60">
-        <span>Avatars created: {avatarsCreated}</span>
-        {formattedPeriodEnd && <span>Resets: {formattedPeriodEnd}</span>}
+        <div className="flex gap-6 text-sm">
+          <div>
+            <span className="text-gray-400">Avatars created</span>
+            <span className="block font-semibold text-gray-900">
+              {avatarsCreated}
+            </span>
+          </div>
+          {formattedPeriodEnd && (
+            <div>
+              <span className="text-gray-400">Resets</span>
+              <span className="block font-semibold text-gray-900">
+                {formattedPeriodEnd}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {monthlyLimit <= 500 && (
-        <div className="mt-4 p-3 bg-warning/10 rounded-lg text-sm">
-          <span className="text-warning">
+        <div className="mt-4 p-3 bg-amber-50 rounded-lg text-sm">
+          <span className="text-amber-600">
             You&apos;re using welcome credits. Subscribe to get monthly credits!
           </span>
         </div>

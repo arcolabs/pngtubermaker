@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import AvatarGrid from "@/components/dashboard/AvatarGrid";
 import CreditBar from "@/components/dashboard/CreditBar";
+import QuickActionCard from "@/components/dashboard/QuickActionCard";
 import UsageStats from "@/components/dashboard/UsageStats";
 import { auth } from "@/lib/auth";
 import { TIER_CREDITS } from "@/lib/services/credits";
@@ -71,6 +72,13 @@ async function getAvatars(): Promise<Avatar[]> {
   }
 }
 
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+}
+
 export default async function DashboardPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
@@ -90,27 +98,25 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-base-100">
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold mb-2">
-            Welcome back, {session.user.name?.split(" ")[0] || "Creator"}!
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            {getGreeting()}, {session.user.name?.split(" ")[0] || "Creator"}!
           </h1>
-          <p className="text-base-content/60">
-            Here&apos;s an overview of your PNGTuber activity
+          <p className="text-gray-500 mt-1">
+            Here&apos;s your PNGTuber studio overview
           </p>
         </div>
 
-        <CreditBar balance={balance} subscription={subscription} />
-
-        <div className="card bg-base-200">
-          <div className="card-body">
-            <h2 className="card-title">Quick Actions</h2>
-            <a href="/create" className="btn btn-primary btn-block">
-              Create New PNGTuber
-            </a>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <CreditBar balance={balance} subscription={subscription} />
           </div>
+          <QuickActionCard />
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold mb-4">Recent Avatars</h2>
+          <h2 className="text-lg font-semibold mb-4 text-gray-900">
+            Recent Avatars
+          </h2>
           <AvatarGrid avatars={avatars} />
         </div>
 

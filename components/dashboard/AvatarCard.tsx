@@ -39,27 +39,26 @@ export default function AvatarCard({ avatar }: AvatarCardProps) {
 
   return (
     <Link href={`/avatars/${avatar.id}`}>
-      <div className="group card bg-base-200 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-1 cursor-pointer">
-        <figure className="aspect-square overflow-hidden rounded-t-xl bg-base-300">
+      <div className="group block bg-white rounded-xl border border-gray-200/60 overflow-hidden hover:shadow-md hover:border-gray-300/60 transition-all duration-200">
+        <figure className="aspect-square overflow-hidden bg-gray-50">
           {avatar.thumbnailUrl ? (
             <img
               src={avatar.thumbnailUrl}
               alt={avatar.name}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-base-content/30">
-              <span className="text-4xl">🎭</span>
+            <div className="w-full h-full flex items-center justify-center text-gray-300">
+              <span className="text-3xl">🎭</span>
             </div>
           )}
         </figure>
-        <div className="card-body p-3 sm:p-4">
-          <h3 className="card-title text-base truncate">{avatar.name}</h3>
-          <p className="text-sm text-base-content/60">
+        <div className="p-3">
+          <h3 className="font-medium text-gray-900 truncate">{avatar.name}</h3>
+          <p className="text-xs text-gray-400 mt-0.5">
             {avatar.expressionCount} expression
-            {avatar.expressionCount !== 1 ? "s" : ""}
+            {avatar.expressionCount !== 1 ? "s" : ""} · {formattedDate}
           </p>
-          <p className="text-xs text-base-content/40">{formattedDate}</p>
         </div>
       </div>
     </Link>
