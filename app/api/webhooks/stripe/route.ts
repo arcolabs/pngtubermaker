@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
@@ -6,11 +6,20 @@ import {
   type Subscription,
   subscriptions,
   transactions,
-  wallets,
   webhookEvents,
 } from "@/database/schema";
 import { getDatabase } from "@/lib/db";
-import { STRIPE_WEBHOOK_SECRET, stripe } from "@/lib/stripe";
+import {
+  grantPurchasedCredits,
+  grantSubscriptionCredits,
+  TOPUP_PACKAGES,
+} from "@/lib/services/credits";
+import {
+  PRICING_CONFIG,
+  STRIPE_WEBHOOK_SECRET,
+  stripe,
+  type Tier,
+} from "@/lib/stripe";
 
 // In Stripe SDK v20+, current_period_start/end moved to SubscriptionItem
 function getSubscriptionPeriod(subscription: Stripe.Subscription) {
@@ -80,6 +89,9 @@ async function handleCheckoutSessionCompleted(
         : session.subscription.id;
 
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const tier = (session.metadata?.tier || "pro") as Tier;
+    const tierConfig = PRICING_CONFIG[tier];
+    const monthlyCredits = tierConfig?.monthlyCredits ?? 0;
 
     const existingSub = await db
       .select()
@@ -95,6 +107,8 @@ async function handleCheckoutSessionCompleted(
         .set({
           status: subscription.status as Subscription["status"],
           stripePriceId: subscription.items.data[0]?.price.id || "",
+          tier,
+          monthlyCredits,
           currentPeriodStart: period.start,
           currentPeriodEnd: period.end,
           cancelAtPeriodEnd: subscription.cancel_at_period_end,
@@ -111,18 +125,36 @@ async function handleCheckoutSessionCompleted(
         stripeSubscriptionId: subscription.id,
         stripePriceId: subscription.items.data[0]?.price.id || "",
         status: subscription.status as Subscription["status"],
-        tier: (session.metadata?.tier || "pro") as "basic" | "pro",
+        tier,
+        monthlyCredits,
         currentPeriodStart: period.start,
         currentPeriodEnd: period.end,
         cancelAtPeriodEnd: subscription.cancel_at_period_end,
       });
     }
+
+    // Grant subscription credits for this billing cycle
+    if (monthlyCredits > 0) {
+      await grantSubscriptionCredits(userId, monthlyCredits, period.end);
+    }
   }
 
-  // Handle top-up checkout
+  // Handle top-up checkout (credit package purchase)
   if (session.mode === "payment" && session.metadata?.type === "topup") {
     const amount = session.amount_total || 0;
+    const packageId = session.metadata?.packageId;
 
+    // Calculate credits to grant
+    let creditsToGrant = 0;
+    if (packageId && packageId in TOPUP_PACKAGES) {
+      const pkg = TOPUP_PACKAGES[packageId as keyof typeof TOPUP_PACKAGES];
+      creditsToGrant = pkg.credits + pkg.bonusCredits;
+    } else {
+      // Fallback: 1000 credits per $1 (amount is in cents)
+      creditsToGrant = Math.floor(amount / 100) * 1000;
+    }
+
+    // Log the monetary transaction
     await db.insert(transactions).values({
       id: crypto.randomUUID(),
       userId,
@@ -130,41 +162,32 @@ async function handleCheckoutSessionCompleted(
       status: "completed",
       amount: amount.toString(),
       currency: session.currency || "usd",
-      description: "Wallet top-up",
+      description: `Credit top-up: ${creditsToGrant} credits`,
       stripeSessionId: session.id,
       stripePaymentIntentId: paymentIntentId,
-      metadata: JSON.stringify({ sessionId: session.id }),
+      metadata: JSON.stringify({ packageId, creditsGranted: creditsToGrant }),
     });
 
-    // Atomic balance update using SQL increment
-    const existingWallet = await db
-      .select()
-      .from(wallets)
-      .where(eq(wallets.userId, userId))
-      .limit(1);
-
-    if (existingWallet.length > 0 && existingWallet[0]) {
-      await db
-        .update(wallets)
-        .set({
-          balance: sql`${wallets.balance} + ${amount}`,
-          updatedAt: new Date(),
-        })
-        .where(eq(wallets.id, existingWallet[0].id));
-    } else {
-      await db.insert(wallets).values({
-        id: crypto.randomUUID(),
-        userId,
-        balance: amount,
-        currency: session.currency || "usd",
-      });
-    }
+    // Grant purchased credits (never expire)
+    await grantPurchasedCredits(
+      userId,
+      creditsToGrant,
+      `Credit top-up: ${creditsToGrant} credits`,
+      { stripeSessionId: session.id, packageId },
+    );
   }
 }
 
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   const db = getDatabase();
   const period = getSubscriptionPeriod(subscription);
+
+  // Find existing subscription to get tier info
+  const existingSub = await db
+    .select()
+    .from(subscriptions)
+    .where(eq(subscriptions.stripeSubscriptionId, subscription.id))
+    .limit(1);
 
   await db
     .update(subscriptions)
@@ -180,6 +203,24 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
       updatedAt: new Date(),
     })
     .where(eq(subscriptions.stripeSubscriptionId, subscription.id));
+
+  // On renewal (status active + period changed), grant new credits
+  if (
+    subscription.status === "active" &&
+    existingSub[0]?.monthlyCredits &&
+    existingSub[0].monthlyCredits > 0
+  ) {
+    const currentEnd = existingSub[0].currentPeriodEnd;
+    const newEnd = period.end;
+    // Only grant if the period actually changed (renewal, not just update)
+    if (!currentEnd || newEnd.getTime() !== currentEnd.getTime()) {
+      await grantSubscriptionCredits(
+        existingSub[0].userId,
+        existingSub[0].monthlyCredits,
+        period.end,
+      );
+    }
+  }
 }
 
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {

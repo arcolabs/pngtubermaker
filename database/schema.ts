@@ -2,10 +2,15 @@ import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import {
   boolean,
   integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
+
+// ============================================================================
+// Auth tables (managed by better-auth)
+// ============================================================================
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -58,7 +63,10 @@ export const verification = pgTable("verification", {
   updatedAt: timestamp("updated_at"),
 });
 
-// 图片资源表
+// ============================================================================
+// Image storage (R2 metadata)
+// ============================================================================
+
 export const images = pgTable("images", {
   id: text("id").primaryKey(),
   userId: text("user_id")
@@ -68,43 +76,51 @@ export const images = pgTable("images", {
   filename: text("filename").notNull(),
   originalName: text("original_name"),
   mimeType: text("mime_type").notNull(),
-  size: text("size").notNull(), // bytes
+  size: text("size").notNull(),
   width: text("width"),
   height: text("height"),
-  r2Key: text("r2_key").notNull(), // R2 中的路径
-  r2Url: text("r2_url").notNull(), // 公开访问 URL
+  r2Key: text("r2_key").notNull(),
+  r2Url: text("r2_url").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-// 类型导出
-export type User = InferSelectModel<typeof user>;
-export type NewUser = InferInsertModel<typeof user>;
-export type Session = InferSelectModel<typeof session>;
-export type NewSession = InferInsertModel<typeof session>;
-export type Account = InferSelectModel<typeof account>;
-export type NewAccount = InferInsertModel<typeof account>;
-export type Verification = InferSelectModel<typeof verification>;
-export type NewVerification = InferInsertModel<typeof verification>;
-export type Image = InferSelectModel<typeof images>;
-export type NewImage = InferInsertModel<typeof images>;
+// ============================================================================
+// Credit system
+// ============================================================================
 
-// 用户钱包余额表
 export const wallets = pgTable("wallets", {
   id: text("id").primaryKey(),
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" })
     .unique(),
-  balance: integer("balance").notNull().default(0), // 余额（分），使用 integer 以支持原子 SQL 运算
-  currency: text("currency").notNull().default("usd"),
+  // Subscription credits: granted monthly, expire at end of billing cycle
+  subscriptionCredits: integer("subscription_credits").notNull().default(0),
+  subscriptionCreditsExpiresAt: timestamp("subscription_credits_expires_at"),
+  // Purchased credits: bought via top-up, never expire
+  purchasedCredits: integer("purchased_credits").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export type Wallet = InferSelectModel<typeof wallets>;
-export type NewWallet = InferInsertModel<typeof wallets>;
+export const creditTransactions = pgTable("credit_transactions", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  // 'grant_subscription' | 'grant_purchase' | 'grant_welcome' | 'consume' | 'refund' | 'expire'
+  type: text("type").notNull(),
+  amount: integer("amount").notNull(), // positive = credit in, negative = credit out
+  balanceAfter: integer("balance_after").notNull(), // total balance after this transaction
+  description: text("description").notNull(),
+  metadata: jsonb("metadata"), // e.g. { avatarId, taskType, stripeSessionId }
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
 
-// 交易记录表（充值、消费等）
+// ============================================================================
+// Stripe payment records (kept for monetary transaction audit trail)
+// ============================================================================
+
 export const transactions = pgTable("transactions", {
   id: text("id").primaryKey(),
   userId: text("user_id")
@@ -112,21 +128,19 @@ export const transactions = pgTable("transactions", {
     .references(() => user.id, { onDelete: "cascade" }),
   type: text("type").notNull(), // 'topup' | 'payment' | 'refund' | 'subscription'
   status: text("status").notNull(), // 'pending' | 'completed' | 'failed' | 'cancelled'
-  amount: text("amount").notNull(), // 金额（分，正数为充值，负数为消费）
+  amount: text("amount").notNull(),
   currency: text("currency").notNull().default("usd"),
-  description: text("description"), // 交易描述
-  stripeSessionId: text("stripe_session_id"), // Stripe checkout session ID
-  stripePaymentIntentId: text("stripe_payment_intent_id"), // Stripe payment intent ID
-  metadata: text("metadata"), // JSON 存储额外信息
+  description: text("description"),
+  stripeSessionId: text("stripe_session_id"),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  metadata: text("metadata"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export type Transaction = InferSelectModel<typeof transactions>;
-export type NewTransaction = InferInsertModel<typeof transactions>;
-export type GeneratedAvatar = InferSelectModel<typeof generatedAvatars>;
-export type NewGeneratedAvatar = InferInsertModel<typeof generatedAvatars>;
+// ============================================================================
+// Subscriptions
+// ============================================================================
 
-// 订阅表
 export const subscriptions = pgTable("subscriptions", {
   id: text("id").primaryKey(),
   userId: text("user_id")
@@ -137,6 +151,7 @@ export const subscriptions = pgTable("subscriptions", {
   stripePriceId: text("stripe_price_id").notNull(),
   status: text("status").notNull(), // 'active' | 'canceled' | 'past_due' | 'unpaid' | 'trialing'
   tier: text("tier").notNull(), // 'free' | 'start' | 'pro'
+  monthlyCredits: integer("monthly_credits").notNull().default(0),
   currentPeriodStart: timestamp("current_period_start"),
   currentPeriodEnd: timestamp("current_period_end"),
   cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
@@ -145,28 +160,113 @@ export const subscriptions = pgTable("subscriptions", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export type Subscription = InferSelectModel<typeof subscriptions>;
-export type NewSubscription = InferInsertModel<typeof subscriptions>;
+// ============================================================================
+// Stripe webhook idempotency
+// ============================================================================
 
-// Stripe Webhook 幂等性记录表
 export const webhookEvents = pgTable("webhook_events", {
-  id: text("id").primaryKey(), // Stripe event ID (evt_xxx)
-  type: text("type").notNull(), // event type (e.g. checkout.session.completed)
+  id: text("id").primaryKey(),
+  type: text("type").notNull(),
   processedAt: timestamp("processed_at").notNull().defaultNow(),
 });
 
-export type WebhookEvent = InferSelectModel<typeof webhookEvents>;
-export type NewWebhookEvent = InferInsertModel<typeof webhookEvents>;
+// ============================================================================
+// Avatars & expressions (core product)
+// ============================================================================
 
-// AI生成记录表（头像、表情、动画等）
+export const avatars = pgTable("avatars", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  name: text("name").notNull().default("My PNGTuber"),
+  prompt: text("prompt").notNull(),
+  style: text("style").notNull(), // 'anime' | 'chibi'
+  status: text("status").notNull(), // 'generating' | 'selecting' | 'completed' | 'failed'
+  // Candidate images from Midjourney (4 options, stored as JSON array of URLs)
+  candidateImages: jsonb("candidate_images").$type<string[]>(),
+  // Selected base image (after user picks one of the 4 candidates)
+  baseImageUrl: text("base_image_url"),
+  baseImageR2Key: text("base_image_r2_key"),
+  thumbnailUrl: text("thumbnail_url"),
+  thumbnailR2Key: text("thumbnail_r2_key"),
+  creditsUsed: integer("credits_used").notNull().default(0),
+  metadata: jsonb("metadata"), // extra info: midjourneyJobId, etc.
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const avatarExpressions = pgTable("avatar_expressions", {
+  id: text("id").primaryKey(),
+  avatarId: text("avatar_id")
+    .notNull()
+    .references(() => avatars.id, { onDelete: "cascade" }),
+  type: text("type").notNull(), // 'idle' | 'talking' | 'happy' | 'sad' | 'angry' | 'surprised'
+  status: text("status").notNull(), // 'pending' | 'generating' | 'completed' | 'failed'
+  imageUrl: text("image_url"),
+  imageR2Key: text("image_r2_key"),
+  creditsUsed: integer("credits_used").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// ============================================================================
+// Legacy table (kept for migration compatibility, no longer used)
+// ============================================================================
+
 export const generatedAvatars = pgTable("generated_avatars", {
   id: text("id").primaryKey(),
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   sourceImageId: text("source_image_id").references(() => images.id),
-  prompt: text("prompt"), // AI 提示词
+  prompt: text("prompt"),
   resultImageId: text("result_image_id").references(() => images.id),
-  status: text("status").notNull(), // 'pending' | 'completed' | 'failed'
+  status: text("status").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+// ============================================================================
+// Type exports
+// ============================================================================
+
+// Auth
+export type User = InferSelectModel<typeof user>;
+export type NewUser = InferInsertModel<typeof user>;
+export type Session = InferSelectModel<typeof session>;
+export type NewSession = InferInsertModel<typeof session>;
+export type Account = InferSelectModel<typeof account>;
+export type NewAccount = InferInsertModel<typeof account>;
+export type Verification = InferSelectModel<typeof verification>;
+export type NewVerification = InferInsertModel<typeof verification>;
+
+// Images
+export type Image = InferSelectModel<typeof images>;
+export type NewImage = InferInsertModel<typeof images>;
+
+// Credits
+export type Wallet = InferSelectModel<typeof wallets>;
+export type NewWallet = InferInsertModel<typeof wallets>;
+export type CreditTransaction = InferSelectModel<typeof creditTransactions>;
+export type NewCreditTransaction = InferInsertModel<typeof creditTransactions>;
+
+// Payments
+export type Transaction = InferSelectModel<typeof transactions>;
+export type NewTransaction = InferInsertModel<typeof transactions>;
+
+// Subscriptions
+export type Subscription = InferSelectModel<typeof subscriptions>;
+export type NewSubscription = InferInsertModel<typeof subscriptions>;
+
+// Webhooks
+export type WebhookEvent = InferSelectModel<typeof webhookEvents>;
+export type NewWebhookEvent = InferInsertModel<typeof webhookEvents>;
+
+// Avatars
+export type Avatar = InferSelectModel<typeof avatars>;
+export type NewAvatar = InferInsertModel<typeof avatars>;
+export type AvatarExpression = InferSelectModel<typeof avatarExpressions>;
+export type NewAvatarExpression = InferInsertModel<typeof avatarExpressions>;
+
+// Legacy (deprecated)
+export type GeneratedAvatar = InferSelectModel<typeof generatedAvatars>;
+export type NewGeneratedAvatar = InferInsertModel<typeof generatedAvatars>;

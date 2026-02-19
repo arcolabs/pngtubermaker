@@ -38,19 +38,20 @@ export const STRIPE_PRICE_PRO_MONTHLY =
 export const STRIPE_PRICE_PRO_YEARLY =
   process.env.STRIPE_PRICE_PRO_YEARLY || "";
 
-// Pricing configuration
+// Pricing configuration (credit-based model)
 export const PRICING_CONFIG = {
   free: {
     name: "Free",
     description: "Perfect for trying out PNGTuberMaker",
     monthlyPrice: 0,
     yearlyPrice: 0,
+    monthlyCredits: 0,
     monthlyPriceId: "",
     yearlyPriceId: "",
     features: [
-      "3 avatar generations/month",
+      "500 welcome credits",
       "Basic avatar generation",
-      "Low resolution export",
+      "512px export",
       "PNGTuber watermark",
       "Community support",
     ],
@@ -61,13 +62,14 @@ export const PRICING_CONFIG = {
     description: "For casual streamers and hobbyists",
     monthlyPrice: 9,
     yearlyPrice: 86.4, // 20% savings
+    monthlyCredits: 12_000,
     monthlyPriceId: STRIPE_PRICE_BASIC_MONTHLY,
     yearlyPriceId: STRIPE_PRICE_BASIC_YEARLY,
     features: [
-      "50 avatar generations/month",
+      "12,000 credits/month ($12 value)",
       "HD export (1080p)",
       "No watermark",
-      "Basic expressions pack",
+      "Basic expression pack",
       "Standard generation queue",
       "Email support",
     ],
@@ -78,11 +80,12 @@ export const PRICING_CONFIG = {
     description: "For serious streamers and content creators",
     monthlyPrice: 30,
     yearlyPrice: 288, // 20% savings
+    monthlyCredits: 50_000,
     monthlyPriceId: STRIPE_PRICE_PRO_MONTHLY,
     yearlyPriceId: STRIPE_PRICE_PRO_YEARLY,
     features: [
-      "Unlimited avatar generations",
-      "4K HD export",
+      "50,000 credits/month ($50 value)",
+      "4K export (2160p)",
       "No watermark",
       "All expressions & animations",
       "Priority generation queue",
