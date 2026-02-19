@@ -1,8 +1,10 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { eq } from "drizzle-orm";
 import * as schema from "@/database/schema";
 import { getDatabase, isDbConfigured } from "./db";
 import { grantPurchasedCredits } from "./services/credits";
+import { notifyUserSignup } from "./services/lark";
 
 // Validate environment variables
 const baseURL =
@@ -70,33 +72,66 @@ export const auth = betterAuth({
     trustedProviders: ["google", "github", "discord", "twitch"],
   },
   secret: process.env.BETTER_AUTH_SECRET,
-  events: {
-    async onUserCreated(user: {
-      id: string;
-      email: string;
-      name?: string | null;
-    }) {
-      try {
-        // Calculate expiry date (30 days from now by default)
-        const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + WELCOME_CREDITS_EXPIRY_DAYS);
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          try {
+            // Calculate expiry date (30 days from now by default)
+            const expiresAt = new Date();
+            expiresAt.setDate(
+              expiresAt.getDate() + WELCOME_CREDITS_EXPIRY_DAYS,
+            );
 
-        // Grant welcome credits with expiration
-        await grantPurchasedCredits(
-          user.id,
-          WELCOME_CREDITS,
-          "Welcome bonus",
-          { source: "signup", expiresInDays: WELCOME_CREDITS_EXPIRY_DAYS },
-          expiresAt,
-        );
+            // Grant welcome credits with expiration
+            await grantPurchasedCredits(
+              user.id,
+              WELCOME_CREDITS,
+              "Welcome bonus",
+              {
+                source: "signup",
+                expiresInDays: WELCOME_CREDITS_EXPIRY_DAYS,
+              },
+              expiresAt,
+            );
 
-        console.log(
-          `[Auth] Granted ${WELCOME_CREDITS} welcome credits to user ${user.id} (expires: ${expiresAt.toISOString()})`,
-        );
-      } catch (error) {
-        console.error("[Auth] Failed to grant welcome credits:", error);
-        // Don't throw - we don't want to block user creation if credits fail
-      }
+            console.log(
+              `[Auth] Granted ${WELCOME_CREDITS} welcome credits to user ${user.id} (expires: ${expiresAt.toISOString()})`,
+            );
+          } catch (error) {
+            console.error("[Auth] Failed to grant welcome credits:", error);
+          }
+        },
+      },
+    },
+    account: {
+      create: {
+        after: async (accountRecord) => {
+          // Send Lark notification with OAuth source from the account record directly
+          try {
+            const db = getDatabase();
+            const users = await db
+              .select({
+                id: schema.user.id,
+                email: schema.user.email,
+                name: schema.user.name,
+              })
+              .from(schema.user)
+              .where(eq(schema.user.id, accountRecord.userId))
+              .limit(1);
+
+            const u = users[0];
+            if (u) {
+              await notifyUserSignup(
+                { id: u.id, email: u.email, name: u.name },
+                accountRecord.providerId,
+              );
+            }
+          } catch (error) {
+            console.error("[Auth] Failed to send Lark notification:", error);
+          }
+        },
+      },
     },
   },
 });

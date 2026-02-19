@@ -247,17 +247,9 @@ export default function Header() {
               </div>
             </>
           ) : (
-            <>
-              <Link
-                href="/pricing"
-                className="text-base-content/70 hover:text-primary text-sm font-medium hidden sm:inline-flex px-3 py-1.5"
-              >
-                Pricing
-              </Link>
-              <Link href="/login" className="btn btn-primary btn-sm">
-                Get Started Free
-              </Link>
-            </>
+            <Link href="/login" className="btn btn-primary btn-sm">
+              Get Started Free
+            </Link>
           )}
         </div>
       </nav>
