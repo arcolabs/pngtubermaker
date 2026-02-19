@@ -15,7 +15,11 @@ import {
   grantSubscriptionCredits,
   TOPUP_PACKAGES,
 } from "@/lib/services/credits";
-import { notifyNewSubscription, notifyTopup } from "@/lib/services/lark";
+import {
+  notifyNewSubscription,
+  notifySubscriptionCanceled,
+  notifyTopup,
+} from "@/lib/services/lark";
 import {
   PRICING_CONFIG,
   STRIPE_WEBHOOK_SECRET,
@@ -275,10 +279,48 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
       );
     }
   }
+
+  // Notify Lark when user schedules cancellation (cancel_at_period_end toggled on)
+  if (
+    subscription.cancel_at_period_end &&
+    existingSub[0] &&
+    !existingSub[0].cancelAtPeriodEnd
+  ) {
+    const cancelUser = await db
+      .select({ email: user.email, name: user.name })
+      .from(user)
+      .where(eq(user.id, existingSub[0].userId))
+      .limit(1);
+
+    if (cancelUser[0]) {
+      const cancelDate = subscription.cancel_at
+        ? new Date(subscription.cancel_at * 1000).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })
+        : undefined;
+
+      notifySubscriptionCanceled({
+        userId: existingSub[0].userId,
+        email: cancelUser[0].email,
+        name: cancelUser[0].name,
+        tier: existingSub[0].tier,
+        reason: "scheduled",
+        cancelAt: cancelDate,
+      }).catch(() => {}); // fire-and-forget
+    }
+  }
 }
 
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   const db = getDatabase();
+
+  const existingSub = await db
+    .select()
+    .from(subscriptions)
+    .where(eq(subscriptions.stripeSubscriptionId, subscription.id))
+    .limit(1);
 
   await db
     .update(subscriptions)
@@ -287,6 +329,25 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
       updatedAt: new Date(),
     })
     .where(eq(subscriptions.stripeSubscriptionId, subscription.id));
+
+  // Notify Lark about subscription deletion
+  if (existingSub[0]) {
+    const cancelUser = await db
+      .select({ email: user.email, name: user.name })
+      .from(user)
+      .where(eq(user.id, existingSub[0].userId))
+      .limit(1);
+
+    if (cancelUser[0]) {
+      notifySubscriptionCanceled({
+        userId: existingSub[0].userId,
+        email: cancelUser[0].email,
+        name: cancelUser[0].name,
+        tier: existingSub[0].tier,
+        reason: "immediate",
+      }).catch(() => {}); // fire-and-forget
+    }
+  }
 }
 
 async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent) {

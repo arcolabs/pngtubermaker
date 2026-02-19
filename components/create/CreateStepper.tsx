@@ -31,7 +31,7 @@ export function CreateStepper() {
   }, [generation.fetchBalance]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Breadcrumb
         items={[
           { label: "Dashboard", href: "/dashboard" },

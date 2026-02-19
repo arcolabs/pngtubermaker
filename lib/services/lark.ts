@@ -239,6 +239,106 @@ export async function notifyNewSubscription(
 }
 
 // ============================================================================
+// Subscription Canceled
+// ============================================================================
+
+interface SubscriptionCanceledData {
+  userId: string;
+  email: string;
+  name?: string | null;
+  tier: string;
+  reason: "scheduled" | "immediate";
+  cancelAt?: string;
+}
+
+/**
+ * 发送订阅取消通知到飞书（消息卡片）
+ */
+export async function notifySubscriptionCanceled(
+  data: SubscriptionCanceledData,
+): Promise<void> {
+  const webhookUrl = getLarkWebhookUrl();
+  if (!webhookUrl) return;
+
+  const tierDisplay = data.tier.charAt(0).toUpperCase() + data.tier.slice(1);
+  const isScheduled = data.reason === "scheduled";
+
+  try {
+    const card = {
+      header: {
+        title: {
+          tag: "plain_text",
+          content: isScheduled
+            ? "⚠️ Subscription Scheduled to Cancel"
+            : "❌ Subscription Canceled",
+        },
+        template: isScheduled ? "orange" : "red",
+      },
+      elements: [
+        {
+          tag: "div",
+          fields: [
+            {
+              is_short: true,
+              text: {
+                tag: "lark_md",
+                content: `**Customer**\n${data.name || "Unknown"}\n${data.email}`,
+              },
+            },
+            {
+              is_short: true,
+              text: {
+                tag: "lark_md",
+                content: `**Plan**\n${tierDisplay}`,
+              },
+            },
+          ],
+        },
+        {
+          tag: "div",
+          fields: [
+            {
+              is_short: true,
+              text: {
+                tag: "lark_md",
+                content: `**Status**\n${isScheduled ? "Cancels at period end" : "Canceled immediately"}`,
+              },
+            },
+            {
+              is_short: true,
+              text: {
+                tag: "lark_md",
+                content: `**${isScheduled ? "Effective Date" : "User ID"}**\n${isScheduled && data.cancelAt ? data.cancelAt : data.userId}`,
+              },
+            },
+          ],
+        },
+        { tag: "hr" },
+        {
+          tag: "note",
+          elements: [
+            {
+              tag: "plain_text",
+              content: "PNGTuber Maker — Subscription Cancellation",
+            },
+          ],
+        },
+      ],
+    };
+
+    await sendLarkCard(webhookUrl, card);
+    console.log(
+      `[Lark] Subscription cancellation notification sent for ${data.email}`,
+    );
+  } catch (error) {
+    console.error(
+      "[Lark] Failed to send subscription cancellation notification:",
+      error,
+    );
+  }
+}
+
+// ============================================================================
 // Top-up
 // ============================================================================
 

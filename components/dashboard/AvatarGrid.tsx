@@ -48,7 +48,10 @@ export default function AvatarGrid({
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {avatars.slice(0, 6).map((avatar) => (
-          <AvatarCard key={avatar.id} avatar={avatar} />
+          <AvatarCard
+            key={avatar.id}
+            avatar={{ ...avatar, status: "completed" }}
+          />
         ))}
 
         {showCreateCard && (
