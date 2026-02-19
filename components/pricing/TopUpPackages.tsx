@@ -3,28 +3,31 @@
 import { Coins } from "lucide-react";
 
 interface TopUpPackagesProps {
-  onPurchase: (credits: number, price: number) => void;
+  onPurchase: (packageId: string, credits: number, price: number) => void;
   isLoading?: boolean;
 }
 
 const TOP_UP_PACKAGES = [
   {
+    id: "starter",
     name: "Starter",
     credits: 5000,
     price: 5,
     bonus: 0,
   },
   {
+    id: "value",
     name: "Value",
     credits: 12000,
     price: 10,
-    bonus: 20,
+    bonus: 2000,
   },
   {
+    id: "power",
     name: "Power",
     credits: 35000,
     price: 25,
-    bonus: 40,
+    bonus: 10000,
   },
 ];
 
@@ -59,14 +62,14 @@ export default function TopUpPackages({
                 <p className="text-2xl font-bold text-primary">${pkg.price}</p>
                 {pkg.bonus > 0 && (
                   <span className="badge badge-primary badge-outline">
-                    +{pkg.bonus}% bonus
+                    +{pkg.bonus.toLocaleString()} bonus
                   </span>
                 )}
                 <button
                   type="button"
                   className="btn btn-outline btn-primary mt-4"
                   disabled={isLoading}
-                  onClick={() => onPurchase(pkg.credits, pkg.price)}
+                  onClick={() => onPurchase(pkg.id, pkg.credits, pkg.price)}
                 >
                   {isLoading ? "Loading..." : "Buy"}
                 </button>

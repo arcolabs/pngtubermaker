@@ -13,7 +13,7 @@ import TopUpPackages from "./TopUpPackages";
 
 interface PricingSectionProps {
   onSubscribe: (tier: Tier, cycle: BillingCycle) => void;
-  onTopUp?: (credits: number, price: number) => void;
+  onTopUp?: (packageId: string, credits: number, price: number) => void;
   isLoading?: boolean;
 }
 
@@ -46,9 +46,9 @@ export function PricingSection({
     onSubscribe(tier, cycle);
   };
 
-  const handleTopUp = (credits: number, price: number) => {
+  const handleTopUp = (packageId: string, credits: number, price: number) => {
     if (onTopUp) {
-      onTopUp(credits, price);
+      onTopUp(packageId, credits, price);
     }
   };
 

@@ -49,7 +49,7 @@ export function useTopup() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const topup = async (amountInCents: number) => {
+  const topup = async (amountInCents: number, packageId?: string) => {
     setIsLoading(true);
     setError(null);
 
@@ -61,7 +61,7 @@ export function useTopup() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ amount: amountInCents }),
+        body: JSON.stringify({ amount: amountInCents, packageId }),
         signal: controller.signal,
       });
 

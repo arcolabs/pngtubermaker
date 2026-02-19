@@ -60,14 +60,18 @@ function PricingContent() {
     await subscribe(tier, cycle);
   };
 
-  const handleTopUp = async (_credits: number, price: number) => {
+  const handleTopUp = async (
+    packageId: string,
+    _credits: number,
+    price: number,
+  ) => {
     const session = await authClient.getSession();
     if (!session.data?.user) {
       router.push("/login");
       return;
     }
 
-    await topup(price * 100);
+    await topup(price * 100, packageId);
   };
 
   return (

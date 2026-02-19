@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { amount } = await req.json();
+    const { amount, packageId } = await req.json();
 
     if (!amount || amount < 500 || amount > 100000) {
       return NextResponse.json(
@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
       cancelUrl: `${appUrl}/pricing?canceled=true`,
       metadata: {
         userId: session.user.id,
+        ...(packageId ? { packageId } : {}),
       },
     });
 
