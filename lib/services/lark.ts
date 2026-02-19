@@ -1,7 +1,5 @@
 /**
- * 发送飞书 webhook 通知
- * @param webhookUrl 飞书 webhook URL
- * @param content 消息内容
+ * 发送飞书 webhook 通知（纯文本）
  */
 async function sendLarkWebhook(
   webhookUrl: string,
@@ -9,20 +7,39 @@ async function sendLarkWebhook(
 ): Promise<void> {
   const response = await fetch(webhookUrl, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       msg_type: "text",
-      content: {
-        text: content,
-      },
+      content: { text: content },
     }),
   });
 
   if (!response.ok) {
     throw new Error(
       `Lark webhook failed: ${response.status} ${response.statusText}`,
+    );
+  }
+}
+
+/**
+ * 发送飞书消息卡片
+ */
+async function sendLarkCard(
+  webhookUrl: string,
+  card: Record<string, unknown>,
+): Promise<void> {
+  const response = await fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      msg_type: "interactive",
+      card,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Lark card webhook failed: ${response.status} ${response.statusText}`,
     );
   }
 }
@@ -64,5 +81,98 @@ Plan: free`;
     console.log(`[Lark] User signup notification sent for ${user.email}`);
   } catch (error) {
     console.error("[Lark] Failed to send user signup notification:", error);
+  }
+}
+
+interface SubscriptionData {
+  userId: string;
+  email: string;
+  name?: string | null;
+  tier: string;
+  cycle: string;
+  monthlyCredits: number;
+  amount: string;
+}
+
+/**
+ * 发送新订阅通知到飞书（消息卡片）
+ */
+export async function notifyNewSubscription(
+  data: SubscriptionData,
+): Promise<void> {
+  const webhookUrl = process.env.LARK_WEBHOOK_URL;
+
+  if (!webhookUrl) {
+    console.warn(
+      "[Lark] LARK_WEBHOOK_URL not configured, skipping notification",
+    );
+    return;
+  }
+
+  const tierDisplay = data.tier.charAt(0).toUpperCase() + data.tier.slice(1);
+  const cycleDisplay = data.cycle === "yearly" ? "Yearly" : "Monthly";
+
+  try {
+    const card = {
+      header: {
+        title: { tag: "plain_text", content: "💰 New Subscription" },
+        template: "green",
+      },
+      elements: [
+        {
+          tag: "div",
+          fields: [
+            {
+              is_short: true,
+              text: {
+                tag: "lark_md",
+                content: `**Customer**\n${data.name || "Unknown"}\n${data.email}`,
+              },
+            },
+            {
+              is_short: true,
+              text: {
+                tag: "lark_md",
+                content: `**Plan**\n${tierDisplay} (${cycleDisplay})\n${data.amount}`,
+              },
+            },
+          ],
+        },
+        {
+          tag: "div",
+          fields: [
+            {
+              is_short: true,
+              text: {
+                tag: "lark_md",
+                content: `**Credits**\n${data.monthlyCredits.toLocaleString()}/month`,
+              },
+            },
+            {
+              is_short: true,
+              text: {
+                tag: "lark_md",
+                content: `**User ID**\n${data.userId}`,
+              },
+            },
+          ],
+        },
+        { tag: "hr" },
+        {
+          tag: "note",
+          elements: [
+            {
+              tag: "plain_text",
+              content: "PNGTuber Maker — Subscription Event",
+            },
+          ],
+        },
+      ],
+    };
+
+    await sendLarkCard(webhookUrl, card);
+    console.log(`[Lark] Subscription notification sent for ${data.email}`);
+  } catch (error) {
+    console.error("[Lark] Failed to send subscription notification:", error);
   }
 }

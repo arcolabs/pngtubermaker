@@ -6,6 +6,7 @@ import {
   type Subscription,
   subscriptions,
   transactions,
+  user,
   webhookEvents,
 } from "@/database/schema";
 import { getDatabase } from "@/lib/db";
@@ -14,6 +15,7 @@ import {
   grantSubscriptionCredits,
   TOPUP_PACKAGES,
 } from "@/lib/services/credits";
+import { notifyNewSubscription } from "@/lib/services/lark";
 import {
   PRICING_CONFIG,
   STRIPE_WEBHOOK_SECRET,
@@ -136,6 +138,32 @@ async function handleCheckoutSessionCompleted(
     // Grant subscription credits for this billing cycle
     if (monthlyCredits > 0) {
       await grantSubscriptionCredits(userId, monthlyCredits, period.end);
+    }
+
+    // Notify team via Lark (non-blocking)
+    const userRecord = await db
+      .select({ email: user.email, name: user.name })
+      .from(user)
+      .where(eq(user.id, userId))
+      .limit(1);
+
+    if (userRecord[0]) {
+      const cycle = session.metadata?.cycle || "monthly";
+      const price = tierConfig
+        ? cycle === "yearly"
+          ? `$${tierConfig.yearlyPrice}/yr`
+          : `$${tierConfig.monthlyPrice}/mo`
+        : "N/A";
+
+      notifyNewSubscription({
+        userId,
+        email: userRecord[0].email,
+        name: userRecord[0].name,
+        tier,
+        cycle,
+        monthlyCredits,
+        amount: price,
+      }).catch(() => {}); // fire-and-forget
     }
   }
 
