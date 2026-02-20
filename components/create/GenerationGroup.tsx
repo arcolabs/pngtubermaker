@@ -1,8 +1,16 @@
 "use client";
 
-import { Copy, Download, Eye, Layers, RefreshCw } from "lucide-react";
+import {
+  Check,
+  Copy,
+  Download,
+  Eye,
+  Loader2,
+  RefreshCw,
+  Sparkles,
+} from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import type {
   AspectRatio,
   ExpressionState,
@@ -86,6 +94,58 @@ export function GenerationGroup({
       ),
     [allGenerations, avatarId],
   );
+
+  // ── Expression Picker state ─────────────────────────────────────────────
+  const [packSelections, setPackSelections] = useState({
+    base: true,
+    happy: false,
+    angry: false,
+    sad: false,
+  });
+  const [isBatchGenerating, setIsBatchGenerating] = useState(false);
+
+  // Ref to always access the latest onGenerateExpressionPack between awaits
+  const genPackRef = useRef(onGenerateExpressionPack);
+  genPackRef.current = onGenerateExpressionPack;
+
+  const togglePack = useCallback(
+    (key: "base" | "happy" | "angry" | "sad") => {
+      setPackSelections((prev) => ({ ...prev, [key]: !prev[key] }));
+    },
+    [],
+  );
+
+  // Count how many NEW packs the user selected (excluding already-generated ones)
+  const pendingPacks = useMemo(() => {
+    const pending: { type: "base" | "custom"; subtype?: ExpressionSubtype }[] =
+      [];
+    if (packSelections.base && !hasBasePack)
+      pending.push({ type: "base" });
+    for (const sub of ["happy", "angry", "sad"] as const) {
+      if (packSelections[sub] && !existingCustomSubtypes.has(sub))
+        pending.push({ type: "custom", subtype: sub });
+    }
+    return pending;
+  }, [packSelections, hasBasePack, existingCustomSubtypes]);
+
+  const handleBatchGenerate = useCallback(async () => {
+    if (pendingPacks.length === 0) return;
+    setIsBatchGenerating(true);
+    try {
+      for (const pack of pendingPacks) {
+        await genPackRef.current(pack.type, pack.subtype);
+      }
+    } finally {
+      setIsBatchGenerating(false);
+    }
+  }, [pendingPacks]);
+
+  // Check if ALL packs are already generated
+  const allPacksDone =
+    hasBasePack &&
+    existingCustomSubtypes.has("happy") &&
+    existingCustomSubtypes.has("angry") &&
+    existingCustomSubtypes.has("sad");
 
   // Derive selected index from parent state — no local duplication
   const selectedImageIndex = isThisGroupSelected
@@ -253,36 +313,108 @@ export function GenerationGroup({
                 </Link>
               )}
 
-            {/* Avatar type specific buttons */}
+            {/* Expression Picker — shown on avatar cards */}
             {generation.type === "avatar" && (
               <>
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  Generate Expressions
-                </p>
-                <button
-                  type="button"
-                  onClick={() => onGenerateExpressionPack("base")}
-                  disabled={hasBasePack}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border shadow-sm transition-all duration-200 ${
-                    hasBasePack
-                      ? "bg-gray-50 border-gray-200 opacity-60 cursor-not-allowed"
-                      : "bg-white border-gray-200 hover:border-primary/40 hover:bg-primary/5 hover:shadow-md"
-                  }`}
-                >
-                  <Layers
-                    className={`w-4 h-4 flex-shrink-0 ${hasBasePack ? "text-gray-400" : "text-primary"}`}
-                  />
-                  <div className="text-left">
-                    <span className="text-sm font-medium text-gray-800 block">
-                      {hasBasePack
-                        ? "Base Expressions Generated"
-                        : "Base Expressions"}
-                    </span>
-                    <span className="text-[11px] text-gray-400">
-                      idle · talking · blink · blink talk
-                    </span>
+                {!allPacksDone && (
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                      Expression Pack
+                    </p>
+                    {/* Pack checkboxes */}
+                    {(
+                      [
+                        {
+                          key: "base" as const,
+                          label: "Base Pack",
+                          desc: "idle · talking · blink · blink talk",
+                          done: hasBasePack,
+                        },
+                        {
+                          key: "happy" as const,
+                          label: "Happy Set",
+                          desc: "happy · happy talk",
+                          done: existingCustomSubtypes.has("happy"),
+                        },
+                        {
+                          key: "angry" as const,
+                          label: "Angry Set",
+                          desc: "angry · angry talk",
+                          done: existingCustomSubtypes.has("angry"),
+                        },
+                        {
+                          key: "sad" as const,
+                          label: "Sad Set",
+                          desc: "sad · sad talk",
+                          done: existingCustomSubtypes.has("sad"),
+                        },
+                      ] as const
+                    ).map((pack) => (
+                      <label
+                        key={pack.key}
+                        className={`flex items-center gap-2.5 px-3 py-2 rounded-lg border transition-all duration-150 cursor-pointer select-none ${
+                          pack.done
+                            ? "bg-green-50/60 border-green-200/60"
+                            : packSelections[pack.key]
+                              ? "bg-primary/5 border-primary/30"
+                              : "bg-white border-gray-200 hover:border-gray-300"
+                        } ${isBatchGenerating ? "pointer-events-none opacity-70" : ""}`}
+                      >
+                        {pack.done ? (
+                          <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                        ) : (
+                          <input
+                            type="checkbox"
+                            checked={packSelections[pack.key]}
+                            onChange={() => togglePack(pack.key)}
+                            disabled={isBatchGenerating}
+                            className="checkbox checkbox-xs checkbox-primary rounded"
+                          />
+                        )}
+                        <div className="min-w-0">
+                          <span
+                            className={`text-sm font-medium block ${pack.done ? "text-green-700" : "text-gray-800"}`}
+                          >
+                            {pack.done
+                              ? `${pack.label} ✓`
+                              : pack.label}
+                          </span>
+                          <span className="text-[11px] text-gray-400">
+                            {pack.desc}
+                          </span>
+                        </div>
+                      </label>
+                    ))}
+
+                    {/* Generate button */}
+                    <button
+                      type="button"
+                      onClick={handleBatchGenerate}
+                      disabled={
+                        pendingPacks.length === 0 || isBatchGenerating
+                      }
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary to-cyan-400 rounded-xl shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all duration-200 disabled:opacity-50 disabled:shadow-none"
+                    >
+                      {isBatchGenerating ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4" />
+                          Generate Expressions
+                        </>
+                      )}
+                    </button>
                   </div>
-                </button>
+                )}
+
+                {allPacksDone && (
+                  <p className="text-xs text-green-600 font-medium">
+                    All expression packs generated ✓
+                  </p>
+                )}
 
                 {/* Regenerate button */}
                 <button
@@ -302,37 +434,6 @@ export function GenerationGroup({
                   Regenerate
                 </button>
               </>
-            )}
-
-            {/* Expression base type - Custom Expressions buttons */}
-            {generation.type === "expression_base" && (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  Custom Expressions
-                </p>
-                {(["happy", "angry", "sad"] as const).map((subtype) => {
-                  const done = existingCustomSubtypes.has(subtype);
-                  const label =
-                    subtype.charAt(0).toUpperCase() + subtype.slice(1);
-                  return (
-                    <button
-                      key={subtype}
-                      type="button"
-                      onClick={() =>
-                        onGenerateExpressionPack("custom", subtype)
-                      }
-                      disabled={done}
-                      className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl border transition-all ${
-                        done
-                          ? "text-gray-400 bg-gray-50 border-gray-200 opacity-60 cursor-not-allowed"
-                          : "text-gray-700 bg-white border-gray-200 hover:bg-gray-50 hover:border-gray-300"
-                      }`}
-                    >
-                      {done ? `${label} Set Generated` : `${label} Set`}
-                    </button>
-                  );
-                })}
-              </div>
             )}
 
             {/* Download button - for all types */}
