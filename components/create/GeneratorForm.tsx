@@ -20,43 +20,43 @@ interface TagCategory {
 
 const TAG_CATEGORIES: TagCategory[] = [
   {
+    label: "Character",
+    options: [
+      { id: "girl", text: "Girl" },
+      { id: "boy", text: "Boy" },
+      { id: "cat-girl", text: "Cat Girl" },
+      { id: "furry", text: "Furry" },
+      { id: "elf", text: "Elf" },
+      { id: "demon", text: "Demon" },
+    ],
+  },
+  {
     label: "Role",
     options: [
       { id: "gamer", text: "Gamer" },
       { id: "musician", text: "Musician" },
       { id: "artist", text: "Artist" },
-      { id: "vtuber", text: "VTuber" },
-      { id: "just-chatting", text: "Just Chatting" },
-      { id: "tech", text: "Tech" },
+      { id: "streamer", text: "Streamer" },
+      { id: "witch", text: "Witch" },
+      { id: "knight", text: "Knight" },
     ],
   },
   {
-    label: "Character",
+    label: "Aesthetic",
     options: [
-      { id: "girl", text: "Girl" },
-      { id: "boy", text: "Boy" },
-      { id: "furry", text: "Furry" },
-      { id: "demon", text: "Demon" },
-      { id: "angel", text: "Angel" },
-      { id: "android", text: "Android" },
-    ],
-  },
-  {
-    label: "Personality",
-    options: [
-      { id: "chill", text: "Chill" },
-      { id: "energetic", text: "Energetic" },
-      { id: "wholesome", text: "Wholesome" },
-      { id: "mysterious", text: "Mysterious" },
-      { id: "comedic", text: "Comedic" },
-      { id: "professional", text: "Professional" },
+      { id: "cozy", text: "Cozy" },
+      { id: "dark", text: "Dark" },
+      { id: "colorful", text: "Colorful" },
+      { id: "pastel", text: "Pastel" },
+      { id: "neon", text: "Neon" },
+      { id: "gothic", text: "Gothic" },
     ],
   },
   {
     label: "Signature",
     options: [
       { id: "headset", text: "Gaming Headset" },
-      { id: "microphone", text: "Microphone" },
+      { id: "cat-ears", text: "Cat Ears" },
       { id: "hoodie", text: "Hoodie" },
       { id: "glasses", text: "Glasses" },
       { id: "horns", text: "Horns" },
@@ -66,41 +66,30 @@ const TAG_CATEGORIES: TagCategory[] = [
 ];
 
 const QUICK_TEMPLATES = [
-  "A chill gamer girl with gaming headset and RGB lighting, purple hoodie",
-  "An energetic musician boy with headphones around neck, holding a guitar",
-  "A wholesome VTuber angel with wings and halo, streaming setup background",
-  "A mysterious tech android with glowing eyes and holographic interface elements",
-  "A comedic furry character with big expressive ears and a playful grin",
-  "A professional artist with drawing tablet, cozy streaming setup, chill vibes",
+  "A cozy gamer girl with gaming headset, purple hoodie, long silver hair",
+  "A dark elf boy with pointy ears, mysterious glowing eyes, hooded cloak",
+  "A colorful cat girl streamer with cat ears and tail, cheerful smile",
+  "A pastel witch girl with a big hat, holding a magic staff, soft colors",
+  "A neon cyberpunk furry wolf with glowing accents, futuristic headset",
+  "A gothic demon girl with horns and wings, elegant dark outfit",
 ];
 
 function buildPromptFromTags(selections: Record<string, string>): string {
-  const parts: string[] = [];
-  const role = selections.Role;
   const character = selections.Character;
-  const personality = selections.Personality;
+  const role = selections.Role;
+  const aesthetic = selections.Aesthetic;
   const signature = selections.Signature;
 
-  // Build subject description
+  // Build: "A [aesthetic] [role] [character], with [signature]"
   const subjectParts: string[] = [];
+  if (aesthetic) subjectParts.push(aesthetic.toLowerCase());
+  if (role) subjectParts.push(role.toLowerCase());
+  if (character) subjectParts.push(character.toLowerCase());
 
-  if (personality) {
-    subjectParts.push(personality.toLowerCase());
-  }
-
-  if (role) {
-    subjectParts.push(role.toLowerCase());
-  }
-
-  if (character) {
-    subjectParts.push(character.toLowerCase());
-  }
-
+  const parts: string[] = [];
   if (subjectParts.length > 0) {
     parts.push(`A ${subjectParts.join(" ")}`);
   }
-
-  // Add signature elements
   if (signature) {
     parts.push(`with ${signature.toLowerCase()}`);
   }
@@ -121,13 +110,10 @@ interface GeneratorFormProps {
 
 const STYLE_OPTIONS: { id: ArtStyle; label: string }[] = [
   { id: "anime", label: "Anime" },
-  { id: "modern-vtuber", label: "Modern VTuber" },
+  { id: "vtuber", label: "VTuber" },
   { id: "chibi", label: "Chibi" },
   { id: "retro-90s", label: "Retro 90s" },
-  { id: "kawaii-moe", label: "Kawaii Moe" },
-  { id: "cyber-anime", label: "Cyber Anime" },
-  { id: "fantasy-anime", label: "Fantasy Anime" },
-  { id: "shonen-style", label: "Shonen Style" },
+  { id: "cartoon", label: "Cartoon" },
 ];
 
 export function GeneratorForm({

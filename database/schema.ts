@@ -174,7 +174,7 @@ export const avatars = pgTable(
     name: text("name").notNull().default("My PNGTuber"),
     slug: text("slug").unique(),
     prompt: text("prompt").notNull(),
-    style: text("style").notNull(), // 'anime' | 'modern-vtuber' | 'chibi' | 'retro-90s' | 'kawaii-moe' | 'cyber-anime' | 'fantasy-anime' | 'shonen-style'
+    style: text("style").notNull(), // 'anime' | 'vtuber' | 'chibi' | 'retro-90s' | 'cartoon'
     aspectRatio: text("aspect_ratio").default("1:1"), // '1:1' | '3:4' | '9:16'
     status: text("status").notNull(), // 'generating' | 'selecting' | 'completed' | 'failed'
     // Candidate images from Midjourney (4 options, stored as JSON array of URLs)

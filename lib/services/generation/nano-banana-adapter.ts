@@ -67,6 +67,7 @@ async function submitTask(prompt: string): Promise<string> {
         resolution: "1K",
       },
     }),
+    signal: AbortSignal.timeout(30_000),
   });
 
   if (!res.ok) {
@@ -90,6 +91,8 @@ async function checkTask(taskId: string): Promise<TaskResponse> {
 
   const res = await fetch(`${API_BASE}/task/${taskId}`, {
     headers: { "X-API-Key": apiKey },
+    cache: "no-store",
+    signal: AbortSignal.timeout(15_000),
   });
 
   if (!res.ok) {

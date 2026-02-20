@@ -8,27 +8,24 @@
 import { PollFailedError, pollUntilDone } from "./poll";
 import type {
   ArtStyle,
+  GenerateCharacterReferences,
   GenerateCharacterRequest,
   GenerateCharacterResult,
 } from "./types";
 
 const API_BASE = "https://api.legnext.ai/api/v1";
 
-/** Style-specific prompt prefixes */
-const STYLE_PREFIXES: Record<ArtStyle, string> = {
-  anime: "anime style character portrait, detailed anime art,",
-  "modern-vtuber": "modern vtuber style, clean digital art,",
-  chibi: "chibi style character, cute kawaii proportions, large head,",
-  "retro-90s": "90s retro anime style, vintage anime art,",
-  "kawaii-moe": "kawaii moe style, cute adorable character,",
-  "cyber-anime": "cyber anime style, futuristic digital art,",
-  "fantasy-anime": "fantasy anime style, magical character art,",
-  "shonen-style": "shonen anime style, dynamic action pose,",
+/**
+ * Style hints — brief, distinctive keywords only.
+ * V7 understands style names natively; we just nudge the aesthetic direction.
+ */
+const STYLE_HINTS: Record<ArtStyle, string> = {
+  anime: "anime character illustration,",
+  vtuber: "modern VTuber character, hololive aesthetic,",
+  chibi: "chibi character, large head small body,",
+  "retro-90s": "90s retro anime character, vintage cel animation,",
+  cartoon: "cartoon character illustration, western animation style,",
 };
-
-/** Standard PNGTuber framing appended to every prompt */
-const PNGTUBER_FRAME =
-  "PNGTuber avatar, single character, bust shot, transparent background, clean lines, vibrant colors";
 
 function getApiKey(): string {
   const key = process.env.MIDJOURNEY_API_KEY;
@@ -36,9 +33,37 @@ function getApiKey(): string {
   return key;
 }
 
-function buildCharacterPrompt(prompt: string, style: ArtStyle): string {
-  const prefix = STYLE_PREFIXES[style];
-  return `${prefix} ${prompt}, ${PNGTUBER_FRAME} --niji 7`;
+/**
+ * Build the final Midjourney prompt.
+ *
+ * Structure (concise, V7 best practices):
+ *   [image_url?] [style hint] [user description], solo, half body portrait,
+ *   looking at viewer, white background [--sref?] [--oref?] --no text watermark --v 7
+ *
+ * Principles:
+ * - Front-load the subject (style + user prompt come first)
+ * - Minimal framing: "solo, half body portrait, looking at viewer, white background"
+ *   is enough — V7 infers composition, expression, and quality on its own
+ * - No junk words (4K, detailed, etc.) — V7 defaults are already high quality
+ * - Lean --no: only exclude what actually appears unwanted (text, watermarks)
+ */
+function buildCharacterPrompt(
+  prompt: string,
+  style: ArtStyle,
+  references?: GenerateCharacterReferences,
+): string {
+  const hint = STYLE_HINTS[style];
+
+  // Image prompt (character reference) — prepended before text prompt
+  const imagePrefix = references?.imageUrl ? `${references.imageUrl} ` : "";
+
+  // Suffix parameters
+  const params: string[] = [];
+  if (references?.styleUrl) params.push(`--sref ${references.styleUrl}`);
+  if (references?.faceUrl) params.push(`--oref ${references.faceUrl}`);
+  params.push("--v 7");
+
+  return `${imagePrefix}${hint} ${prompt}, solo, half body portrait, looking at viewer, white background ${params.join(" ")}`;
 }
 
 interface SubmitResponse {
@@ -48,11 +73,13 @@ interface SubmitResponse {
 
 interface PollResponse {
   status: string;
-  result?: {
-    images?: string[];
+  output?: {
+    image_url?: string;
+    image_urls?: string[];
+    seed?: string;
     [key: string]: unknown;
   };
-  error?: string;
+  error?: { code: number; message: string } | string;
   [key: string]: unknown;
 }
 
@@ -66,6 +93,7 @@ async function submitJob(text: string): Promise<string> {
       "x-api-key": apiKey,
     },
     body: JSON.stringify({ text }),
+    signal: AbortSignal.timeout(30_000),
   });
 
   if (!res.ok) {
@@ -86,6 +114,8 @@ async function checkJob(jobId: string): Promise<PollResponse> {
 
   const res = await fetch(`${API_BASE}/job/${jobId}`, {
     headers: { "x-api-key": apiKey },
+    cache: "no-store",
+    signal: AbortSignal.timeout(15_000),
   });
 
   if (!res.ok) {
@@ -93,14 +123,22 @@ async function checkJob(jobId: string): Promise<PollResponse> {
     throw new Error(`Midjourney poll failed (${res.status}): ${body}`);
   }
 
-  return (await res.json()) as PollResponse;
+  const data = (await res.json()) as PollResponse;
+  console.log(
+    `[Midjourney] Poll response: status=${data.status}, keys=${Object.keys(data).join(",")}`,
+  );
+  return data;
 }
 
 export class MidjourneyAdapter {
   async generateCharacter(
     request: GenerateCharacterRequest,
   ): Promise<GenerateCharacterResult> {
-    const prompt = buildCharacterPrompt(request.prompt, request.style);
+    const prompt = buildCharacterPrompt(
+      request.prompt,
+      request.style,
+      request.references,
+    );
 
     console.log("[Midjourney] Submitting character generation:", prompt);
     const jobId = await submitJob(prompt);
@@ -115,9 +153,11 @@ export class MidjourneyAdapter {
             return data;
           }
           if (data.status === "failed" || data.status === "error") {
-            throw new PollFailedError(
-              data.error || "Midjourney generation failed",
-            );
+            const errMsg =
+              typeof data.error === "string"
+                ? data.error
+                : data.error?.message || "Midjourney generation failed";
+            throw new PollFailedError(errMsg);
           }
           // Still processing
           return null;
@@ -127,8 +167,12 @@ export class MidjourneyAdapter {
       { initialDelay: 8000, interval: 5000, timeout: 180_000 },
     );
 
-    const images = result.result?.images;
+    const images = result.output?.image_urls;
     if (!images || images.length === 0) {
+      console.error(
+        "[Midjourney] No images in response. Full result:",
+        JSON.stringify(result, null, 2),
+      );
       return {
         status: "failed",
         images: [],

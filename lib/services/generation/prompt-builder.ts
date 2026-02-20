@@ -32,24 +32,18 @@ const EXPRESSION_MODIFIERS: Record<ExpressionType, string> = {
     "wide shocked eyes, open mouth surprise, raised eyebrows, astonished expression",
 };
 
-/** Style-specific framing instructions */
+/** Style-specific framing instructions — must match midjourney-adapter composition */
 const STYLE_FRAMES: Record<ArtStyle, string> = {
   anime:
-    "anime style portrait, bust shot, clean lines, vibrant colors, detailed anime eyes",
-  "modern-vtuber":
-    "modern VTuber style, hololive/nijisanji aesthetic, vibrant colors, expressive eyes, polished digital art, idol character design",
+    "anime character, upper body, clean lines, vibrant colors, detailed eyes",
+  vtuber:
+    "modern VTuber character, upper body, hololive aesthetic, polished digital art, expressive eyes",
   chibi:
-    "chibi style portrait, cute proportions, large head, small body, adorable kawaii style",
+    "chibi character, upper body, large head small body, cute kawaii style",
   "retro-90s":
-    "90s retro anime style, cel shaded, classic anime aesthetic, nostalgic 1990s Japanese animation, vintage character design",
-  "kawaii-moe":
-    "kawaii moe style, extremely cute, soft colors, big sparkling eyes, gentle expressions, moe anime aesthetic",
-  "cyber-anime":
-    "cyberpunk anime style, neon accents, futuristic tech elements, glowing details, sci-fi character design, cyber aesthetic",
-  "fantasy-anime":
-    "fantasy anime style, isekai aesthetic, magical elements, ethereal lighting, RPG character design, otherworldly atmosphere",
-  "shonen-style":
-    "shonen anime style, dynamic pose, energetic character, bold lines, action-oriented design, heroic protagonist aesthetic",
+    "90s retro anime character, upper body, vintage cel animation aesthetic",
+  cartoon:
+    "cartoon character, upper body, western animation style, bold colors, expressive",
 };
 
 /** Words that conflict with expression direction — stripped from the base prompt */
@@ -96,7 +90,7 @@ export function removeExpressionTerms(prompt: string): string {
  * Build a complete prompt for expression generation.
  *
  * Structure:
- * 1. Style framing (anime/modern-vtuber/chibi/retro-90s/kawaii-moe/cyber-anime/fantasy-anime/shonen-style)
+ * 1. Style framing (anime/vtuber/chibi/retro-90s/cartoon)
  * 2. Cleaned character description (emotion words removed)
  * 3. Expression modifiers
  * 4. PNGTuber-specific constraints

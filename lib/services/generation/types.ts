@@ -9,13 +9,10 @@
 
 export type ArtStyle =
   | "anime"
-  | "modern-vtuber"
+  | "vtuber"
   | "chibi"
   | "retro-90s"
-  | "kawaii-moe"
-  | "cyber-anime"
-  | "fantasy-anime"
-  | "shonen-style";
+  | "cartoon";
 
 export type ExpressionType =
   | "idle"
@@ -59,9 +56,19 @@ export const CUSTOM_EXPRESSIONS: ExpressionType[] = [
   "surprised",
 ] as const;
 
+export interface GenerateCharacterReferences {
+  /** Image prompt — prepended to prompt for image-to-image generation */
+  imageUrl?: string | null;
+  /** Style reference — appended as --sref */
+  styleUrl?: string | null;
+  /** Face/Omni reference — appended as --oref */
+  faceUrl?: string | null;
+}
+
 export interface GenerateCharacterRequest {
   prompt: string;
   style: ArtStyle;
+  references?: GenerateCharacterReferences;
 }
 
 export interface GenerateCharacterResult {

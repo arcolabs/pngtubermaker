@@ -9,13 +9,10 @@ import { useSubscriptionStore } from "@/hooks/use-subscription-store";
 
 export type ArtStyle =
   | "anime"
-  | "modern-vtuber"
+  | "vtuber"
   | "chibi"
   | "retro-90s"
-  | "kawaii-moe"
-  | "cyber-anime"
-  | "fantasy-anime"
-  | "shonen-style";
+  | "cartoon";
 export type AspectRatio = "1:1" | "3:4" | "9:16";
 export type TaskType = "avatar" | "expression_base" | "expression_custom";
 export type ExpressionSubtype = "happy" | "angry" | "sad";
@@ -305,6 +302,8 @@ export function useAvatarGenerator() {
 
       isGeneratingRef.current = true;
       const abortController = new AbortController();
+      // Client-side timeout: 3 min (backend MJ timeout is 180s)
+      const timeoutId = setTimeout(() => abortController.abort(), 200_000);
       const tempId = crypto.randomUUID();
       abortControllersRef.current.set(tempId, abortController);
 
@@ -387,15 +386,8 @@ export function useAvatarGenerator() {
         }));
         await fetchBalance();
       } catch (error) {
-        if (error instanceof Error && error.name === "AbortError") {
-          // Request was cancelled - remove the skeleton
-          setState((prev) => ({
-            ...prev,
-            isGenerating: false,
-            generations: prev.generations.filter((g) => g.id !== tempId),
-          }));
-          return;
-        }
+        const isAbort =
+          error instanceof Error && error.name === "AbortError";
 
         setState((prev) => ({
           ...prev,
@@ -405,8 +397,9 @@ export function useAvatarGenerator() {
               ? {
                   ...g,
                   status: "failed" as const,
-                  error:
-                    error instanceof Error
+                  error: isAbort
+                    ? "Generation timed out. Please try again."
+                    : error instanceof Error
                       ? error.message
                       : "Network error. Please try again.",
                 }
@@ -414,6 +407,7 @@ export function useAvatarGenerator() {
           ),
         }));
       } finally {
+        clearTimeout(timeoutId);
         abortControllersRef.current.delete(tempId);
         isGeneratingRef.current = false;
       }

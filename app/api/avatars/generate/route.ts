@@ -59,14 +59,23 @@ export async function POST(req: NextRequest) {
     const userId = session.user.id;
 
     // 2. Parse & validate body
-    let body: { prompt: string; style: string; aspectRatio?: string };
+    let body: {
+      prompt: string;
+      style: string;
+      aspectRatio?: string;
+      references?: {
+        imageUrl?: string | null;
+        styleUrl?: string | null;
+        faceUrl?: string | null;
+      };
+    };
     try {
       body = await req.json();
     } catch {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
-    const { prompt, style, aspectRatio } = body;
+    const { prompt, style, aspectRatio, references } = body;
 
     if (!prompt || typeof prompt !== "string" || prompt.trim().length < 10) {
       return NextResponse.json(
@@ -82,21 +91,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const validStyles = [
-      "anime",
-      "modern-vtuber",
-      "chibi",
-      "retro-90s",
-      "kawaii-moe",
-      "cyber-anime",
-      "fantasy-anime",
-      "shonen-style",
-    ];
+    const validStyles = ["anime", "vtuber", "chibi", "retro-90s", "cartoon"];
     if (!style || !validStyles.includes(style)) {
       return NextResponse.json(
         {
-          error:
-            "Invalid style. Must be one of: anime, modern-vtuber, chibi, retro-90s, kawaii-moe, cyber-anime, fantasy-anime, shonen-style",
+          error: `Invalid style. Must be one of: ${validStyles.join(", ")}`,
         },
         { status: 400 },
       );
@@ -149,6 +148,7 @@ export async function POST(req: NextRequest) {
       const result = await adapter.generateCharacter({
         prompt: prompt.trim(),
         style: style as ArtStyle,
+        references: references || undefined,
       });
 
       if (result.status === "failed" || result.images.length === 0) {
