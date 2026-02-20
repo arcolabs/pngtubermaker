@@ -9,32 +9,88 @@ interface Expression {
   type: string;
   status: "pending" | "generating" | "completed" | "failed";
   imageUrl: string | null;
+  packId?: string | null;
+}
+
+interface Pack {
+  id: string;
+  packType: string;
+  subtype: string | null;
+  status: string;
+  createdAt: string;
+  expressions: Expression[];
 }
 
 interface AvatarDetailClientProps {
   avatar: {
     id: string;
     name: string;
-    prompt: string;
-    style: string;
-    creditsUsed: number;
-    createdAt: string;
+    baseImageUrl: string | null;
   };
   expressions: Expression[];
+  packs: Pack[];
 }
 
 const expressionLabels: Record<string, string> = {
   idle: "Idle",
   talking: "Talking",
+  blink: "Blink",
+  blink_talking: "Blink Talk",
   happy: "Happy",
+  happy_talking: "Happy Talk",
   sad: "Sad",
+  sad_talking: "Sad Talk",
   angry: "Angry",
+  angry_talking: "Angry Talk",
   surprised: "Surprised",
 };
+
+function getPackTitle(pack: Pack): string {
+  if (pack.packType === "base") return "Base Expressions";
+  if (pack.subtype) {
+    return `${pack.subtype.charAt(0).toUpperCase() + pack.subtype.slice(1)} Expressions`;
+  }
+  return "Custom Expressions";
+}
+
+function ExpressionCard({ expression }: { expression: Expression }) {
+  return (
+    <div className="space-y-2">
+      <div className="group relative aspect-square rounded-xl overflow-hidden bg-gray-50">
+        {expression.status === "completed" && expression.imageUrl ? (
+          <>
+            <img
+              src={expression.imageUrl}
+              alt={expressionLabels[expression.type] || expression.type}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-3">
+              <span className="text-white text-xs font-medium">
+                {expressionLabels[expression.type] || expression.type}
+              </span>
+            </div>
+          </>
+        ) : expression.status === "generating" ? (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="loading loading-spinner loading-md text-primary" />
+          </div>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-300">
+            <span className="text-2xl">&#x23F3;</span>
+          </div>
+        )}
+      </div>
+      <p className="text-center text-sm text-gray-500">
+        {expressionLabels[expression.type] || expression.type}
+      </p>
+    </div>
+  );
+}
 
 export default function AvatarDetailClient({
   avatar,
   expressions: initialExpressions,
+  packs: initialPacks,
 }: AvatarDetailClientProps) {
   const router = useRouter();
   const [selectedSize, setSelectedSize] = useState(1080);
@@ -97,7 +153,11 @@ export default function AvatarDetailClient({
     }
   };
 
-  const existingTypes = new Set(expressions.map((e) => e.type));
+  // Collect all expression types across packs and legacy expressions
+  const allExpressionTypes = new Set([
+    ...expressions.map((e) => e.type),
+    ...initialPacks.flatMap((p) => p.expressions.map((e) => e.type)),
+  ]);
   const availableTypes = [
     "idle",
     "talking",
@@ -105,19 +165,12 @@ export default function AvatarDetailClient({
     "sad",
     "angry",
     "surprised",
-  ].filter((t) => !existingTypes.has(t));
+  ].filter((t) => !allExpressionTypes.has(t));
   const canAddMore = availableTypes.length > 0;
-
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
 
   return (
     <div className="space-y-8">
+      {/* Download & Actions Bar */}
       <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm">
         <h3 className="font-semibold text-gray-900 mb-4">Download</h3>
         <div className="flex flex-wrap items-center gap-3">
@@ -126,9 +179,9 @@ export default function AvatarDetailClient({
             value={selectedSize}
             onChange={(e) => setSelectedSize(Number(e.target.value))}
           >
-            <option value={512}>512×512</option>
-            <option value={1080}>1080×1080</option>
-            <option value={2160}>2160×2160 (4K)</option>
+            <option value={512}>512x512</option>
+            <option value={1080}>1080x1080</option>
+            <option value={2160}>2160x2160 (4K)</option>
           </select>
           <button
             type="button"
@@ -175,68 +228,38 @@ export default function AvatarDetailClient({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {expressions.map((expression) => (
-          <div key={expression.id} className="space-y-2">
-            <div className="group relative aspect-square rounded-xl overflow-hidden bg-gray-50">
-              {expression.status === "completed" && expression.imageUrl ? (
-                <>
-                  <img
-                    src={expression.imageUrl}
-                    alt={expressionLabels[expression.type] || expression.type}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-3">
-                    <span className="text-white text-xs font-medium">
-                      {expressionLabels[expression.type] || expression.type}
-                    </span>
-                  </div>
-                </>
-              ) : expression.status === "generating" ? (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="loading loading-spinner loading-md text-primary" />
-                </div>
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-300">
-                  <span className="text-2xl">⏳</span>
-                </div>
-              )}
-            </div>
-            <p className="text-center text-sm capitalize text-gray-500">
-              {expressionLabels[expression.type] || expression.type}
-            </p>
+      {/* Pack sections */}
+      {initialPacks.map((pack) => (
+        <div
+          key={pack.id}
+          className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm"
+        >
+          <h3 className="font-semibold text-gray-900 mb-4">
+            {getPackTitle(pack)}
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {pack.expressions.map((expression) => (
+              <ExpressionCard key={expression.id} expression={expression} />
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
 
-      <div className="divider" />
+      {/* Legacy expressions (not belonging to any pack) */}
+      {expressions.length > 0 && (
+        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm">
+          <h3 className="font-semibold text-gray-900 mb-4">
+            {initialPacks.length > 0 ? "Other Expressions" : "Expressions"}
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {expressions.map((expression) => (
+              <ExpressionCard key={expression.id} expression={expression} />
+            ))}
+          </div>
+        </div>
+      )}
 
-      <div>
-        <h3 className="font-semibold mb-4 text-gray-900">Generation Details</h3>
-        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-          <div>
-            <dt className="text-gray-400">Prompt</dt>
-            <dd className="mt-1 text-gray-700">{avatar.prompt}</dd>
-          </div>
-          <div>
-            <dt className="text-gray-400">Style</dt>
-            <dd className="mt-1 capitalize text-gray-700">{avatar.style}</dd>
-          </div>
-          <div>
-            <dt className="text-gray-400">Credits used</dt>
-            <dd className="mt-1 text-gray-700">
-              {avatar.creditsUsed.toLocaleString()}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-gray-400">Created</dt>
-            <dd className="mt-1 text-gray-700">
-              {formatDate(avatar.createdAt)}
-            </dd>
-          </div>
-        </dl>
-      </div>
-
+      {/* Delete Confirmation Modal */}
       <dialog className={`modal ${showDeleteConfirm ? "modal-open" : ""}`}>
         <div className="modal-box">
           <h3 className="font-bold text-lg">Delete Avatar?</h3>

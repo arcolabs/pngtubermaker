@@ -180,6 +180,7 @@ export const avatars = pgTable("avatars", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   name: text("name").notNull().default("My PNGTuber"),
+  slug: text("slug").unique(),
   prompt: text("prompt").notNull(),
   style: text("style").notNull(), // 'anime' | 'chibi'
   aspectRatio: text("aspect_ratio").default("1:1"), // '1:1' | '3:4' | '9:16'

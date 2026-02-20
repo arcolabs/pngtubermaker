@@ -11,6 +11,7 @@ import {
   generateThumbnail,
   uploadImageToR2,
 } from "@/lib/services/storage";
+import { generateAvatarName, generateSlug } from "@/lib/utils";
 
 /**
  * POST /api/avatars/[id]/select
@@ -141,10 +142,16 @@ export async function POST(
       }
     }
 
-    // 10. Update avatar record
+    // 10. Generate unique name and slug from prompt
+    const avatarName = generateAvatarName(a.prompt);
+    const slug = generateSlug(avatarName);
+
+    // 11. Update avatar record
     await db
       .update(avatars)
       .set({
+        name: avatarName,
+        slug,
         baseImageUrl,
         baseImageR2Key: baseKey,
         thumbnailUrl,
@@ -154,9 +161,11 @@ export async function POST(
       })
       .where(eq(avatars.id, avatarId));
 
-    // 11. Return response
+    // 12. Return response
     return NextResponse.json({
       avatarId,
+      slug,
+      name: avatarName,
       baseImageUrl,
       thumbnailUrl,
     });

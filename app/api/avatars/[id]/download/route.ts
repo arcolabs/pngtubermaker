@@ -177,6 +177,8 @@ export async function GET(
   ];
 
   for (const expr of expressions) {
+    // Skip idle expressions — base image is already included as {name}_idle.png
+    if (expr.type === "idle") continue;
     if (expr.imageUrl) {
       files.push({
         name: `${a.name}_${expr.type}.png`,

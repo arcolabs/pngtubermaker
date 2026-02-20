@@ -1,6 +1,7 @@
 "use client";
 
 import { Copy, Download, Eye, Layers, RefreshCw } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import type {
   AspectRatio,
@@ -209,18 +210,18 @@ export function GenerationGroup({
         {/* Action Buttons Section — only visible when selected */}
         {isThisGroupSelected && selected && (
           <div className="space-y-3 pt-2 border-t border-gray-200">
-            {/* Preview Button - Prominent for expression types */}
+            {/* View Avatar - Navigate to detail page for expression types */}
             {(generation.type === "expression_base" ||
-              generation.type === "expression_custom") && (
-              <button
-                type="button"
-                onClick={() => setPreviewImageIndex(selectedImageIndex ?? 0)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary to-cyan-400 rounded-xl shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all duration-200"
-              >
-                <Eye className="w-4 h-4" />
-                Preview
-              </button>
-            )}
+              generation.type === "expression_custom") &&
+              generation.avatarId && (
+                <Link
+                  href={`/avatars/${generation.slug || generation.avatarId}`}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary to-cyan-400 rounded-xl shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all duration-200"
+                >
+                  <Eye className="w-4 h-4" />
+                  View Avatar
+                </Link>
+              )}
 
             {/* Avatar type specific buttons */}
             {generation.type === "avatar" && (
@@ -307,7 +308,7 @@ export function GenerationGroup({
           </div>
         )}
 
-        {/* Copy Prompt button - visible on hover for avatar type when not selected */}
+        {/* Copy Prompt - visible on hover for avatar type when not selected */}
         {generation.type === "avatar" &&
           !isThisGroupSelected &&
           generation.status === "completed" && (

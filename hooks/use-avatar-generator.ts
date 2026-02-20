@@ -31,6 +31,7 @@ export interface Generation {
   parentId?: string;
   subtype?: ExpressionSubtype;
   avatarId: string | null;
+  slug?: string | null;
   prompt: string;
   style: ArtStyle;
   aspectRatio: AspectRatio;
@@ -89,6 +90,7 @@ interface HistoryPackItem {
 interface HistoryItem {
   id: string;
   name: string;
+  slug?: string | null;
   prompt: string;
   style: string;
   aspectRatio?: string;
@@ -110,6 +112,7 @@ function historyItemToGeneration(item: HistoryItem): Generation {
     id: item.id,
     type: "avatar",
     avatarId: item.id,
+    slug: item.slug,
     prompt: item.prompt,
     style: item.style as ArtStyle,
     aspectRatio: (item.aspectRatio as AspectRatio) || "1:1",
@@ -135,6 +138,7 @@ function historyItemToGeneration(item: HistoryItem): Generation {
 function historyPackToGeneration(
   pack: HistoryPackItem,
   parentAvatarId: string,
+  parentSlug: string | null | undefined,
   parentStyle: ArtStyle,
   parentAspectRatio: AspectRatio,
 ): Generation {
@@ -149,6 +153,7 @@ function historyPackToGeneration(
     parentId: parentAvatarId,
     subtype: (pack.subtype as ExpressionSubtype) ?? undefined,
     avatarId: parentAvatarId,
+    slug: parentSlug,
     prompt: isBase
       ? "Base Expressions"
       : `${(pack.subtype ?? "").charAt(0).toUpperCase() + (pack.subtype ?? "").slice(1)} Expressions`,
@@ -212,6 +217,7 @@ export function useAvatarGenerator() {
             historyPackToGeneration(
               pack,
               item.id,
+              item.slug,
               item.style as ArtStyle,
               (item.aspectRatio as AspectRatio) || "1:1",
             ),
@@ -507,25 +513,32 @@ export function useAvatarGenerator() {
         : `${(subtype ?? "").charAt(0).toUpperCase() + (subtype ?? "").slice(1)} Expressions`;
 
       // Insert generating skeleton card
-      setState((prev) => ({
-        ...prev,
-        generations: [
-          {
-            id: genId,
-            type: isBase ? "expression_base" : "expression_custom",
-            parentId: selected.generationId,
-            subtype,
-            avatarId: selected.avatarId,
-            prompt,
-            style: parentGen?.style ?? prev.style,
-            aspectRatio: parentGen?.aspectRatio ?? prev.aspectRatio,
-            candidateImages: Array(skeletonCount).fill(""),
-            status: "generating" as const,
-            createdAt: Date.now(),
-          },
-          ...prev.generations,
-        ],
-      }));
+      setState((prev) => {
+        // Re-read parent from latest state to get slug set by select
+        const latestParent = prev.generations.find(
+          (g) => g.id === selected.generationId,
+        );
+        return {
+          ...prev,
+          generations: [
+            {
+              id: genId,
+              type: isBase ? "expression_base" : "expression_custom",
+              parentId: selected.generationId,
+              subtype,
+              avatarId: selected.avatarId,
+              slug: latestParent?.slug ?? parentGen?.slug,
+              prompt,
+              style: parentGen?.style ?? prev.style,
+              aspectRatio: parentGen?.aspectRatio ?? prev.aspectRatio,
+              candidateImages: Array(skeletonCount).fill(""),
+              status: "generating" as const,
+              createdAt: Date.now(),
+            },
+            ...prev.generations,
+          ],
+        };
+      });
 
       try {
         // Ensure base image is selected before generating expressions
@@ -548,12 +561,19 @@ export function useAvatarGenerator() {
               throw new Error(selectData.error || "Failed to select base");
             }
           } else {
-            // Mark base as selected so we don't re-select
+            const selectData = await selectRes.json();
+            // Mark base as selected and store the slug
             setState((prev) => ({
               ...prev,
               selected: prev.selected
                 ? { ...prev.selected, baseSelected: true }
                 : null,
+              // Update the parent avatar generation with slug from select response
+              generations: prev.generations.map((g) =>
+                g.avatarId === selected.avatarId && g.type === "avatar"
+                  ? { ...g, slug: selectData.slug, name: selectData.name }
+                  : g,
+              ),
             }));
           }
         }

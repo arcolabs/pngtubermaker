@@ -8,11 +8,13 @@ import {
   Trash2,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface Avatar {
   id: string;
   name: string;
+  slug?: string | null;
   thumbnailUrl: string | null;
   expressionCount: number;
   createdAt: string;
@@ -67,14 +69,19 @@ function getStatusBadge(status?: string) {
 }
 
 export default function AvatarCard({ avatar }: AvatarCardProps) {
+  const router = useRouter();
   const formattedDate = formatRelativeTime(avatar.createdAt);
   const [showMenu, setShowMenu] = useState(false);
   const status = avatar.status || "completed";
+  const avatarPath = `/avatars/${avatar.slug || avatar.id}`;
 
   return (
-    <div className="group relative bg-white rounded-xl border border-gray-200/60 overflow-hidden hover:shadow-lg hover:border-gray-300/60 transition-all duration-200">
-      <Link href={`/avatars/${avatar.id}`}>
-        <figure className="aspect-square overflow-hidden bg-gray-50 relative">
+    <div className="group relative aspect-square rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
+      <Link
+        href={`/avatars/${avatar.slug || avatar.id}`}
+        className="block w-full h-full"
+      >
+        <figure className="w-full h-full overflow-hidden bg-gray-50 relative">
           {avatar.thumbnailUrl ? (
             <img
               src={avatar.thumbnailUrl}
@@ -88,87 +95,98 @@ export default function AvatarCard({ avatar }: AvatarCardProps) {
           )}
           {getStatusBadge(status)}
 
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-200" />
-        </figure>
-      </Link>
+          {/* Glassmorphism Info Overlay */}
+          <div className="absolute inset-x-0 bottom-0 bg-black/60 backdrop-blur-md border-t border-white/10 p-3 transform translate-y-0">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <h3 className="font-medium text-white truncate text-sm">
+                  {avatar.name}
+                </h3>
+                <p className="text-xs text-white/70 mt-0.5">
+                  {avatar.expressionCount} expression
+                  {avatar.expressionCount !== 1 ? "s" : ""} · {formattedDate}
+                </p>
+              </div>
 
-      <div className="p-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <Link href={`/avatars/${avatar.id}`}>
-              <h3 className="font-medium text-gray-900 truncate hover:text-primary transition-colors">
-                {avatar.name}
-              </h3>
-            </Link>
-            <p className="text-xs text-gray-400 mt-0.5">
-              {avatar.expressionCount} expression
-              {avatar.expressionCount !== 1 ? "s" : ""} · {formattedDate}
-            </p>
-          </div>
-
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setShowMenu(!showMenu)}
-              className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
-            >
-              <MoreVertical className="w-4 h-4" />
-            </button>
-
-            {showMenu && (
-              <>
+              <div className="relative">
                 <button
                   type="button"
-                  className="fixed inset-0 z-10 bg-transparent"
-                  onClick={() => setShowMenu(false)}
-                  aria-label="Close menu"
-                />
-                <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
-                  <Link
-                    href={`/avatars/${avatar.id}`}
-                    className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    onClick={() => setShowMenu(false)}
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    View Details
-                  </Link>
-                  <Link
-                    href={`/avatars/${avatar.id}/edit`}
-                    className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    onClick={() => setShowMenu(false)}
-                  >
-                    <Edit2 className="w-4 h-4" />
-                    Edit
-                  </Link>
-                  <button
-                    type="button"
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 text-left"
-                    onClick={() => {
-                      setShowMenu(false);
-                      // TODO: Implement download
-                    }}
-                  >
-                    <Download className="w-4 h-4" />
-                    Download
-                  </button>
-                  <div className="border-t border-gray-100 my-1" />
-                  <button
-                    type="button"
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 text-left"
-                    onClick={() => {
-                      setShowMenu(false);
-                      // TODO: Implement delete with confirmation
-                    }}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Delete
-                  </button>
-                </div>
-              </>
-            )}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowMenu(!showMenu);
+                  }}
+                  className="p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/20 transition-colors"
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </button>
+
+                {showMenu && (
+                  <>
+                    <button
+                      type="button"
+                      className="fixed inset-0 z-10 bg-transparent cursor-default"
+                      onClick={() => setShowMenu(false)}
+                      aria-label="Close menu"
+                    />
+                    <div className="absolute right-0 bottom-full mb-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                      <button
+                        type="button"
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 text-left"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setShowMenu(false);
+                          router.push(avatarPath);
+                        }}
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        View Details
+                      </button>
+                      <button
+                        type="button"
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 text-left"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setShowMenu(false);
+                          router.push(`${avatarPath}/edit`);
+                        }}
+                      >
+                        <Edit2 className="w-4 h-4" />
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 text-left"
+                        onClick={() => {
+                          setShowMenu(false);
+                          // TODO: Implement download
+                        }}
+                      >
+                        <Download className="w-4 h-4" />
+                        Download
+                      </button>
+                      <div className="border-t border-gray-100 my-1" />
+                      <button
+                        type="button"
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 text-left"
+                        onClick={() => {
+                          setShowMenu(false);
+                          // TODO: Implement delete with confirmation
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </figure>
+      </Link>
     </div>
   );
 }

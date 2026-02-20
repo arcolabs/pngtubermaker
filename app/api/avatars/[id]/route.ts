@@ -1,7 +1,7 @@
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { avatarExpressions, avatars } from "@/database/schema";
+import { avatarExpressions, avatars, expressionPacks } from "@/database/schema";
 import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
 import { deleteFromR2 } from "@/lib/services/storage";
@@ -45,9 +45,32 @@ export async function GET(
         type: avatarExpressions.type,
         status: avatarExpressions.status,
         imageUrl: avatarExpressions.imageUrl,
+        packId: avatarExpressions.packId,
       })
       .from(avatarExpressions)
       .where(eq(avatarExpressions.avatarId, avatarId));
+
+    // Query expression packs ordered by creation time
+    const packs = await db
+      .select({
+        id: expressionPacks.id,
+        packType: expressionPacks.packType,
+        subtype: expressionPacks.subtype,
+        status: expressionPacks.status,
+        createdAt: expressionPacks.createdAt,
+      })
+      .from(expressionPacks)
+      .where(eq(expressionPacks.avatarId, avatarId))
+      .orderBy(asc(expressionPacks.createdAt));
+
+    // Build nested packs with their expressions
+    const packsWithExpressions = packs.map((pack) => ({
+      ...pack,
+      expressions: expressions.filter((e) => e.packId === pack.id),
+    }));
+
+    // Expressions not belonging to any pack (legacy data)
+    const legacyExpressions = expressions.filter((e) => !e.packId);
 
     return NextResponse.json({
       avatar: {
@@ -60,7 +83,8 @@ export async function GET(
         creditsUsed: a.creditsUsed,
         createdAt: a.createdAt,
       },
-      expressions,
+      expressions: legacyExpressions,
+      packs: packsWithExpressions,
     });
   } catch (error) {
     console.error("Error fetching avatar:", error);

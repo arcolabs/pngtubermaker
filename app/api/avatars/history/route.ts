@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
       .select({
         id: avatars.id,
         name: avatars.name,
+        slug: avatars.slug,
         prompt: avatars.prompt,
         style: avatars.style,
         aspectRatio: avatars.aspectRatio,
@@ -144,6 +145,7 @@ export async function GET(req: NextRequest) {
     const history = userAvatars.map((a) => ({
       id: a.id,
       name: a.name,
+      slug: a.slug,
       prompt: a.prompt,
       style: a.style,
       aspectRatio: a.aspectRatio,

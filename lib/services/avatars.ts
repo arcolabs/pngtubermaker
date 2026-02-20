@@ -5,6 +5,7 @@ import { getDatabase } from "@/lib/db";
 export interface AvatarSummary {
   id: string;
   name: string;
+  slug: string | null;
   thumbnailUrl: string | null;
   expressionCount: number;
   createdAt: string;
@@ -24,6 +25,7 @@ export async function listUserAvatars(
     .select({
       id: avatars.id,
       name: avatars.name,
+      slug: avatars.slug,
       thumbnailUrl: avatars.thumbnailUrl,
       createdAt: avatars.createdAt,
     })
@@ -47,6 +49,7 @@ export async function listUserAvatars(
     result.push({
       id: a.id,
       name: a.name,
+      slug: a.slug,
       thumbnailUrl: a.thumbnailUrl,
       expressionCount: exprCount[0]?.count ?? 0,
       createdAt: a.createdAt?.toISOString() ?? "",

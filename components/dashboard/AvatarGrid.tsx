@@ -8,6 +8,7 @@ import EmptyState from "./EmptyState";
 interface Avatar {
   id: string;
   name: string;
+  slug?: string | null;
   thumbnailUrl: string | null;
   expressionCount: number;
   createdAt: string;
@@ -28,13 +29,10 @@ export default function AvatarGrid({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="card bg-base-200 animate-pulse">
-            <div className="aspect-square bg-base-300 rounded-t-xl" />
-            <div className="card-body p-4">
-              <div className="h-4 w-24 bg-base-content/10 rounded" />
-              <div className="h-3 w-16 bg-base-content/10 rounded" />
-            </div>
-          </div>
+          <div
+            key={i}
+            className="aspect-square bg-base-200 animate-pulse rounded-xl"
+          />
         ))}
       </div>
     );
@@ -55,9 +53,9 @@ export default function AvatarGrid({
         ))}
 
         {showCreateCard && (
-          <Link href="/create">
-            <div className="card bg-base-200 border-2 border-dashed border-base-content/20 hover:border-primary hover:bg-primary/5 transition-all duration-300 min-h-[280px]">
-              <div className="card-body items-center justify-center">
+          <Link href="/create" className="aspect-square">
+            <div className="card bg-base-200 border-2 border-dashed border-base-content/20 hover:border-primary hover:bg-primary/5 transition-all duration-300 w-full h-full">
+              <div className="card-body items-center justify-center p-4">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                   <Plus className="w-8 h-8 text-primary" />
                 </div>
