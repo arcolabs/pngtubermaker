@@ -9,6 +9,12 @@ import { useSubscriptionStore } from "@/hooks/use-subscription-store";
 
 export type ArtStyle = "anime" | "chibi";
 
+export interface GenerateReferences {
+  imageUrl?: string | null;
+  styleUrl?: string | null;
+  faceUrl?: string | null;
+}
+
 export interface ExpressionState {
   id: string;
   type: string;
@@ -157,39 +163,84 @@ export function useAvatarGenerator() {
 
   // ── Generate ──────────────────────────────────────────────────────────
 
-  const generate = useCallback(async () => {
-    const genId = crypto.randomUUID();
-    const prompt = state.prompt;
-    const style = state.style;
+  const generate = useCallback(
+    async (references?: GenerateReferences) => {
+      const genId = crypto.randomUUID();
+      const prompt = state.prompt;
+      const style = state.style;
 
-    setState((prev) => ({
-      ...prev,
-      isGenerating: true,
-      error: null,
-      generations: [
-        {
-          id: genId,
-          avatarId: null,
-          prompt,
-          style,
-          candidateImages: [],
-          status: "generating",
-          createdAt: Date.now(),
-        },
-        ...prev.generations,
-      ],
-    }));
+      setState((prev) => ({
+        ...prev,
+        isGenerating: true,
+        error: null,
+        generations: [
+          {
+            id: genId,
+            avatarId: null,
+            prompt,
+            style,
+            candidateImages: [],
+            status: "generating",
+            createdAt: Date.now(),
+          },
+          ...prev.generations,
+        ],
+      }));
 
-    try {
-      const res = await fetch("/api/avatars/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, style }),
-      });
+      try {
+        const res = await fetch("/api/avatars/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt,
+            style,
+            references: references
+              ? {
+                  imageUrl: references.imageUrl,
+                  styleUrl: references.styleUrl,
+                  faceUrl: references.faceUrl,
+                }
+              : undefined,
+          }),
+        });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      if (!res.ok) {
+        if (!res.ok) {
+          setState((prev) => ({
+            ...prev,
+            isGenerating: false,
+            generations: prev.generations.map((g) =>
+              g.id === genId
+                ? {
+                    ...g,
+                    status: "failed" as const,
+                    error: data.error || "Generation failed",
+                  }
+                : g,
+            ),
+          }));
+          await fetchBalance();
+          return;
+        }
+
+        setState((prev) => ({
+          ...prev,
+          isGenerating: false,
+          generations: prev.generations.map((g) =>
+            g.id === genId
+              ? {
+                  ...g,
+                  id: data.avatarId,
+                  avatarId: data.avatarId,
+                  candidateImages: data.images,
+                  status: "completed" as const,
+                }
+              : g,
+          ),
+        }));
+        await fetchBalance();
+      } catch {
         setState((prev) => ({
           ...prev,
           isGenerating: false,
@@ -198,47 +249,15 @@ export function useAvatarGenerator() {
               ? {
                   ...g,
                   status: "failed" as const,
-                  error: data.error || "Generation failed",
+                  error: "Network error. Please try again.",
                 }
               : g,
           ),
         }));
-        await fetchBalance();
-        return;
       }
-
-      setState((prev) => ({
-        ...prev,
-        isGenerating: false,
-        generations: prev.generations.map((g) =>
-          g.id === genId
-            ? {
-                ...g,
-                id: data.avatarId,
-                avatarId: data.avatarId,
-                candidateImages: data.images,
-                status: "completed" as const,
-              }
-            : g,
-        ),
-      }));
-      await fetchBalance();
-    } catch {
-      setState((prev) => ({
-        ...prev,
-        isGenerating: false,
-        generations: prev.generations.map((g) =>
-          g.id === genId
-            ? {
-                ...g,
-                status: "failed" as const,
-                error: "Network error. Please try again.",
-              }
-            : g,
-        ),
-      }));
-    }
-  }, [state.prompt, state.style, fetchBalance]);
+    },
+    [state.prompt, state.style, fetchBalance],
+  );
 
   // ── Select / toggle candidate ─────────────────────────────────────────
 

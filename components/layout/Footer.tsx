@@ -31,7 +31,10 @@ export default function Footer() {
 
           <nav className="flex flex-col gap-2">
             <h6 className="footer-title">Product</h6>
-            <Link href="/pricing" className="link link-hover text-sm">
+            <Link
+              href="/pricing"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
               Pricing
             </Link>
           </nav>
@@ -42,21 +45,30 @@ export default function Footer() {
               href={brand.social.discord || "https://discord.com"}
               target="_blank"
               rel="noopener noreferrer"
-              className="link link-hover text-sm"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
               Discord
             </Link>
-            <Link href="/partners" className="link link-hover text-sm">
+            <Link
+              href="/partners"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
               Partners
             </Link>
           </nav>
 
           <nav className="flex flex-col gap-2">
             <h6 className="footer-title">Legal</h6>
-            <Link href="/legal/terms" className="link link-hover text-sm">
+            <Link
+              href="/legal/terms"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
               Terms
             </Link>
-            <Link href="/legal/privacy" className="link link-hover text-sm">
+            <Link
+              href="/legal/privacy"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
               Privacy
             </Link>
           </nav>
@@ -79,24 +91,36 @@ export default function Footer() {
             {brand.description}
           </p>
           <nav className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
-            <Link href="/pricing" className="link link-hover">
+            <Link
+              href="/pricing"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
               Pricing
             </Link>
             <Link
               href={brand.social.discord || "https://discord.com"}
               target="_blank"
               rel="noopener noreferrer"
-              className="link link-hover"
+              className="text-base-content/70 hover:text-primary transition-colors"
             >
               Discord
             </Link>
-            <Link href="/partners" className="link link-hover">
+            <Link
+              href="/partners"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
               Partners
             </Link>
-            <Link href="/legal/terms" className="link link-hover">
+            <Link
+              href="/legal/terms"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
               Terms
             </Link>
-            <Link href="/legal/privacy" className="link link-hover">
+            <Link
+              href="/legal/privacy"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
               Privacy
             </Link>
           </nav>
@@ -108,7 +132,7 @@ export default function Footer() {
           </p>
           <a
             href={`mailto:${brand.contact.email}`}
-            className="link link-hover text-sm text-base-content/40"
+            className="text-sm text-base-content/40 hover:text-primary transition-colors"
           >
             {brand.contact.email}
           </a>

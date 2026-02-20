@@ -4,12 +4,16 @@ import { Check, Loader2, Sparkles } from "lucide-react";
 import { useAutoResizeTextarea } from "@/hooks/use-auto-resize-textarea";
 import type { ArtStyle } from "@/hooks/use-avatar-generator";
 import { TASK_COSTS } from "@/lib/services/credits";
+import type { ReferenceHandlers } from "@/types/reference";
+import { ReferenceModule } from "./ReferenceModule";
+import { ReferenceUploadArea } from "./ReferenceUploadArea";
 
 interface GeneratorFormProps {
   prompt: string;
   style: ArtStyle;
   creditBalance: number | null;
   isGenerating: boolean;
+  reference: ReferenceHandlers;
   onPromptChange: (prompt: string) => void;
   onStyleChange: (style: ArtStyle) => void;
   onGenerate: () => void;
@@ -27,6 +31,7 @@ export function GeneratorForm({
   style,
   creditBalance,
   isGenerating,
+  reference,
   onPromptChange,
   onStyleChange,
   onGenerate,
@@ -65,6 +70,76 @@ export function GeneratorForm({
               </span>
             )}
           </div>
+        </div>
+
+        {/* Reference Modules */}
+        <div className="space-y-3">
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            Reference Images (Optional)
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <ReferenceModule
+              type="image"
+              file={reference.imageFile}
+              isActive={reference.activeType === "image"}
+              onClick={() =>
+                reference.onActiveTypeChange(
+                  reference.activeType === "image" ? null : "image",
+                )
+              }
+              onRemoveFile={() => reference.onImageFileChange(null)}
+              disabled={isGenerating}
+            />
+            <ReferenceModule
+              type="style"
+              file={reference.styleFile}
+              isActive={reference.activeType === "style"}
+              onClick={() =>
+                reference.onActiveTypeChange(
+                  reference.activeType === "style" ? null : "style",
+                )
+              }
+              onRemoveFile={() => reference.onStyleFileChange(null)}
+              disabled={isGenerating}
+            />
+            <ReferenceModule
+              type="face"
+              file={reference.faceFile}
+              isActive={reference.activeType === "face"}
+              onClick={() =>
+                reference.onActiveTypeChange(
+                  reference.activeType === "face" ? null : "face",
+                )
+              }
+              onRemoveFile={() => reference.onFaceFileChange(null)}
+              disabled={isGenerating}
+            />
+          </div>
+
+          {/* Upload Area */}
+          <ReferenceUploadArea
+            activeType={reference.activeType}
+            gallery={reference.gallery}
+            onImageUploaded={(file) => {
+              reference.onImageUploaded(file);
+              // Auto-assign to active module if it doesn't have a file yet
+              if (reference.activeType === "image" && !reference.imageFile) {
+                reference.onImageFileChange(file);
+              } else if (
+                reference.activeType === "style" &&
+                !reference.styleFile
+              ) {
+                reference.onStyleFileChange(file);
+              } else if (
+                reference.activeType === "face" &&
+                !reference.faceFile
+              ) {
+                reference.onFaceFileChange(file);
+              }
+            }}
+            onRemoveFromGallery={reference.onRemoveFromGallery}
+            disabled={isGenerating}
+          />
         </div>
 
         {/* Style + Balance + Generate row */}

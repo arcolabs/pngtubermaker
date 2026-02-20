@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useAvatarGenerator } from "@/hooks/use-avatar-generator";
+import { useReferencePersistentState } from "@/hooks/use-reference-persistent-state";
+import type { ReferenceHandlers } from "@/types/reference";
 import { GenerationGroup } from "./GenerationGroup";
 import { GeneratorForm } from "./GeneratorForm";
 
@@ -21,10 +23,65 @@ export function AvatarGenerator() {
     clearSelection,
   } = useAvatarGenerator();
 
+  // Reference state management
+  const {
+    activeType,
+    imageFile,
+    styleFile,
+    faceFile,
+    gallery,
+    setActiveType,
+    setImageFile,
+    setStyleFile,
+    setFaceFile,
+    addToGallery,
+    removeFromGallery,
+  } = useReferencePersistentState();
+
   useEffect(() => {
     fetchBalance();
     loadHistory();
   }, [fetchBalance, loadHistory]);
+
+  // Generate with references
+  const handleGenerate = () => {
+    const references = {
+      imageUrl: imageFile?.url || null,
+      styleUrl: styleFile?.url || null,
+      faceUrl: faceFile?.url || null,
+    };
+    generate(references);
+  };
+
+  // Bundle all reference state + callbacks into one object
+  const reference: ReferenceHandlers = useMemo(
+    () => ({
+      activeType,
+      imageFile,
+      styleFile,
+      faceFile,
+      gallery,
+      onActiveTypeChange: setActiveType,
+      onImageFileChange: setImageFile,
+      onStyleFileChange: setStyleFile,
+      onFaceFileChange: setFaceFile,
+      onImageUploaded: addToGallery,
+      onRemoveFromGallery: removeFromGallery,
+    }),
+    [
+      activeType,
+      imageFile,
+      styleFile,
+      faceFile,
+      gallery,
+      setActiveType,
+      setImageFile,
+      setStyleFile,
+      setFaceFile,
+      addToGallery,
+      removeFromGallery,
+    ],
+  );
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -34,9 +91,10 @@ export function AvatarGenerator() {
         style={state.style}
         creditBalance={creditBalance}
         isGenerating={state.isGenerating}
+        reference={reference}
         onPromptChange={updatePrompt}
         onStyleChange={updateStyle}
-        onGenerate={generate}
+        onGenerate={handleGenerate}
       />
 
       {/* Global error */}

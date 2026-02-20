@@ -111,6 +111,21 @@ export function generateAvatarKey(
 }
 
 /**
+ * Generate reference image file key (for avatar generation references)
+ */
+export function generateReferenceKey(
+  userId: string,
+  filename?: string,
+): string {
+  const timestamp = Date.now();
+  const randomId = crypto.randomUUID().slice(0, 8);
+  const safeFilename = (filename || "reference")
+    .replace(/[^a-zA-Z0-9.-]/g, "_")
+    .slice(0, 50);
+  return `references/${userId}/${timestamp}-${randomId}-${safeFilename}.png`;
+}
+
+/**
  * Upload image buffer to R2
  * Returns the public URL
  */
