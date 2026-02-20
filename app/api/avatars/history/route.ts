@@ -1,7 +1,7 @@
 import { desc, eq, inArray } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { avatarExpressions, avatars } from "@/database/schema";
+import { avatarExpressions, avatars, expressionPacks } from "@/database/schema";
 import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
 
@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
         name: avatars.name,
         prompt: avatars.prompt,
         style: avatars.style,
+        aspectRatio: avatars.aspectRatio,
         status: avatars.status,
         candidateImages: avatars.candidateImages,
         baseImageUrl: avatars.baseImageUrl,
@@ -44,14 +45,40 @@ export async function GET(req: NextRequest) {
 
     const expressionMap: Record<
       string,
-      { id: string; type: string; status: string; imageUrl: string | null }[]
+      {
+        id: string;
+        type: string;
+        status: string;
+        imageUrl: string | null;
+        packId: string | null;
+      }[]
+    > = {};
+
+    // Pack map: avatarId → packs[]
+    const packMap: Record<
+      string,
+      {
+        id: string;
+        packType: string;
+        subtype: string | null;
+        status: string;
+        createdAt: string;
+        expressions: {
+          id: string;
+          type: string;
+          status: string;
+          imageUrl: string | null;
+        }[];
+      }[]
     > = {};
 
     if (completedIds.length > 0) {
+      // Fetch all expressions (now including packId)
       const allExpressions = await db
         .select({
           id: avatarExpressions.id,
           avatarId: avatarExpressions.avatarId,
+          packId: avatarExpressions.packId,
           type: avatarExpressions.type,
           status: avatarExpressions.status,
           imageUrl: avatarExpressions.imageUrl,
@@ -59,7 +86,21 @@ export async function GET(req: NextRequest) {
         .from(avatarExpressions)
         .where(inArray(avatarExpressions.avatarId, completedIds));
 
-      // Group by avatarId
+      // Fetch all packs for these avatars
+      const allPacks = await db
+        .select({
+          id: expressionPacks.id,
+          avatarId: expressionPacks.avatarId,
+          packType: expressionPacks.packType,
+          subtype: expressionPacks.subtype,
+          status: expressionPacks.status,
+          createdAt: expressionPacks.createdAt,
+        })
+        .from(expressionPacks)
+        .where(inArray(expressionPacks.avatarId, completedIds))
+        .orderBy(desc(expressionPacks.createdAt));
+
+      // Group expressions by avatarId (for backwards compat — non-pack expressions)
       for (const expr of allExpressions) {
         if (!expressionMap[expr.avatarId]) {
           expressionMap[expr.avatarId] = [];
@@ -69,6 +110,32 @@ export async function GET(req: NextRequest) {
           type: expr.type,
           status: expr.status,
           imageUrl: expr.imageUrl,
+          packId: expr.packId,
+        });
+      }
+
+      // Build pack objects with nested expressions
+      for (const pack of allPacks) {
+        if (!packMap[pack.avatarId]) {
+          packMap[pack.avatarId] = [];
+        }
+
+        const packExpressions = (expressionMap[pack.avatarId] ?? [])
+          .filter((e) => e.packId === pack.id)
+          .map((e) => ({
+            id: e.id,
+            type: e.type,
+            status: e.status,
+            imageUrl: e.imageUrl,
+          }));
+
+        packMap[pack.avatarId].push({
+          id: pack.id,
+          packType: pack.packType,
+          subtype: pack.subtype,
+          status: pack.status,
+          createdAt: pack.createdAt?.toISOString() ?? "",
+          expressions: packExpressions,
         });
       }
     }
@@ -79,10 +146,20 @@ export async function GET(req: NextRequest) {
       name: a.name,
       prompt: a.prompt,
       style: a.style,
+      aspectRatio: a.aspectRatio,
       status: a.status,
       candidateImages: a.candidateImages ?? [],
       baseImageUrl: a.baseImageUrl,
-      expressions: expressionMap[a.id] ?? [],
+      // Keep flat expressions for backwards compat (non-pack expressions only)
+      expressions: (expressionMap[a.id] ?? [])
+        .filter((e) => !e.packId)
+        .map((e) => ({
+          id: e.id,
+          type: e.type,
+          status: e.status,
+          imageUrl: e.imageUrl,
+        })),
+      packs: packMap[a.id] ?? [],
       createdAt: a.createdAt?.toISOString() ?? "",
     }));
 

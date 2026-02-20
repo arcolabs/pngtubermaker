@@ -18,10 +18,16 @@ const EXPRESSION_MODIFIERS: Record<ExpressionType, string> = {
   blink_talking:
     "eyes closed, mouth wide open speaking, closed eyes while talking, open mouth, eyelids shut",
   happy:
-    "big bright smile, joyful expression, sparkling happy eyes, cheerful grin",
-  sad: "sad tearful expression, downturned mouth, sorrowful eyes, melancholic look",
+    "big bright smile, joyful expression, sparkling happy eyes, cheerful grin, mouth closed",
+  happy_talking:
+    "big bright smile, joyful expression, sparkling happy eyes, cheerful grin, mouth wide open speaking",
+  sad: "sad tearful expression, downturned mouth, sorrowful eyes, melancholic look, mouth closed",
+  sad_talking:
+    "sad tearful expression, downturned mouth, sorrowful eyes, melancholic look, mouth wide open speaking",
   angry:
-    "angry scowling expression, furrowed brows, intense glaring eyes, clenched teeth",
+    "angry scowling expression, furrowed brows, intense glaring eyes, clenched teeth, mouth closed",
+  angry_talking:
+    "angry scowling expression, furrowed brows, intense glaring eyes, mouth wide open yelling",
   surprised:
     "wide shocked eyes, open mouth surprise, raised eyebrows, astonished expression",
 };

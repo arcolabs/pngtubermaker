@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { useAvatarGenerator } from "@/hooks/use-avatar-generator";
+import {
+  type ArtStyle,
+  type AspectRatio,
+  useAvatarGenerator,
+} from "@/hooks/use-avatar-generator";
 import { useReferencePersistentState } from "@/hooks/use-reference-persistent-state";
 import type { ReferenceHandlers } from "@/types/reference";
 import { GenerationGroup } from "./GenerationGroup";
@@ -15,12 +19,12 @@ export function AvatarGenerator() {
     loadHistory,
     updatePrompt,
     updateStyle,
+    updateAspectRatio,
     generate,
+    regenerate,
     selectCandidate,
-    generateSingleExpression,
+    generateExpressionPack,
     download,
-    updateAvatarName,
-    clearSelection,
   } = useAvatarGenerator();
 
   // Reference state management
@@ -51,6 +55,15 @@ export function AvatarGenerator() {
       faceUrl: faceFile?.url || null,
     };
     generate(references);
+  };
+
+  // Regenerate with same params
+  const handleRegenerate = (
+    prompt: string,
+    style: string,
+    aspectRatio: string,
+  ) => {
+    regenerate(prompt, style as ArtStyle, aspectRatio as AspectRatio);
   };
 
   // Bundle all reference state + callbacks into one object
@@ -89,11 +102,13 @@ export function AvatarGenerator() {
       <GeneratorForm
         prompt={state.prompt}
         style={state.style}
+        aspectRatio={state.aspectRatio}
         creditBalance={creditBalance}
         isGenerating={state.isGenerating}
         reference={reference}
         onPromptChange={updatePrompt}
         onStyleChange={updateStyle}
+        onAspectRatioChange={updateAspectRatio}
         onGenerate={handleGenerate}
       />
 
@@ -114,10 +129,9 @@ export function AvatarGenerator() {
               selected={state.selected}
               creditBalance={creditBalance}
               onSelectCandidate={selectCandidate}
-              onGenerateSingleExpression={generateSingleExpression}
-              onUpdateAvatarName={updateAvatarName}
+              onGenerateExpressionPack={generateExpressionPack}
               onDownload={download}
-              onClearSelection={clearSelection}
+              onRegenerate={handleRegenerate}
             />
           ))}
         </div>

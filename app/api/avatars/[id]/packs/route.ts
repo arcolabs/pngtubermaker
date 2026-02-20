@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { avatarExpressions, avatars } from "@/database/schema";
+import { avatarExpressions, avatars, expressionPacks } from "@/database/schema";
 import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
 import {
@@ -17,45 +17,38 @@ import {
 import { generateAvatarKey, uploadImageToR2 } from "@/lib/services/storage";
 
 /**
- * POST /api/avatars/[id]/expressions
+ * POST /api/avatars/[id]/packs
  *
- * Generate expression variants for a base avatar.
- * Processes expressions sequentially to avoid rate limits.
- * Refunds credits for any failed generations.
+ * Create an expression pack for a completed avatar.
+ * - base pack: idle (copy from baseImageUrl), talking, blink, blink_talking (3 generated)
+ * - custom pack: a single expression of the given subtype (1 generated)
  *
  * Auth: Required (must own avatar)
- * Body: { expressions: ['talking', 'happy', 'sad'] }
- * Cost: 200 credits × expressions.length
+ * Body: { packType: 'base' | 'custom', subtype?: 'happy' | 'angry' | 'sad' }
+ * Cost: 200 credits per generated expression
  *
- * Response: { avatarId, expressions: [{ id, type, status, imageUrl }] }
+ * Response: { packId, expressions: [...], failedCount, refundedCredits }
  */
 
-// Valid expression types (defined in schema)
-// "idle" | "talking" | "happy" | "sad" | "angry" | "surprised"
+const packSchema = z
+  .object({
+    packType: z.enum(["base", "custom"]),
+    subtype: z.enum(["happy", "angry", "sad"]).optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.packType === "custom" && !data.subtype) return false;
+      return true;
+    },
+    { message: "subtype is required for custom packs" },
+  );
 
-const generateSchema = z.object({
-  expressions: z
-    .array(
-      z.enum([
-        "idle",
-        "talking",
-        "blink",
-        "blink_talking",
-        "happy",
-        "happy_talking",
-        "sad",
-        "sad_talking",
-        "angry",
-        "angry_talking",
-        "surprised",
-      ]),
-    )
-    .min(1)
-    .max(8)
-    .refine((items) => new Set(items).size === items.length, {
-      message: "Expressions must be unique",
-    }),
-});
+const BASE_EXPRESSIONS: ExpressionType[] = [
+  "idle",
+  "talking",
+  "blink",
+  "blink_talking",
+];
 
 export async function POST(
   req: NextRequest,
@@ -77,7 +70,7 @@ export async function POST(
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const parseResult = generateSchema.safeParse(body);
+  const parseResult = packSchema.safeParse(body);
   if (!parseResult.success) {
     return NextResponse.json(
       { error: "Invalid body", details: parseResult.error.flatten() },
@@ -85,7 +78,7 @@ export async function POST(
     );
   }
 
-  const { expressions } = parseResult.data;
+  const { packType, subtype } = parseResult.data;
 
   // 3. Fetch avatar and verify ownership
   const db = getDatabase();
@@ -101,7 +94,7 @@ export async function POST(
 
   const a = avatar[0];
 
-  // 4. Verify avatar is completed (has base image)
+  // 4. Verify avatar is completed with a base image
   if (a.status !== "completed" || !a.baseImageUrl) {
     return NextResponse.json(
       { error: "Avatar base image not ready" },
@@ -109,15 +102,25 @@ export async function POST(
     );
   }
 
-  // 5. Calculate cost and consume credits
+  // 5. Determine expression types to generate
+  // Custom packs get static + talking variant (e.g. "happy" + "happy_talking")
+  const expressionTypes: ExpressionType[] =
+    packType === "base"
+      ? BASE_EXPRESSIONS
+      : [subtype as ExpressionType, `${subtype}_talking` as ExpressionType];
+
+  // idle is copied from baseImageUrl, not generated
+  const toGenerate = expressionTypes.filter((t) => t !== "idle");
+
+  // 6. Calculate cost and consume credits
   const costPerExpression = TASK_COSTS.expression_edit;
-  const totalCost = costPerExpression * expressions.length;
+  const totalCost = costPerExpression * toGenerate.length;
 
   const consumeResult = await consumeCredits(
     session.user.id,
     totalCost,
-    `Expression pack: ${expressions.join(", ")}`,
-    { avatarId, expressions, taskType: "expression_edit" },
+    `Expression pack (${packType}${subtype ? `: ${subtype}` : ""}): ${toGenerate.join(", ")}`,
+    { avatarId, packType, subtype, taskType: "expression_edit" },
   );
 
   if (!consumeResult.success) {
@@ -131,7 +134,18 @@ export async function POST(
     );
   }
 
-  // 6. Create expression records (status: pending)
+  // 7. Insert expression_packs record
+  const packId = crypto.randomUUID();
+  await db.insert(expressionPacks).values({
+    id: packId,
+    avatarId,
+    packType,
+    subtype: subtype ?? null,
+    status: "generating",
+    creditsUsed: totalCost,
+  });
+
+  // 8. Insert expression records
   const expressionRecords: {
     id: string;
     type: ExpressionType;
@@ -139,29 +153,35 @@ export async function POST(
     imageUrl: string | null;
   }[] = [];
 
-  for (const expressionType of expressions) {
+  for (const expressionType of expressionTypes) {
     const expressionId = crypto.randomUUID();
+    const isIdle = expressionType === "idle";
+
     await db.insert(avatarExpressions).values({
       id: expressionId,
       avatarId,
+      packId,
       type: expressionType,
-      status: "pending",
-      creditsUsed: costPerExpression,
+      status: isIdle ? "completed" : "pending",
+      imageUrl: isIdle ? a.baseImageUrl : null,
+      creditsUsed: isIdle ? 0 : costPerExpression,
     });
 
     expressionRecords.push({
       id: expressionId,
       type: expressionType,
-      status: "pending",
-      imageUrl: null,
+      status: isIdle ? "completed" : "pending",
+      imageUrl: isIdle ? a.baseImageUrl : null,
     });
   }
 
-  // 7. Generate expressions sequentially
+  // 9. Generate expressions sequentially (skip idle)
   const adapter = getGenerationAdapter();
   let failedCount = 0;
 
   for (const record of expressionRecords) {
+    if (record.status === "completed") continue; // skip idle
+
     try {
       // Update status to generating
       await db
@@ -211,9 +231,8 @@ export async function POST(
         throw new Error(result.error || "Generation failed");
       }
     } catch (error) {
-      console.error(`[Expressions] Failed to generate ${record.type}:`, error);
+      console.error(`[Packs] Failed to generate ${record.type}:`, error);
 
-      // Update status to failed
       await db
         .update(avatarExpressions)
         .set({ status: "failed" })
@@ -224,20 +243,35 @@ export async function POST(
     }
   }
 
-  // 8. Refund credits for failed expressions
+  // 10. Refund credits for failed expressions
   if (failedCount > 0) {
     const refundAmount = costPerExpression * failedCount;
     await refundCredits(
       session.user.id,
       refundAmount,
-      `Expression generation failed - ${failedCount} expression(s) refunded`,
-      { avatarId, failedCount },
+      `Expression pack generation failed - ${failedCount} expression(s) refunded`,
+      { avatarId, packId, failedCount },
     );
   }
 
-  // 9. Return response
+  // 11. Update pack status
+  const allCompleted = expressionRecords.every((r) => r.status === "completed");
+  const allFailed = expressionRecords
+    .filter((r) => r.type !== "idle")
+    .every((r) => r.status === "failed");
+
+  await db
+    .update(expressionPacks)
+    .set({
+      status: allFailed ? "failed" : allCompleted ? "completed" : "completed",
+    })
+    .where(eq(expressionPacks.id, packId));
+
+  // 12. Return response
   return NextResponse.json({
-    avatarId,
+    packId,
+    packType,
+    subtype: subtype ?? null,
     expressions: expressionRecords.map((r) => ({
       id: r.id,
       type: r.type,

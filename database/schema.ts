@@ -182,6 +182,7 @@ export const avatars = pgTable("avatars", {
   name: text("name").notNull().default("My PNGTuber"),
   prompt: text("prompt").notNull(),
   style: text("style").notNull(), // 'anime' | 'chibi'
+  aspectRatio: text("aspect_ratio").default("1:1"), // '1:1' | '3:4' | '9:16'
   status: text("status").notNull(), // 'generating' | 'selecting' | 'completed' | 'failed'
   // Candidate images from Midjourney (4 options, stored as JSON array of URLs)
   candidateImages: jsonb("candidate_images").$type<string[]>(),
@@ -196,11 +197,26 @@ export const avatars = pgTable("avatars", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const expressionPacks = pgTable("expression_packs", {
+  id: text("id").primaryKey(),
+  avatarId: text("avatar_id")
+    .notNull()
+    .references(() => avatars.id, { onDelete: "cascade" }),
+  packType: text("pack_type").notNull(), // 'base' | 'custom'
+  subtype: text("subtype"), // 'happy' | 'angry' | 'sad' (null for base)
+  status: text("status").notNull(), // 'generating' | 'completed' | 'failed'
+  creditsUsed: integer("credits_used").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const avatarExpressions = pgTable("avatar_expressions", {
   id: text("id").primaryKey(),
   avatarId: text("avatar_id")
     .notNull()
     .references(() => avatars.id, { onDelete: "cascade" }),
+  packId: text("pack_id").references(() => expressionPacks.id, {
+    onDelete: "set null",
+  }),
   type: text("type").notNull(), // 'idle' | 'talking' | 'happy' | 'sad' | 'angry' | 'surprised'
   status: text("status").notNull(), // 'pending' | 'generating' | 'completed' | 'failed'
   imageUrl: text("image_url"),
@@ -283,6 +299,8 @@ export type NewWebhookEvent = InferInsertModel<typeof webhookEvents>;
 // Avatars
 export type Avatar = InferSelectModel<typeof avatars>;
 export type NewAvatar = InferInsertModel<typeof avatars>;
+export type ExpressionPack = InferSelectModel<typeof expressionPacks>;
+export type NewExpressionPack = InferInsertModel<typeof expressionPacks>;
 export type AvatarExpression = InferSelectModel<typeof avatarExpressions>;
 export type NewAvatarExpression = InferInsertModel<typeof avatarExpressions>;
 

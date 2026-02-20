@@ -31,14 +31,14 @@ export async function POST(req: NextRequest) {
   const userId = session.user.id;
 
   // 2. Parse & validate body
-  let body: { prompt: string; style: string };
+  let body: { prompt: string; style: string; aspectRatio?: string };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { prompt, style } = body;
+  const { prompt, style, aspectRatio } = body;
 
   if (!prompt || typeof prompt !== "string" || prompt.trim().length < 10) {
     return NextResponse.json(
@@ -85,12 +85,20 @@ export async function POST(req: NextRequest) {
   const db = getDatabase();
   const avatarId = crypto.randomUUID();
 
+  // Validate aspect ratio
+  const validAspectRatios = ["1:1", "3:4", "9:16"];
+  const normalizedAspectRatio =
+    aspectRatio && validAspectRatios.includes(aspectRatio)
+      ? aspectRatio
+      : "1:1";
+
   await db.insert(avatars).values({
     id: avatarId,
     userId,
     name: "My PNGTuber",
     prompt: prompt.trim(),
     style: style as ArtStyle,
+    aspectRatio: normalizedAspectRatio,
     status: "generating",
     creditsUsed: cost,
   });
@@ -138,6 +146,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       avatarId,
       images: result.images,
+      aspectRatio: normalizedAspectRatio,
     });
   } catch (error) {
     // Unexpected error — refund and fail

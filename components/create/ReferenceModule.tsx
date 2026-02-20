@@ -55,10 +55,17 @@ export function ReferenceModule({
   };
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
+    // biome-ignore lint/a11y/useSemanticElements: Can't use <button> because it contains a nested remove <button>
+    <div
+      role="button"
+      tabIndex={disabled ? -1 : 0}
+      onClick={disabled ? undefined : onClick}
+      onKeyDown={(e) => {
+        if (!disabled && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
       className={cn(
         "relative w-full p-4 rounded-xl border transition-all duration-300 text-left group",
         isActive
@@ -139,6 +146,6 @@ export function ReferenceModule({
           )}
         </div>
       </div>
-    </button>
+    </div>
   );
 }

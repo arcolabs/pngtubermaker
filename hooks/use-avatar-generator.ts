@@ -8,6 +8,9 @@ import { useSubscriptionStore } from "@/hooks/use-subscription-store";
 // ============================================================================
 
 export type ArtStyle = "anime" | "chibi";
+export type AspectRatio = "1:1" | "3:4" | "9:16";
+export type TaskType = "avatar" | "expression_base" | "expression_custom";
+export type ExpressionSubtype = "happy" | "angry" | "sad";
 
 export interface GenerateReferences {
   imageUrl?: string | null;
@@ -24,9 +27,13 @@ export interface ExpressionState {
 
 export interface Generation {
   id: string;
+  type: TaskType;
+  parentId?: string;
+  subtype?: ExpressionSubtype;
   avatarId: string | null;
   prompt: string;
   style: ArtStyle;
+  aspectRatio: AspectRatio;
   candidateImages: string[];
   status: "generating" | "completed" | "failed";
   error?: string;
@@ -53,6 +60,7 @@ export interface SelectedAvatar {
 export interface GeneratorState {
   prompt: string;
   style: ArtStyle;
+  aspectRatio: AspectRatio;
   generations: Generation[];
   isGenerating: boolean;
   selected: SelectedAvatar | null;
@@ -63,12 +71,27 @@ export interface GeneratorState {
 // Hook
 // ============================================================================
 
-// API response shape from GET /api/avatars/history
+// API response shapes from GET /api/avatars/history
+interface HistoryPackItem {
+  id: string;
+  packType: string;
+  subtype: string | null;
+  status: string;
+  createdAt: string;
+  expressions: {
+    id: string;
+    type: string;
+    status: string;
+    imageUrl: string | null;
+  }[];
+}
+
 interface HistoryItem {
   id: string;
   name: string;
   prompt: string;
   style: string;
+  aspectRatio?: string;
   status: string;
   candidateImages: string[];
   baseImageUrl: string | null;
@@ -78,15 +101,18 @@ interface HistoryItem {
     status: string;
     imageUrl: string | null;
   }[];
+  packs?: HistoryPackItem[];
   createdAt: string;
 }
 
 function historyItemToGeneration(item: HistoryItem): Generation {
   return {
     id: item.id,
+    type: "avatar",
     avatarId: item.id,
     prompt: item.prompt,
     style: item.style as ArtStyle,
+    aspectRatio: (item.aspectRatio as AspectRatio) || "1:1",
     candidateImages: item.candidateImages,
     status:
       item.status === "selecting" || item.status === "completed"
@@ -106,9 +132,43 @@ function historyItemToGeneration(item: HistoryItem): Generation {
   };
 }
 
+function historyPackToGeneration(
+  pack: HistoryPackItem,
+  parentAvatarId: string,
+  parentStyle: ArtStyle,
+  parentAspectRatio: AspectRatio,
+): Generation {
+  const isBase = pack.packType === "base";
+  const candidateImages = pack.expressions
+    .map((e) => e.imageUrl)
+    .filter((url): url is string => url !== null);
+
+  return {
+    id: pack.id,
+    type: isBase ? "expression_base" : "expression_custom",
+    parentId: parentAvatarId,
+    subtype: (pack.subtype as ExpressionSubtype) ?? undefined,
+    avatarId: parentAvatarId,
+    prompt: isBase
+      ? "Base Expressions"
+      : `${(pack.subtype ?? "").charAt(0).toUpperCase() + (pack.subtype ?? "").slice(1)} Expressions`,
+    style: parentStyle,
+    aspectRatio: parentAspectRatio,
+    candidateImages,
+    status:
+      pack.status === "completed"
+        ? "completed"
+        : pack.status === "failed"
+          ? "failed"
+          : "generating",
+    createdAt: new Date(pack.createdAt).getTime(),
+  };
+}
+
 const INITIAL_STATE: GeneratorState = {
   prompt: "",
   style: "anime",
+  aspectRatio: "1:1",
   generations: [],
   isGenerating: false,
   selected: null,
@@ -139,11 +199,34 @@ export function useAvatarGenerator() {
         const inFlightGenerations = prev.generations.filter(
           (g) => g.avatarId === null,
         );
-        const historyGenerations = items.map(historyItemToGeneration);
+
+        // Build generations: avatars + their packs interleaved by createdAt
+        const allGenerations: Generation[] = [];
+
+        for (const item of items) {
+          const avatarGen = historyItemToGeneration(item);
+          const packs = item.packs ?? [];
+
+          // Convert packs to Generation objects
+          const packGenerations = packs.map((pack) =>
+            historyPackToGeneration(
+              pack,
+              item.id,
+              item.style as ArtStyle,
+              (item.aspectRatio as AspectRatio) || "1:1",
+            ),
+          );
+
+          // Add all (avatar + packs), packs first (most recent first)
+          allGenerations.push(...packGenerations, avatarGen);
+        }
+
+        // Sort all by createdAt descending (most recent first)
+        allGenerations.sort((a, b) => b.createdAt - a.createdAt);
 
         return {
           ...prev,
-          generations: [...inFlightGenerations, ...historyGenerations],
+          generations: [...inFlightGenerations, ...allGenerations],
         };
       });
     } catch {
@@ -161,6 +244,10 @@ export function useAvatarGenerator() {
     setState((prev) => ({ ...prev, style }));
   }, []);
 
+  const updateAspectRatio = useCallback((aspectRatio: AspectRatio) => {
+    setState((prev) => ({ ...prev, aspectRatio }));
+  }, []);
+
   // ── Generate ──────────────────────────────────────────────────────────
 
   const generate = useCallback(
@@ -168,6 +255,7 @@ export function useAvatarGenerator() {
       const genId = crypto.randomUUID();
       const prompt = state.prompt;
       const style = state.style;
+      const aspectRatio = state.aspectRatio;
 
       setState((prev) => ({
         ...prev,
@@ -176,9 +264,11 @@ export function useAvatarGenerator() {
         generations: [
           {
             id: genId,
+            type: "avatar",
             avatarId: null,
             prompt,
             style,
+            aspectRatio,
             candidateImages: [],
             status: "generating",
             createdAt: Date.now(),
@@ -194,6 +284,7 @@ export function useAvatarGenerator() {
           body: JSON.stringify({
             prompt,
             style,
+            aspectRatio,
             references: references
               ? {
                   imageUrl: references.imageUrl,
@@ -234,6 +325,7 @@ export function useAvatarGenerator() {
                   id: data.avatarId,
                   avatarId: data.avatarId,
                   candidateImages: data.images,
+                  aspectRatio: data.aspectRatio || g.aspectRatio,
                   status: "completed" as const,
                 }
               : g,
@@ -256,7 +348,100 @@ export function useAvatarGenerator() {
         }));
       }
     },
-    [state.prompt, state.style, fetchBalance],
+    [state.prompt, state.style, state.aspectRatio, fetchBalance],
+  );
+
+  // ── Regenerate with specific params (without changing form state) ─────
+
+  const regenerate = useCallback(
+    async (prompt: string, style: ArtStyle, aspectRatio: AspectRatio) => {
+      const genId = crypto.randomUUID();
+
+      setState((prev) => ({
+        ...prev,
+        isGenerating: true,
+        error: null,
+        generations: [
+          {
+            id: genId,
+            type: "avatar",
+            avatarId: null,
+            prompt,
+            style,
+            aspectRatio,
+            candidateImages: [],
+            status: "generating",
+            createdAt: Date.now(),
+          },
+          ...prev.generations,
+        ],
+      }));
+
+      try {
+        const res = await fetch("/api/avatars/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt,
+            style,
+            aspectRatio,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          setState((prev) => ({
+            ...prev,
+            isGenerating: false,
+            generations: prev.generations.map((g) =>
+              g.id === genId
+                ? {
+                    ...g,
+                    status: "failed" as const,
+                    error: data.error || "Generation failed",
+                  }
+                : g,
+            ),
+          }));
+          await fetchBalance();
+          return;
+        }
+
+        setState((prev) => ({
+          ...prev,
+          isGenerating: false,
+          generations: prev.generations.map((g) =>
+            g.id === genId
+              ? {
+                  ...g,
+                  id: data.avatarId,
+                  avatarId: data.avatarId,
+                  candidateImages: data.images,
+                  aspectRatio: data.aspectRatio || g.aspectRatio,
+                  status: "completed" as const,
+                }
+              : g,
+          ),
+        }));
+        await fetchBalance();
+      } catch {
+        setState((prev) => ({
+          ...prev,
+          isGenerating: false,
+          generations: prev.generations.map((g) =>
+            g.id === genId
+              ? {
+                  ...g,
+                  status: "failed" as const,
+                  error: "Network error. Please try again.",
+                }
+              : g,
+          ),
+        }));
+      }
+    },
+    [fetchBalance],
   );
 
   // ── Select / toggle candidate ─────────────────────────────────────────
@@ -271,14 +456,6 @@ export function useAvatarGenerator() {
         const gen = prev.generations.find((g) => g.id === generationId);
         if (!gen || !gen.avatarId) return prev;
 
-        // If base was confirmed via /select, don't allow changes
-        if (
-          prev.selected?.generationId === generationId &&
-          prev.selected.baseSelected
-        ) {
-          return prev;
-        }
-
         // Toggle: clicking same candidate again deselects
         if (
           prev.selected?.generationId === generationId &&
@@ -286,9 +463,6 @@ export function useAvatarGenerator() {
         ) {
           return { ...prev, selected: null };
         }
-
-        const hasExpressions =
-          existingExpressions && existingExpressions.length > 0;
 
         return {
           ...prev,
@@ -304,7 +478,7 @@ export function useAvatarGenerator() {
             expressions: existingExpressions ?? [],
             isSelectingBase: false,
             generatingExpression: null,
-            baseSelected: hasExpressions ?? false,
+            baseSelected: false,
           },
         };
       });
@@ -312,100 +486,150 @@ export function useAvatarGenerator() {
     [],
   );
 
-  // ── Generate single expression ────────────────────────────────────────
+  // ── Generate expression pack ─────────────────────────────────────────
 
-  const generateSingleExpression = useCallback(
-    async (expressionType: string) => {
+  const generateExpressionPack = useCallback(
+    async (packType: "base" | "custom", subtype?: ExpressionSubtype) => {
       const selected = state.selected;
       if (!selected) return;
 
-      // Mark this expression as generating
+      const genId = crypto.randomUUID();
+
+      // Find the current generation to inherit style/aspectRatio
+      const parentGen = state.generations.find(
+        (g) => g.id === selected.generationId,
+      );
+
+      const isBase = packType === "base";
+      const skeletonCount = isBase ? 4 : 2;
+      const prompt = isBase
+        ? "Base Expressions"
+        : `${(subtype ?? "").charAt(0).toUpperCase() + (subtype ?? "").slice(1)} Expressions`;
+
+      // Insert generating skeleton card
       setState((prev) => ({
         ...prev,
-        selected: prev.selected
-          ? { ...prev.selected, generatingExpression: expressionType }
-          : null,
-        error: null,
+        generations: [
+          {
+            id: genId,
+            type: isBase ? "expression_base" : "expression_custom",
+            parentId: selected.generationId,
+            subtype,
+            avatarId: selected.avatarId,
+            prompt,
+            style: parentGen?.style ?? prev.style,
+            aspectRatio: parentGen?.aspectRatio ?? prev.aspectRatio,
+            candidateImages: Array(skeletonCount).fill(""),
+            status: "generating" as const,
+            createdAt: Date.now(),
+          },
+          ...prev.generations,
+        ],
       }));
 
       try {
-        // Ensure base is selected first
+        // Ensure base image is selected before generating expressions
         if (!selected.baseSelected) {
-          await fetch(`/api/avatars/${selected.avatarId}/select`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ selectedIndex: selected.candidateIndex }),
-          });
-          setState((prev) => ({
-            ...prev,
-            selected: prev.selected
-              ? { ...prev.selected, baseSelected: true }
-              : null,
-          }));
+          const selectRes = await fetch(
+            `/api/avatars/${selected.avatarId}/select`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                selectedIndex: selected.candidateIndex,
+              }),
+            },
+          );
+
+          if (!selectRes.ok) {
+            const selectData = await selectRes.json();
+            // If avatar is already completed, that's fine — ignore
+            if (selectData.error !== "Avatar not ready for selection") {
+              throw new Error(selectData.error || "Failed to select base");
+            }
+          } else {
+            // Mark base as selected so we don't re-select
+            setState((prev) => ({
+              ...prev,
+              selected: prev.selected
+                ? { ...prev.selected, baseSelected: true }
+                : null,
+            }));
+          }
         }
 
-        // Generate the single expression
-        const res = await fetch(
-          `/api/avatars/${selected.avatarId}/expressions`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ expressions: [expressionType] }),
-          },
-        );
+        // Call the packs API
+        const res = await fetch(`/api/avatars/${selected.avatarId}/packs`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ packType, subtype }),
+        });
 
         const data = await res.json();
 
         if (!res.ok) {
           setState((prev) => ({
             ...prev,
-            selected: prev.selected
-              ? { ...prev.selected, generatingExpression: null }
-              : null,
-            error: data.error || "Expression generation failed",
+            generations: prev.generations.map((g) =>
+              g.id === genId
+                ? {
+                    ...g,
+                    status: "failed" as const,
+                    error: data.error || "Expression pack generation failed",
+                  }
+                : g,
+            ),
           }));
           await fetchBalance();
           return;
         }
 
-        // Update the expressions list with the result
-        if (data.expressions?.[0]) {
-          const result = data.expressions[0];
-          setState((prev) => {
-            if (!prev.selected) return prev;
-            const existing = prev.selected.expressions.filter(
-              (e) => e.type !== expressionType,
-            );
-            return {
-              ...prev,
-              selected: {
-                ...prev.selected,
-                generatingExpression: null,
-                expressions: [
-                  ...existing,
-                  {
-                    id: result.id,
-                    type: result.type,
-                    status: result.status as ExpressionState["status"],
-                    imageUrl: result.imageUrl,
-                  },
-                ],
-              },
-            };
-          });
-        }
+        // Replace skeleton with real data
+        const imageUrls = (
+          data.expressions as {
+            id: string;
+            type: string;
+            status: string;
+            imageUrl: string | null;
+          }[]
+        )
+          .map((e) => e.imageUrl)
+          .filter((url): url is string => url !== null);
+
+        setState((prev) => ({
+          ...prev,
+          generations: prev.generations.map((g) =>
+            g.id === genId
+              ? {
+                  ...g,
+                  id: data.packId,
+                  avatarId: selected.avatarId,
+                  candidateImages: imageUrls,
+                  status:
+                    data.failedCount === (data.expressions?.length ?? 0)
+                      ? ("failed" as const)
+                      : ("completed" as const),
+                }
+              : g,
+          ),
+        }));
         await fetchBalance();
       } catch {
         setState((prev) => ({
           ...prev,
-          selected: prev.selected
-            ? { ...prev.selected, generatingExpression: null }
-            : null,
-          error: "Network error. Please try again.",
+          generations: prev.generations.map((g) =>
+            g.id === genId
+              ? {
+                  ...g,
+                  status: "failed" as const,
+                  error: "Network error. Please try again.",
+                }
+              : g,
+          ),
         }));
       }
     },
-    [state.selected, fetchBalance],
+    [state.selected, state.generations, fetchBalance],
   );
 
   // ── Download (auto-detect format: png if no expressions, zip if has) ──
@@ -414,19 +638,13 @@ export function useAvatarGenerator() {
     const selected = state.selected;
     if (!selected) return;
 
-    // Ensure base is selected first
+    // Only select base image if not already selected
     if (!selected.baseSelected) {
       await fetch(`/api/avatars/${selected.avatarId}/select`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ selectedIndex: selected.candidateIndex }),
       });
-      setState((prev) => ({
-        ...prev,
-        selected: prev.selected
-          ? { ...prev.selected, baseSelected: true }
-          : null,
-      }));
     }
 
     const hasExpressions = selected.expressions.some(
@@ -472,9 +690,11 @@ export function useAvatarGenerator() {
     loadHistory,
     updatePrompt,
     updateStyle,
+    updateAspectRatio,
     generate,
+    regenerate,
     selectCandidate,
-    generateSingleExpression,
+    generateExpressionPack,
     download,
     updateAvatarName,
     clearSelection,

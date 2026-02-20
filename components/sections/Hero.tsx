@@ -5,7 +5,7 @@ import { UserCountBadge } from "@/components/ui/UserCountBadge";
 export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-white">
-      <div className="max-w-screen-xl mx-auto px-3 sm:px-4 lg:px-8 pt-6 sm:pt-8 lg:pt-12 pb-6 sm:pb-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 lg:pt-12 pb-6 sm:pb-8">
         <div className="text-center max-w-6xl mx-auto">
           <UserCountBadge />
 

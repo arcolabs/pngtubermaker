@@ -15,8 +15,11 @@ export type ExpressionType =
   | "blink"
   | "blink_talking"
   | "happy"
+  | "happy_talking"
   | "sad"
+  | "sad_talking"
   | "angry"
+  | "angry_talking"
   | "surprised";
 
 export const EXPRESSION_TYPES = [
@@ -25,8 +28,11 @@ export const EXPRESSION_TYPES = [
   "blink",
   "blink_talking",
   "happy",
+  "happy_talking",
   "sad",
+  "sad_talking",
   "angry",
+  "angry_talking",
   "surprised",
 ] as const;
 
