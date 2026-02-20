@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { CreateStepper } from "@/components/create/CreateStepper";
+import { AvatarGenerator } from "@/components/create/AvatarGenerator";
 import { auth } from "@/lib/auth";
 
 export const metadata = {
@@ -15,5 +15,5 @@ export default async function CreatePage() {
     redirect("/login");
   }
 
-  return <CreateStepper />;
+  return <AvatarGenerator />;
 }
