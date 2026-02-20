@@ -1,0 +1,57 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        - NEXT_PUBLIC_APP_NAME=${NEXT_PUBLIC_APP_NAME}
+        - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+        - NEXT_PUBLIC_CONTACT_EMAIL=${NEXT_PUBLIC_CONTACT_EMAIL}
+        - NEXT_PUBLIC_SOCIAL_DISCORD=${NEXT_PUBLIC_SOCIAL_DISCORD}
+        - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+  # Credit expiration cron — runs daily at 03:00 UTC
+  cron:
+    image: curlimages/curl:latest
+    restart: unless-stopped
+    depends_on:
+      - app
+    entrypoint: /bin/sh
+    command: >
+      -c 'while true; do
+        sleep_until=$$(date -d "tomorrow 03:00" +%s 2>/dev/null || date -v+1d -v3H -v0M -v0S +%s);
+        now=$$(date +%s);
+        sleep_for=$$((sleep_until - now));
+        if [ $$sleep_for -gt 0 ]; then sleep $$sleep_for; fi;
+        echo "[cron] $$(date -u +%Y-%m-%dT%H:%M:%SZ) Running expire-credits...";
+        curl -sf -X POST http://app:3000/api/cron/expire-credits \
+          -H "Authorization: Bearer ${CRON_SECRET}" \
+          -H "Content-Type: application/json";
+        echo "";
+      done'
+
+volumes:
+  caddy_data:
+  caddy_config:
