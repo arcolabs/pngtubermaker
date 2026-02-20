@@ -1,6 +1,10 @@
 "use client";
 
-import type { Generation, SelectedAvatar } from "@/hooks/use-avatar-generator";
+import type {
+  ExpressionState,
+  Generation,
+  SelectedAvatar,
+} from "@/hooks/use-avatar-generator";
 import { AvatarActionsPanel } from "./AvatarActionsPanel";
 import { CandidateCard } from "./CandidateCard";
 
@@ -8,7 +12,11 @@ interface GenerationGroupProps {
   generation: Generation;
   selected: SelectedAvatar | null;
   creditBalance: number | null;
-  onSelectCandidate: (generationId: string, index: number) => void;
+  onSelectCandidate: (
+    generationId: string,
+    index: number,
+    existingExpressions?: ExpressionState[],
+  ) => void;
   onGenerateExpressions: () => void;
   onUpdateAvatarName: (name: string) => void;
   onDownload: (size: number) => void;
@@ -91,7 +99,9 @@ export function GenerationGroup({
                   isThisGroupSelected && selected.candidateIndex === i
                 }
                 disabled={isThisGroupSelected && selected.baseSelected}
-                onSelect={() => onSelectCandidate(generation.id, i)}
+                onSelect={() =>
+                  onSelectCandidate(generation.id, i, generation.expressions)
+                }
               />
             ))}
           </div>

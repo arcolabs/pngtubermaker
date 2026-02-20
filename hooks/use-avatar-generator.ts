@@ -25,6 +25,10 @@ export interface Generation {
   status: "generating" | "completed" | "failed";
   error?: string;
   createdAt: number;
+  // History fields (populated from server, empty for new generations)
+  name?: string;
+  baseImageUrl?: string | null;
+  expressions?: ExpressionState[];
 }
 
 export interface SelectedAvatar {
@@ -53,6 +57,49 @@ export interface GeneratorState {
 // Hook
 // ============================================================================
 
+// API response shape from GET /api/avatars/history
+interface HistoryItem {
+  id: string;
+  name: string;
+  prompt: string;
+  style: string;
+  status: string; // 'generating' | 'selecting' | 'completed' | 'failed'
+  candidateImages: string[];
+  baseImageUrl: string | null;
+  expressions: {
+    id: string;
+    type: string;
+    status: string;
+    imageUrl: string | null;
+  }[];
+  createdAt: string;
+}
+
+function historyItemToGeneration(item: HistoryItem): Generation {
+  return {
+    id: item.id,
+    avatarId: item.id,
+    prompt: item.prompt,
+    style: item.style as ArtStyle,
+    candidateImages: item.candidateImages,
+    status:
+      item.status === "selecting" || item.status === "completed"
+        ? "completed"
+        : item.status === "failed"
+          ? "failed"
+          : "generating",
+    createdAt: new Date(item.createdAt).getTime(),
+    name: item.name,
+    baseImageUrl: item.baseImageUrl,
+    expressions: item.expressions.map((e) => ({
+      id: e.id,
+      type: e.type,
+      status: e.status as ExpressionState["status"],
+      imageUrl: e.imageUrl,
+    })),
+  };
+}
+
 const INITIAL_STATE: GeneratorState = {
   prompt: "",
   style: "anime",
@@ -72,6 +119,33 @@ export function useAvatarGenerator() {
   const fetchBalance = useCallback(async () => {
     await refreshStore();
   }, [refreshStore]);
+
+  // ── Load history from server ──────────────────────────────────────────
+
+  const loadHistory = useCallback(async () => {
+    try {
+      const res = await fetch("/api/avatars/history?limit=20");
+      if (!res.ok) return;
+      const data = await res.json();
+      const items: HistoryItem[] = data.history ?? [];
+
+      setState((prev) => {
+        // Merge: keep any in-flight generations (that have no avatarId yet),
+        // replace everything else with server data
+        const inFlightGenerations = prev.generations.filter(
+          (g) => g.avatarId === null,
+        );
+        const historyGenerations = items.map(historyItemToGeneration);
+
+        return {
+          ...prev,
+          generations: [...inFlightGenerations, ...historyGenerations],
+        };
+      });
+    } catch {
+      // Silent fail — history is non-critical
+    }
+  }, []);
 
   // ── Form updates ──────────────────────────────────────────────────────
 
@@ -143,6 +217,7 @@ export function useAvatarGenerator() {
           g.id === genId
             ? {
                 ...g,
+                id: data.avatarId,
                 avatarId: data.avatarId,
                 candidateImages: data.images,
                 status: "completed" as const,
@@ -170,39 +245,49 @@ export function useAvatarGenerator() {
 
   // ── Select candidate ──────────────────────────────────────────────────
 
-  const selectCandidate = useCallback((generationId: string, index: number) => {
-    setState((prev) => {
-      const gen = prev.generations.find((g) => g.id === generationId);
-      if (!gen || !gen.avatarId) return prev;
+  const selectCandidate = useCallback(
+    (
+      generationId: string,
+      index: number,
+      existingExpressions?: ExpressionState[],
+    ) => {
+      setState((prev) => {
+        const gen = prev.generations.find((g) => g.id === generationId);
+        if (!gen || !gen.avatarId) return prev;
 
-      // If already selected and base was confirmed via /select, don't allow re-select
-      if (
-        prev.selected?.generationId === generationId &&
-        prev.selected.baseSelected
-      ) {
-        return prev;
-      }
+        // If already selected and base was confirmed via /select, don't allow re-select
+        if (
+          prev.selected?.generationId === generationId &&
+          prev.selected.baseSelected
+        ) {
+          return prev;
+        }
 
-      return {
-        ...prev,
-        selected: {
-          generationId,
-          avatarId: gen.avatarId,
-          candidateIndex: index,
-          candidateUrl: gen.candidateImages[index] ?? "",
-          avatarName:
-            prev.selected?.generationId === generationId
-              ? prev.selected.avatarName
-              : "My PNGTuber",
-          expressions: [],
-          isSelectingBase: false,
-          isGeneratingExpressions: false,
-          expressionsGenerated: false,
-          baseSelected: false,
-        },
-      };
-    });
-  }, []);
+        const hasExpressions =
+          existingExpressions && existingExpressions.length > 0;
+
+        return {
+          ...prev,
+          selected: {
+            generationId,
+            avatarId: gen.avatarId,
+            candidateIndex: index,
+            candidateUrl: gen.candidateImages[index] ?? "",
+            avatarName:
+              prev.selected?.generationId === generationId
+                ? prev.selected.avatarName
+                : "My PNGTuber",
+            expressions: existingExpressions ?? [],
+            isSelectingBase: false,
+            isGeneratingExpressions: false,
+            expressionsGenerated: hasExpressions ?? false,
+            baseSelected: hasExpressions ?? false,
+          },
+        };
+      });
+    },
+    [],
+  );
 
   // ── Generate expressions (calls /select then /expressions) ────────────
 
@@ -374,6 +459,7 @@ export function useAvatarGenerator() {
     state,
     creditBalance,
     fetchBalance,
+    loadHistory,
     updatePrompt,
     updateStyle,
     generate,

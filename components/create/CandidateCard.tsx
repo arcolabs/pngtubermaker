@@ -34,6 +34,10 @@ export function CandidateCard({
         src={imageUrl}
         alt={`Option ${index + 1}`}
         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        onError={(e) => {
+          (e.target as HTMLImageElement).src = "";
+          (e.target as HTMLImageElement).classList.add("bg-gray-200");
+        }}
       />
 
       {!disabled && !isSelected && (

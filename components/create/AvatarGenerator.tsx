@@ -10,6 +10,7 @@ export function AvatarGenerator() {
     state,
     creditBalance,
     fetchBalance,
+    loadHistory,
     updatePrompt,
     updateStyle,
     generate,
@@ -22,7 +23,8 @@ export function AvatarGenerator() {
 
   useEffect(() => {
     fetchBalance();
-  }, [fetchBalance]);
+    loadHistory();
+  }, [fetchBalance, loadHistory]);
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
