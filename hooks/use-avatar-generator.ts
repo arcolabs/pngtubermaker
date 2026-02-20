@@ -7,7 +7,15 @@ import { useSubscriptionStore } from "@/hooks/use-subscription-store";
 // Types
 // ============================================================================
 
-export type ArtStyle = "anime" | "chibi";
+export type ArtStyle =
+  | "anime"
+  | "modern-vtuber"
+  | "chibi"
+  | "retro-90s"
+  | "kawaii-moe"
+  | "cyber-anime"
+  | "fantasy-anime"
+  | "shonen-style";
 export type AspectRatio = "1:1" | "3:4" | "9:16";
 export type TaskType = "avatar" | "expression_base" | "expression_custom";
 export type ExpressionSubtype = "happy" | "angry" | "sad";

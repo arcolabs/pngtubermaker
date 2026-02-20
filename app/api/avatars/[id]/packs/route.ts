@@ -11,6 +11,7 @@ import {
   TASK_COSTS,
 } from "@/lib/services/credits";
 import {
+  type ArtStyle,
   type ExpressionType,
   getGenerationAdapter,
 } from "@/lib/services/generation";
@@ -193,7 +194,7 @@ export async function POST(
       const result = await adapter.generateExpression({
         baseImageUrl: a.baseImageUrl,
         expression: record.type,
-        style: a.style as "anime" | "chibi",
+        style: a.style as ArtStyle,
         prompt: a.prompt,
       });
 

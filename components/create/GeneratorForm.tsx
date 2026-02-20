@@ -3,7 +3,7 @@
 import { Loader2, Sparkles } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAutoResizeTextarea } from "@/hooks/use-auto-resize-textarea";
-import type { ArtStyle, AspectRatio } from "@/hooks/use-avatar-generator";
+import type { ArtStyle } from "@/hooks/use-avatar-generator";
 import { TASK_COSTS } from "@/lib/services/credits";
 import type { ReferenceHandlers } from "@/types/reference";
 import { ReferenceModule } from "./ReferenceModule";
@@ -53,16 +53,6 @@ const TAG_CATEGORIES: TagCategory[] = [
     ],
   },
   {
-    label: "Style",
-    options: [
-      { id: "modern-vtuber", text: "Modern VTuber" },
-      { id: "retro-anime", text: "Retro Anime" },
-      { id: "semi-realistic", text: "Semi-Realistic" },
-      { id: "pixel-art", text: "Pixel Art" },
-      { id: "chibi-style", text: "Chibi Style" },
-    ],
-  },
-  {
     label: "Signature",
     options: [
       { id: "headset", text: "Gaming Headset" },
@@ -76,11 +66,11 @@ const TAG_CATEGORIES: TagCategory[] = [
 ];
 
 const QUICK_TEMPLATES = [
-  "A chill gamer girl, modern VTuber style, with gaming headset and RGB lighting",
-  "An energetic musician boy with headphones around neck, holding a guitar, retro anime style",
+  "A chill gamer girl with gaming headset and RGB lighting, purple hoodie",
+  "An energetic musician boy with headphones around neck, holding a guitar",
   "A wholesome VTuber angel with wings and halo, streaming setup background",
   "A mysterious tech android with glowing eyes and holographic interface elements",
-  "A comedic furry character, energetic personality, modern VTuber style",
+  "A comedic furry character with big expressive ears and a playful grin",
   "A professional artist with drawing tablet, cozy streaming setup, chill vibes",
 ];
 
@@ -89,7 +79,6 @@ function buildPromptFromTags(selections: Record<string, string>): string {
   const role = selections.Role;
   const character = selections.Character;
   const personality = selections.Personality;
-  const style = selections.Style;
   const signature = selections.Signature;
 
   // Build subject description
@@ -111,11 +100,6 @@ function buildPromptFromTags(selections: Record<string, string>): string {
     parts.push(`A ${subjectParts.join(" ")}`);
   }
 
-  // Add style as art direction
-  if (style) {
-    parts.push(`in ${style.toLowerCase()} style`);
-  }
-
   // Add signature elements
   if (signature) {
     parts.push(`with ${signature.toLowerCase()}`);
@@ -127,78 +111,33 @@ function buildPromptFromTags(selections: Record<string, string>): string {
 interface GeneratorFormProps {
   prompt: string;
   style: ArtStyle;
-  aspectRatio: AspectRatio;
   creditBalance: number | null;
   isGenerating: boolean;
   reference: ReferenceHandlers;
   onPromptChange: (prompt: string) => void;
   onStyleChange: (style: ArtStyle) => void;
-  onAspectRatioChange: (aspectRatio: AspectRatio) => void;
   onGenerate: () => void;
 }
 
-// Aspect Ratio Visual Icons - Linear Minimal Style
-function AspectRatioIcon({
-  ratio,
-  isActive,
-}: {
-  ratio: AspectRatio;
-  isActive: boolean;
-}) {
-  const baseClasses = "border transition-all duration-150";
-  const activeClasses = isActive
-    ? "border-primary bg-primary"
-    : "border-gray-300 bg-transparent";
-
-  switch (ratio) {
-    case "1:1":
-      return (
-        <div
-          className={`${baseClasses} ${activeClasses} w-4 h-4 rounded-[3px]`}
-        />
-      );
-    case "3:4":
-      return (
-        <div
-          className={`${baseClasses} ${activeClasses} w-3 h-4 rounded-[3px]`}
-        />
-      );
-    case "9:16":
-      return (
-        <div
-          className={`${baseClasses} ${activeClasses} w-2 h-4 rounded-[3px]`}
-        />
-      );
-    default:
-      return null;
-  }
-}
-
-const ASPECT_RATIO_OPTIONS: {
-  id: AspectRatio;
-  label: string;
-  description: string;
-}[] = [
-  { id: "1:1", label: "1:1", description: "Square" },
-  { id: "3:4", label: "3:4", description: "Portrait" },
-  { id: "9:16", label: "9:16", description: "Story" },
-];
-
-const STYLE_OPTIONS: { id: ArtStyle; label: string; icon: string }[] = [
-  { id: "anime", label: "Anime", icon: "🎨" },
-  { id: "chibi", label: "Chibi", icon: "🎀" },
+const STYLE_OPTIONS: { id: ArtStyle; label: string }[] = [
+  { id: "anime", label: "Anime" },
+  { id: "modern-vtuber", label: "Modern VTuber" },
+  { id: "chibi", label: "Chibi" },
+  { id: "retro-90s", label: "Retro 90s" },
+  { id: "kawaii-moe", label: "Kawaii Moe" },
+  { id: "cyber-anime", label: "Cyber Anime" },
+  { id: "fantasy-anime", label: "Fantasy Anime" },
+  { id: "shonen-style", label: "Shonen Style" },
 ];
 
 export function GeneratorForm({
   prompt,
   style,
-  aspectRatio,
   creditBalance,
   isGenerating,
   reference,
   onPromptChange,
   onStyleChange,
-  onAspectRatioChange,
   onGenerate,
 }: GeneratorFormProps) {
   const textareaRef = useAutoResizeTextarea(prompt, {
@@ -353,6 +292,39 @@ export function GeneratorForm({
           </button>
         )}
 
+        {/* Style & Ratio */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Style Selector */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+              Style
+            </span>
+            <div className="flex gap-1">
+              {STYLE_OPTIONS.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => onStyleChange(s.id)}
+                  disabled={isGenerating}
+                  className={`
+                    px-3 py-1.5 rounded-md text-sm font-medium
+                    transition-all duration-150 ease-out
+                    ${
+                      style === s.id
+                        ? "bg-primary text-white shadow-sm"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200/80"
+                    }
+                    active:scale-[0.97]
+                    disabled:opacity-40 disabled:cursor-not-allowed
+                  `}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Prompt */}
         <div className="form-control">
           <textarea
@@ -444,86 +416,8 @@ export function GeneratorForm({
           />
         </div>
 
-        {/* Controls Row - Linear Design */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-2">
-          {/* Style Selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-              Style
-            </span>
-            <div className="flex gap-1">
-              {STYLE_OPTIONS.map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => onStyleChange(s.id)}
-                  disabled={isGenerating}
-                  className={`
-                    flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium
-                    transition-all duration-150 ease-out
-                    ${
-                      style === s.id
-                        ? "bg-primary text-white shadow-sm"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200/80"
-                    }
-                    active:scale-[0.97]
-                    disabled:opacity-40 disabled:cursor-not-allowed
-                  `}
-                >
-                  <span>{s.icon}</span>
-                  <span>{s.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="hidden sm:block w-px h-5 bg-gray-200/60" />
-
-          {/* Aspect Ratio Selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-              Ratio
-            </span>
-            <div className="flex gap-1">
-              {ASPECT_RATIO_OPTIONS.map((ar) => (
-                <button
-                  key={ar.id}
-                  type="button"
-                  onClick={() => onAspectRatioChange(ar.id)}
-                  disabled={isGenerating}
-                  title={`${ar.description} (${ar.label})`}
-                  className={`
-                    flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-150
-                    ${
-                      aspectRatio === ar.id
-                        ? "bg-primary/10 border border-primary text-primary"
-                        : "border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-600"
-                    }
-                    active:scale-[0.97]
-                    disabled:opacity-40
-                  `}
-                >
-                  <AspectRatioIcon
-                    ratio={ar.id}
-                    isActive={aspectRatio === ar.id}
-                  />
-                  <span className="text-xs font-medium">{ar.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex-1" />
-
-          {/* Balance */}
-          <div className="text-xs text-gray-400 whitespace-nowrap">
-            {creditBalance !== null
-              ? `${creditBalance.toLocaleString()} credits`
-              : "Loading..."}
-          </div>
-
-          {/* Generate button */}
+        {/* Generate */}
+        <div className="flex justify-end pt-2">
           <button
             type="button"
             disabled={!canSubmit}

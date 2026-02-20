@@ -7,7 +7,15 @@
  * - NanoBananaAdapter: Nano Banana Standard for expression editing (production)
  */
 
-export type ArtStyle = "anime" | "chibi";
+export type ArtStyle =
+  | "anime"
+  | "modern-vtuber"
+  | "chibi"
+  | "retro-90s"
+  | "kawaii-moe"
+  | "cyber-anime"
+  | "fantasy-anime"
+  | "shonen-style";
 
 export type ExpressionType =
   | "idle"

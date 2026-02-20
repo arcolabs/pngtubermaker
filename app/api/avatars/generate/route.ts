@@ -18,7 +18,7 @@ import { type ArtStyle, getGenerationAdapter } from "@/lib/services/generation";
  * This is the reference API implementation — other endpoints follow this pattern.
  *
  * Auth: Required
- * Body: { prompt: string, style: 'anime' | 'chibi' }
+ * Body: { prompt: string, style: 'anime' | 'modern-vtuber' | 'chibi' | 'retro-90s' | 'kawaii-moe' | 'cyber-anime' | 'fantasy-anime' | 'shonen-style' }
  * Cost: 300 credits (TASK_COSTS.avatar_generation)
  * Returns: { avatarId: string, images: string[] }
  */
@@ -54,9 +54,22 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  if (!style || !["anime", "chibi"].includes(style)) {
+  const validStyles = [
+    "anime",
+    "modern-vtuber",
+    "chibi",
+    "retro-90s",
+    "kawaii-moe",
+    "cyber-anime",
+    "fantasy-anime",
+    "shonen-style",
+  ];
+  if (!style || !validStyles.includes(style)) {
     return NextResponse.json(
-      { error: "Style must be 'anime' or 'chibi'" },
+      {
+        error:
+          "Invalid style. Must be one of: anime, modern-vtuber, chibi, retro-90s, kawaii-moe, cyber-anime, fantasy-anime, shonen-style",
+      },
       { status: 400 },
     );
   }

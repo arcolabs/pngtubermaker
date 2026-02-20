@@ -4,12 +4,10 @@ import {
   Check,
   Copy,
   Download,
-  Eye,
   Loader2,
   RefreshCw,
   Sparkles,
 } from "lucide-react";
-import Link from "next/link";
 import { useCallback, useMemo, useRef, useState } from "react";
 import type {
   AspectRatio,
@@ -18,7 +16,6 @@ import type {
   Generation,
   SelectedAvatar,
 } from "@/hooks/use-avatar-generator";
-import { AvatarActionsPanel } from "./AvatarActionsPanel";
 import { CandidateCard } from "./CandidateCard";
 import { ImagePreviewModal } from "./ImagePreviewModal";
 
@@ -108,19 +105,17 @@ export function GenerationGroup({
   const genPackRef = useRef(onGenerateExpressionPack);
   genPackRef.current = onGenerateExpressionPack;
 
-  const togglePack = useCallback(
-    (key: "base" | "happy" | "angry" | "sad") => {
-      setPackSelections((prev) => ({ ...prev, [key]: !prev[key] }));
-    },
-    [],
-  );
+  const togglePack = useCallback((key: "base" | "happy" | "angry" | "sad") => {
+    // Base Pack is required — cannot be unchecked
+    if (key === "base") return;
+    setPackSelections((prev) => ({ ...prev, [key]: !prev[key] }));
+  }, []);
 
   // Count how many NEW packs the user selected (excluding already-generated ones)
   const pendingPacks = useMemo(() => {
     const pending: { type: "base" | "custom"; subtype?: ExpressionSubtype }[] =
       [];
-    if (packSelections.base && !hasBasePack)
-      pending.push({ type: "base" });
+    if (packSelections.base && !hasBasePack) pending.push({ type: "base" });
     for (const sub of ["happy", "angry", "sad"] as const) {
       if (packSelections[sub] && !existingCustomSubtypes.has(sub))
         pending.push({ type: "custom", subtype: sub });
@@ -192,19 +187,8 @@ export function GenerationGroup({
     return undefined;
   };
 
-  // Get right panel title based on task type
-  const getRightPanelTitle = () => {
-    switch (generation.type) {
-      case "expression_base":
-        return "Base Expressions";
-      case "expression_custom":
-        return generation.subtype
-          ? `${generation.subtype.charAt(0).toUpperCase() + generation.subtype.slice(1)} Expressions`
-          : "Custom Expressions";
-      default:
-        return "Prompt";
-    }
-  };
+  // Get right panel title
+  const getRightPanelTitle = () => "Prompt";
 
   // Render left side - Images Area
   const renderImagesArea = () => {
@@ -236,31 +220,125 @@ export function GenerationGroup({
 
         {/* Completed: candidate cards */}
         {generation.status === "completed" && (
-          <>
-            <div className={`grid ${getGridCols()} gap-3`}>
-              {generation.candidateImages.map((url, i) => (
-                <CandidateCard
-                  key={`${generation.id}-${i}`}
-                  imageUrl={url}
-                  index={i}
-                  aspectRatioClass={imageAspectClass}
-                  isSelected={selectedImageIndex === i}
-                  disabled={false}
-                  label={getCardLabel(i)}
-                  onSelect={() => handleImageSelect(i)}
-                  onPreview={() => setPreviewImageIndex(i)}
-                />
-              ))}
-            </div>
-
-            {/* Agent Input Panel — shown when any card is selected */}
-            {isThisGroupSelected && selectedImageIndex !== null && (
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <AvatarActionsPanel selected={selected} />
-              </div>
-            )}
-          </>
+          <div className={`grid ${getGridCols()} gap-3`}>
+            {generation.candidateImages.map((url, i) => (
+              <CandidateCard
+                key={`${generation.id}-${i}`}
+                imageUrl={url}
+                index={i}
+                aspectRatioClass={imageAspectClass}
+                isSelected={selectedImageIndex === i}
+                disabled={false}
+                label={getCardLabel(i)}
+                onSelect={() => handleImageSelect(i)}
+                onPreview={() => setPreviewImageIndex(i)}
+              />
+            ))}
+          </div>
         )}
+
+        {/* Bottom Panel — Expression Picker + Actions (shown when avatar card is selected) */}
+        {isThisGroupSelected &&
+          selected &&
+          generation.type === "avatar" &&
+          generation.status === "completed" && (
+            <div className="mt-4 pt-4 border-t border-gray-200 space-y-3">
+              {/* Expression Picker */}
+              {!allPacksDone && (
+                <>
+                  <div className="flex items-center gap-2 mb-1">
+                    <Sparkles className="w-3.5 h-3.5 text-primary" />
+                    <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                      Expression Pack
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {(
+                      [
+                        {
+                          key: "base" as const,
+                          label: "Base Pack",
+                          badge: "Required",
+                          desc: "idle · talking · blink · blink talk",
+                          done: hasBasePack,
+                        },
+                        {
+                          key: "happy" as const,
+                          label: "Happy Set",
+                          badge: undefined,
+                          desc: "happy · happy talk",
+                          done: existingCustomSubtypes.has("happy"),
+                        },
+                        {
+                          key: "angry" as const,
+                          label: "Angry Set",
+                          badge: undefined,
+                          desc: "angry · angry talk",
+                          done: existingCustomSubtypes.has("angry"),
+                        },
+                        {
+                          key: "sad" as const,
+                          label: "Sad Set",
+                          badge: undefined,
+                          desc: "sad · sad talk",
+                          done: existingCustomSubtypes.has("sad"),
+                        },
+                      ] as const
+                    ).map((pack) => {
+                      const Wrapper = pack.done ? "div" : "label";
+                      return (
+                        <Wrapper
+                          key={pack.key}
+                          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border transition-all duration-150 select-none ${
+                            pack.done
+                              ? "bg-green-50/60 border-green-200/60"
+                              : packSelections[pack.key]
+                                ? "bg-primary/5 border-primary/30 cursor-pointer"
+                                : "bg-white border-gray-200 hover:border-gray-300 cursor-pointer"
+                          } ${isBatchGenerating ? "pointer-events-none opacity-70" : ""}`}
+                        >
+                          {pack.done ? (
+                            <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                          ) : (
+                            <input
+                              type="checkbox"
+                              checked={packSelections[pack.key]}
+                              onChange={() => togglePack(pack.key)}
+                              disabled={
+                                isBatchGenerating || pack.key === "base"
+                              }
+                              className="checkbox checkbox-xs checkbox-primary rounded"
+                            />
+                          )}
+                          <div className="min-w-0">
+                            <span
+                              className={`text-sm font-medium block ${pack.done ? "text-green-700" : "text-gray-800"}`}
+                            >
+                              {pack.done ? `${pack.label} ✓` : pack.label}
+                              {pack.badge && (
+                                <span className="ml-1.5 text-[10px] font-medium text-primary/70">
+                                  {pack.badge}
+                                </span>
+                              )}
+                            </span>
+                            <span className="text-[11px] text-gray-400 hidden sm:block">
+                              {pack.desc}
+                            </span>
+                          </div>
+                        </Wrapper>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+
+              {allPacksDone && (
+                <p className="text-sm text-green-600 font-medium">
+                  All expression packs generated ✓
+                </p>
+              )}
+            </div>
+          )}
       </div>
     );
   };
@@ -299,100 +377,16 @@ export function GenerationGroup({
 
         {/* Action Buttons Section — only visible when selected */}
         {isThisGroupSelected && selected && (
-          <div className="space-y-3 pt-2 border-t border-gray-200">
-            {/* View Avatar - Navigate to detail page for expression types */}
-            {(generation.type === "expression_base" ||
-              generation.type === "expression_custom") &&
-              generation.avatarId && (
-                <Link
-                  href={`/avatars/${generation.slug || generation.avatarId}`}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary to-cyan-400 rounded-xl shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all duration-200"
-                >
-                  <Eye className="w-4 h-4" />
-                  View Avatar
-                </Link>
-              )}
-
-            {/* Expression Picker — shown on avatar cards */}
-            {generation.type === "avatar" && (
-              <>
-                {!allPacksDone && (
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                      Expression Pack
-                    </p>
-                    {/* Pack checkboxes */}
-                    {(
-                      [
-                        {
-                          key: "base" as const,
-                          label: "Base Pack",
-                          desc: "idle · talking · blink · blink talk",
-                          done: hasBasePack,
-                        },
-                        {
-                          key: "happy" as const,
-                          label: "Happy Set",
-                          desc: "happy · happy talk",
-                          done: existingCustomSubtypes.has("happy"),
-                        },
-                        {
-                          key: "angry" as const,
-                          label: "Angry Set",
-                          desc: "angry · angry talk",
-                          done: existingCustomSubtypes.has("angry"),
-                        },
-                        {
-                          key: "sad" as const,
-                          label: "Sad Set",
-                          desc: "sad · sad talk",
-                          done: existingCustomSubtypes.has("sad"),
-                        },
-                      ] as const
-                    ).map((pack) => (
-                      <label
-                        key={pack.key}
-                        className={`flex items-center gap-2.5 px-3 py-2 rounded-lg border transition-all duration-150 cursor-pointer select-none ${
-                          pack.done
-                            ? "bg-green-50/60 border-green-200/60"
-                            : packSelections[pack.key]
-                              ? "bg-primary/5 border-primary/30"
-                              : "bg-white border-gray-200 hover:border-gray-300"
-                        } ${isBatchGenerating ? "pointer-events-none opacity-70" : ""}`}
-                      >
-                        {pack.done ? (
-                          <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                        ) : (
-                          <input
-                            type="checkbox"
-                            checked={packSelections[pack.key]}
-                            onChange={() => togglePack(pack.key)}
-                            disabled={isBatchGenerating}
-                            className="checkbox checkbox-xs checkbox-primary rounded"
-                          />
-                        )}
-                        <div className="min-w-0">
-                          <span
-                            className={`text-sm font-medium block ${pack.done ? "text-green-700" : "text-gray-800"}`}
-                          >
-                            {pack.done
-                              ? `${pack.label} ✓`
-                              : pack.label}
-                          </span>
-                          <span className="text-[11px] text-gray-400">
-                            {pack.desc}
-                          </span>
-                        </div>
-                      </label>
-                    ))}
-
-                    {/* Generate button */}
+          <div className="space-y-2 pt-2 border-t border-gray-200">
+            {/* Avatar cards: Generate Expressions + Download + Regenerate */}
+            {generation.type === "avatar" &&
+              generation.status === "completed" && (
+                <>
+                  {!allPacksDone && (
                     <button
                       type="button"
                       onClick={handleBatchGenerate}
-                      disabled={
-                        pendingPacks.length === 0 || isBatchGenerating
-                      }
+                      disabled={pendingPacks.length === 0 || isBatchGenerating}
                       className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary to-cyan-400 rounded-xl shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all duration-200 disabled:opacity-50 disabled:shadow-none"
                     >
                       {isBatchGenerating ? (
@@ -407,45 +401,34 @@ export function GenerationGroup({
                         </>
                       )}
                     </button>
-                  </div>
-                )}
-
-                {allPacksDone && (
-                  <p className="text-xs text-green-600 font-medium">
-                    All expression packs generated ✓
-                  </p>
-                )}
-
-                {/* Regenerate button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (onRegenerate) {
-                      onRegenerate(
-                        generation.prompt,
-                        generation.style,
-                        generation.aspectRatio || "1:1",
-                      );
-                    }
-                  }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                  Regenerate
-                </button>
-              </>
-            )}
-
-            {/* Download button - for all types */}
-            <button
-              type="button"
-              onClick={handleDownload}
-              disabled={isDownloading}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary to-cyan-400 rounded-xl shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all duration-200 disabled:opacity-70"
-            >
-              <Download className="w-4 h-4" />
-              {isDownloading ? "Preparing..." : "Download"}
-            </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleDownload}
+                    disabled={isDownloading}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary to-cyan-400 rounded-xl shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all duration-200 disabled:opacity-70"
+                  >
+                    <Download className="w-4 h-4" />
+                    {isDownloading ? "Preparing..." : "Download"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onRegenerate) {
+                        onRegenerate(
+                          generation.prompt,
+                          generation.style,
+                          generation.aspectRatio || "1:1",
+                        );
+                      }
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    Regenerate
+                  </button>
+                </>
+              )}
           </div>
         )}
 

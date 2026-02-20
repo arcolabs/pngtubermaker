@@ -23,18 +23,18 @@ const MODULE_CONFIG: Record<
 > = {
   image: {
     icon: <Image className="w-5 h-5" />,
-    title: "Image Reference",
-    description: "Use an image as base for generation",
+    title: "Character Reference",
+    description: "Upload your OC or inspiration to match the character",
   },
   style: {
     icon: <Palette className="w-5 h-5" />,
     title: "Style Reference",
-    description: "Match artistic style from image",
+    description: "Upload art to match colors, shading & vibe",
   },
   face: {
     icon: <User className="w-5 h-5" />,
-    title: "The Face",
-    description: "Use specific face for consistency",
+    title: "Face Reference",
+    description: "Want your avatar to look like you? Upload your photo",
   },
 };
 

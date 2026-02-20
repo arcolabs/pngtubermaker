@@ -9,7 +9,7 @@ import {
   refundCredits,
   TASK_COSTS,
 } from "@/lib/services/credits";
-import { getGenerationAdapter } from "@/lib/services/generation";
+import { type ArtStyle, getGenerationAdapter } from "@/lib/services/generation";
 import {
   deleteFromR2,
   generateAvatarKey,
@@ -123,7 +123,7 @@ export async function POST(
         | "sad"
         | "angry"
         | "surprised",
-      style: a.style as "anime" | "chibi",
+      style: a.style as ArtStyle,
       prompt: a.prompt,
     });
 

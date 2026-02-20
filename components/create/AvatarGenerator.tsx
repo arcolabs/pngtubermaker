@@ -4,11 +4,11 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import {
   type ArtStyle,
-  type AspectRatio,
   useAvatarGenerator,
 } from "@/hooks/use-avatar-generator";
 import { useReferencePersistentState } from "@/hooks/use-reference-persistent-state";
 import type { ReferenceHandlers } from "@/types/reference";
+import { ExpressionResultsCard } from "./ExpressionResultsCard";
 import { GenerationGroup } from "./GenerationGroup";
 import { GeneratorForm } from "./GeneratorForm";
 
@@ -21,7 +21,6 @@ export function AvatarGenerator() {
     loadHistory,
     updatePrompt,
     updateStyle,
-    updateAspectRatio,
     generate,
     regenerate,
     selectCandidate,
@@ -67,13 +66,9 @@ export function AvatarGenerator() {
     generate(references);
   };
 
-  // Regenerate with same params
-  const handleRegenerate = (
-    prompt: string,
-    style: string,
-    aspectRatio: string,
-  ) => {
-    regenerate(prompt, style as ArtStyle, aspectRatio as AspectRatio);
+  // Regenerate with same params (always 1:1 ratio)
+  const handleRegenerate = (prompt: string, style: string) => {
+    regenerate(prompt, style as ArtStyle, "1:1");
   };
 
   // Bundle all reference state + callbacks into one object
@@ -112,13 +107,11 @@ export function AvatarGenerator() {
       <GeneratorForm
         prompt={state.prompt}
         style={state.style}
-        aspectRatio={state.aspectRatio}
         creditBalance={creditBalance}
         isGenerating={state.isGenerating}
         reference={reference}
         onPromptChange={updatePrompt}
         onStyleChange={updateStyle}
-        onAspectRatioChange={updateAspectRatio}
         onGenerate={handleGenerate}
       />
 
@@ -129,22 +122,38 @@ export function AvatarGenerator() {
         </div>
       )}
 
-      {/* Generation feed — newest first */}
+      {/* Generation feed — avatar cards + grouped expression cards */}
       {state.generations.length > 0 && (
         <div className="mt-6 space-y-4">
-          {state.generations.map((gen) => (
-            <GenerationGroup
-              key={gen.id}
-              generation={gen}
-              allGenerations={state.generations}
-              selected={state.selected}
-              creditBalance={creditBalance}
-              onSelectCandidate={selectCandidate}
-              onGenerateExpressionPack={generateExpressionPack}
-              onDownload={download}
-              onRegenerate={handleRegenerate}
-            />
-          ))}
+          {state.generations
+            .filter((gen) => gen.type === "avatar")
+            .map((gen) => {
+              const exprGens = state.generations.filter(
+                (eg) => eg.avatarId === gen.avatarId && eg.type !== "avatar",
+              );
+              return (
+                <div key={gen.id} className="space-y-4">
+                  <GenerationGroup
+                    generation={gen}
+                    allGenerations={state.generations}
+                    selected={state.selected}
+                    creditBalance={creditBalance}
+                    onSelectCandidate={selectCandidate}
+                    onGenerateExpressionPack={generateExpressionPack}
+                    onDownload={download}
+                    onRegenerate={handleRegenerate}
+                  />
+                  {exprGens.length > 0 && (
+                    <ExpressionResultsCard
+                      expressions={exprGens}
+                      avatarId={gen.avatarId || gen.id}
+                      avatarSlug={gen.slug}
+                      onDownload={download}
+                    />
+                  )}
+                </div>
+              );
+            })}
         </div>
       )}
     </div>
