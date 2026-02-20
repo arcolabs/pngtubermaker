@@ -106,7 +106,7 @@ export default async function AvatarDetailPage({
 
   return (
     <div className="min-h-screen bg-base-100">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Breadcrumb
           items={[
             { label: "My Avatars", href: "/avatars" },

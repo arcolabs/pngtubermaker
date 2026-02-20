@@ -1,10 +1,11 @@
 import { and, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { z } from "zod";
 import { avatars } from "@/database/schema";
 import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
+import { processBackgroundRemoval } from "@/lib/services/background-removal";
 import {
   deleteFromR2,
   generateAvatarKey,
@@ -161,7 +162,12 @@ export async function POST(
       })
       .where(eq(avatars.id, avatarId));
 
-    // 12. Return response
+    // 12. Async background removal (fire-and-forget after response)
+    after(async () => {
+      await processBackgroundRemoval(baseImageUrl, baseKey, thumbnailKey);
+    });
+
+    // 13. Return response
     return NextResponse.json({
       avatarId,
       slug,

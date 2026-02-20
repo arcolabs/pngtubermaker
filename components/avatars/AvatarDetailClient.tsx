@@ -2,7 +2,13 @@
 
 import { Download, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import type {
+  EngineExpressionType,
+  ExpressionAsset,
+} from "@/lib/pngtuber-engine";
+import { cn } from "@/lib/utils";
+import PNGTuberPreview from "./PNGTuberPreview";
 
 interface Expression {
   id: string;
@@ -52,10 +58,22 @@ function getPackTitle(pack: Pack): string {
   return "Custom Expressions";
 }
 
-function ExpressionCard({ expression }: { expression: Expression }) {
+function ExpressionCard({
+  expression,
+  isHighlighted,
+}: {
+  expression: Expression;
+  isHighlighted?: boolean;
+}) {
   return (
     <div className="space-y-2">
-      <div className="group relative aspect-square rounded-xl overflow-hidden bg-gray-50">
+      <div
+        className={cn(
+          "group relative aspect-square rounded-xl overflow-hidden bg-gray-50 transition-all duration-300",
+          isHighlighted &&
+            "ring-2 ring-primary shadow-[0_0_20px_rgba(6,182,212,0.3)]",
+        )}
+      >
         {expression.status === "completed" && expression.imageUrl ? (
           <>
             <img
@@ -97,6 +115,51 @@ export default function AvatarDetailClient({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [expressions, setExpressions] = useState(initialExpressions);
   const [addingExpression, setAddingExpression] = useState(false);
+  const [activeExpressionType, setActiveExpressionType] = useState<
+    string | null
+  >(null);
+
+  // Build expression assets for the preview engine from all completed expressions
+  const previewExpressions = useMemo<ExpressionAsset[]>(() => {
+    const assets: ExpressionAsset[] = [];
+    const seen = new Set<string>();
+
+    // Helper to add a completed expression as an asset
+    const addExpr = (expr: Expression) => {
+      if (
+        expr.status === "completed" &&
+        expr.imageUrl &&
+        !seen.has(expr.type)
+      ) {
+        seen.add(expr.type);
+        assets.push({
+          type: expr.type as EngineExpressionType,
+          url: expr.imageUrl,
+        });
+      }
+    };
+
+    // Include base image as idle if no explicit idle expression exists
+    // (will be overridden if an idle expression is found in packs/expressions)
+    if (avatar.baseImageUrl) {
+      assets.push({ type: "idle", url: avatar.baseImageUrl });
+      seen.add("idle");
+    }
+
+    // Pack expressions first (most organized)
+    for (const pack of initialPacks) {
+      for (const expr of pack.expressions) {
+        addExpr(expr);
+      }
+    }
+
+    // Legacy expressions
+    for (const expr of expressions) {
+      addExpr(expr);
+    }
+
+    return assets;
+  }, [avatar.baseImageUrl, initialPacks, expressions]);
 
   const handleDownload = async () => {
     setDownloading(true);
@@ -164,6 +227,14 @@ export default function AvatarDetailClient({
 
   return (
     <div className="space-y-8">
+      {/* PNGTuber Live Preview */}
+      {previewExpressions.length >= 2 && (
+        <PNGTuberPreview
+          expressions={previewExpressions}
+          onExpressionChange={setActiveExpressionType}
+        />
+      )}
+
       {/* Download & Actions Bar */}
       <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm">
         <h3 className="font-semibold text-gray-900 mb-4">Download</h3>
@@ -233,7 +304,11 @@ export default function AvatarDetailClient({
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {pack.expressions.map((expression) => (
-              <ExpressionCard key={expression.id} expression={expression} />
+              <ExpressionCard
+                key={expression.id}
+                expression={expression}
+                isHighlighted={activeExpressionType === expression.type}
+              />
             ))}
           </div>
         </div>
@@ -247,7 +322,11 @@ export default function AvatarDetailClient({
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {expressions.map((expression) => (
-              <ExpressionCard key={expression.id} expression={expression} />
+              <ExpressionCard
+                key={expression.id}
+                expression={expression}
+                isHighlighted={activeExpressionType === expression.type}
+              />
             ))}
           </div>
         </div>

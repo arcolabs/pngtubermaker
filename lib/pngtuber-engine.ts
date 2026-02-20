@@ -84,7 +84,6 @@ export class PNGTuberEngine {
   private flipScale = 1; // 1 = normal, goes to 0 and back for flip effect
   private flipDirection: "shrink" | "grow" | null = null;
   private pendingExpression: EngineExpressionType | null = null;
-  private fadeAlpha = 1; // 1 = fully visible
 
   // Blink timer
   private blinkTimeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -188,7 +187,7 @@ export class PNGTuberEngine {
 
     const promises = this.expressions.map(
       (asset) =>
-        new Promise<void>((resolve, reject) => {
+        new Promise<void>((resolve) => {
           const img = new Image();
           img.crossOrigin = "anonymous";
           img.onload = () => {
@@ -263,8 +262,9 @@ export class PNGTuberEngine {
   }
 
   private draw(): void {
-    const { ctx, canvas } = this;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const ctx = this.ctx;
+    const { width, height } = this.canvas;
+    ctx.clearRect(0, 0, width, height);
 
     const resolved = this.resolveExpression();
     const img = this.imageMap.get(resolved) ?? this.imageMap.get("idle");
@@ -274,12 +274,12 @@ export class PNGTuberEngine {
 
     if (this.flipOnChange && this.flipScale < 1) {
       // Horizontal flip/squeeze effect
-      ctx.translate(canvas.width / 2, 0);
+      ctx.translate(width / 2, 0);
       ctx.scale(this.flipScale, 1);
-      ctx.translate(-canvas.width / 2, 0);
+      ctx.translate(-width / 2, 0);
     }
 
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, width, height);
     ctx.restore();
   }
 
@@ -293,14 +293,12 @@ export class PNGTuberEngine {
       // e.g. base = "happy"
       if (this.isBlinking && this.isTalking) {
         // No blink_talking variant for custom expressions, use talking variant
-        const talkingVariant =
-          `${base}_talking` as EngineExpressionType;
+        const talkingVariant = `${base}_talking` as EngineExpressionType;
         if (this.imageMap.has(talkingVariant)) return talkingVariant;
         return base;
       }
       if (this.isTalking) {
-        const talkingVariant =
-          `${base}_talking` as EngineExpressionType;
+        const talkingVariant = `${base}_talking` as EngineExpressionType;
         if (this.imageMap.has(talkingVariant)) return talkingVariant;
         return base;
       }
@@ -362,8 +360,7 @@ export class PNGTuberEngine {
     for (const base of customBases) {
       if (this.imageMap.has(base)) {
         seq.push(base);
-        const talkingVariant =
-          `${base}_talking` as EngineExpressionType;
+        const talkingVariant = `${base}_talking` as EngineExpressionType;
         if (this.imageMap.has(talkingVariant)) {
           seq.push(talkingVariant);
         }

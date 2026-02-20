@@ -22,6 +22,7 @@ export default function PNGTuberPreview({
 }: PNGTuberPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<PNGTuberEngine | null>(null);
+  const modeRef = useRef<EngineMode>("demo");
 
   const [mode, setMode] = useState<EngineMode>("demo");
   const [loading, setLoading] = useState(true);
@@ -51,6 +52,7 @@ export default function PNGTuberPreview({
       case "modeChange":
         if (event.mode) {
           setMode(event.mode);
+          modeRef.current = event.mode;
           if (event.mode === "demo") {
             setError(null);
           }
@@ -58,11 +60,6 @@ export default function PNGTuberPreview({
         break;
     }
   }, []);
-
-  // Serialize expressions to a stable key so useMemo/useEffect re-run only on real changes
-  const expressionsKey = expressions
-    .map((e) => `${e.type}:${e.url}`)
-    .join("|");
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -75,7 +72,7 @@ export default function PNGTuberPreview({
     const engine = new PNGTuberEngine({
       canvas,
       expressions,
-      mode,
+      mode: modeRef.current,
     });
 
     const unsubscribe = engine.on(handleEvent);
@@ -88,12 +85,12 @@ export default function PNGTuberPreview({
       engine.destroy();
       engineRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- expressionsKey is the stable dep
-  }, [expressionsKey, handleEvent]);
+  }, [expressions, handleEvent]);
 
   const switchMode = (newMode: EngineMode) => {
     if (newMode === mode) return;
     setMode(newMode);
+    modeRef.current = newMode;
     setError(null);
     engineRef.current?.setMode(newMode);
   };
@@ -134,10 +131,7 @@ export default function PNGTuberPreview({
 
       {/* Canvas container with checkerboard background */}
       <div className="relative mx-auto max-w-[320px] aspect-square rounded-xl overflow-hidden bg-[length:20px_20px] bg-[position:0_0,10px_10px] [background-image:linear-gradient(45deg,#e5e7eb_25%,transparent_25%,transparent_75%,#e5e7eb_75%),linear-gradient(45deg,#e5e7eb_25%,transparent_25%,transparent_75%,#e5e7eb_75%)]">
-        <canvas
-          ref={canvasRef}
-          className="w-full h-full object-contain"
-        />
+        <canvas ref={canvasRef} className="w-full h-full object-contain" />
 
         {/* Loading overlay */}
         {loading && (

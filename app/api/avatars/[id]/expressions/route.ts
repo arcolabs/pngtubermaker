@@ -1,10 +1,11 @@
 import { and, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { z } from "zod";
 import { avatarExpressions, avatars } from "@/database/schema";
 import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
+import { processBackgroundRemoval } from "@/lib/services/background-removal";
 import {
   consumeWithRecord,
   refundWithUpdate,
@@ -164,6 +165,7 @@ export async function POST(
     // 7. Generate expressions sequentially (outside initial transaction)
     const adapter = getGenerationAdapter();
     let failedCount = 0;
+    const bgRemovalTasks: { imageUrl: string; r2Key: string }[] = [];
 
     for (const record of expressionRecords) {
       try {
@@ -215,6 +217,9 @@ export async function POST(
 
           record.status = "completed";
           record.imageUrl = publicUrl;
+
+          // Queue for async background removal
+          bgRemovalTasks.push({ imageUrl: publicUrl, r2Key: key });
         } else {
           throw new Error(result.error || "Generation failed");
         }
@@ -250,7 +255,18 @@ export async function POST(
       );
     }
 
-    // 9. Return response
+    // 9. Async background removal for all completed expressions (fire-and-forget)
+    if (bgRemovalTasks.length > 0) {
+      after(async () => {
+        await Promise.all(
+          bgRemovalTasks.map((t) =>
+            processBackgroundRemoval(t.imageUrl, t.r2Key),
+          ),
+        );
+      });
+    }
+
+    // 10. Return response
     return NextResponse.json({
       avatarId,
       expressions: expressionRecords.map((r) => ({
