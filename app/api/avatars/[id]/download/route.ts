@@ -6,6 +6,11 @@ import { z } from "zod";
 import { avatarExpressions, avatars, subscriptions } from "@/database/schema";
 import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
+import {
+  createRateLimitHeaders,
+  generalApiLimiter,
+  getRateLimitIdentifier,
+} from "@/lib/middleware/rate-limit";
 import { resizeImage } from "@/lib/services/storage";
 
 /**
@@ -19,7 +24,7 @@ import { resizeImage } from "@/lib/services/storage";
  *   - size: optional, auto-determined by subscription tier if omitted
  *
  * Tier restrictions:
- *   - Free: max 512, watermarked
+ *   - Free: max 512
  *   - Start: max 1080
  *   - Pro: max 2160
  *
@@ -74,6 +79,24 @@ export async function GET(
   const session = await auth.api.getSession({ headers: req.headers });
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // 1.5. Rate limit check (general: 60/min)
+  const identifier = getRateLimitIdentifier(req, session.user.id);
+  const rateLimitResult = generalApiLimiter.check(identifier);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      {
+        error: "Rate limit exceeded",
+        message: "Too many download requests. Please try again later.",
+        reset: rateLimitResult.reset,
+      },
+      {
+        status: 429,
+        headers: createRateLimitHeaders(rateLimitResult),
+      },
+    );
   }
 
   const { id: avatarId } = await params;
@@ -154,7 +177,7 @@ export async function GET(
     }
   }
 
-  // 8. Process images (resize, watermark)
+  // 8. Process images (resize)
   const processedFiles: {
     name: string;
     buffer: Buffer;

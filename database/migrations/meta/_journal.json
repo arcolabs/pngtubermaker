@@ -15,6 +15,13 @@
       "when": 1771618751417,
       "tag": "0001_safe_energizer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1771623175924,
+      "tag": "0002_curious_steve_rogers",
+      "breakpoints": true
     }
   ]
 }

@@ -3,6 +3,11 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import {
+  createRateLimitHeaders,
+  getRateLimitIdentifier,
+  uploadLimiter,
+} from "@/lib/middleware/rate-limit";
+import {
   generateAvatarKey,
   uploadImageToR2,
   validateImage,
@@ -34,6 +39,24 @@ export async function POST(req: NextRequest) {
   const session = await auth.api.getSession({ headers: req.headers });
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // 1.5. Rate limit check
+  const identifier = getRateLimitIdentifier(req, session.user.id);
+  const rateLimitResult = uploadLimiter.check(identifier);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      {
+        error: "Rate limit exceeded",
+        message: "Too many upload requests. Please try again later.",
+        reset: rateLimitResult.reset,
+      },
+      {
+        status: 429,
+        headers: createRateLimitHeaders(rateLimitResult),
+      },
+    );
   }
 
   try {

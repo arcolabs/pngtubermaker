@@ -40,8 +40,8 @@ AI-powered PNGTuber avatar generator for streamers. Production-ready Next.js 16 
 
 | Tier | Price | Generations | Features |
 |------|-------|-------------|----------|
-| **Free** | $0 | 3/month | Watermarked, low-res export, community support |
-| **Start** | $9/mo | 50/month | HD export (1080p), no watermark, basic expressions, email support |
+| **Free** | $0 | 3/month | 512px export, community support |
+| **Start** | $9/mo | 50/month | HD export (1080p), basic expressions, email support |
 | **Pro** | $30/mo | Unlimited | 4K export, all expressions & animations, commercial license, priority queue, avatar library |
 
 Yearly billing saves 20%.
@@ -120,9 +120,8 @@ export const PRICING_CONFIG = {
     yearlyPrice: 0,
     features: [
       "3 avatar generations/month",
-      "Basic avatar generation", 
-      "Low resolution export",
-      "PNGTuber watermark",
+      "Basic avatar generation",
+      "512px export",
       "Community support",
     ],
   },
@@ -133,7 +132,6 @@ export const PRICING_CONFIG = {
     features: [
       "50 avatar generations/month",
       "HD export (1080p)",
-      "No watermark",
       "Basic expressions pack",
       "Standard generation queue",
       "Email support",
@@ -146,7 +144,6 @@ export const PRICING_CONFIG = {
     features: [
       "Unlimited avatar generations",
       "4K HD export",
-      "No watermark",
       "All expressions & animations",
       "Priority generation queue",
       "Full commercial license",
@@ -291,6 +288,11 @@ STRIPE_PRICE_PRO_MONTHLY=price_...
 STRIPE_PRICE_PRO_YEARLY=price_...
 ```
 
+### Cron (for scheduled tasks)
+```bash
+CRON_SECRET=openssl rand -hex 32
+```
+
 ### R2 Storage (for avatar storage)
 ```bash
 R2_ENDPOINT=...
@@ -320,6 +322,12 @@ R2_PUBLIC_URL=...
 6. **Image Storage**: All uploads to R2. Use `generateFileKey()` and `generatePresignedUploadUrl()`.
 
 7. **Generation Limits**: Enforce tier limits in API layer (3/month Free, 50/month Start, unlimited Pro).
+
+8. **No Watermark**: All tiers get watermark-free exports. Differentiation is via resolution (512/1080/2160) and feature access.
+
+9. **Credit Expiration**: Subscription credits expire at billing cycle end. Cron endpoint at `POST /api/cron/expire-credits` (requires `CRON_SECRET` bearer token). Must be scheduled externally (Vercel Cron, crontab, etc.).
+
+10. **R2 Lifecycle Policy**: Configure in Cloudflare dashboard (not in code). Recommended: auto-delete objects under `avatars/*/candidates/` prefix after 7 days (unselected candidate images are already cleaned up on select, this is a safety net for failed flows).
 
 ---
 

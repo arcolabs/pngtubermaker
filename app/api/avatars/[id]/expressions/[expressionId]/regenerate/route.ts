@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { avatarExpressions, avatars } from "@/database/schema";
 import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
@@ -9,6 +9,7 @@ import {
   expressionRegenerateLimiter,
   getRateLimitIdentifier,
 } from "@/lib/middleware/rate-limit";
+import { processBackgroundRemoval } from "@/lib/services/background-removal";
 import {
   consumeWithRecord,
   refundWithUpdate,
@@ -205,7 +206,12 @@ export async function POST(
         })
         .where(eq(avatarExpressions.id, expressionId));
 
-      // 10. Return success response
+      // 10. Async background removal (fire-and-forget)
+      after(async () => {
+        await processBackgroundRemoval(newImageUrl, newKey);
+      });
+
+      // 11. Return success response
       return NextResponse.json({
         expressionId,
         type: expr.type,

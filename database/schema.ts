@@ -1,6 +1,7 @@
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import {
   boolean,
+  index,
   integer,
   jsonb,
   pgTable,
@@ -64,27 +65,6 @@ export const verification = pgTable("verification", {
 });
 
 // ============================================================================
-// Image storage (R2 metadata)
-// ============================================================================
-
-export const images = pgTable("images", {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  type: text("type").notNull(), // 'avatar' | 'expression' | 'animation' | 'upload'
-  filename: text("filename").notNull(),
-  originalName: text("original_name"),
-  mimeType: text("mime_type").notNull(),
-  size: text("size").notNull(),
-  width: text("width"),
-  height: text("height"),
-  r2Key: text("r2_key").notNull(),
-  r2Url: text("r2_url").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
-
-// ============================================================================
 // Credit system
 // ============================================================================
 
@@ -103,19 +83,25 @@ export const wallets = pgTable("wallets", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const creditTransactions = pgTable("credit_transactions", {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  // 'grant_subscription' | 'grant_purchase' | 'grant_welcome' | 'consume' | 'refund' | 'expire'
-  type: text("type").notNull(),
-  amount: integer("amount").notNull(), // positive = credit in, negative = credit out
-  balanceAfter: integer("balance_after").notNull(), // total balance after this transaction
-  description: text("description").notNull(),
-  metadata: jsonb("metadata"), // e.g. { avatarId, taskType, stripeSessionId }
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+export const creditTransactions = pgTable(
+  "credit_transactions",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    // 'grant_subscription' | 'grant_purchase' | 'grant_welcome' | 'consume' | 'refund' | 'expire'
+    type: text("type").notNull(),
+    amount: integer("amount").notNull(), // positive = credit in, negative = credit out
+    balanceAfter: integer("balance_after").notNull(), // total balance after this transaction
+    description: text("description").notNull(),
+    metadata: jsonb("metadata"), // e.g. { avatarId, taskType, stripeSessionId }
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("credit_tx_user_created_idx").on(table.userId, table.createdAt),
+  ],
+);
 
 // ============================================================================
 // Stripe payment records (kept for monetary transaction audit trail)
@@ -141,24 +127,28 @@ export const transactions = pgTable("transactions", {
 // Subscriptions
 // ============================================================================
 
-export const subscriptions = pgTable("subscriptions", {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  stripeCustomerId: text("stripe_customer_id").notNull(),
-  stripeSubscriptionId: text("stripe_subscription_id").notNull().unique(),
-  stripePriceId: text("stripe_price_id").notNull(),
-  status: text("status").notNull(), // 'active' | 'canceled' | 'past_due' | 'unpaid' | 'trialing'
-  tier: text("tier").notNull(), // 'free' | 'start' | 'pro'
-  monthlyCredits: integer("monthly_credits").notNull().default(0),
-  currentPeriodStart: timestamp("current_period_start"),
-  currentPeriodEnd: timestamp("current_period_end"),
-  cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
-  canceledAt: timestamp("canceled_at"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+export const subscriptions = pgTable(
+  "subscriptions",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    stripeCustomerId: text("stripe_customer_id").notNull(),
+    stripeSubscriptionId: text("stripe_subscription_id").notNull().unique(),
+    stripePriceId: text("stripe_price_id").notNull(),
+    status: text("status").notNull(), // 'active' | 'canceled' | 'past_due' | 'unpaid' | 'trialing'
+    tier: text("tier").notNull(), // 'free' | 'start' | 'pro'
+    monthlyCredits: integer("monthly_credits").notNull().default(0),
+    currentPeriodStart: timestamp("current_period_start"),
+    currentPeriodEnd: timestamp("current_period_end"),
+    cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
+    canceledAt: timestamp("canceled_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [index("sub_user_status_idx").on(table.userId, table.status)],
+);
 
 // ============================================================================
 // Stripe webhook idempotency
@@ -174,30 +164,37 @@ export const webhookEvents = pgTable("webhook_events", {
 // Avatars & expressions (core product)
 // ============================================================================
 
-export const avatars = pgTable("avatars", {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  name: text("name").notNull().default("My PNGTuber"),
-  slug: text("slug").unique(),
-  prompt: text("prompt").notNull(),
-  style: text("style").notNull(), // 'anime' | 'modern-vtuber' | 'chibi' | 'retro-90s' | 'kawaii-moe' | 'cyber-anime' | 'fantasy-anime' | 'shonen-style'
-  aspectRatio: text("aspect_ratio").default("1:1"), // '1:1' | '3:4' | '9:16'
-  status: text("status").notNull(), // 'generating' | 'selecting' | 'completed' | 'failed'
-  // Candidate images from Midjourney (4 options, stored as JSON array of URLs)
-  candidateImages: jsonb("candidate_images").$type<string[]>(),
-  // Selected base image (after user picks one of the 4 candidates)
-  baseImageUrl: text("base_image_url"),
-  baseImageR2Key: text("base_image_r2_key"),
-  thumbnailUrl: text("thumbnail_url"),
-  thumbnailR2Key: text("thumbnail_r2_key"),
-  creditsUsed: integer("credits_used").notNull().default(0),
-  transactionId: text("transaction_id"), // Links to credit_transactions for audit trail
-  metadata: jsonb("metadata"), // extra info: midjourneyJobId, etc.
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+export const avatars = pgTable(
+  "avatars",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull().default("My PNGTuber"),
+    slug: text("slug").unique(),
+    prompt: text("prompt").notNull(),
+    style: text("style").notNull(), // 'anime' | 'modern-vtuber' | 'chibi' | 'retro-90s' | 'kawaii-moe' | 'cyber-anime' | 'fantasy-anime' | 'shonen-style'
+    aspectRatio: text("aspect_ratio").default("1:1"), // '1:1' | '3:4' | '9:16'
+    status: text("status").notNull(), // 'generating' | 'selecting' | 'completed' | 'failed'
+    // Candidate images from Midjourney (4 options, stored as JSON array of URLs)
+    candidateImages: jsonb("candidate_images").$type<string[]>(),
+    // Selected base image (after user picks one of the 4 candidates)
+    baseImageUrl: text("base_image_url"),
+    baseImageR2Key: text("base_image_r2_key"),
+    thumbnailUrl: text("thumbnail_url"),
+    thumbnailR2Key: text("thumbnail_r2_key"),
+    creditsUsed: integer("credits_used").notNull().default(0),
+    transactionId: text("transaction_id"), // Links to credit_transactions for audit trail
+    metadata: jsonb("metadata"), // extra info: midjourneyJobId, etc.
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("avatar_user_status_idx").on(table.userId, table.status),
+    index("avatar_user_created_idx").on(table.userId, table.createdAt),
+  ],
+);
 
 export const expressionPacks = pgTable("expression_packs", {
   id: text("id").primaryKey(),
@@ -212,21 +209,25 @@ export const expressionPacks = pgTable("expression_packs", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const avatarExpressions = pgTable("avatar_expressions", {
-  id: text("id").primaryKey(),
-  avatarId: text("avatar_id")
-    .notNull()
-    .references(() => avatars.id, { onDelete: "cascade" }),
-  packId: text("pack_id").references(() => expressionPacks.id, {
-    onDelete: "set null",
-  }),
-  type: text("type").notNull(), // 'idle' | 'talking' | 'happy' | 'sad' | 'angry' | 'surprised'
-  status: text("status").notNull(), // 'pending' | 'generating' | 'completed' | 'failed'
-  imageUrl: text("image_url"),
-  imageR2Key: text("image_r2_key"),
-  creditsUsed: integer("credits_used").notNull().default(0),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+export const avatarExpressions = pgTable(
+  "avatar_expressions",
+  {
+    id: text("id").primaryKey(),
+    avatarId: text("avatar_id")
+      .notNull()
+      .references(() => avatars.id, { onDelete: "cascade" }),
+    packId: text("pack_id").references(() => expressionPacks.id, {
+      onDelete: "set null",
+    }),
+    type: text("type").notNull(), // 'idle' | 'talking' | 'happy' | 'sad' | 'angry' | 'surprised'
+    status: text("status").notNull(), // 'pending' | 'generating' | 'completed' | 'failed'
+    imageUrl: text("image_url"),
+    imageR2Key: text("image_r2_key"),
+    creditsUsed: integer("credits_used").notNull().default(0),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => [index("expr_avatar_status_idx").on(table.avatarId, table.status)],
+);
 
 // ============================================================================
 // Partners (link exchange)
@@ -248,22 +249,6 @@ export const partners = pgTable("partners", {
 });
 
 // ============================================================================
-// Legacy table (kept for migration compatibility, no longer used)
-// ============================================================================
-
-export const generatedAvatars = pgTable("generated_avatars", {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  sourceImageId: text("source_image_id").references(() => images.id),
-  prompt: text("prompt"),
-  resultImageId: text("result_image_id").references(() => images.id),
-  status: text("status").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
-
-// ============================================================================
 // Type exports
 // ============================================================================
 
@@ -276,10 +261,6 @@ export type Account = InferSelectModel<typeof account>;
 export type NewAccount = InferInsertModel<typeof account>;
 export type Verification = InferSelectModel<typeof verification>;
 export type NewVerification = InferInsertModel<typeof verification>;
-
-// Images
-export type Image = InferSelectModel<typeof images>;
-export type NewImage = InferInsertModel<typeof images>;
 
 // Credits
 export type Wallet = InferSelectModel<typeof wallets>;
@@ -310,7 +291,3 @@ export type NewAvatarExpression = InferInsertModel<typeof avatarExpressions>;
 // Partners
 export type Partner = InferSelectModel<typeof partners>;
 export type NewPartner = InferInsertModel<typeof partners>;
-
-// Legacy (deprecated)
-export type GeneratedAvatar = InferSelectModel<typeof generatedAvatars>;
-export type NewGeneratedAvatar = InferInsertModel<typeof generatedAvatars>;

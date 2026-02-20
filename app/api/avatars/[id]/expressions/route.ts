@@ -5,6 +5,11 @@ import { z } from "zod";
 import { avatarExpressions, avatars } from "@/database/schema";
 import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
+import {
+  createRateLimitHeaders,
+  expressionPackLimiter,
+  getRateLimitIdentifier,
+} from "@/lib/middleware/rate-limit";
 import { processBackgroundRemoval } from "@/lib/services/background-removal";
 import {
   consumeWithRecord,
@@ -65,6 +70,26 @@ export async function POST(
     const session = await auth.api.getSession({ headers: req.headers });
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // 1.5. Rate limit check
+    const identifier = getRateLimitIdentifier(req, session.user.id);
+    const rateLimitResult = expressionPackLimiter.check(identifier);
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        {
+          error: "Rate limit exceeded",
+          message: `Too many expression requests. Please try again in ${Math.ceil(
+            (rateLimitResult.reset * 1000 - Date.now()) / 1000,
+          )} seconds.`,
+          reset: rateLimitResult.reset,
+        },
+        {
+          status: 429,
+          headers: createRateLimitHeaders(rateLimitResult),
+        },
+      );
     }
 
     const { id: avatarId } = await params;

@@ -182,7 +182,7 @@ export function generateSlug(name: string): string {
     .replace(/-+/g, "-")
     .slice(0, 48);
 
-  const suffix = Math.random().toString(36).slice(2, 6);
+  const suffix = crypto.randomUUID().slice(0, 8);
   return `${base}-${suffix}`;
 }
 
