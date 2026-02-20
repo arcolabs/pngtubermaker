@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import {
   type ArtStyle,
@@ -12,6 +13,7 @@ import { GenerationGroup } from "./GenerationGroup";
 import { GeneratorForm } from "./GeneratorForm";
 
 export function AvatarGenerator() {
+  const searchParams = useSearchParams();
   const {
     state,
     creditBalance,
@@ -46,6 +48,14 @@ export function AvatarGenerator() {
     fetchBalance();
     loadHistory();
   }, [fetchBalance, loadHistory]);
+
+  // Pre-fill prompt from URL query parameter (e.g. /create?prompt=...)
+  useEffect(() => {
+    const promptParam = searchParams.get("prompt");
+    if (promptParam && !state.prompt) {
+      updatePrompt(promptParam);
+    }
+  }, [searchParams, state.prompt, updatePrompt]);
 
   // Generate with references
   const handleGenerate = () => {
@@ -126,6 +136,7 @@ export function AvatarGenerator() {
             <GenerationGroup
               key={gen.id}
               generation={gen}
+              allGenerations={state.generations}
               selected={state.selected}
               creditBalance={creditBalance}
               onSelectCandidate={selectCandidate}

@@ -499,6 +499,17 @@ export function useAvatarGenerator() {
       const selected = state.selected;
       if (!selected) return;
 
+      // Prevent duplicate packs: check if a non-failed pack of this type already exists
+      const avatarId = selected.avatarId;
+      const isBase = packType === "base";
+      const alreadyExists = state.generations.some((g) => {
+        if (g.avatarId !== avatarId) return false;
+        if (g.status === "failed") return false;
+        if (isBase) return g.type === "expression_base";
+        return g.type === "expression_custom" && g.subtype === subtype;
+      });
+      if (alreadyExists) return;
+
       const genId = crypto.randomUUID();
 
       // Find the current generation to inherit style/aspectRatio
@@ -506,7 +517,6 @@ export function useAvatarGenerator() {
         (g) => g.id === selected.generationId,
       );
 
-      const isBase = packType === "base";
       const skeletonCount = isBase ? 4 : 2;
       const prompt = isBase
         ? "Base Expressions"

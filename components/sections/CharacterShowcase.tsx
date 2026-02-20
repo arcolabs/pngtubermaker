@@ -1,6 +1,7 @@
 "use client";
 
 import { Wand2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const exampleImages = [
@@ -16,6 +17,14 @@ const exampleImages = [
 
 export default function CharacterShowcase() {
   const [inputValue, setInputValue] = useState("");
+  const router = useRouter();
+
+  const handleCreate = () => {
+    const url = inputValue.trim()
+      ? `/create?prompt=${encodeURIComponent(inputValue.trim())}`
+      : "/create";
+    router.push(url);
+  };
 
   return (
     <section className="py-24">
@@ -36,6 +45,9 @@ export default function CharacterShowcase() {
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleCreate();
+                }}
                 placeholder="Design your character (e.g., magical girl with green hair and elf ears)"
                 className="w-full bg-transparent text-sm md:text-base font-normal text-gray-900 placeholder:text-gray-500/70 outline-none pr-4"
                 aria-label="Design your character"
@@ -44,14 +56,16 @@ export default function CharacterShowcase() {
               {/* Mobile Button */}
               <button
                 type="button"
+                onClick={handleCreate}
                 className="flex sm:hidden items-center justify-center w-10 h-10 rounded-full bg-primary text-white hover:bg-primary/80 transition-colors shadow-md flex-shrink-0"
               >
                 <Wand2 className="w-4 h-4" />
               </button>
 
-              {/* Desktop Button - Added whitespace-nowrap */}
+              {/* Desktop Button */}
               <button
                 type="button"
+                onClick={handleCreate}
                 className="hidden sm:flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-full bg-primary text-white hover:bg-primary/80 transition-colors shadow-lg text-sm md:text-base font-medium whitespace-nowrap flex-shrink-0"
               >
                 <Wand2 className="w-4 h-4 flex-shrink-0" />

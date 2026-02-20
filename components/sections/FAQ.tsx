@@ -58,7 +58,7 @@ const defaultFaqData: FAQItem[] = [
     id: "7",
     question: "What's included in the free plan?",
     answer:
-      "The free plan lets you try PNGTuberMaker with 3 avatar generations per month (with watermark and low resolution). It's perfect for testing the tool before upgrading to Pro to unlock HD export, watermark-free assets, and unlimited expression packs.",
+      "The free plan gives you 500 welcome credits to try PNGTuberMaker — enough to generate a full avatar with expressions. Upgrade to Start or Pro for monthly credits, HD/4K export, and more expression packs.",
   },
   {
     id: "8",

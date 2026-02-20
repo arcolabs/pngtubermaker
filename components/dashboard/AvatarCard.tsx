@@ -4,6 +4,7 @@ import {
   Download,
   Edit2,
   ExternalLink,
+  Loader2,
   MoreVertical,
   Trash2,
 } from "lucide-react";
@@ -72,8 +73,49 @@ export default function AvatarCard({ avatar }: AvatarCardProps) {
   const router = useRouter();
   const formattedDate = formatRelativeTime(avatar.createdAt);
   const [showMenu, setShowMenu] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const status = avatar.status || "completed";
   const avatarPath = `/avatars/${avatar.slug || avatar.id}`;
+
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowMenu(false);
+    setIsDownloading(true);
+    try {
+      const res = await fetch(`/api/avatars/${avatar.id}/download?format=zip`);
+      if (!res.ok) return;
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const name = avatar.name.replace(/\s+/g, "_");
+      a.download = `${name}_pngtuber.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDeleting(true);
+    try {
+      const res = await fetch(`/api/avatars/${avatar.id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        router.refresh();
+      }
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
 
   return (
     <div className="group relative aspect-square rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
@@ -158,22 +200,26 @@ export default function AvatarCard({ avatar }: AvatarCardProps) {
                       </button>
                       <button
                         type="button"
-                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 text-left"
-                        onClick={() => {
-                          setShowMenu(false);
-                          // TODO: Implement download
-                        }}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 text-left disabled:opacity-50"
+                        disabled={isDownloading}
+                        onClick={handleDownload}
                       >
-                        <Download className="w-4 h-4" />
-                        Download
+                        {isDownloading ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Download className="w-4 h-4" />
+                        )}
+                        {isDownloading ? "Downloading..." : "Download"}
                       </button>
                       <div className="border-t border-gray-100 my-1" />
                       <button
                         type="button"
                         className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 text-left"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
                           setShowMenu(false);
-                          // TODO: Implement delete with confirmation
+                          setShowDeleteConfirm(true);
                         }}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -187,6 +233,58 @@ export default function AvatarCard({ avatar }: AvatarCardProps) {
           </div>
         </figure>
       </Link>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        // biome-ignore lint/a11y/useKeyWithClickEvents: modal backdrop dismiss
+        // biome-ignore lint/a11y/noStaticElementInteractions: modal backdrop
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!isDeleting) setShowDeleteConfirm(false);
+          }}
+        >
+          {/* biome-ignore lint/a11y/useKeyWithClickEvents: stop propagation only */}
+          {/* biome-ignore lint/a11y/noStaticElementInteractions: modal content */}
+          <div
+            className="bg-white rounded-xl shadow-xl border border-gray-200 p-6 w-full max-w-sm mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold text-gray-900">
+              Delete &quot;{avatar.name}&quot;?
+            </h3>
+            <p className="mt-2 text-sm text-gray-600">
+              This will permanently delete this avatar and all its expressions.
+              Credits used will not be refunded.
+            </p>
+            <div className="mt-4 flex gap-3 justify-end">
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowDeleteConfirm(false);
+                }}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={handleDelete}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                {isDeleting && <Loader2 className="w-4 h-4 animate-spin" />}
+                {isDeleting ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

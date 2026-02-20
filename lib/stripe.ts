@@ -52,7 +52,6 @@ export const PRICING_CONFIG = {
       "500 welcome credits",
       "Basic avatar generation",
       "512px export",
-      "PNGTuber watermark",
       "Community support",
     ],
     highlighted: false,
@@ -68,7 +67,6 @@ export const PRICING_CONFIG = {
     features: [
       "12,000 credits/month ($12 value)",
       "HD export (1080p)",
-      "No watermark",
       "Basic expression pack",
       "Standard generation queue",
       "Email support",
@@ -86,7 +84,6 @@ export const PRICING_CONFIG = {
     features: [
       "50,000 credits/month ($50 value)",
       "4K export (2160p)",
-      "No watermark",
       "All expressions & animations",
       "Priority generation queue",
       "Full commercial license",

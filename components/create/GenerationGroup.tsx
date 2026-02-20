@@ -16,6 +16,7 @@ import { ImagePreviewModal } from "./ImagePreviewModal";
 
 interface GenerationGroupProps {
   generation: Generation;
+  allGenerations: Generation[];
   selected: SelectedAvatar | null;
   creditBalance: number | null;
   onSelectCandidate: (
@@ -45,6 +46,7 @@ function getImageAspectClass(aspectRatio: AspectRatio): string {
 
 export function GenerationGroup({
   generation,
+  allGenerations,
   selected,
   onSelectCandidate,
   onGenerateExpressionPack,
@@ -56,6 +58,34 @@ export function GenerationGroup({
     null,
   );
   const [isDownloading, setIsDownloading] = useState(false);
+
+  // Check which expression packs already exist for the current avatar
+  const avatarId = generation.avatarId;
+  const hasBasePack = useMemo(
+    () =>
+      allGenerations.some(
+        (g) =>
+          g.avatarId === avatarId &&
+          g.type === "expression_base" &&
+          g.status !== "failed",
+      ),
+    [allGenerations, avatarId],
+  );
+  const existingCustomSubtypes = useMemo(
+    () =>
+      new Set(
+        allGenerations
+          .filter(
+            (g) =>
+              g.avatarId === avatarId &&
+              g.type === "expression_custom" &&
+              g.status !== "failed" &&
+              g.subtype,
+          )
+          .map((g) => g.subtype as ExpressionSubtype),
+      ),
+    [allGenerations, avatarId],
+  );
 
   // Derive selected index from parent state — no local duplication
   const selectedImageIndex = isThisGroupSelected
@@ -232,12 +262,21 @@ export function GenerationGroup({
                 <button
                   type="button"
                   onClick={() => onGenerateExpressionPack("base")}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white border border-gray-200 hover:border-primary/40 hover:bg-primary/5 shadow-sm hover:shadow-md transition-all duration-200"
+                  disabled={hasBasePack}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border shadow-sm transition-all duration-200 ${
+                    hasBasePack
+                      ? "bg-gray-50 border-gray-200 opacity-60 cursor-not-allowed"
+                      : "bg-white border-gray-200 hover:border-primary/40 hover:bg-primary/5 hover:shadow-md"
+                  }`}
                 >
-                  <Layers className="w-4 h-4 text-primary flex-shrink-0" />
+                  <Layers
+                    className={`w-4 h-4 flex-shrink-0 ${hasBasePack ? "text-gray-400" : "text-primary"}`}
+                  />
                   <div className="text-left">
                     <span className="text-sm font-medium text-gray-800 block">
-                      Base Expressions
+                      {hasBasePack
+                        ? "Base Expressions Generated"
+                        : "Base Expressions"}
                     </span>
                     <span className="text-[11px] text-gray-400">
                       idle · talking · blink · blink talk
@@ -271,27 +310,28 @@ export function GenerationGroup({
                 <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Custom Expressions
                 </p>
-                <button
-                  type="button"
-                  onClick={() => onGenerateExpressionPack("custom", "happy")}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all"
-                >
-                  Happy Set
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onGenerateExpressionPack("custom", "angry")}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all"
-                >
-                  Angry Set
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onGenerateExpressionPack("custom", "sad")}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all"
-                >
-                  Sad Set
-                </button>
+                {(["happy", "angry", "sad"] as const).map((subtype) => {
+                  const done = existingCustomSubtypes.has(subtype);
+                  const label =
+                    subtype.charAt(0).toUpperCase() + subtype.slice(1);
+                  return (
+                    <button
+                      key={subtype}
+                      type="button"
+                      onClick={() =>
+                        onGenerateExpressionPack("custom", subtype)
+                      }
+                      disabled={done}
+                      className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl border transition-all ${
+                        done
+                          ? "text-gray-400 bg-gray-50 border-gray-200 opacity-60 cursor-not-allowed"
+                          : "text-gray-700 bg-white border-gray-200 hover:bg-gray-50 hover:border-gray-300"
+                      }`}
+                    >
+                      {done ? `${label} Set Generated` : `${label} Set`}
+                    </button>
+                  );
+                })}
               </div>
             )}
 

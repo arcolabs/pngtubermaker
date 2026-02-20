@@ -42,7 +42,6 @@ const expressionLabels: Record<string, string> = {
   sad_talking: "Sad Talk",
   angry: "Angry",
   angry_talking: "Angry Talk",
-  surprised: "Surprised",
 };
 
 function getPackTitle(pack: Pack): string {
@@ -158,14 +157,9 @@ export default function AvatarDetailClient({
     ...expressions.map((e) => e.type),
     ...initialPacks.flatMap((p) => p.expressions.map((e) => e.type)),
   ]);
-  const availableTypes = [
-    "idle",
-    "talking",
-    "happy",
-    "sad",
-    "angry",
-    "surprised",
-  ].filter((t) => !allExpressionTypes.has(t));
+  const availableTypes = ["idle", "talking", "happy", "sad", "angry"].filter(
+    (t) => !allExpressionTypes.has(t),
+  );
   const canAddMore = availableTypes.length > 0;
 
   return (
