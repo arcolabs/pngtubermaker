@@ -193,6 +193,7 @@ export const avatars = pgTable("avatars", {
   thumbnailUrl: text("thumbnail_url"),
   thumbnailR2Key: text("thumbnail_r2_key"),
   creditsUsed: integer("credits_used").notNull().default(0),
+  transactionId: text("transaction_id"), // Links to credit_transactions for audit trail
   metadata: jsonb("metadata"), // extra info: midjourneyJobId, etc.
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -207,6 +208,7 @@ export const expressionPacks = pgTable("expression_packs", {
   subtype: text("subtype"), // 'happy' | 'angry' | 'sad' (null for base)
   status: text("status").notNull(), // 'generating' | 'completed' | 'failed'
   creditsUsed: integer("credits_used").notNull().default(0),
+  transactionId: text("transaction_id"), // Links to credit_transactions for audit trail
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

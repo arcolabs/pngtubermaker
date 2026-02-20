@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSubscriptionStore } from "@/hooks/use-subscription-store";
 
 // ============================================================================
@@ -47,7 +47,6 @@ export interface Generation {
   status: "generating" | "completed" | "failed";
   error?: string;
   createdAt: number;
-  // History fields (populated from server, empty for new generations)
   name?: string;
   baseImageUrl?: string | null;
   expressions?: ExpressionState[];
@@ -61,7 +60,6 @@ export interface SelectedAvatar {
   avatarName: string;
   expressions: ExpressionState[];
   isSelectingBase: boolean;
-  /** Which expression type is currently generating (null if none) */
   generatingExpression: string | null;
   baseSelected: boolean;
 }
@@ -77,10 +75,9 @@ export interface GeneratorState {
 }
 
 // ============================================================================
-// Hook
+// History Types
 // ============================================================================
 
-// API response shapes from GET /api/avatars/history
 interface HistoryPackItem {
   id: string;
   packType: string;
@@ -178,6 +175,10 @@ function historyPackToGeneration(
   };
 }
 
+// ============================================================================
+// Initial State
+// ============================================================================
+
 const INITIAL_STATE: GeneratorState = {
   prompt: "",
   style: "anime",
@@ -188,8 +189,17 @@ const INITIAL_STATE: GeneratorState = {
   error: null,
 };
 
+// ============================================================================
+// Hook
+// ============================================================================
+
 export function useAvatarGenerator() {
   const [state, setState] = useState<GeneratorState>(INITIAL_STATE);
+
+  // Refs for concurrency control
+  const isGeneratingRef = useRef(false);
+  const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
+  const pendingRequestsRef = useRef<Set<string>>(new Set());
 
   const credits = useSubscriptionStore((s) => s.credits);
   const refreshStore = useSubscriptionStore((s) => s.refresh);
@@ -198,6 +208,22 @@ export function useAvatarGenerator() {
   const fetchBalance = useCallback(async () => {
     await refreshStore();
   }, [refreshStore]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      // Abort all pending requests
+      abortControllersRef.current.forEach((ctrl) => {
+        try {
+          ctrl.abort();
+        } catch {
+          // Ignore abort errors
+        }
+      });
+      abortControllersRef.current.clear();
+      pendingRequestsRef.current.clear();
+    };
+  }, []);
 
   // ── Load history from server ──────────────────────────────────────────
 
@@ -209,8 +235,9 @@ export function useAvatarGenerator() {
       const items: HistoryItem[] = data.history ?? [];
 
       setState((prev) => {
+        // Keep only in-flight generations (those with null avatarId)
         const inFlightGenerations = prev.generations.filter(
-          (g) => g.avatarId === null,
+          (g) => g.avatarId === null && g.status === "generating",
         );
 
         // Build generations: avatars + their packs interleaved by createdAt
@@ -220,7 +247,6 @@ export function useAvatarGenerator() {
           const avatarGen = historyItemToGeneration(item);
           const packs = item.packs ?? [];
 
-          // Convert packs to Generation objects
           const packGenerations = packs.map((pack) =>
             historyPackToGeneration(
               pack,
@@ -231,11 +257,9 @@ export function useAvatarGenerator() {
             ),
           );
 
-          // Add all (avatar + packs), packs first (most recent first)
           allGenerations.push(...packGenerations, avatarGen);
         }
 
-        // Sort all by createdAt descending (most recent first)
         allGenerations.sort((a, b) => b.createdAt - a.createdAt);
 
         return {
@@ -262,22 +286,36 @@ export function useAvatarGenerator() {
     setState((prev) => ({ ...prev, aspectRatio }));
   }, []);
 
-  // ── Generate ──────────────────────────────────────────────────────────
+  // ── Generate with concurrency control ─────────────────────────────────
 
-  const generate = useCallback(
-    async (references?: GenerateReferences) => {
-      const genId = crypto.randomUUID();
-      const prompt = state.prompt;
-      const style = state.style;
-      const aspectRatio = state.aspectRatio;
+  const executeGeneration = useCallback(
+    async (
+      prompt: string,
+      style: ArtStyle,
+      aspectRatio: AspectRatio,
+      references?: GenerateReferences,
+    ): Promise<void> => {
+      // Check if already generating
+      if (isGeneratingRef.current) {
+        console.warn(
+          "[useAvatarGenerator] A generation is already in progress",
+        );
+        return;
+      }
 
+      isGeneratingRef.current = true;
+      const abortController = new AbortController();
+      const tempId = crypto.randomUUID();
+      abortControllersRef.current.set(tempId, abortController);
+
+      // Add skeleton immediately
       setState((prev) => ({
         ...prev,
         isGenerating: true,
         error: null,
         generations: [
           {
-            id: genId,
+            id: tempId,
             type: "avatar",
             avatarId: null,
             prompt,
@@ -307,6 +345,7 @@ export function useAvatarGenerator() {
                 }
               : undefined,
           }),
+          signal: abortController.signal,
         });
 
         const data = await res.json();
@@ -316,7 +355,7 @@ export function useAvatarGenerator() {
             ...prev,
             isGenerating: false,
             generations: prev.generations.map((g) =>
-              g.id === genId
+              g.id === tempId
                 ? {
                     ...g,
                     status: "failed" as const,
@@ -329,11 +368,12 @@ export function useAvatarGenerator() {
           return;
         }
 
+        // Replace temp ID with real ID from server
         setState((prev) => ({
           ...prev,
           isGenerating: false,
           generations: prev.generations.map((g) =>
-            g.id === genId
+            g.id === tempId
               ? {
                   ...g,
                   id: data.avatarId,
@@ -346,79 +386,14 @@ export function useAvatarGenerator() {
           ),
         }));
         await fetchBalance();
-      } catch {
-        setState((prev) => ({
-          ...prev,
-          isGenerating: false,
-          generations: prev.generations.map((g) =>
-            g.id === genId
-              ? {
-                  ...g,
-                  status: "failed" as const,
-                  error: "Network error. Please try again.",
-                }
-              : g,
-          ),
-        }));
-      }
-    },
-    [state.prompt, state.style, state.aspectRatio, fetchBalance],
-  );
-
-  // ── Regenerate with specific params (without changing form state) ─────
-
-  const regenerate = useCallback(
-    async (prompt: string, style: ArtStyle, aspectRatio: AspectRatio) => {
-      const genId = crypto.randomUUID();
-
-      setState((prev) => ({
-        ...prev,
-        isGenerating: true,
-        error: null,
-        generations: [
-          {
-            id: genId,
-            type: "avatar",
-            avatarId: null,
-            prompt,
-            style,
-            aspectRatio,
-            candidateImages: [],
-            status: "generating",
-            createdAt: Date.now(),
-          },
-          ...prev.generations,
-        ],
-      }));
-
-      try {
-        const res = await fetch("/api/avatars/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            prompt,
-            style,
-            aspectRatio,
-          }),
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+          // Request was cancelled - remove the skeleton
           setState((prev) => ({
             ...prev,
             isGenerating: false,
-            generations: prev.generations.map((g) =>
-              g.id === genId
-                ? {
-                    ...g,
-                    status: "failed" as const,
-                    error: data.error || "Generation failed",
-                  }
-                : g,
-            ),
+            generations: prev.generations.filter((g) => g.id !== tempId),
           }));
-          await fetchBalance();
           return;
         }
 
@@ -426,36 +401,43 @@ export function useAvatarGenerator() {
           ...prev,
           isGenerating: false,
           generations: prev.generations.map((g) =>
-            g.id === genId
-              ? {
-                  ...g,
-                  id: data.avatarId,
-                  avatarId: data.avatarId,
-                  candidateImages: data.images,
-                  aspectRatio: data.aspectRatio || g.aspectRatio,
-                  status: "completed" as const,
-                }
-              : g,
-          ),
-        }));
-        await fetchBalance();
-      } catch {
-        setState((prev) => ({
-          ...prev,
-          isGenerating: false,
-          generations: prev.generations.map((g) =>
-            g.id === genId
+            g.id === tempId
               ? {
                   ...g,
                   status: "failed" as const,
-                  error: "Network error. Please try again.",
+                  error:
+                    error instanceof Error
+                      ? error.message
+                      : "Network error. Please try again.",
                 }
               : g,
           ),
         }));
+      } finally {
+        abortControllersRef.current.delete(tempId);
+        isGeneratingRef.current = false;
       }
     },
     [fetchBalance],
+  );
+
+  const generate = useCallback(
+    async (references?: GenerateReferences) => {
+      await executeGeneration(
+        state.prompt,
+        state.style,
+        state.aspectRatio,
+        references,
+      );
+    },
+    [executeGeneration, state.prompt, state.style, state.aspectRatio],
+  );
+
+  const regenerate = useCallback(
+    async (prompt: string, style: ArtStyle, aspectRatio: AspectRatio) => {
+      await executeGeneration(prompt, style, aspectRatio);
+    },
+    [executeGeneration],
   );
 
   // ── Select / toggle candidate ─────────────────────────────────────────
@@ -470,7 +452,6 @@ export function useAvatarGenerator() {
         const gen = prev.generations.find((g) => g.id === generationId);
         if (!gen || !gen.avatarId) return prev;
 
-        // Toggle: clicking same candidate again deselects
         if (
           prev.selected?.generationId === generationId &&
           prev.selected.candidateIndex === index
@@ -500,14 +481,14 @@ export function useAvatarGenerator() {
     [],
   );
 
-  // ── Generate expression pack ─────────────────────────────────────────
+  // ── Generate expression pack with concurrency control ─────────────────
 
   const generateExpressionPack = useCallback(
     async (packType: "base" | "custom", subtype?: ExpressionSubtype) => {
       const selected = state.selected;
       if (!selected) return;
 
-      // Prevent duplicate packs: check if a non-failed pack of this type already exists
+      // Prevent duplicate packs
       const avatarId = selected.avatarId;
       const isBase = packType === "base";
       const alreadyExists = state.generations.some((g) => {
@@ -518,9 +499,18 @@ export function useAvatarGenerator() {
       });
       if (alreadyExists) return;
 
-      const genId = crypto.randomUUID();
+      // Check if already generating expression for this avatar
+      const requestKey = `pack-${avatarId}-${packType}-${subtype ?? "base"}`;
+      if (pendingRequestsRef.current.has(requestKey)) {
+        console.warn(
+          "[useAvatarGenerator] Expression pack generation already in progress",
+        );
+        return;
+      }
 
-      // Find the current generation to inherit style/aspectRatio
+      pendingRequestsRef.current.add(requestKey);
+
+      const genId = crypto.randomUUID();
       const parentGen = state.generations.find(
         (g) => g.id === selected.generationId,
       );
@@ -532,7 +522,6 @@ export function useAvatarGenerator() {
 
       // Insert generating skeleton card
       setState((prev) => {
-        // Re-read parent from latest state to get slug set by select
         const latestParent = prev.generations.find(
           (g) => g.id === selected.generationId,
         );
@@ -574,19 +563,16 @@ export function useAvatarGenerator() {
 
           if (!selectRes.ok) {
             const selectData = await selectRes.json();
-            // If avatar is already completed, that's fine — ignore
             if (selectData.error !== "Avatar not ready for selection") {
               throw new Error(selectData.error || "Failed to select base");
             }
           } else {
             const selectData = await selectRes.json();
-            // Mark base as selected and store the slug
             setState((prev) => ({
               ...prev,
               selected: prev.selected
                 ? { ...prev.selected, baseSelected: true }
                 : null,
-              // Update the parent avatar generation with slug from select response
               generations: prev.generations.map((g) =>
                 g.avatarId === selected.avatarId && g.type === "avatar"
                   ? { ...g, slug: selectData.slug, name: selectData.name }
@@ -623,14 +609,7 @@ export function useAvatarGenerator() {
         }
 
         // Replace skeleton with real data
-        const imageUrls = (
-          data.expressions as {
-            id: string;
-            type: string;
-            status: string;
-            imageUrl: string | null;
-          }[]
-        )
+        const imageUrls = (data.expressions as { imageUrl: string | null }[])
           .map((e) => e.imageUrl)
           .filter((url): url is string => url !== null);
 
@@ -652,7 +631,7 @@ export function useAvatarGenerator() {
           ),
         }));
         await fetchBalance();
-      } catch {
+      } catch (error) {
         setState((prev) => ({
           ...prev,
           generations: prev.generations.map((g) =>
@@ -660,23 +639,27 @@ export function useAvatarGenerator() {
               ? {
                   ...g,
                   status: "failed" as const,
-                  error: "Network error. Please try again.",
+                  error:
+                    error instanceof Error
+                      ? error.message
+                      : "Network error. Please try again.",
                 }
               : g,
           ),
         }));
+      } finally {
+        pendingRequestsRef.current.delete(requestKey);
       }
     },
     [state.selected, state.generations, fetchBalance],
   );
 
-  // ── Download (auto-detect format: png if no expressions, zip if has) ──
+  // ── Download ───────────────────────────────────────────────────────────
 
   const download = useCallback(async () => {
     const selected = state.selected;
     if (!selected) return;
 
-    // Only select base image if not already selected
     if (!selected.baseSelected) {
       await fetch(`/api/avatars/${selected.avatarId}/select`, {
         method: "POST",

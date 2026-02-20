@@ -3,179 +3,221 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { avatars } from "@/database/schema";
 import { auth } from "@/lib/auth";
-import { getDatabase } from "@/lib/db";
 import {
-  consumeCredits,
-  refundCredits,
+  avatarGenerationLimiter,
+  createRateLimitHeaders,
+  getRateLimitIdentifier,
+} from "@/lib/middleware/rate-limit";
+import {
+  consumeWithRecord,
+  refundWithUpdate,
   TASK_COSTS,
-} from "@/lib/services/credits";
+} from "@/lib/services/credits-transaction";
 import { type ArtStyle, getGenerationAdapter } from "@/lib/services/generation";
 
 /**
  * POST /api/avatars/generate
  *
  * Generate 4 candidate character images from a text prompt.
- * This is the reference API implementation — other endpoints follow this pattern.
+ * Uses atomic transaction: credits are deducted and avatar record is created together.
+ * If generation fails, credits are refunded atomically.
  *
  * Auth: Required
- * Body: { prompt: string, style: 'anime' | 'modern-vtuber' | 'chibi' | 'retro-90s' | 'kawaii-moe' | 'cyber-anime' | 'fantasy-anime' | 'shonen-style' }
+ * Body: { prompt: string, style: ArtStyle, aspectRatio?: string }
  * Cost: 300 credits (TASK_COSTS.avatar_generation)
- * Returns: { avatarId: string, images: string[] }
+ * Rate Limit: 3 requests per minute per user
+ * Returns: { avatarId: string, images: string[], aspectRatio: string }
  */
 export async function POST(req: NextRequest) {
-  // 1. Auth check
-  const session = await auth.api.getSession({ headers: req.headers });
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  const userId = session.user.id;
-
-  // 2. Parse & validate body
-  let body: { prompt: string; style: string; aspectRatio?: string };
   try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-  }
+    // 1. Auth check
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-  const { prompt, style, aspectRatio } = body;
+    // 2. Rate limit check
+    const identifier = getRateLimitIdentifier(req, session.user.id);
+    const rateLimitResult = avatarGenerationLimiter.check(identifier);
 
-  if (!prompt || typeof prompt !== "string" || prompt.trim().length < 10) {
-    return NextResponse.json(
-      { error: "Prompt must be at least 10 characters" },
-      { status: 400 },
-    );
-  }
-
-  if (prompt.length > 1000) {
-    return NextResponse.json(
-      { error: "Prompt must be at most 1000 characters" },
-      { status: 400 },
-    );
-  }
-
-  const validStyles = [
-    "anime",
-    "modern-vtuber",
-    "chibi",
-    "retro-90s",
-    "kawaii-moe",
-    "cyber-anime",
-    "fantasy-anime",
-    "shonen-style",
-  ];
-  if (!style || !validStyles.includes(style)) {
-    return NextResponse.json(
-      {
-        error:
-          "Invalid style. Must be one of: anime, modern-vtuber, chibi, retro-90s, kawaii-moe, cyber-anime, fantasy-anime, shonen-style",
-      },
-      { status: 400 },
-    );
-  }
-
-  // 3. Consume credits
-  const cost = TASK_COSTS.avatar_generation;
-  const consumeResult = await consumeCredits(
-    userId,
-    cost,
-    `Character generation: ${style}`,
-    { taskType: "avatar_generation" },
-  );
-
-  if (!consumeResult.success) {
-    return NextResponse.json(
-      {
-        error: "insufficient_credits",
-        balance: consumeResult.newBalance,
-        required: cost,
-      },
-      { status: 402 },
-    );
-  }
-
-  // 4. Create avatar record (status: generating)
-  const db = getDatabase();
-  const avatarId = crypto.randomUUID();
-
-  // Validate aspect ratio
-  const validAspectRatios = ["1:1", "3:4", "9:16"];
-  const normalizedAspectRatio =
-    aspectRatio && validAspectRatios.includes(aspectRatio)
-      ? aspectRatio
-      : "1:1";
-
-  await db.insert(avatars).values({
-    id: avatarId,
-    userId,
-    name: "My PNGTuber",
-    prompt: prompt.trim(),
-    style: style as ArtStyle,
-    aspectRatio: normalizedAspectRatio,
-    status: "generating",
-    creditsUsed: cost,
-  });
-
-  // 5. Call generation adapter
-  try {
-    const adapter = getGenerationAdapter();
-    const result = await adapter.generateCharacter({
-      prompt: prompt.trim(),
-      style: style as ArtStyle,
-    });
-
-    if (result.status === "failed" || result.images.length === 0) {
-      // Generation failed — refund credits and update status
-      await refundCredits(
-        userId,
-        cost,
-        "Character generation failed — refund",
-        {
-          avatarId,
-        },
-      );
-
-      await db
-        .update(avatars)
-        .set({ status: "failed", updatedAt: new Date() })
-        .where(eq(avatars.id, avatarId));
-
+    if (!rateLimitResult.success) {
       return NextResponse.json(
-        { error: result.error || "Generation failed" },
-        { status: 500 },
+        {
+          error: "Rate limit exceeded",
+          message: `Too many generation requests. Please try again in ${Math.ceil(
+            (rateLimitResult.reset * 1000 - Date.now()) / 1000,
+          )} seconds.`,
+          reset: rateLimitResult.reset,
+        },
+        {
+          status: 429,
+          headers: createRateLimitHeaders(rateLimitResult),
+        },
       );
     }
 
-    // 6. Update avatar with candidate images
-    await db
-      .update(avatars)
-      .set({
-        candidateImages: result.images,
-        status: "selecting",
-        updatedAt: new Date(),
-      })
-      .where(eq(avatars.id, avatarId));
+    const userId = session.user.id;
 
-    return NextResponse.json({
-      avatarId,
-      images: result.images,
-      aspectRatio: normalizedAspectRatio,
-    });
+    // 2. Parse & validate body
+    let body: { prompt: string; style: string; aspectRatio?: string };
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+
+    const { prompt, style, aspectRatio } = body;
+
+    if (!prompt || typeof prompt !== "string" || prompt.trim().length < 10) {
+      return NextResponse.json(
+        { error: "Prompt must be at least 10 characters" },
+        { status: 400 },
+      );
+    }
+
+    if (prompt.length > 1000) {
+      return NextResponse.json(
+        { error: "Prompt must be at most 1000 characters" },
+        { status: 400 },
+      );
+    }
+
+    const validStyles = [
+      "anime",
+      "modern-vtuber",
+      "chibi",
+      "retro-90s",
+      "kawaii-moe",
+      "cyber-anime",
+      "fantasy-anime",
+      "shonen-style",
+    ];
+    if (!style || !validStyles.includes(style)) {
+      return NextResponse.json(
+        {
+          error:
+            "Invalid style. Must be one of: anime, modern-vtuber, chibi, retro-90s, kawaii-moe, cyber-anime, fantasy-anime, shonen-style",
+        },
+        { status: 400 },
+      );
+    }
+
+    // 3. Atomic operation: Consume credits AND create avatar record
+    const cost = TASK_COSTS.avatar_generation;
+    const normalizedAspectRatio = aspectRatio || "1:1";
+    const avatarId = crypto.randomUUID();
+
+    const consumeResult = await consumeWithRecord(
+      userId,
+      cost,
+      `Character generation: ${style}`,
+      async (tx, transactionId) => {
+        // Create avatar record within the same transaction
+        const [avatar] = await tx
+          .insert(avatars)
+          .values({
+            id: avatarId,
+            userId,
+            name: "My PNGTuber",
+            prompt: prompt.trim(),
+            style: style as ArtStyle,
+            aspectRatio: normalizedAspectRatio,
+            status: "generating",
+            creditsUsed: cost,
+            transactionId,
+          })
+          .returning();
+        return avatar;
+      },
+      { taskType: "avatar_generation", style },
+    );
+
+    if (!consumeResult.success) {
+      return NextResponse.json(
+        {
+          error: "insufficient_credits",
+          balance: consumeResult.newBalance,
+          required: cost,
+        },
+        { status: 402 },
+      );
+    }
+
+    // 4. Call generation adapter (outside transaction - may take time)
+    try {
+      const adapter = getGenerationAdapter();
+      const result = await adapter.generateCharacter({
+        prompt: prompt.trim(),
+        style: style as ArtStyle,
+      });
+
+      if (result.status === "failed" || result.images.length === 0) {
+        // Generation failed — atomically refund credits and update status
+        await refundWithUpdate(
+          userId,
+          cost,
+          "Character generation failed — refund",
+          async (tx) => {
+            await tx
+              .update(avatars)
+              .set({ status: "failed", updatedAt: new Date() })
+              .where(eq(avatars.id, avatarId));
+          },
+          { avatarId },
+        );
+
+        return NextResponse.json(
+          { error: result.error || "Generation failed" },
+          { status: 500 },
+        );
+      }
+
+      // 5. Update avatar with candidate images
+      const { getDatabase } = await import("@/lib/db");
+      const db = getDatabase();
+      await db
+        .update(avatars)
+        .set({
+          candidateImages: result.images,
+          status: "selecting",
+          updatedAt: new Date(),
+        })
+        .where(eq(avatars.id, avatarId));
+
+      return NextResponse.json({
+        avatarId,
+        images: result.images,
+        aspectRatio: normalizedAspectRatio,
+      });
+    } catch (error) {
+      // Unexpected error — atomically refund and fail
+      console.error("Avatar generation error:", error);
+
+      await refundWithUpdate(
+        userId,
+        cost,
+        "Character generation error — refund",
+        async (tx) => {
+          await tx
+            .update(avatars)
+            .set({ status: "failed", updatedAt: new Date() })
+            .where(eq(avatars.id, avatarId));
+        },
+        { avatarId },
+      );
+
+      return NextResponse.json(
+        { error: "Generation failed unexpectedly" },
+        { status: 500 },
+      );
+    }
   } catch (error) {
-    // Unexpected error — refund and fail
-    console.error("Avatar generation error:", error);
-
-    await refundCredits(userId, cost, "Character generation error — refund", {
-      avatarId,
-    });
-
-    await db
-      .update(avatars)
-      .set({ status: "failed", updatedAt: new Date() })
-      .where(eq(avatars.id, avatarId));
-
+    console.error(
+      "[API] Unhandled error in POST /api/avatars/generate:",
+      error,
+    );
     return NextResponse.json(
-      { error: "Generation failed unexpectedly" },
+      { error: "Internal server error" },
       { status: 500 },
     );
   }

@@ -17,7 +17,13 @@ const API_BASE = "https://api.legnext.ai/api/v1";
 /** Style-specific prompt prefixes */
 const STYLE_PREFIXES: Record<ArtStyle, string> = {
   anime: "anime style character portrait, detailed anime art,",
+  "modern-vtuber": "modern vtuber style, clean digital art,",
   chibi: "chibi style character, cute kawaii proportions, large head,",
+  "retro-90s": "90s retro anime style, vintage anime art,",
+  "kawaii-moe": "kawaii moe style, cute adorable character,",
+  "cyber-anime": "cyber anime style, futuristic digital art,",
+  "fantasy-anime": "fantasy anime style, magical character art,",
+  "shonen-style": "shonen anime style, dynamic action pose,",
 };
 
 /** Standard PNGTuber framing appended to every prompt */
