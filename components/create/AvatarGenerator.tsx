@@ -15,7 +15,7 @@ export function AvatarGenerator() {
     updateStyle,
     generate,
     selectCandidate,
-    generateExpressions,
+    generateSingleExpression,
     download,
     updateAvatarName,
     clearSelection,
@@ -56,7 +56,7 @@ export function AvatarGenerator() {
               selected={state.selected}
               creditBalance={creditBalance}
               onSelectCandidate={selectCandidate}
-              onGenerateExpressions={generateExpressions}
+              onGenerateSingleExpression={generateSingleExpression}
               onUpdateAvatarName={updateAvatarName}
               onDownload={download}
               onClearSelection={clearSelection}

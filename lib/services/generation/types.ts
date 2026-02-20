@@ -12,6 +12,8 @@ export type ArtStyle = "anime" | "chibi";
 export type ExpressionType =
   | "idle"
   | "talking"
+  | "blink"
+  | "blink_talking"
   | "happy"
   | "sad"
   | "angry"
@@ -20,16 +22,27 @@ export type ExpressionType =
 export const EXPRESSION_TYPES = [
   "idle",
   "talking",
+  "blink",
+  "blink_talking",
   "happy",
   "sad",
   "angry",
   "surprised",
 ] as const;
 
-export const MVP_EXPRESSIONS: ExpressionType[] = [
+/** The 3 base expressions that need generation (idle = base image, no generation needed) */
+export const BASE_EXPRESSIONS: ExpressionType[] = [
   "talking",
+  "blink",
+  "blink_talking",
+] as const;
+
+/** Custom expressions beyond the base 4 */
+export const CUSTOM_EXPRESSIONS: ExpressionType[] = [
   "happy",
   "sad",
+  "angry",
+  "surprised",
 ] as const;
 
 export interface GenerateCharacterRequest {

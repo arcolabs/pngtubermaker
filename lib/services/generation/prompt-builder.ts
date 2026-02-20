@@ -8,11 +8,15 @@
 
 import type { ArtStyle, ExpressionType } from "./types";
 
-/** Emotion-specific visual descriptors appended to the base prompt */
+/** Visual descriptors appended to the base prompt for each expression */
 const EXPRESSION_MODIFIERS: Record<ExpressionType, string> = {
-  idle: "neutral calm expression, relaxed face, resting expression, gentle eyes",
+  idle: "neutral calm expression, relaxed face, eyes open, mouth closed, resting expression",
   talking:
-    "mouth open speaking, mid-speech expression, animated talking, open mouth",
+    "mouth wide open speaking, mid-speech expression, eyes open, animated talking, open mouth",
+  blink:
+    "eyes closed, mouth closed, gentle closed eyes, peaceful blink expression, relaxed eyelids shut",
+  blink_talking:
+    "eyes closed, mouth wide open speaking, closed eyes while talking, open mouth, eyelids shut",
   happy:
     "big bright smile, joyful expression, sparkling happy eyes, cheerful grin",
   sad: "sad tearful expression, downturned mouth, sorrowful eyes, melancholic look",
@@ -52,6 +56,13 @@ const CONFLICTING_TERMS = [
   "melancholic",
   "furious",
   "cheerful",
+  "blinking",
+  "eyes closed",
+  "eyes open",
+  "mouth open",
+  "mouth closed",
+  "talking",
+  "speaking",
 ];
 
 /** Remove conflicting emotion words from a character prompt */

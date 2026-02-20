@@ -12,21 +12,21 @@ import { resizeImage } from "@/lib/services/storage";
 /**
  * GET /api/avatars/[id]/download?format=zip&size=1080
  *
- * Download avatar expressions as ZIP or individual files.
+ * Download avatar as PNG (single base image) or ZIP (base + expressions).
  *
  * Auth: Required (must own avatar)
  * Query:
- *   - format: 'zip' | 'individual' (default: 'zip')
- *   - size: 512 | 1080 | 2160 (default: 1080)
+ *   - format: 'png' | 'zip' (default: 'png')
+ *   - size: optional, auto-determined by subscription tier if omitted
  *
  * Tier restrictions:
- *   - Free: max 512
+ *   - Free: max 512, watermarked
  *   - Start: max 1080
  *   - Pro: max 2160
  *
  * Response:
- *   - format=zip: application/zip stream
- *   - format=individual: { files: [{ name, url }] }
+ *   - format=png: single image/png binary (base image only)
+ *   - format=zip: application/zip stream (base + all expressions)
  */
 
 const MAX_DIMENSION = 2160;
@@ -41,8 +41,8 @@ const TIER_SIZE_LIMITS = {
 type Tier = keyof typeof TIER_SIZE_LIMITS;
 
 const downloadSchema = z.object({
-  format: z.enum(["zip", "individual"]).default("zip"),
-  size: z.coerce.number().int().min(512).max(MAX_DIMENSION).default(1080),
+  format: z.enum(["png", "zip"]).default("png"),
+  size: z.coerce.number().int().min(512).max(MAX_DIMENSION).optional(),
 });
 
 /**
@@ -152,22 +152,10 @@ export async function GET(
     );
   }
 
-  // 5. Check tier and size restrictions
+  // 5. Determine size from tier (auto if not specified, capped to tier max)
   const tier = await getUserTier(session.user.id);
   const maxSize = TIER_SIZE_LIMITS[tier];
-
-  if (requestedSize > maxSize) {
-    return NextResponse.json(
-      {
-        error: "upgrade_required",
-        currentTier: tier,
-        requiredTier: requestedSize <= 1080 ? "start" : "pro",
-        maxAllowed: maxSize,
-        requested: requestedSize,
-      },
-      { status: 403 },
-    );
-  }
+  const size = requestedSize ? Math.min(requestedSize, maxSize) : maxSize;
 
   // 6. Fetch all expressions
   const expressions = await db
@@ -219,7 +207,7 @@ export async function GET(
       let buffer: Buffer = Buffer.from(arrayBuffer);
 
       // Resize if needed
-      buffer = await resizeImage(buffer, requestedSize, requestedSize);
+      buffer = await resizeImage(buffer, size, size);
 
       // Apply watermark for Free tier
       if (tier === "free") {
@@ -244,48 +232,35 @@ export async function GET(
   }
 
   // 9. Return based on format
-  if (format === "zip") {
-    // Create ZIP archive
-    const archive = archiver("zip", {
-      zlib: { level: 9 },
-    });
-
-    // Collect archive data
-    const chunks: Buffer[] = [];
-    archive.on("data", (chunk) => chunks.push(chunk));
-
-    // Add files to archive
-    for (const file of processedFiles) {
-      archive.append(file.buffer, { name: file.name });
-    }
-
-    // Finalize
-    await archive.finalize();
-
-    // Combine chunks
-    const zipBuffer = Buffer.concat(chunks);
-
-    // Return ZIP response
-    return new NextResponse(zipBuffer, {
+  if (format === "png") {
+    // Single PNG: return just the base image (first processed file)
+    const base = processedFiles[0];
+    return new NextResponse(new Uint8Array(base.buffer), {
       headers: {
-        "Content-Type": "application/zip",
-        "Content-Disposition": `attachment; filename="${a.name}_pngtuber.zip"`,
-        "Content-Length": zipBuffer.length.toString(),
+        "Content-Type": "image/png",
+        "Content-Disposition": `attachment; filename="${base.name}"`,
+        "Content-Length": base.buffer.length.toString(),
       },
     });
   }
 
-  // Return individual file URLs (presigned if needed)
-  // For now, return public URLs
-  return NextResponse.json({
-    avatarId,
-    avatarName: a.name,
-    tier,
-    size: requestedSize,
-    files: processedFiles.map((f) => ({
-      name: f.name,
-      // In production, generate presigned URLs here
-      url: f.originalUrl,
-    })),
+  // ZIP: bundle base + all expressions
+  const archive = archiver("zip", { zlib: { level: 9 } });
+  const chunks: Buffer[] = [];
+  archive.on("data", (chunk) => chunks.push(chunk));
+
+  for (const file of processedFiles) {
+    archive.append(file.buffer, { name: file.name });
+  }
+
+  await archive.finalize();
+  const zipBuffer = Buffer.concat(chunks);
+
+  return new NextResponse(zipBuffer, {
+    headers: {
+      "Content-Type": "application/zip",
+      "Content-Disposition": `attachment; filename="${a.name}_pngtuber.zip"`,
+      "Content-Length": zipBuffer.length.toString(),
+    },
   });
 }

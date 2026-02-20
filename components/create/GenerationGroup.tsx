@@ -17,9 +17,9 @@ interface GenerationGroupProps {
     index: number,
     existingExpressions?: ExpressionState[],
   ) => void;
-  onGenerateExpressions: () => void;
+  onGenerateSingleExpression: (type: string) => void;
   onUpdateAvatarName: (name: string) => void;
-  onDownload: (size: number) => void;
+  onDownload: () => void;
   onClearSelection: () => void;
 }
 
@@ -37,7 +37,7 @@ export function GenerationGroup({
   selected,
   creditBalance,
   onSelectCandidate,
-  onGenerateExpressions,
+  onGenerateSingleExpression,
   onUpdateAvatarName,
   onDownload,
 }: GenerationGroupProps) {
@@ -111,7 +111,7 @@ export function GenerationGroup({
             <AvatarActionsPanel
               selected={selected}
               creditBalance={creditBalance}
-              onGenerateExpressions={onGenerateExpressions}
+              onGenerateSingleExpression={onGenerateSingleExpression}
               onUpdateAvatarName={onUpdateAvatarName}
               onDownload={onDownload}
             />

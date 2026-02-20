@@ -5,13 +5,14 @@ import type { GenerationAdapter } from "./types";
 export type { GenerationAdapter } from "./types";
 export {
   type ArtStyle,
+  BASE_EXPRESSIONS,
+  CUSTOM_EXPRESSIONS,
   EXPRESSION_TYPES,
   type ExpressionType,
   type GenerateCharacterRequest,
   type GenerateCharacterResult,
   type GenerateExpressionRequest,
   type GenerateExpressionResult,
-  MVP_EXPRESSIONS,
 } from "./types";
 
 let _adapter: GenerationAdapter | undefined;

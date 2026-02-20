@@ -35,9 +35,20 @@ import { generateAvatarKey, uploadImageToR2 } from "@/lib/services/storage";
 
 const generateSchema = z.object({
   expressions: z
-    .array(z.enum(["idle", "talking", "happy", "sad", "angry", "surprised"]))
+    .array(
+      z.enum([
+        "idle",
+        "talking",
+        "blink",
+        "blink_talking",
+        "happy",
+        "sad",
+        "angry",
+        "surprised",
+      ]),
+    )
     .min(1)
-    .max(6)
+    .max(8)
     .refine((items) => new Set(items).size === items.length, {
       message: "Expressions must be unique",
     }),

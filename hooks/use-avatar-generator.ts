@@ -39,8 +39,8 @@ export interface SelectedAvatar {
   avatarName: string;
   expressions: ExpressionState[];
   isSelectingBase: boolean;
-  isGeneratingExpressions: boolean;
-  expressionsGenerated: boolean;
+  /** Which expression type is currently generating (null if none) */
+  generatingExpression: string | null;
   baseSelected: boolean;
 }
 
@@ -63,7 +63,7 @@ interface HistoryItem {
   name: string;
   prompt: string;
   style: string;
-  status: string; // 'generating' | 'selecting' | 'completed' | 'failed'
+  status: string;
   candidateImages: string[];
   baseImageUrl: string | null;
   expressions: {
@@ -130,8 +130,6 @@ export function useAvatarGenerator() {
       const items: HistoryItem[] = data.history ?? [];
 
       setState((prev) => {
-        // Merge: keep any in-flight generations (that have no avatarId yet),
-        // replace everything else with server data
         const inFlightGenerations = prev.generations.filter(
           (g) => g.avatarId === null,
         );
@@ -164,7 +162,6 @@ export function useAvatarGenerator() {
     const prompt = state.prompt;
     const style = state.style;
 
-    // Prepend a "generating" placeholder to the feed
     setState((prev) => ({
       ...prev,
       isGenerating: true,
@@ -243,7 +240,7 @@ export function useAvatarGenerator() {
     }
   }, [state.prompt, state.style, fetchBalance]);
 
-  // ── Select candidate ──────────────────────────────────────────────────
+  // ── Select / toggle candidate ─────────────────────────────────────────
 
   const selectCandidate = useCallback(
     (
@@ -255,12 +252,20 @@ export function useAvatarGenerator() {
         const gen = prev.generations.find((g) => g.id === generationId);
         if (!gen || !gen.avatarId) return prev;
 
-        // If already selected and base was confirmed via /select, don't allow re-select
+        // If base was confirmed via /select, don't allow changes
         if (
           prev.selected?.generationId === generationId &&
           prev.selected.baseSelected
         ) {
           return prev;
+        }
+
+        // Toggle: clicking same candidate again deselects
+        if (
+          prev.selected?.generationId === generationId &&
+          prev.selected.candidateIndex === index
+        ) {
+          return { ...prev, selected: null };
         }
 
         const hasExpressions =
@@ -276,11 +281,10 @@ export function useAvatarGenerator() {
             avatarName:
               prev.selected?.generationId === generationId
                 ? prev.selected.avatarName
-                : "My PNGTuber",
+                : (gen.name ?? "My PNGTuber"),
             expressions: existingExpressions ?? [],
             isSelectingBase: false,
-            isGeneratingExpressions: false,
-            expressionsGenerated: hasExpressions ?? false,
+            generatingExpression: null,
             baseSelected: hasExpressions ?? false,
           },
         };
@@ -289,156 +293,143 @@ export function useAvatarGenerator() {
     [],
   );
 
-  // ── Generate expressions (calls /select then /expressions) ────────────
+  // ── Generate single expression ────────────────────────────────────────
 
-  const generateExpressions = useCallback(async () => {
-    const selected = state.selected;
-    if (!selected) return;
-
-    setState((prev) => ({
-      ...prev,
-      selected: prev.selected
-        ? {
-            ...prev.selected,
-            isGeneratingExpressions: true,
-            expressions: [
-              {
-                id: "idle",
-                type: "idle",
-                status: "completed",
-                imageUrl: prev.selected.candidateUrl,
-              },
-              {
-                id: "talking",
-                type: "talking",
-                status: "pending",
-                imageUrl: null,
-              },
-              { id: "happy", type: "happy", status: "pending", imageUrl: null },
-              { id: "sad", type: "sad", status: "pending", imageUrl: null },
-            ],
-          }
-        : null,
-      error: null,
-    }));
-
-    try {
-      // Step 1: Select the base image
-      if (!selected.baseSelected) {
-        await fetch(`/api/avatars/${selected.avatarId}/select`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ selectedIndex: selected.candidateIndex }),
-        });
-      }
-
-      // Step 2: Generate expressions
-      const res = await fetch(`/api/avatars/${selected.avatarId}/expressions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ expressions: ["talking", "happy", "sad"] }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setState((prev) => ({
-          ...prev,
-          selected: prev.selected
-            ? {
-                ...prev.selected,
-                isGeneratingExpressions: false,
-                baseSelected: true,
-              }
-            : null,
-          error: data.error || "Expression generation failed",
-        }));
-        await fetchBalance();
-        return;
-      }
-
-      if (data.expressions) {
-        setState((prev) => ({
-          ...prev,
-          selected: prev.selected
-            ? {
-                ...prev.selected,
-                isGeneratingExpressions: false,
-                expressionsGenerated: true,
-                baseSelected: true,
-                expressions: prev.selected.expressions.map((expr) => {
-                  if (expr.type === "idle") return expr;
-                  const result = data.expressions.find(
-                    (e: { type: string }) => e.type === expr.type,
-                  );
-                  if (result) {
-                    return {
-                      ...expr,
-                      status: result.status,
-                      imageUrl: result.imageUrl,
-                      id: result.id || expr.id,
-                    };
-                  }
-                  return expr;
-                }),
-              }
-            : null,
-        }));
-      }
-      await fetchBalance();
-    } catch {
-      setState((prev) => ({
-        ...prev,
-        selected: prev.selected
-          ? {
-              ...prev.selected,
-              isGeneratingExpressions: false,
-              baseSelected: true,
-            }
-          : null,
-        error: "Network error. Please try again.",
-      }));
-    }
-  }, [state.selected, fetchBalance]);
-
-  // ── Download ──────────────────────────────────────────────────────────
-
-  const download = useCallback(
-    async (size: number) => {
+  const generateSingleExpression = useCallback(
+    async (expressionType: string) => {
       const selected = state.selected;
       if (!selected) return;
 
-      // Ensure base is selected first
-      if (!selected.baseSelected) {
-        await fetch(`/api/avatars/${selected.avatarId}/select`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ selectedIndex: selected.candidateIndex }),
-        });
+      // Mark this expression as generating
+      setState((prev) => ({
+        ...prev,
+        selected: prev.selected
+          ? { ...prev.selected, generatingExpression: expressionType }
+          : null,
+        error: null,
+      }));
+
+      try {
+        // Ensure base is selected first
+        if (!selected.baseSelected) {
+          await fetch(`/api/avatars/${selected.avatarId}/select`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ selectedIndex: selected.candidateIndex }),
+          });
+          setState((prev) => ({
+            ...prev,
+            selected: prev.selected
+              ? { ...prev.selected, baseSelected: true }
+              : null,
+          }));
+        }
+
+        // Generate the single expression
+        const res = await fetch(
+          `/api/avatars/${selected.avatarId}/expressions`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ expressions: [expressionType] }),
+          },
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          setState((prev) => ({
+            ...prev,
+            selected: prev.selected
+              ? { ...prev.selected, generatingExpression: null }
+              : null,
+            error: data.error || "Expression generation failed",
+          }));
+          await fetchBalance();
+          return;
+        }
+
+        // Update the expressions list with the result
+        if (data.expressions?.[0]) {
+          const result = data.expressions[0];
+          setState((prev) => {
+            if (!prev.selected) return prev;
+            const existing = prev.selected.expressions.filter(
+              (e) => e.type !== expressionType,
+            );
+            return {
+              ...prev,
+              selected: {
+                ...prev.selected,
+                generatingExpression: null,
+                expressions: [
+                  ...existing,
+                  {
+                    id: result.id,
+                    type: result.type,
+                    status: result.status as ExpressionState["status"],
+                    imageUrl: result.imageUrl,
+                  },
+                ],
+              },
+            };
+          });
+        }
+        await fetchBalance();
+      } catch {
         setState((prev) => ({
           ...prev,
           selected: prev.selected
-            ? { ...prev.selected, baseSelected: true }
+            ? { ...prev.selected, generatingExpression: null }
             : null,
+          error: "Network error. Please try again.",
         }));
       }
-
-      const res = await fetch(
-        `/api/avatars/${selected.avatarId}/download?format=zip&size=${size}`,
-      );
-
-      if (res.ok) {
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${selected.avatarName.replace(/\s+/g, "_")}_pngtuber.zip`;
-        a.click();
-        URL.revokeObjectURL(url);
-      }
     },
-    [state.selected],
+    [state.selected, fetchBalance],
   );
+
+  // ── Download (auto-detect format: png if no expressions, zip if has) ──
+
+  const download = useCallback(async () => {
+    const selected = state.selected;
+    if (!selected) return;
+
+    // Ensure base is selected first
+    if (!selected.baseSelected) {
+      await fetch(`/api/avatars/${selected.avatarId}/select`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ selectedIndex: selected.candidateIndex }),
+      });
+      setState((prev) => ({
+        ...prev,
+        selected: prev.selected
+          ? { ...prev.selected, baseSelected: true }
+          : null,
+      }));
+    }
+
+    const hasExpressions = selected.expressions.some(
+      (e) => e.status === "completed",
+    );
+    const format = hasExpressions ? "zip" : "png";
+    const ext = hasExpressions ? "zip" : "png";
+
+    const res = await fetch(
+      `/api/avatars/${selected.avatarId}/download?format=${format}`,
+    );
+
+    if (res.ok) {
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${selected.avatarName.replace(/\s+/g, "_")}_pngtuber.${ext}`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  }, [state.selected]);
 
   // ── Avatar name ───────────────────────────────────────────────────────
 
@@ -464,7 +455,7 @@ export function useAvatarGenerator() {
     updateStyle,
     generate,
     selectCandidate,
-    generateExpressions,
+    generateSingleExpression,
     download,
     updateAvatarName,
     clearSelection,
