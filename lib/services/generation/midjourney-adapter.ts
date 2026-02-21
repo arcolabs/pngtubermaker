@@ -8,7 +8,6 @@
 import { PollFailedError, pollUntilDone } from "./poll";
 import type {
   ArtStyle,
-  GenerateCharacterReferences,
   GenerateCharacterRequest,
   GenerateCharacterResult,
 } from "./types";
@@ -50,20 +49,14 @@ function getApiKey(): string {
 function buildCharacterPrompt(
   prompt: string,
   style: ArtStyle,
-  references?: GenerateCharacterReferences,
+  referenceUrl?: string | null,
 ): string {
   const hint = STYLE_HINTS[style];
 
-  // Image prompt (character reference) — prepended before text prompt
-  const imagePrefix = references?.imageUrl ? `${references.imageUrl} ` : "";
+  // Image prompt — prepended before text prompt
+  const imagePrefix = referenceUrl ? `${referenceUrl} ` : "";
 
-  // Suffix parameters
-  const params: string[] = [];
-  if (references?.styleUrl) params.push(`--sref ${references.styleUrl}`);
-  if (references?.faceUrl) params.push(`--oref ${references.faceUrl}`);
-  params.push("--v 7");
-
-  return `${imagePrefix}${hint} ${prompt}, solo, half body portrait, looking at viewer, white background ${params.join(" ")}`;
+  return `${imagePrefix}${hint} ${prompt}, solo, half body portrait, looking at viewer, white background --v 7`;
 }
 
 interface SubmitResponse {
@@ -137,7 +130,7 @@ export class MidjourneyAdapter {
     const prompt = buildCharacterPrompt(
       request.prompt,
       request.style,
-      request.references,
+      request.referenceUrl,
     );
 
     console.log("[Midjourney] Submitting character generation:", prompt);

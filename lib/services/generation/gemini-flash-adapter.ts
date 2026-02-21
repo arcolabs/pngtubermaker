@@ -1,25 +1,15 @@
 /**
- * Nano Banana Pro adapter via piapi.ai.
+ * Gemini 2.5 Flash Image adapter for character generation via piapi.ai.
  *
- * Capabilities:
- * - Character generation: text prompt + optional reference images (image_urls)
- * - Expression generation: text-only prompt engineering via prompt-builder.ts
- *
- * API flow: submit task → poll until done → extract image URL.
+ * API flow: submit task → poll until done → extract 1 character image URL.
  * Auth: X-API-Key header with PIAPI_API_KEY env var.
+ *
+ * Supports optional reference images via image_urls parameter.
+ * $0.03 per image.
  */
 
 import { PollFailedError, pollUntilDone } from "./poll";
-import {
-  buildExpressionPrompt,
-  buildImageEditExpressionPrompt,
-} from "./prompt-builder";
-import {
-  buildCharacterPrompt,
-  type GenerateCharacterRequest,
-  type GenerateExpressionRequest,
-  type GenerateExpressionResult,
-} from "./types";
+import { buildCharacterPrompt, type GenerateCharacterRequest } from "./types";
 
 const API_BASE = "https://api.piapi.ai/api/v1";
 
@@ -56,7 +46,6 @@ interface TaskResponse {
   [key: string]: unknown;
 }
 
-/** Extract image URL from output — handles both image_url and image_urls */
 function extractImageUrl(output?: TaskResponse["data"]): string | undefined {
   return output?.output?.image_url || output?.output?.image_urls?.[0];
 }
@@ -73,7 +62,6 @@ async function submitTask(
     prompt,
     output_format: "png",
     aspect_ratio: "1:1",
-    resolution: "1K",
   };
 
   if (imageUrls && imageUrls.length > 0) {
@@ -88,7 +76,7 @@ async function submitTask(
     },
     body: JSON.stringify({
       model: "gemini",
-      task_type: "nano-banana-pro",
+      task_type: "gemini-2.5-flash-image",
       input,
     }),
     signal: AbortSignal.timeout(30_000),
@@ -96,14 +84,14 @@ async function submitTask(
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Nano Banana submit failed (${res.status}): ${body}`);
+    throw new Error(`Gemini Flash submit failed (${res.status}): ${body}`);
   }
 
   const data = (await res.json()) as SubmitResponse;
   const taskId = data.data?.task_id;
   if (!taskId) {
     throw new Error(
-      `Nano Banana submit response missing task_id: ${JSON.stringify(data)}`,
+      `Gemini Flash submit response missing task_id: ${JSON.stringify(data)}`,
     );
   }
 
@@ -121,18 +109,18 @@ async function checkTask(taskId: string): Promise<TaskResponse> {
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Nano Banana poll failed (${res.status}): ${body}`);
+    throw new Error(`Gemini Flash poll failed (${res.status}): ${body}`);
   }
 
   return (await res.json()) as TaskResponse;
 }
 
-/** Check if a status string indicates completion (case-insensitive) */
+// ── Status helpers ───────────────────────────────────────────────────────────
+
 function isCompleted(status?: string): boolean {
   return status?.toLowerCase() === "completed";
 }
 
-/** Check if a status string indicates failure (case-insensitive) */
 function isFailed(status?: string): boolean {
   const s = status?.toLowerCase();
   return s === "failed" || s === "error";
@@ -140,11 +128,7 @@ function isFailed(status?: string): boolean {
 
 // ── Adapter ──────────────────────────────────────────────────────────────────
 
-export class NanoBananaAdapter {
-  /**
-   * Generate a single character image (used in multi-model parallel generation).
-   * Supports optional reference images via the image_urls parameter.
-   */
+export class GeminiFlashAdapter {
   async generateCharacterImage(
     request: GenerateCharacterRequest,
   ): Promise<string | null> {
@@ -155,11 +139,12 @@ export class NanoBananaAdapter {
     );
     const imageUrls = request.referenceUrl ? [request.referenceUrl] : undefined;
 
-    console.log("[NanoBanana] Submitting character generation:", prompt);
-    if (imageUrls) console.log("[NanoBanana] With reference image:", imageUrls);
+    console.log("[GeminiFlash] Submitting character generation:", prompt);
+    if (imageUrls)
+      console.log("[GeminiFlash] With reference image:", imageUrls);
 
     const taskId = await submitTask(prompt, imageUrls);
-    console.log("[NanoBanana] Character task submitted:", taskId);
+    console.log("[GeminiFlash] Task submitted:", taskId);
 
     const result = await pollUntilDone<TaskResponse>(
       {
@@ -170,13 +155,12 @@ export class NanoBananaAdapter {
           if (isCompleted(status)) return data;
           if (isFailed(status)) {
             throw new PollFailedError(
-              data.data?.error?.message || "Nano Banana generation failed",
+              data.data?.error?.message || "Gemini Flash generation failed",
             );
           }
           return null;
         },
-        onPending: () =>
-          console.log("[NanoBanana] Still generating character..."),
+        onPending: () => console.log("[GeminiFlash] Still generating..."),
       },
       { initialDelay: 5000, interval: 5000, timeout: 180_000 },
     );
@@ -184,82 +168,13 @@ export class NanoBananaAdapter {
     const imageUrl = extractImageUrl(result.data);
     if (!imageUrl) {
       console.error(
-        "[NanoBanana] No image in character response:",
+        "[GeminiFlash] No image in response:",
         JSON.stringify(result, null, 2),
       );
       return null;
     }
 
-    console.log("[NanoBanana] Character generation complete");
+    console.log("[GeminiFlash] Generation complete");
     return imageUrl;
-  }
-
-  /**
-   * Generate a single expression variant.
-   * Uses base image as reference via image_urls + expression edit prompt.
-   * Falls back to text-only prompt if no base image URL.
-   */
-  async generateExpression(
-    request: GenerateExpressionRequest,
-  ): Promise<GenerateExpressionResult> {
-    const useImageEdit = !!request.baseImageUrl;
-    const prompt = useImageEdit
-      ? buildImageEditExpressionPrompt(request.expression)
-      : request.prompt
-        ? buildExpressionPrompt(request.prompt, request.expression, request.style)
-        : null;
-
-    if (!prompt) {
-      return {
-        status: "failed",
-        imageUrl: null,
-        error: "Character prompt is required for text-only expression generation",
-      };
-    }
-
-    const imageUrls = useImageEdit ? [request.baseImageUrl] : undefined;
-
-    console.log(
-      `[NanoBanana] Generating ${request.expression} expression${useImageEdit ? " (image-edit)" : ""}:`,
-      prompt,
-    );
-    const taskId = await submitTask(prompt, imageUrls);
-    console.log("[NanoBanana] Task submitted:", taskId);
-
-    const result = await pollUntilDone<TaskResponse>(
-      {
-        check: async () => {
-          const data = await checkTask(taskId);
-          const status = data.data?.status;
-
-          if (isCompleted(status)) return data;
-          if (isFailed(status)) {
-            throw new PollFailedError(
-              data.data?.error?.message || "Nano Banana generation failed",
-            );
-          }
-          return null;
-        },
-        onPending: () =>
-          console.log(`[NanoBanana] Still generating ${request.expression}...`),
-      },
-      { initialDelay: 5000, interval: 5000, timeout: 180_000 },
-    );
-
-    const imageUrl = extractImageUrl(result.data);
-    if (!imageUrl) {
-      return {
-        status: "failed",
-        imageUrl: null,
-        error: "No image URL in Nano Banana response",
-      };
-    }
-
-    console.log(`[NanoBanana] Expression ${request.expression} complete`);
-
-    return {
-      status: "completed",
-      imageUrl,
-    };
   }
 }

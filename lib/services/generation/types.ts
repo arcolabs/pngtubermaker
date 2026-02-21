@@ -3,16 +3,13 @@
  *
  * Implementations:
  * - MockAdapter: Returns placeholder images with simulated delays (dev)
- * - MidjourneyAdapter: Midjourney Niji for character generation (production)
- * - NanoBananaAdapter: Nano Banana Standard for expression editing (production)
+ * - ProductionAdapter: Multi-model parallel character generation + Nano Banana expressions
+ *   - NanoBananaAdapter: Character generation + expression editing via piapi.ai
+ *   - QwenAdapter: Character generation via piapi.ai (Qubico/qwen-image)
+ *   - (2 additional model slots reserved)
  */
 
-export type ArtStyle =
-  | "anime"
-  | "vtuber"
-  | "chibi"
-  | "retro-90s"
-  | "cartoon";
+export type ArtStyle = "anime" | "vtuber" | "chibi" | "retro-90s" | "cartoon";
 
 export type ExpressionType =
   | "idle"
@@ -56,24 +53,51 @@ export const CUSTOM_EXPRESSIONS: ExpressionType[] = [
   "surprised",
 ] as const;
 
-export interface GenerateCharacterReferences {
-  /** Image prompt — prepended to prompt for image-to-image generation */
-  imageUrl?: string | null;
-  /** Style reference — appended as --sref */
-  styleUrl?: string | null;
-  /** Face/Omni reference — appended as --oref */
-  faceUrl?: string | null;
+// ── Shared prompt constants ──────────────────────────────────────────────────
+
+/** Style hints — brief keywords prepended to the user prompt per art style */
+export const STYLE_HINTS: Record<ArtStyle, string> = {
+  anime: "anime character illustration,",
+  vtuber: "modern VTuber character, hololive aesthetic,",
+  chibi: "chibi character, large head small body,",
+  "retro-90s": "90s retro anime character, vintage cel animation,",
+  cartoon: "cartoon character illustration, western animation style,",
+};
+
+/** PNGTuber composition framing appended to all character prompts */
+export const PNGTUBER_FRAME =
+  "solo, half body portrait, looking at viewer, white background";
+
+/** Prefix added when a person reference image is provided */
+export const REFERENCE_PREFIX =
+  "character inspired by the person in the reference image, keeping their key facial features and appearance,";
+
+/**
+ * Build a standard character prompt from style + user text + optional reference.
+ * All adapters should use this for consistency.
+ */
+export function buildCharacterPrompt(
+  prompt: string,
+  style: ArtStyle,
+  hasReference: boolean,
+): string {
+  const hint = STYLE_HINTS[style];
+  const refPrefix = hasReference ? `${REFERENCE_PREFIX} ` : "";
+  return `${refPrefix}${hint} ${prompt}, ${PNGTUBER_FRAME}`;
 }
+
+// ── Request / Response types ─────────────────────────────────────────────────
 
 export interface GenerateCharacterRequest {
   prompt: string;
   style: ArtStyle;
-  references?: GenerateCharacterReferences;
+  /** Optional single reference image URL — passed to all models */
+  referenceUrl?: string | null;
 }
 
 export interface GenerateCharacterResult {
   status: "completed" | "failed";
-  /** 4 candidate image URLs (from Midjourney grid) */
+  /** Candidate image URLs (1 per model, from parallel multi-model generation) */
   images: string[];
   error?: string;
 }
@@ -98,7 +122,7 @@ export interface GenerateExpressionResult {
 
 export interface GenerationAdapter {
   /**
-   * Generate 4 candidate character images from a text prompt.
+   * Generate candidate character images (1 per model, parallel).
    * Used in Step 1→2 of the Create Flow.
    */
   generateCharacter(

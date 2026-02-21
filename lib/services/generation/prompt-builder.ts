@@ -1,9 +1,10 @@
 /**
- * Expression prompt crafting for Nano Banana Pro.
+ * Expression prompt crafting for all generation adapters.
  *
- * Since Nano Banana only accepts text prompts (no image input),
- * we use prompt engineering to maintain character consistency
- * by combining the original character description with expression modifiers.
+ * Two modes:
+ * - Text-only (buildExpressionPrompt): full character description + expression modifiers
+ * - Image-edit (buildImageEditExpressionPrompt): concise edit instruction for models
+ *   that accept a base image input (Qwen image-edit, Doubao, NanoBanana image_urls)
  */
 
 import type { ArtStyle, ExpressionType } from "./types";
@@ -110,4 +111,16 @@ export function buildExpressionPrompt(
     expressionMod,
     "transparent background, PNGTuber avatar, single character, consistent character design",
   ].join(", ");
+}
+
+/**
+ * Build a concise prompt for image-edit expression generation.
+ * Used by adapters that accept a base image — the prompt only describes
+ * what to change, not the full character.
+ */
+export function buildImageEditExpressionPrompt(
+  expression: ExpressionType,
+): string {
+  const expressionMod = EXPRESSION_MODIFIERS[expression];
+  return `Edit this character image. Keep the character's appearance, clothing, pose, and art style exactly the same. Only change the facial expression to: ${expressionMod}. Do not change anything else.`;
 }

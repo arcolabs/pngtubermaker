@@ -30,15 +30,9 @@ export function AvatarGenerator() {
 
   // Reference state management
   const {
-    activeType,
-    imageFile,
-    styleFile,
-    faceFile,
+    referenceFile,
     gallery,
-    setActiveType,
-    setImageFile,
-    setStyleFile,
-    setFaceFile,
+    setReferenceFile,
     addToGallery,
     removeFromGallery,
   } = useReferencePersistentState();
@@ -56,14 +50,9 @@ export function AvatarGenerator() {
     }
   }, [searchParams, state.prompt, updatePrompt]);
 
-  // Generate with references
+  // Generate with reference
   const handleGenerate = () => {
-    const references = {
-      imageUrl: imageFile?.url || null,
-      styleUrl: styleFile?.url || null,
-      faceUrl: faceFile?.url || null,
-    };
-    generate(references);
+    generate({ referenceUrl: referenceFile?.url || null });
   };
 
   // Regenerate with same params (always 1:1 ratio)
@@ -71,34 +60,16 @@ export function AvatarGenerator() {
     regenerate(prompt, style as ArtStyle, "1:1");
   };
 
-  // Bundle all reference state + callbacks into one object
+  // Bundle reference state + callbacks into one object
   const reference: ReferenceHandlers = useMemo(
     () => ({
-      activeType,
-      imageFile,
-      styleFile,
-      faceFile,
+      referenceFile,
       gallery,
-      onActiveTypeChange: setActiveType,
-      onImageFileChange: setImageFile,
-      onStyleFileChange: setStyleFile,
-      onFaceFileChange: setFaceFile,
+      onReferenceFileChange: setReferenceFile,
       onImageUploaded: addToGallery,
       onRemoveFromGallery: removeFromGallery,
     }),
-    [
-      activeType,
-      imageFile,
-      styleFile,
-      faceFile,
-      gallery,
-      setActiveType,
-      setImageFile,
-      setStyleFile,
-      setFaceFile,
-      addToGallery,
-      removeFromGallery,
-    ],
+    [referenceFile, gallery, setReferenceFile, addToGallery, removeFromGallery],
   );
 
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { ReferenceFile, ReferenceType } from "@/types/reference";
+import type { ReferenceFile } from "@/types/reference";
 import {
   REFERENCE_DB_NAME,
   REFERENCE_DB_VERSION,
@@ -12,15 +12,9 @@ const MAX_GALLERY_IMAGES = 10;
 
 interface UseReferencePersistentStateReturn {
   isLoading: boolean;
-  activeType: ReferenceType | null;
-  imageFile: ReferenceFile | null;
-  styleFile: ReferenceFile | null;
-  faceFile: ReferenceFile | null;
+  referenceFile: ReferenceFile | null;
   gallery: ReferenceFile[];
-  setActiveType: (type: ReferenceType | null) => void;
-  setImageFile: (file: ReferenceFile | null) => void;
-  setStyleFile: (file: ReferenceFile | null) => void;
-  setFaceFile: (file: ReferenceFile | null) => void;
+  setReferenceFile: (file: ReferenceFile | null) => void;
   addToGallery: (file: ReferenceFile) => void;
   removeFromGallery: (fileKey: string) => void;
   clearAll: () => void;
@@ -28,10 +22,9 @@ interface UseReferencePersistentStateReturn {
 
 export function useReferencePersistentState(): UseReferencePersistentStateReturn {
   const [isLoading, setIsLoading] = useState(true);
-  const [activeType, setActiveTypeState] = useState<ReferenceType | null>(null);
-  const [imageFile, setImageFileState] = useState<ReferenceFile | null>(null);
-  const [styleFile, setStyleFileState] = useState<ReferenceFile | null>(null);
-  const [faceFile, setFaceFileState] = useState<ReferenceFile | null>(null);
+  const [referenceFile, setReferenceFileState] = useState<ReferenceFile | null>(
+    null,
+  );
   const [gallery, setGalleryState] = useState<ReferenceFile[]>([]);
 
   // Load from IndexedDB on mount
@@ -42,26 +35,13 @@ export function useReferencePersistentState(): UseReferencePersistentStateReturn
         const transaction = db.transaction(REFERENCE_STORE_NAME, "readonly");
         const store = transaction.objectStore(REFERENCE_STORE_NAME);
 
-        const [activeTypeData, imageData, styleData, faceData, galleryData] =
-          await Promise.all([
-            getFromStore<ReferenceType | null>(store, "activeType"),
-            getFromStore<ReferenceFile | null>(store, "imageFile"),
-            getFromStore<ReferenceFile | null>(store, "styleFile"),
-            getFromStore<ReferenceFile | null>(store, "faceFile"),
-            getFromStore<ReferenceFile[]>(store, "gallery"),
-          ]);
+        const [refData, galleryData] = await Promise.all([
+          getFromStore<ReferenceFile | null>(store, "referenceFile"),
+          getFromStore<ReferenceFile[]>(store, "gallery"),
+        ]);
 
-        if (activeTypeData !== undefined) {
-          setActiveTypeState(activeTypeData);
-        }
-        if (imageData !== undefined) {
-          setImageFileState(imageData);
-        }
-        if (styleData !== undefined) {
-          setStyleFileState(styleData);
-        }
-        if (faceData !== undefined) {
-          setFaceFileState(faceData);
+        if (refData !== undefined) {
+          setReferenceFileState(refData);
         }
         if (galleryData !== undefined) {
           setGalleryState(galleryData);
@@ -88,34 +68,10 @@ export function useReferencePersistentState(): UseReferencePersistentStateReturn
     }
   }, []);
 
-  const setActiveType = useCallback(
-    (type: ReferenceType | null) => {
-      setActiveTypeState(type);
-      saveToDB("activeType", type);
-    },
-    [saveToDB],
-  );
-
-  const setImageFile = useCallback(
+  const setReferenceFile = useCallback(
     (file: ReferenceFile | null) => {
-      setImageFileState(file);
-      saveToDB("imageFile", file);
-    },
-    [saveToDB],
-  );
-
-  const setStyleFile = useCallback(
-    (file: ReferenceFile | null) => {
-      setStyleFileState(file);
-      saveToDB("styleFile", file);
-    },
-    [saveToDB],
-  );
-
-  const setFaceFile = useCallback(
-    (file: ReferenceFile | null) => {
-      setFaceFileState(file);
-      saveToDB("faceFile", file);
+      setReferenceFileState(file);
+      saveToDB("referenceFile", file);
     },
     [saveToDB],
   );
@@ -127,7 +83,6 @@ export function useReferencePersistentState(): UseReferencePersistentStateReturn
           return prev;
         }
         const newGallery = [file, ...prev].slice(0, MAX_GALLERY_IMAGES);
-        // Persist outside the updater to avoid side effects in setState
         queueMicrotask(() => saveToDB("gallery", newGallery));
         return newGallery;
       });
@@ -147,13 +102,9 @@ export function useReferencePersistentState(): UseReferencePersistentStateReturn
   );
 
   const clearAll = useCallback(() => {
-    setActiveTypeState(null);
-    setImageFileState(null);
-    setStyleFileState(null);
-    setFaceFileState(null);
+    setReferenceFileState(null);
     setGalleryState([]);
 
-    // Clear IndexedDB
     openDB()
       .then(async (db) => {
         const transaction = db.transaction(REFERENCE_STORE_NAME, "readwrite");
@@ -169,15 +120,9 @@ export function useReferencePersistentState(): UseReferencePersistentStateReturn
 
   return {
     isLoading,
-    activeType,
-    imageFile,
-    styleFile,
-    faceFile,
+    referenceFile,
     gallery,
-    setActiveType,
-    setImageFile,
-    setStyleFile,
-    setFaceFile,
+    setReferenceFile,
     addToGallery,
     removeFromGallery,
     clearAll,

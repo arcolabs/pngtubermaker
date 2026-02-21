@@ -7,20 +7,13 @@ import { useSubscriptionStore } from "@/hooks/use-subscription-store";
 // Types
 // ============================================================================
 
-export type ArtStyle =
-  | "anime"
-  | "vtuber"
-  | "chibi"
-  | "retro-90s"
-  | "cartoon";
+export type ArtStyle = "anime" | "vtuber" | "chibi" | "retro-90s" | "cartoon";
 export type AspectRatio = "1:1" | "3:4" | "9:16";
 export type TaskType = "avatar" | "expression_base" | "expression_custom";
 export type ExpressionSubtype = "happy" | "angry" | "sad";
 
 export interface GenerateReferences {
-  imageUrl?: string | null;
-  styleUrl?: string | null;
-  faceUrl?: string | null;
+  referenceUrl?: string | null;
 }
 
 export interface ExpressionState {
@@ -336,13 +329,7 @@ export function useAvatarGenerator() {
             prompt,
             style,
             aspectRatio,
-            references: references
-              ? {
-                  imageUrl: references.imageUrl,
-                  styleUrl: references.styleUrl,
-                  faceUrl: references.faceUrl,
-                }
-              : undefined,
+            referenceUrl: references?.referenceUrl || undefined,
           }),
           signal: abortController.signal,
         });
@@ -386,8 +373,7 @@ export function useAvatarGenerator() {
         }));
         await fetchBalance();
       } catch (error) {
-        const isAbort =
-          error instanceof Error && error.name === "AbortError";
+        const isAbort = error instanceof Error && error.name === "AbortError";
 
         setState((prev) => ({
           ...prev,

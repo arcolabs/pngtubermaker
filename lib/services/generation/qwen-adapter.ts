@@ -1,19 +1,16 @@
 /**
- * Nano Banana Pro adapter via piapi.ai.
+ * Qwen Image adapter for character generation via piapi.ai.
  *
- * Capabilities:
- * - Character generation: text prompt + optional reference images (image_urls)
- * - Expression generation: text-only prompt engineering via prompt-builder.ts
- *
- * API flow: submit task → poll until done → extract image URL.
+ * API flow: submit task → poll until done → extract 1 character image URL.
  * Auth: X-API-Key header with PIAPI_API_KEY env var.
+ *
+ * Supports two task types:
+ * - txt2img: text-only generation
+ * - image-edit: generation with a reference image (image1)
  */
 
 import { PollFailedError, pollUntilDone } from "./poll";
-import {
-  buildExpressionPrompt,
-  buildImageEditExpressionPrompt,
-} from "./prompt-builder";
+import { buildImageEditExpressionPrompt } from "./prompt-builder";
 import {
   buildCharacterPrompt,
   type GenerateCharacterRequest,
@@ -27,6 +24,20 @@ function getApiKey(): string {
   const key = process.env.PIAPI_API_KEY;
   if (!key) throw new Error("PIAPI_API_KEY environment variable not set");
   return key;
+}
+
+/**
+ * Build Qwen-specific prompt. For image-edit mode, also references "image1"
+ * so Qwen knows to use the uploaded reference image.
+ */
+function buildQwenPrompt(
+  prompt: string,
+  style: Parameters<typeof buildCharacterPrompt>[1],
+  hasReference: boolean,
+): string {
+  const base = buildCharacterPrompt(prompt, style, hasReference);
+  // Qwen image-edit references images by field name in prompt text
+  return hasReference ? `based on image1, ${base}` : base;
 }
 
 // ── API types ────────────────────────────────────────────────────────────────
@@ -56,7 +67,6 @@ interface TaskResponse {
   [key: string]: unknown;
 }
 
-/** Extract image URL from output — handles both image_url and image_urls */
 function extractImageUrl(output?: TaskResponse["data"]): string | undefined {
   return output?.output?.image_url || output?.output?.image_urls?.[0];
 }
@@ -65,19 +75,24 @@ function extractImageUrl(output?: TaskResponse["data"]): string | undefined {
 
 async function submitTask(
   prompt: string,
-  imageUrls?: string[],
+  referenceUrl?: string | null,
 ): Promise<string> {
   const apiKey = getApiKey();
 
+  const taskType = referenceUrl ? "image-edit" : "txt2img";
+  console.log(`[Qwen] task_type=${taskType}, referenceUrl=${referenceUrl ?? "none"}`);
+
   const input: Record<string, unknown> = {
     prompt,
-    output_format: "png",
-    aspect_ratio: "1:1",
-    resolution: "1K",
+    seed: Math.floor(Math.random() * 2_147_483_647),
+    steps: 16,
+    width: 1024,
+    height: 1024,
+    flow_shift: 3,
   };
 
-  if (imageUrls && imageUrls.length > 0) {
-    input.image_urls = imageUrls;
+  if (referenceUrl) {
+    input.image1 = referenceUrl;
   }
 
   const res = await fetch(`${API_BASE}/task`, {
@@ -87,8 +102,8 @@ async function submitTask(
       "X-API-Key": apiKey,
     },
     body: JSON.stringify({
-      model: "gemini",
-      task_type: "nano-banana-pro",
+      model: "Qubico/qwen-image",
+      task_type: taskType,
       input,
     }),
     signal: AbortSignal.timeout(30_000),
@@ -96,14 +111,14 @@ async function submitTask(
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Nano Banana submit failed (${res.status}): ${body}`);
+    throw new Error(`Qwen submit failed (${res.status}): ${body}`);
   }
 
   const data = (await res.json()) as SubmitResponse;
   const taskId = data.data?.task_id;
   if (!taskId) {
     throw new Error(
-      `Nano Banana submit response missing task_id: ${JSON.stringify(data)}`,
+      `Qwen submit response missing task_id: ${JSON.stringify(data)}`,
     );
   }
 
@@ -121,18 +136,18 @@ async function checkTask(taskId: string): Promise<TaskResponse> {
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Nano Banana poll failed (${res.status}): ${body}`);
+    throw new Error(`Qwen poll failed (${res.status}): ${body}`);
   }
 
   return (await res.json()) as TaskResponse;
 }
 
-/** Check if a status string indicates completion (case-insensitive) */
+// ── Status helpers ────────────────────────────────────────────────────────────
+
 function isCompleted(status?: string): boolean {
   return status?.toLowerCase() === "completed";
 }
 
-/** Check if a status string indicates failure (case-insensitive) */
 function isFailed(status?: string): boolean {
   const s = status?.toLowerCase();
   return s === "failed" || s === "error";
@@ -140,26 +155,21 @@ function isFailed(status?: string): boolean {
 
 // ── Adapter ──────────────────────────────────────────────────────────────────
 
-export class NanoBananaAdapter {
-  /**
-   * Generate a single character image (used in multi-model parallel generation).
-   * Supports optional reference images via the image_urls parameter.
-   */
+export class QwenAdapter {
   async generateCharacterImage(
     request: GenerateCharacterRequest,
   ): Promise<string | null> {
-    const prompt = buildCharacterPrompt(
+    const prompt = buildQwenPrompt(
       request.prompt,
       request.style,
       !!request.referenceUrl,
     );
-    const imageUrls = request.referenceUrl ? [request.referenceUrl] : undefined;
 
-    console.log("[NanoBanana] Submitting character generation:", prompt);
-    if (imageUrls) console.log("[NanoBanana] With reference image:", imageUrls);
-
-    const taskId = await submitTask(prompt, imageUrls);
-    console.log("[NanoBanana] Character task submitted:", taskId);
+    console.log("[Qwen] Submitting character generation:", prompt);
+    if (request.referenceUrl)
+      console.log("[Qwen] With reference image (image-edit):", request.referenceUrl);
+    const taskId = await submitTask(prompt, request.referenceUrl);
+    console.log("[Qwen] Task submitted:", taskId);
 
     const result = await pollUntilDone<TaskResponse>(
       {
@@ -170,13 +180,12 @@ export class NanoBananaAdapter {
           if (isCompleted(status)) return data;
           if (isFailed(status)) {
             throw new PollFailedError(
-              data.data?.error?.message || "Nano Banana generation failed",
+              data.data?.error?.message || "Qwen generation failed",
             );
           }
           return null;
         },
-        onPending: () =>
-          console.log("[NanoBanana] Still generating character..."),
+        onPending: () => console.log("[Qwen] Still generating..."),
       },
       { initialDelay: 5000, interval: 5000, timeout: 180_000 },
     );
@@ -184,82 +193,63 @@ export class NanoBananaAdapter {
     const imageUrl = extractImageUrl(result.data);
     if (!imageUrl) {
       console.error(
-        "[NanoBanana] No image in character response:",
+        "[Qwen] No image in response:",
         JSON.stringify(result, null, 2),
       );
       return null;
     }
 
-    console.log("[NanoBanana] Character generation complete");
+    console.log("[Qwen] Generation complete");
     return imageUrl;
   }
 
-  /**
-   * Generate a single expression variant.
-   * Uses base image as reference via image_urls + expression edit prompt.
-   * Falls back to text-only prompt if no base image URL.
-   */
   async generateExpression(
     request: GenerateExpressionRequest,
   ): Promise<GenerateExpressionResult> {
-    const useImageEdit = !!request.baseImageUrl;
-    const prompt = useImageEdit
-      ? buildImageEditExpressionPrompt(request.expression)
-      : request.prompt
-        ? buildExpressionPrompt(request.prompt, request.expression, request.style)
-        : null;
+    const prompt = `based on image1, ${buildImageEditExpressionPrompt(request.expression)}`;
 
-    if (!prompt) {
-      return {
-        status: "failed",
-        imageUrl: null,
-        error: "Character prompt is required for text-only expression generation",
-      };
-    }
+    console.log(`[Qwen] Generating ${request.expression} expression (image-edit):`, prompt);
+    const taskId = await submitTask(prompt, request.baseImageUrl);
+    console.log("[Qwen] Expression task submitted:", taskId);
 
-    const imageUrls = useImageEdit ? [request.baseImageUrl] : undefined;
+    try {
+      const result = await pollUntilDone<TaskResponse>(
+        {
+          check: async () => {
+            const data = await checkTask(taskId);
+            const status = data.data?.status;
 
-    console.log(
-      `[NanoBanana] Generating ${request.expression} expression${useImageEdit ? " (image-edit)" : ""}:`,
-      prompt,
-    );
-    const taskId = await submitTask(prompt, imageUrls);
-    console.log("[NanoBanana] Task submitted:", taskId);
-
-    const result = await pollUntilDone<TaskResponse>(
-      {
-        check: async () => {
-          const data = await checkTask(taskId);
-          const status = data.data?.status;
-
-          if (isCompleted(status)) return data;
-          if (isFailed(status)) {
-            throw new PollFailedError(
-              data.data?.error?.message || "Nano Banana generation failed",
-            );
-          }
-          return null;
+            if (isCompleted(status)) return data;
+            if (isFailed(status)) {
+              throw new PollFailedError(
+                data.data?.error?.message || "Qwen expression generation failed",
+              );
+            }
+            return null;
+          },
+          onPending: () =>
+            console.log(`[Qwen] Still generating ${request.expression}...`),
         },
-        onPending: () =>
-          console.log(`[NanoBanana] Still generating ${request.expression}...`),
-      },
-      { initialDelay: 5000, interval: 5000, timeout: 180_000 },
-    );
+        { initialDelay: 5000, interval: 5000, timeout: 180_000 },
+      );
 
-    const imageUrl = extractImageUrl(result.data);
-    if (!imageUrl) {
+      const imageUrl = extractImageUrl(result.data);
+      if (!imageUrl) {
+        return {
+          status: "failed",
+          imageUrl: null,
+          error: "No image URL in Qwen response",
+        };
+      }
+
+      console.log(`[Qwen] Expression ${request.expression} complete`);
+      return { status: "completed", imageUrl };
+    } catch (error) {
       return {
         status: "failed",
         imageUrl: null,
-        error: "No image URL in Nano Banana response",
+        error: error instanceof Error ? error.message : "Qwen expression failed",
       };
     }
-
-    console.log(`[NanoBanana] Expression ${request.expression} complete`);
-
-    return {
-      status: "completed",
-      imageUrl,
-    };
   }
 }

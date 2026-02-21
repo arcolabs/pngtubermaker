@@ -18,7 +18,7 @@ import { type ArtStyle, getGenerationAdapter } from "@/lib/services/generation";
 /**
  * POST /api/avatars/generate
  *
- * Generate 4 candidate character images from a text prompt.
+ * Generate candidate character images from a text prompt (1 per model, parallel).
  * Uses atomic transaction: credits are deducted and avatar record is created together.
  * If generation fails, credits are refunded atomically.
  *
@@ -63,11 +63,7 @@ export async function POST(req: NextRequest) {
       prompt: string;
       style: string;
       aspectRatio?: string;
-      references?: {
-        imageUrl?: string | null;
-        styleUrl?: string | null;
-        faceUrl?: string | null;
-      };
+      referenceUrl?: string | null;
     };
     try {
       body = await req.json();
@@ -75,7 +71,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
-    const { prompt, style, aspectRatio, references } = body;
+    const { prompt, style, aspectRatio, referenceUrl } = body;
 
     if (!prompt || typeof prompt !== "string" || prompt.trim().length < 10) {
       return NextResponse.json(
@@ -148,7 +144,7 @@ export async function POST(req: NextRequest) {
       const result = await adapter.generateCharacter({
         prompt: prompt.trim(),
         style: style as ArtStyle,
-        references: references || undefined,
+        referenceUrl: referenceUrl || undefined,
       });
 
       if (result.status === "failed" || result.images.length === 0) {

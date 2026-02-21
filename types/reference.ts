@@ -1,10 +1,7 @@
 /**
- * Reference types for avatar generation
- * Three reference types: Image, Style, and Face
- * Each supports 1 image only
+ * Reference types for avatar generation.
+ * Single optional reference image — all models receive the same URL.
  */
-
-export type ReferenceType = "image" | "style" | "face";
 
 export interface ReferenceFile {
   fileKey: string;
@@ -12,17 +9,11 @@ export interface ReferenceFile {
   fileName: string;
 }
 
-/** Grouped reference state + callbacks passed as a single prop */
+/** Reference state + callbacks passed as a single prop to GeneratorForm */
 export interface ReferenceHandlers {
-  activeType: ReferenceType | null;
-  imageFile: ReferenceFile | null;
-  styleFile: ReferenceFile | null;
-  faceFile: ReferenceFile | null;
+  referenceFile: ReferenceFile | null;
   gallery: ReferenceFile[];
-  onActiveTypeChange: (type: ReferenceType | null) => void;
-  onImageFileChange: (file: ReferenceFile | null) => void;
-  onStyleFileChange: (file: ReferenceFile | null) => void;
-  onFaceFileChange: (file: ReferenceFile | null) => void;
+  onReferenceFileChange: (file: ReferenceFile | null) => void;
   onImageUploaded: (file: ReferenceFile) => void;
   onRemoveFromGallery: (fileKey: string) => void;
 }

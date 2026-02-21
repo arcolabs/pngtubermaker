@@ -17,18 +17,18 @@ import { generateAvatarName, generateSlug } from "@/lib/utils";
 /**
  * POST /api/avatars/[id]/select
  *
- * Select one of 4 candidate images as the base character.
+ * Select one of the candidate images as the base character.
  * Deletes unselected images, generates thumbnail, updates avatar status.
  *
  * Auth: Required (must own avatar)
- * Body: { selectedIndex: number }  // 0-3
+ * Body: { selectedIndex: number }
  * Cost: 0 credits (free)
  *
  * Response: { avatarId, baseImageUrl, thumbnailUrl }
  */
 
 const selectSchema = z.object({
-  selectedIndex: z.number().int().min(0).max(3),
+  selectedIndex: z.number().int().min(0),
 });
 
 export async function POST(
@@ -79,7 +79,7 @@ export async function POST(
   if (
     a.status !== "selecting" ||
     !a.candidateImages ||
-    a.candidateImages.length !== 4
+    a.candidateImages.length === 0
   ) {
     return NextResponse.json(
       { error: "Avatar not ready for selection" },
