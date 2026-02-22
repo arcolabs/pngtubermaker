@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles, Trash2 } from "lucide-react";
+import { Check, Copy, Monitor, Sparkles, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
@@ -115,6 +115,92 @@ function ExpressionPlaceholder({
       <p className="text-center text-sm text-gray-400">
         {expressionLabels[type] || type}
       </p>
+    </div>
+  );
+}
+
+function OBSSetupSection({ avatarId }: { avatarId: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const appUrl =
+    typeof window !== "undefined"
+      ? window.location.origin
+      : (process.env.NEXT_PUBLIC_APP_URL ?? "");
+  const playerUrl = `${appUrl}/player/${avatarId}`;
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(playerUrl);
+      setCopied(true);
+      toast.success("Player URL copied!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Failed to copy URL");
+    }
+  };
+
+  return (
+    <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/60 shadow-sm">
+      <div className="flex items-center gap-2 mb-3">
+        <Monitor className="w-4 h-4 text-primary" />
+        <h3 className="font-semibold text-gray-900 text-sm">Use in OBS</h3>
+      </div>
+
+      <p className="text-xs text-gray-500 mb-3">
+        Add your PNGTuber to OBS as a Browser Source. Mic-driven talking
+        animation works automatically.
+      </p>
+
+      {/* URL + Copy */}
+      <div className="flex gap-2 mb-4">
+        <input
+          type="text"
+          readOnly
+          value={playerUrl}
+          className="input input-bordered input-sm flex-1 text-xs font-mono bg-gray-50"
+          onClick={(e) => (e.target as HTMLInputElement).select()}
+        />
+        <button
+          type="button"
+          className={cn(
+            "btn btn-sm gap-1.5 min-w-[80px]",
+            copied ? "btn-success text-white" : "btn-primary",
+          )}
+          onClick={handleCopy}
+        >
+          {copied ? (
+            <>
+              <Check className="w-3.5 h-3.5" />
+              Copied
+            </>
+          ) : (
+            <>
+              <Copy className="w-3.5 h-3.5" />
+              Copy
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Quick Guide */}
+      <div className="bg-base-200/50 rounded-xl p-3">
+        <p className="text-xs font-medium text-gray-700 mb-2">Quick Setup</p>
+        <ol className="text-xs text-gray-500 space-y-1.5 list-decimal list-inside">
+          <li>
+            In OBS, click <strong>+</strong> under Sources &rarr;{" "}
+            <strong>Browser</strong>
+          </li>
+          <li>
+            Paste the URL above, set width/height to 512&times;512 (or your
+            export size)
+          </li>
+          <li>
+            Right-click the source &rarr; Properties &rarr; check{" "}
+            <strong>&quot;Control audio via OBS&quot;</strong> to enable mic
+            access
+          </li>
+        </ol>
+      </div>
     </div>
   );
 }
@@ -423,6 +509,11 @@ export default function AvatarDetailClient({
           </div>
         )}
       </div>
+
+      {/* 3. Use in OBS — Player URL + Quick Guide */}
+      {previewExpressions.length >= 2 && (
+        <OBSSetupSection avatarId={avatar.id} />
+      )}
 
       {/* Delete Confirmation Modal */}
       <dialog className={`modal ${showDeleteConfirm ? "modal-open" : ""}`}>

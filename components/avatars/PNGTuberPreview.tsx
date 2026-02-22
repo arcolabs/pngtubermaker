@@ -257,6 +257,10 @@ export default function PNGTuberPreview({
               : error}
           </p>
         )}
+
+        <p className="text-sm text-amber-500/70 text-right mt-2">
+          Background not transparent? Wait a moment and refresh.
+        </p>
       </div>
     </div>
   );
