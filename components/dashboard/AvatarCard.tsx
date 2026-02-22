@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 interface Avatar {
   id: string;
@@ -125,10 +126,11 @@ export default function AvatarCard({ avatar }: AvatarCardProps) {
       >
         <figure className="w-full h-full overflow-hidden bg-gray-50 relative">
           {avatar.thumbnailUrl ? (
-            <img
+            <SafeImage
               src={avatar.thumbnailUrl}
               alt={avatar.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-300">

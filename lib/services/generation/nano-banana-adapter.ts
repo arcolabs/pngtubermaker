@@ -10,10 +10,7 @@
  */
 
 import { PollFailedError, pollUntilDone } from "./poll";
-import {
-  buildExpressionPrompt,
-  buildImageEditExpressionPrompt,
-} from "./prompt-builder";
+import { buildImageEditExpressionPrompt } from "./prompt-builder";
 import {
   buildCharacterPrompt,
   type GenerateCharacterRequest,
@@ -197,30 +194,26 @@ export class NanoBananaAdapter {
   /**
    * Generate a single expression variant.
    * Uses base image as reference via image_urls + expression edit prompt.
-   * Falls back to text-only prompt if no base image URL.
+   * Note: baseImageUrl is required for expression generation.
    */
   async generateExpression(
     request: GenerateExpressionRequest,
   ): Promise<GenerateExpressionResult> {
-    const useImageEdit = !!request.baseImageUrl;
-    const prompt = useImageEdit
-      ? buildImageEditExpressionPrompt(request.expression)
-      : request.prompt
-        ? buildExpressionPrompt(request.prompt, request.expression, request.style)
-        : null;
-
-    if (!prompt) {
+    // Note: This adapter requires baseImageUrl for expression generation
+    // We always use image-edit mode with the base character image
+    if (!request.baseImageUrl) {
       return {
         status: "failed",
         imageUrl: null,
-        error: "Character prompt is required for text-only expression generation",
+        error: "baseImageUrl is required for NanoBanana expression generation",
       };
     }
 
-    const imageUrls = useImageEdit ? [request.baseImageUrl] : undefined;
+    const prompt = buildImageEditExpressionPrompt(request.expression);
+    const imageUrls = [request.baseImageUrl];
 
     console.log(
-      `[NanoBanana] Generating ${request.expression} expression${useImageEdit ? " (image-edit)" : ""}:`,
+      `[NanoBanana] Generating ${request.expression} expression (image-edit):`,
       prompt,
     );
     const taskId = await submitTask(prompt, imageUrls);

@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Maximize2 } from "lucide-react";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 interface CandidateCardProps {
   imageUrl: string;
@@ -41,14 +42,11 @@ export function CandidateCard({
               : "ring-1 ring-gray-200 hover:ring-gray-300"
         }`}
       >
-        <img
+        <SafeImage
           src={imageUrl}
           alt={displayLabel}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = "";
-            (e.target as HTMLImageElement).classList.add("bg-gray-200");
-          }}
+          fill
+          className="object-cover"
         />
 
         {/* Hover gradient overlay */}

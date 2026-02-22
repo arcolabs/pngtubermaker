@@ -7,7 +7,13 @@ import { useSubscriptionStore } from "@/hooks/use-subscription-store";
 // Types
 // ============================================================================
 
-export type ArtStyle = "anime" | "vtuber" | "chibi" | "retro-90s" | "cartoon";
+export type ArtStyle =
+  | "anime"
+  | "vtuber"
+  | "chibi"
+  | "retro-90s"
+  | "cartoon"
+  | "none";
 export type AspectRatio = "1:1" | "3:4" | "9:16";
 export type TaskType = "avatar" | "expression_base" | "expression_custom";
 export type ExpressionSubtype = "happy" | "angry" | "sad";
@@ -496,9 +502,7 @@ export function useAvatarGenerator() {
       );
 
       const skeletonCount = isBase ? 4 : 2;
-      const prompt = isBase
-        ? "Base Expressions"
-        : `${(subtype ?? "").charAt(0).toUpperCase() + (subtype ?? "").slice(1)} Expressions`;
+      const prompt = "Expressions";
 
       // Insert generating skeleton card
       setState((prev) => {

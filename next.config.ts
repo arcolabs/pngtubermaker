@@ -13,6 +13,35 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "avatars.githubusercontent.com",
       },
+      {
+        protocol: "https",
+        hostname: "**.r2.cloudflarestorage.com",
+      },
+      {
+        protocol: "https",
+        hostname: "pub-*.pubvip.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.pngtubermaker.com",
+      },
+      {
+        protocol: "https",
+        hostname:
+          "ark-content-generation-v2-cn-beijing.tos-cn-beijing.volces.com",
+      },
+      {
+        protocol: "https",
+        hostname: "mule-router-assets.muleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "img.theapi.app",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.legnext.ai",
+      },
     ],
   },
 };

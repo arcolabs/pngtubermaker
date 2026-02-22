@@ -186,6 +186,23 @@ export function generateSlug(name: string): string {
   return `${base}-${suffix}`;
 }
 
+/**
+ * Like Promise.allSettled but staggers task launches.
+ * Each task starts `delayMs` after the previous one, then all run concurrently.
+ */
+export function staggeredAllSettled<T>(
+  tasks: (() => Promise<T>)[],
+  delayMs: number,
+): Promise<PromiseSettledResult<T>[]> {
+  const promises = tasks.map(
+    (task, i) =>
+      new Promise<T>((resolve, reject) => {
+        setTimeout(() => task().then(resolve, reject), i * delayMs);
+      }),
+  );
+  return Promise.allSettled(promises);
+}
+
 export function formatBytes(bytes: number, decimals = 2): string {
   if (bytes === 0) return "0 Bytes";
 

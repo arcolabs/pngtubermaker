@@ -2,6 +2,7 @@
 
 import { ImageIcon, Loader2, Upload, X } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { useReferenceImageUpload } from "@/hooks/use-reference-image-upload";
 import type { ReferenceFile } from "@/types/reference";
 
@@ -108,10 +109,11 @@ export function ReferenceUploadArea({
         {referenceFile && (
           <div className="relative w-20 h-20 flex-shrink-0">
             <div className="w-full h-full rounded-lg overflow-hidden border border-primary/30 shadow-sm">
-              <img
+              <SafeImage
                 src={referenceFile.url}
                 alt={referenceFile.fileName}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             </div>
             <button
@@ -221,10 +223,11 @@ export function ReferenceUploadArea({
                   className="w-full h-full p-0 border-0 bg-transparent"
                   disabled={disabled}
                 >
-                  <img
+                  <SafeImage
                     src={file.url}
                     alt={file.fileName}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 </button>
                 <button

@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight, Download, X } from "lucide-react";
 import { useCallback, useEffect } from "react";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 interface ImagePreviewModalProps {
   images: string[];
@@ -122,9 +123,11 @@ export function ImagePreviewModal({
         className="relative max-w-[90vw] max-h-[85vh] flex items-center justify-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
+        <SafeImage
           src={currentImage}
           alt={`Preview ${currentIndex + 1}`}
+          width={1200}
+          height={1200}
           className="max-w-full max-h-[85vh] object-contain rounded-lg"
         />
       </div>
@@ -163,10 +166,11 @@ export function ImagePreviewModal({
                   : "opacity-60 hover:opacity-100"
               }`}
             >
-              <img
+              <SafeImage
                 src={img}
                 alt={`Thumbnail ${idx + 1}`}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             </button>
           ))}

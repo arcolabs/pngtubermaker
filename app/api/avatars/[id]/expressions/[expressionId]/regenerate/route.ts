@@ -15,11 +15,15 @@ import {
   refundWithUpdate,
   TASK_COSTS,
 } from "@/lib/services/credits-transaction";
-import { type ArtStyle, getGenerationAdapter } from "@/lib/services/generation";
+import {
+  type ArtStyle,
+  type ExpressionType,
+  getGenerationAdapter,
+} from "@/lib/services/generation";
 import {
   deleteFromR2,
   generateAvatarKey,
-  uploadImageToR2,
+  persistExternalImage,
 } from "@/lib/services/storage";
 
 /**
@@ -148,13 +152,7 @@ export async function POST(
       const adapter = getGenerationAdapter();
       const result = await adapter.generateExpression({
         baseImageUrl: a.baseImageUrl,
-        expression: expr.type as
-          | "idle"
-          | "talking"
-          | "happy"
-          | "sad"
-          | "angry"
-          | "surprised",
+        expression: expr.type as ExpressionType,
         style: a.style as ArtStyle,
         prompt: a.prompt,
       });
@@ -163,26 +161,14 @@ export async function POST(
         throw new Error(result.error || "Generation failed");
       }
 
-      // 7. Fetch and upload new image
-      const imageResponse = await fetch(result.imageUrl);
-      if (!imageResponse.ok) {
-        throw new Error(
-          `Failed to fetch generated image: ${imageResponse.status}`,
-        );
-      }
-      const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
-
+      // 7. Download and persist to R2 (with retry)
       const newKey = generateAvatarKey(
         session.user.id,
         avatarId,
         "expression",
         expr.type,
       );
-      const newImageUrl = await uploadImageToR2(
-        imageBuffer,
-        newKey,
-        "image/png",
-      );
+      const newImageUrl = await persistExternalImage(result.imageUrl, newKey);
 
       // 8. Delete old image from R2 (only on success)
       if (oldImageR2Key) {
@@ -207,8 +193,19 @@ export async function POST(
         .where(eq(avatarExpressions.id, expressionId));
 
       // 10. Async background removal (fire-and-forget)
+      //     Uploads to new _nobg key and updates DB to avoid CDN cache issues
       after(async () => {
-        await processBackgroundRemoval(newImageUrl, newKey);
+        await processBackgroundRemoval(newImageUrl, newKey, {
+          onComplete: async (result) => {
+            await db
+              .update(avatarExpressions)
+              .set({
+                imageUrl: result.imageUrl,
+                imageR2Key: result.imageR2Key,
+              })
+              .where(eq(avatarExpressions.id, expressionId));
+          },
+        });
       });
 
       // 11. Return success response

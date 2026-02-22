@@ -15,6 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { useAuthStore } from "@/hooks/use-auth-store";
 import {
   type CreditBalance,
@@ -188,9 +189,11 @@ export default function Header() {
                 >
                   {user?.image ? (
                     <div className="w-9 rounded-full">
-                      <img
+                      <SafeImage
                         src={user.image}
                         alt={user.name ?? "User"}
+                        width={36}
+                        height={36}
                         className="w-9 rounded-full"
                       />
                     </div>
@@ -207,9 +210,11 @@ export default function Header() {
                     <div className="p-4 bg-gradient-to-br from-base-200/50 to-base-100">
                       <div className="flex items-center gap-3">
                         {user?.image ? (
-                          <img
+                          <SafeImage
                             src={user.image}
                             alt={user.name ?? "User"}
+                            width={48}
+                            height={48}
                             className="w-12 h-12 rounded-full ring-2 ring-white"
                           />
                         ) : (

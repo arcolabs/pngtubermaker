@@ -98,7 +98,12 @@ export default function PNGTuberPreview({
   return (
     <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-gray-900">Live Preview</h3>
+        <div>
+          <h3 className="font-semibold text-gray-900">Live Preview</h3>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Real-time animation preview
+          </p>
+        </div>
         <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
           <button
             type="button"
@@ -129,8 +134,8 @@ export default function PNGTuberPreview({
         </div>
       </div>
 
-      {/* Canvas container with checkerboard background */}
-      <div className="relative mx-auto max-w-[320px] aspect-square rounded-xl overflow-hidden bg-[length:20px_20px] bg-[position:0_0,10px_10px] [background-image:linear-gradient(45deg,#e5e7eb_25%,transparent_25%,transparent_75%,#e5e7eb_75%),linear-gradient(45deg,#e5e7eb_25%,transparent_25%,transparent_75%,#e5e7eb_75%)]">
+      {/* Canvas container with solid background - Responsive sizing */}
+      <div className="relative mx-auto max-w-[320px] sm:max-w-[400px] lg:max-w-[480px] aspect-square rounded-xl overflow-hidden bg-white">
         <canvas ref={canvasRef} className="w-full h-full object-contain" />
 
         {/* Loading overlay */}

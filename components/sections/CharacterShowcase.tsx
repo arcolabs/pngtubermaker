@@ -1,6 +1,7 @@
 "use client";
 
 import { Wand2 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -84,10 +85,11 @@ export default function CharacterShowcase() {
                 className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 break-inside-avoid animate-fade-in"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={image.src}
                   alt={image.alt}
+                  width={400}
+                  height={400}
                   className="w-full h-auto rounded-xl transition-transform duration-500 ease-out group-hover:scale-105"
                   loading="lazy"
                 />

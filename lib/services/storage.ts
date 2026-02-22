@@ -126,23 +126,93 @@ export function generateReferenceKey(
 }
 
 /**
- * Upload image buffer to R2
- * Returns the public URL
+ * Upload image buffer to R2 with 1 automatic retry on transient failure.
+ * Returns the public URL.
  */
 export async function uploadImageToR2(
   buffer: Buffer,
   key: string,
   contentType = "image/png",
 ): Promise<string> {
-  const command = new PutObjectCommand({
-    Bucket: bucketName,
-    Key: key,
-    Body: buffer,
-    ContentType: contentType,
-  });
+  const command = () =>
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: key,
+      Body: buffer,
+      ContentType: contentType,
+    });
 
-  await getR2Client().send(command);
-  return getPublicUrl(key);
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      await getR2Client().send(command());
+      return getPublicUrl(key);
+    } catch (error) {
+      if (attempt === 0) {
+        console.warn(
+          `[Storage] R2 upload failed for ${key} (attempt 1), retrying:`,
+          error instanceof Error ? error.message : error,
+        );
+        await new Promise((r) => setTimeout(r, 1_000));
+        continue;
+      }
+      throw error;
+    }
+  }
+
+  throw new Error("Unreachable");
+}
+
+/**
+ * Download an external image with 1 retry on transient failure.
+ * Also handles data URIs (base64-encoded inline images) without network fetch.
+ * Returns the raw image buffer.
+ */
+export async function fetchImageBuffer(
+  url: string,
+  timeoutMs = 60_000,
+): Promise<Buffer> {
+  // Handle base64 data URIs directly — no network fetch needed
+  const b64Match = url.match(/^data:[^;]+;base64,(.+)$/);
+  if (b64Match?.[1]) {
+    return Buffer.from(b64Match[1], "base64");
+  }
+
+  // Network fetch with 1 retry
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(url, {
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return Buffer.from(await res.arrayBuffer());
+    } catch (error) {
+      if (attempt === 0) {
+        console.warn(
+          "[Storage] Image fetch failed (attempt 1), retrying:",
+          error instanceof Error ? error.message : error,
+        );
+        await new Promise((r) => setTimeout(r, 1_000));
+        continue;
+      }
+      throw error;
+    }
+  }
+
+  throw new Error("Unreachable");
+}
+
+/**
+ * Download an external image and persist to R2.
+ * Both fetch and upload have 1 automatic retry.
+ * Returns the R2 public URL.
+ */
+export async function persistExternalImage(
+  externalUrl: string,
+  r2Key: string,
+  contentType = "image/png",
+): Promise<string> {
+  const buffer = await fetchImageBuffer(externalUrl);
+  return await uploadImageToR2(buffer, r2Key, contentType);
 }
 
 /**

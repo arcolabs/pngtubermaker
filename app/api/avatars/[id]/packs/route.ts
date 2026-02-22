@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { z } from "zod";
 import { avatarExpressions, avatars, expressionPacks } from "@/database/schema";
 import { auth } from "@/lib/auth";
@@ -10,6 +10,7 @@ import {
   expressionPackLimiter,
   getRateLimitIdentifier,
 } from "@/lib/middleware/rate-limit";
+import { processBackgroundRemoval } from "@/lib/services/background-removal";
 import {
   consumeWithRecord,
   refundWithUpdate,
@@ -20,7 +21,11 @@ import {
   type ExpressionType,
   getGenerationAdapter,
 } from "@/lib/services/generation";
-import { generateAvatarKey, uploadImageToR2 } from "@/lib/services/storage";
+import {
+  generateAvatarKey,
+  persistExternalImage,
+} from "@/lib/services/storage";
+import { staggeredAllSettled } from "@/lib/utils";
 
 /**
  * POST /api/avatars/[id]/packs
@@ -130,6 +135,8 @@ export async function POST(
       );
     }
 
+    const baseImageUrl = a.baseImageUrl;
+
     // 5. Determine expression types to generate
     const expressionTypes: ExpressionType[] =
       packType === "base"
@@ -210,76 +217,124 @@ export async function POST(
 
     const { expressionRecords } = consumeResult.result;
 
-    // 8. Generate expressions sequentially (skip idle)
-    // Note: This happens outside the initial transaction as it involves external API calls
+    // 8. Process all expressions in parallel (including idle)
     const adapter = getGenerationAdapter();
-    let failedCount = 0;
+    const bgRemovalTasks: {
+      imageUrl: string;
+      r2Key: string;
+      expressionId: string;
+    }[] = [];
 
-    for (const record of expressionRecords) {
-      if (record.status === "completed") continue; // skip idle
+    // Mark non-idle as generating
+    await Promise.all(
+      expressionRecords
+        .filter((r) => r.type !== "idle")
+        .map((record) =>
+          db
+            .update(avatarExpressions)
+            .set({ status: "generating" })
+            .where(eq(avatarExpressions.id, record.id)),
+        ),
+    );
 
-      try {
-        // Update status to generating
-        await db
-          .update(avatarExpressions)
-          .set({ status: "generating" })
-          .where(eq(avatarExpressions.id, record.id));
+    // Idle: copy base image directly (no API call needed)
+    const idleRecord = expressionRecords.find((r) => r.type === "idle");
+    const toGenerateRecords = expressionRecords.filter(
+      (r) => r.type !== "idle",
+    );
 
-        // Generate expression
+    const idlePromise = idleRecord
+      ? (async () => {
+          const key = generateAvatarKey(
+            session.user.id,
+            avatarId,
+            "expression",
+            "idle",
+          );
+          const publicUrl = await persistExternalImage(baseImageUrl, key);
+          return { record: idleRecord, publicUrl, key };
+        })()
+      : null;
+
+    // Staggered generation: 500ms between each task submission to avoid rate limits
+    const genResults = await staggeredAllSettled(
+      toGenerateRecords.map((record) => async () => {
         const result = await adapter.generateExpression({
-          baseImageUrl: a.baseImageUrl,
+          baseImageUrl,
           expression: record.type,
           style: a.style as ArtStyle,
           prompt: a.prompt,
         });
 
-        if (result.status === "completed" && result.imageUrl) {
-          // Fetch and upload to R2
-          const imageResponse = await fetch(result.imageUrl);
-          if (!imageResponse.ok) {
-            throw new Error(
-              `Failed to fetch generated image: ${imageResponse.status}`,
-            );
-          }
-          const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
-
-          const key = generateAvatarKey(
-            session.user.id,
-            avatarId,
-            "expression",
-            record.type,
-          );
-          const publicUrl = await uploadImageToR2(
-            imageBuffer,
-            key,
-            "image/png",
-          );
-
-          // Update record
-          await db
-            .update(avatarExpressions)
-            .set({
-              status: "completed",
-              imageUrl: publicUrl,
-              imageR2Key: key,
-            })
-            .where(eq(avatarExpressions.id, record.id));
-
-          record.status = "completed";
-          record.imageUrl = publicUrl;
-        } else {
+        if (result.status !== "completed" || !result.imageUrl) {
           throw new Error(result.error || "Generation failed");
         }
-      } catch (error) {
-        console.error(`[Packs] Failed to generate ${record.type}:`, error);
+
+        const key = generateAvatarKey(
+          session.user.id,
+          avatarId,
+          "expression",
+          record.type,
+        );
+        const publicUrl = await persistExternalImage(result.imageUrl, key);
+
+        return { record, publicUrl, key };
+      }),
+      500,
+    );
+
+    // Merge idle result with generation results
+    const idleResult = idlePromise
+      ? await Promise.allSettled([idlePromise])
+      : [];
+    const results = [...idleResult, ...genResults];
+
+    // Process results — each result carries its own record reference
+    let failedCount = 0;
+
+    for (const result of results) {
+      if (result.status === "fulfilled") {
+        const { record, publicUrl, key } = result.value;
 
         await db
           .update(avatarExpressions)
-          .set({ status: "failed" })
+          .set({
+            status: "completed",
+            imageUrl: publicUrl,
+            imageR2Key: key,
+          })
           .where(eq(avatarExpressions.id, record.id));
 
-        record.status = "failed";
+        record.status = "completed";
+        record.imageUrl = publicUrl;
+        bgRemovalTasks.push({
+          imageUrl: publicUrl,
+          r2Key: key,
+          expressionId: record.id,
+        });
+      } else {
+        // For failed generation results, find the corresponding record
+        // (idle failures won't appear here since idle is a simple copy)
+        console.error(`[Packs] Expression generation failed:`, result.reason);
         failedCount++;
+      }
+    }
+
+    // Mark failed generation records in DB
+    if (failedCount > 0) {
+      const completedIds = new Set(
+        results
+          .filter((r) => r.status === "fulfilled")
+          .map((r) => r.value.record.id),
+      );
+      for (const record of expressionRecords) {
+        if (!completedIds.has(record.id) && record.status !== "completed") {
+          await db
+            .update(avatarExpressions)
+            .set({ status: "failed" })
+            .where(eq(avatarExpressions.id, record.id));
+          record.status = "failed";
+        }
       }
     }
 
@@ -291,7 +346,6 @@ export async function POST(
         refundAmount,
         `Expression pack generation failed - ${failedCount} expression(s) refunded`,
         async (_tx) => {
-          // No additional DB updates needed here
           return { refunded: true };
         },
         { avatarId, packId, failedCount },
@@ -299,9 +353,6 @@ export async function POST(
     }
 
     // 10. Update pack status
-    const _allCompleted = expressionRecords.every(
-      (r) => r.status === "completed",
-    );
     const allFailed = expressionRecords
       .filter((r) => r.type !== "idle")
       .every((r) => r.status === "failed");
@@ -313,7 +364,29 @@ export async function POST(
       })
       .where(eq(expressionPacks.id, packId));
 
-    // 11. Return response
+    // 11. Async background removal (fire-and-forget after response)
+    //     Uploads to new _nobg keys and updates DB to avoid CDN cache issues
+    if (bgRemovalTasks.length > 0) {
+      after(async () => {
+        await Promise.all(
+          bgRemovalTasks.map((t) =>
+            processBackgroundRemoval(t.imageUrl, t.r2Key, {
+              onComplete: async (result) => {
+                await db
+                  .update(avatarExpressions)
+                  .set({
+                    imageUrl: result.imageUrl,
+                    imageR2Key: result.imageR2Key,
+                  })
+                  .where(eq(avatarExpressions.id, t.expressionId));
+              },
+            }),
+          ),
+        );
+      });
+    }
+
+    // 12. Return response
     return NextResponse.json({
       packId,
       packType,

@@ -7,7 +7,7 @@ import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
 import { processBackgroundRemoval } from "@/lib/services/background-removal";
 import {
-  deleteFromR2,
+  fetchImageBuffer,
   generateAvatarKey,
   generateThumbnail,
   uploadImageToR2,
@@ -97,12 +97,8 @@ export async function POST(
   }
 
   try {
-    // 6. Fetch the selected image
-    const imageResponse = await fetch(selectedImageUrl);
-    if (!imageResponse.ok) {
-      throw new Error(`Failed to fetch image: ${imageResponse.status}`);
-    }
-    const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
+    // 6. Fetch the selected image (with retry)
+    const imageBuffer = await fetchImageBuffer(selectedImageUrl);
 
     // 7. Upload base image to R2
     const baseKey = generateAvatarKey(session.user.id, avatarId, "base");
@@ -125,23 +121,7 @@ export async function POST(
       "image/png",
     );
 
-    // 9. Delete unselected candidate images from R2
-    const unselectedIndices = [0, 1, 2, 3].filter((i) => i !== selectedIndex);
-    for (const index of unselectedIndices) {
-      const candidateUrl = a.candidateImages[index];
-      if (candidateUrl) {
-        // Extract key from URL and delete
-        try {
-          const url = new URL(candidateUrl);
-          const key = url.pathname.slice(1); // Remove leading /
-          await deleteFromR2(key);
-        } catch {
-          console.warn(
-            `[Select] Failed to delete candidate ${index}: ${candidateUrl}`,
-          );
-        }
-      }
-    }
+    // 9. Keep all candidate images in R2 for history display
 
     // 10. Generate unique name and slug from prompt
     const avatarName = generateAvatarName(a.prompt);
@@ -163,8 +143,24 @@ export async function POST(
       .where(eq(avatars.id, avatarId));
 
     // 12. Async background removal (fire-and-forget after response)
+    //     Uploads to new _nobg keys and updates DB to avoid CDN cache issues
     after(async () => {
-      await processBackgroundRemoval(baseImageUrl, baseKey, thumbnailKey);
+      await processBackgroundRemoval(baseImageUrl, baseKey, {
+        thumbnailR2Key: thumbnailKey,
+        onComplete: async (result) => {
+          await db
+            .update(avatars)
+            .set({
+              baseImageUrl: result.imageUrl,
+              baseImageR2Key: result.imageR2Key,
+              ...(result.thumbnailUrl && {
+                thumbnailUrl: result.thumbnailUrl,
+                thumbnailR2Key: result.thumbnailR2Key,
+              }),
+            })
+            .where(eq(avatars.id, avatarId));
+        },
+      });
     });
 
     // 13. Return response

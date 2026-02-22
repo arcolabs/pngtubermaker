@@ -11,6 +11,7 @@ import {
   Upload,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Partner {
@@ -133,9 +134,11 @@ function LogoUploadSection({
         {/* Large preview card */}
         <div className="relative group">
           <div className="bg-gray-50 rounded-xl border border-gray-200 p-8 flex items-center justify-center min-h-[200px]">
-            <img
+            <Image
               src={logoUrl}
               alt="Partner logo"
+              width={160}
+              height={160}
               className="max-h-[160px] max-w-full object-contain"
             />
           </div>
@@ -489,9 +492,11 @@ export default function AdminPartnersPage() {
                     <td>
                       <div className="flex items-center gap-3">
                         {p.logoUrl ? (
-                          <img
+                          <Image
                             src={p.logoUrl}
                             alt=""
+                            width={40}
+                            height={40}
                             className="w-10 h-10 object-contain rounded-lg border border-gray-100 bg-gray-50 p-1"
                           />
                         ) : p.badgeHtml ? (

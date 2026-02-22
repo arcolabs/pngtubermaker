@@ -69,8 +69,8 @@ const QUICK_TEMPLATES = [
   "A dark elf boy with pointy ears, mysterious glowing eyes, hooded cloak",
   "A colorful cat girl streamer with cat ears and tail, cheerful smile",
   "A pastel witch girl with a big hat, holding a magic staff, soft colors",
-  "A neon cyberpunk furry wolf with glowing accents, futuristic headset",
-  "A gothic demon girl with horns and wings, elegant dark outfit",
+  "Genshin Impact style girl in traditional Chinese hanfu, flowing dark hair, elegant floral accessories",
+  "Genshin Impact style boy in Knights of Favonius armor, silver hair, glowing elemental aura",
 ];
 
 function buildPromptFromTags(selections: Record<string, string>): string {
@@ -107,12 +107,17 @@ interface GeneratorFormProps {
   onGenerate: () => void;
 }
 
-const STYLE_OPTIONS: { id: ArtStyle; label: string }[] = [
+const STYLE_OPTIONS: { id: ArtStyle; label: string; description?: string }[] = [
   { id: "anime", label: "Anime" },
   { id: "vtuber", label: "VTuber" },
   { id: "chibi", label: "Chibi" },
   { id: "retro-90s", label: "Retro 90s" },
   { id: "cartoon", label: "Cartoon" },
+  {
+    id: "none",
+    label: "None",
+    description: "Describe your style in the prompt",
+  },
 ];
 
 export function GeneratorForm({
@@ -278,13 +283,13 @@ export function GeneratorForm({
         )}
 
         {/* Style & Ratio */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-start gap-3">
           {/* Style Selector */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
               Style
             </span>
-            <div className="flex gap-1">
+            <div className="flex flex-wrap gap-1">
               {STYLE_OPTIONS.map((s) => (
                 <button
                   key={s.id}
@@ -307,6 +312,12 @@ export function GeneratorForm({
                 </button>
               ))}
             </div>
+            {/* Style hint for "none" option */}
+            {style === "none" && (
+              <span className="text-xs text-primary/80 bg-primary/5 px-2 py-1 rounded-md">
+                Describe your own style in the prompt above
+              </span>
+            )}
           </div>
         </div>
 

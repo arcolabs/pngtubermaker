@@ -1,15 +1,25 @@
 /**
  * Expression prompt crafting for all generation adapters.
  *
- * Two modes:
- * - Text-only (buildExpressionPrompt): full character description + expression modifiers
- * - Image-edit (buildImageEditExpressionPrompt): concise edit instruction for models
- *   that accept a base image input (Qwen image-edit, Doubao, NanoBanana image_urls)
+ * All prompts are now in Chinese for optimal Seedream 4.5 performance.
+ * Following Seedream 4.5 best practices:
+ * - Use natural language descriptions
+ * - Keep instructions concise and clear
+ * - Structure: "Reference object + Operation + Keep unchanged"
+ *
+ * [DEPRECATED] Old implementations kept for reference:
+ * - Text-only mode (buildExpressionPrompt): was used for adapters without image input
+ * - English modifiers with adjective stacking: replaced for better consistency
  */
 
-import type { ArtStyle, ExpressionType } from "./types";
+import type { ExpressionType } from "./types";
 
-/** Visual descriptors appended to the base prompt for each expression */
+// ═══════════════════════════════════════════════════════════════════════════════
+// DEPRECATED: Old English-based prompt builders (kept for reference)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/*
+// [DEPRECATED] English expression modifiers with adjective stacking
 const EXPRESSION_MODIFIERS: Record<ExpressionType, string> = {
   idle: "neutral calm expression, relaxed face, eyes open, mouth closed, resting expression",
   talking:
@@ -33,7 +43,7 @@ const EXPRESSION_MODIFIERS: Record<ExpressionType, string> = {
     "wide shocked eyes, open mouth surprise, raised eyebrows, astonished expression",
 };
 
-/** Style-specific framing instructions — must match midjourney-adapter composition */
+// [DEPRECATED] English style frames
 const STYLE_FRAMES: Record<ArtStyle, string> = {
   anime:
     "anime character, upper body, clean lines, vibrant colors, detailed eyes",
@@ -47,55 +57,7 @@ const STYLE_FRAMES: Record<ArtStyle, string> = {
     "cartoon character, upper body, western animation style, bold colors, expressive",
 };
 
-/** Words that conflict with expression direction — stripped from the base prompt */
-const CONFLICTING_TERMS = [
-  "happy",
-  "sad",
-  "angry",
-  "surprised",
-  "smiling",
-  "crying",
-  "frowning",
-  "laughing",
-  "grinning",
-  "scowling",
-  "shocked",
-  "neutral",
-  "calm",
-  "excited",
-  "scared",
-  "fearful",
-  "joyful",
-  "melancholic",
-  "furious",
-  "cheerful",
-  "blinking",
-  "eyes closed",
-  "eyes open",
-  "mouth open",
-  "mouth closed",
-  "talking",
-  "speaking",
-];
-
-/** Remove conflicting emotion words from a character prompt */
-export function removeExpressionTerms(prompt: string): string {
-  const pattern = new RegExp(`\\b(${CONFLICTING_TERMS.join("|")})\\b`, "gi");
-  return prompt
-    .replace(pattern, "")
-    .replace(/\s{2,}/g, " ")
-    .trim();
-}
-
-/**
- * Build a complete prompt for expression generation.
- *
- * Structure:
- * 1. Style framing (anime/vtuber/chibi/retro-90s/cartoon)
- * 2. Cleaned character description (emotion words removed)
- * 3. Expression modifiers
- * 4. PNGTuber-specific constraints
- */
+// [DEPRECATED] Old text-only prompt builder
 export function buildExpressionPrompt(
   characterPrompt: string,
   expression: ExpressionType,
@@ -113,14 +75,111 @@ export function buildExpressionPrompt(
   ].join(", ");
 }
 
+// [DEPRECATED] Old Chinese prompts - verbose version
+const IMAGE_EDIT_PROMPTS_OLD: Record<ExpressionType, string> = {
+  idle: "保持这张图片当中的其他元素都不变，角色嘴巴闭合、眼睛睁开，需要确保角色的一致性，用来做帧动画",
+  talking:
+    "保持这张图片当中的其他元素都不变，仅仅让角色的嘴巴张开，需要确保角色的一致性，用来做帧动画",
+  blink:
+    "保持这张图片当中的其他元素都不变，仅仅让角色的眼睛闭上，需要确保角色的一致性，用来做帧动画",
+  blink_talking:
+    "保持这张图片当中的其他元素都不变，让角色的眼睛闭上同时嘴巴张开，需要确保角色的一致性，用来做帧动画",
+  happy:
+    "保持这张图片当中的其他元素都不变，让角色展现开心的表情、面带微笑、嘴巴闭合，需要确保角色的一致性",
+  happy_talking:
+    "保持这张图片当中的其他元素都不变，让角色展现开心的表情、面带微笑、嘴巴张开，需要确保角色的一致性",
+  sad: "保持这张图片当中的其他元素都不变，让角色展现难过的表情、眉头下垂、嘴巴闭合，需要确保角色的一致性",
+  sad_talking:
+    "保持这张图片当中的其他元素都不变，让角色展现难过的表情、眉头下垂、嘴巴张开，需要确保角色的一致性",
+  angry:
+    "保持这张图片当中的其他元素都不变，让角色展现生气的表情、眉头紧皱、嘴巴闭合，需要确保角色的一致性",
+  angry_talking:
+    "保持这张图片当中的其他元素都不变，让角色展现生气的表情、眉头紧皱、嘴巴张开，需要确保角色的一致性",
+  surprised:
+    "保持这张图片当中的其他元素都不变，让角色展现惊讶的表情、眼睛睁大、嘴巴张开，需要确保角色的一致性",
+};
+*/
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// NEW: Seedream 4.5 Optimized Chinese Prompts (Concise & Clear)
+// ═══════════════════════════════════════════════════════════════════════════════
+
 /**
- * Build a concise prompt for image-edit expression generation.
- * Used by adapters that accept a base image — the prompt only describes
- * what to change, not the full character.
+ * Base Pack 提示词 - 嘴眼组合的帧动画
+ *
+ * Seedream 4.5 最佳实践：简洁明确的指令
+ * 结构：参考图中角色 + [嘴部状态] + [眼部状态] + 其他保持不变 + 用途
+ */
+const BASE_EXPRESSION_PROMPTS: Record<string, string> = {
+  // 2x2 组合：闭嘴/张嘴 × 睁眼/闭眼
+  idle: "图中角色，闭嘴睁眼，除嘴巴和眼睛外其他元素均保持不变，确保一致性用于帧动画",
+  talking: "图中角色，张嘴说话，除嘴巴和眼睛外其他元素均保持不变，确保一致性用于帧动画",
+  blink: "图中角色，闭眼闭嘴，除嘴巴和眼睛外其他元素均保持不变，确保一致性用于帧动画",
+  blink_talking: "图中角色，闭眼张嘴，除嘴巴和眼睛外其他元素均保持不变，确保一致性用于帧动画",
+};
+
+/**
+ * Custom Pack 提示词 - 情绪表情
+ *
+ * Seedream 4.5 最佳实践：用自然语言描述情绪
+ * 避免形容词堆砌，单一明确描述
+ */
+const CUSTOM_EXPRESSION_PROMPTS: Record<string, string> = {
+  happy: "参考图中角色，开心地笑，嘴巴闭合，其他保持不变",
+  happy_talking: "参考图中角色，开心地笑着说话，嘴巴张开，其他保持不变",
+  sad: "参考图中角色，露出悲伤表情，嘴角下垂，眼睛含泪，其他保持不变",
+  sad_talking: "参考图中角色，悲伤地说话，嘴角下垂，其他保持不变",
+  angry: "参考图中角色，露出愤怒表情，眉头紧锁，怒视前方，其他保持不变",
+  angry_talking:
+    "参考图中角色，愤怒地大声说话，眉头紧锁，嘴巴大张，其他保持不变",
+  surprised: "参考图中角色，露出惊讶表情，睁大眼睛张开嘴巴，其他保持不变",
+};
+
+/**
+ * 构建图片编辑表情提示词（Seedream 4.5 优化版本）
+ *
+ * 用于图生图场景（image-edit 任务类型）
+ * - Doubao (Seedream 4.5)
+ * - Qwen image-edit
+ *
+ * 所有提示词均为中文，遵循 Seedream 简洁指令最佳实践
+ *
+ * @param expression - 表情类型
+ * @returns 中文提示词字符串
+ *
+ * 示例输出：
+ * - idle: "参考图中角色，闭嘴睁眼，其他保持不变，用于帧动画"
+ * - happy: "参考图中角色，开心地笑，嘴巴闭合，其他保持不变"
  */
 export function buildImageEditExpressionPrompt(
   expression: ExpressionType,
 ): string {
-  const expressionMod = EXPRESSION_MODIFIERS[expression];
-  return `Edit this character image. Keep the character's appearance, clothing, pose, and art style exactly the same. Only change the facial expression to: ${expressionMod}. Do not change anything else.`;
+  // 优先从 Base Pack 查找，找不到则从 Custom Pack 查找
+  return (
+    BASE_EXPRESSION_PROMPTS[expression] || CUSTOM_EXPRESSION_PROMPTS[expression]
+  );
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DEPRECATED: Helper functions (kept for backward compatibility if needed)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/*
+// [DEPRECATED] Conflict term removal - not needed for image-edit mode
+const CONFLICTING_TERMS = [
+  "happy", "sad", "angry", "surprised", "smiling", "crying",
+  "frowning", "laughing", "grinning", "scowling", "shocked",
+  "neutral", "calm", "excited", "scared", "fearful",
+  "joyful", "melancholic", "furious", "cheerful",
+  "blinking", "eyes closed", "eyes open", "mouth open",
+  "mouth closed", "talking", "speaking",
+];
+
+export function removeExpressionTerms(prompt: string): string {
+  const pattern = new RegExp(`\\b(${CONFLICTING_TERMS.join("|")})\\b`, "gi");
+  return prompt
+    .replace(pattern, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+*/

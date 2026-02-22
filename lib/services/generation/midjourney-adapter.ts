@@ -24,6 +24,7 @@ const STYLE_HINTS: Record<ArtStyle, string> = {
   chibi: "chibi character, large head small body,",
   "retro-90s": "90s retro anime character, vintage cel animation,",
   cartoon: "cartoon character illustration, western animation style,",
+  none: "",
 };
 
 function getApiKey(): string {

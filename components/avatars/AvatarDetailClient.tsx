@@ -3,6 +3,8 @@
 import { Download, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import { SafeImage } from "@/components/ui/SafeImage";
 import type {
   EngineExpressionType,
   ExpressionAsset,
@@ -50,14 +52,6 @@ const expressionLabels: Record<string, string> = {
   angry_talking: "Angry Talk",
 };
 
-function getPackTitle(pack: Pack): string {
-  if (pack.packType === "base") return "Base Expressions";
-  if (pack.subtype) {
-    return `${pack.subtype.charAt(0).toUpperCase() + pack.subtype.slice(1)} Expressions`;
-  }
-  return "Custom Expressions";
-}
-
 function ExpressionCard({
   expression,
   isHighlighted,
@@ -76,10 +70,11 @@ function ExpressionCard({
       >
         {expression.status === "completed" && expression.imageUrl ? (
           <>
-            <img
+            <SafeImage
               src={expression.imageUrl}
               alt={expressionLabels[expression.type] || expression.type}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-3">
               <span className="text-white text-xs font-medium">
@@ -163,22 +158,38 @@ export default function AvatarDetailClient({
 
   const handleDownload = async () => {
     setDownloading(true);
+    const toastId = toast.loading("Preparing your download...");
     try {
       const url = `/api/avatars/${avatar.id}/download?format=zip&size=${selectedSize}`;
       const link = document.createElement("a");
       link.href = url;
       link.download = `${avatar.name}.zip`;
       link.click();
+      toast.success("Download started!", { id: toastId });
+    } catch {
+      toast.error("Failed to start download. Please try again.", {
+        id: toastId,
+      });
     } finally {
       setDownloading(false);
     }
   };
 
   const handleDelete = async () => {
-    await fetch(`/api/avatars/${avatar.id}`, {
-      method: "DELETE",
-    });
-    router.push("/avatars");
+    const toastId = toast.loading("Deleting avatar...");
+    try {
+      const res = await fetch(`/api/avatars/${avatar.id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Delete failed");
+      toast.success("Avatar deleted successfully", { id: toastId });
+      router.push("/avatars");
+    } catch {
+      toast.error("Failed to delete avatar. Please try again.", {
+        id: toastId,
+      });
+      setShowDeleteConfirm(false);
+    }
   };
 
   const handleAddExpression = async (types: string[]) => {
@@ -227,7 +238,7 @@ export default function AvatarDetailClient({
 
   return (
     <div className="space-y-8">
-      {/* PNGTuber Live Preview */}
+      {/* 1. PNGTuber Live Preview */}
       {previewExpressions.length >= 2 && (
         <PNGTuberPreview
           expressions={previewExpressions}
@@ -235,90 +246,31 @@ export default function AvatarDetailClient({
         />
       )}
 
-      {/* Download & Actions Bar */}
-      <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm">
-        <h3 className="font-semibold text-gray-900 mb-4">Download</h3>
-        <div className="flex flex-wrap items-center gap-3">
-          <select
-            className="select select-bordered select-sm bg-white"
-            value={selectedSize}
-            onChange={(e) => setSelectedSize(Number(e.target.value))}
-          >
-            <option value={512}>512x512</option>
-            <option value={1080}>1080x1080</option>
-            <option value={2160}>2160x2160 (4K)</option>
-          </select>
-          <button
-            type="button"
-            className="btn btn-sm border-0 text-white bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all"
-            onClick={handleDownload}
-            disabled={downloading}
-          >
-            <Download className="w-4 h-4" />
-            {downloading ? "Preparing..." : "Download ZIP"}
-          </button>
-          {canAddMore && (
-            <div className="dropdown dropdown-bottom">
-              <button
-                type="button"
-                tabIndex={0}
-                className="btn btn-sm btn-outline border-gray-200 hover:border-primary hover:text-primary"
-                disabled={addingExpression}
-              >
-                <Plus className="w-4 h-4" />
-                {addingExpression ? "Generating..." : "Add Expression"}
-              </button>
-              <ul className="dropdown-content z-10 menu p-2 shadow-lg bg-white rounded-xl w-52 mt-2">
-                {availableTypes.map((type) => (
-                  <li key={type}>
-                    <button
-                      type="button"
-                      onClick={() => handleAddExpression([type])}
-                    >
-                      {expressionLabels[type] || type}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <button
-            type="button"
-            className="btn btn-sm btn-ghost text-red-500 hover:bg-red-50 hover:text-red-600 ml-auto"
-            onClick={() => setShowDeleteConfirm(true)}
-          >
-            <Trash2 className="w-4 h-4" />
-            Delete
-          </button>
-        </div>
-      </div>
-
-      {/* Pack sections */}
-      {initialPacks.map((pack) => (
-        <div
-          key={pack.id}
-          className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm"
-        >
-          <h3 className="font-semibold text-gray-900 mb-4">
-            {getPackTitle(pack)}
+      {/* 2. Expressions - All packs merged into one grid */}
+      {initialPacks.length > 0 && (
+        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/60 shadow-sm">
+          <h3 className="font-semibold text-gray-900 mb-3 text-sm">
+            Expressions
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {pack.expressions.map((expression) => (
-              <ExpressionCard
-                key={expression.id}
-                expression={expression}
-                isHighlighted={activeExpressionType === expression.type}
-              />
-            ))}
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-10 gap-3">
+            {initialPacks.flatMap((pack) =>
+              pack.expressions.map((expression) => (
+                <ExpressionCard
+                  key={expression.id}
+                  expression={expression}
+                  isHighlighted={activeExpressionType === expression.type}
+                />
+              )),
+            )}
           </div>
         </div>
-      ))}
+      )}
 
-      {/* Legacy expressions (not belonging to any pack) */}
+      {/* 3. Legacy expressions (not belonging to any pack) */}
       {expressions.length > 0 && (
         <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm">
           <h3 className="font-semibold text-gray-900 mb-4">
-            {initialPacks.length > 0 ? "Other Expressions" : "Expressions"}
+            {initialPacks.length > 0 ? "Additional Expressions" : "Expressions"}
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {expressions.map((expression) => (
@@ -332,19 +284,89 @@ export default function AvatarDetailClient({
         </div>
       )}
 
+      {/* 4. Download & Actions - Simplified bottom bar */}
+      <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-gray-200">
+        <select
+          className="select select-bordered select-sm bg-white"
+          value={selectedSize}
+          onChange={(e) => setSelectedSize(Number(e.target.value))}
+        >
+          <option value={512}>512x512</option>
+          <option value={1080}>1080x1080</option>
+          <option value={2160}>2160x2160 (4K)</option>
+        </select>
+        <button
+          type="button"
+          className="btn btn-sm border-0 text-white bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all"
+          onClick={handleDownload}
+          disabled={downloading}
+        >
+          <Download className="w-4 h-4" />
+          {downloading ? "Preparing..." : "Download ZIP"}
+        </button>
+        {canAddMore && (
+          <div className="dropdown dropdown-top">
+            <button
+              type="button"
+              tabIndex={0}
+              className="btn btn-sm btn-outline border-gray-200 hover:border-primary hover:text-primary"
+              disabled={addingExpression}
+            >
+              <Plus className="w-4 h-4" />
+              {addingExpression ? "Generating..." : "Add Expression"}
+            </button>
+            <ul className="dropdown-content z-10 menu p-2 shadow-lg bg-white rounded-xl w-52 mb-2">
+              {availableTypes.map((type) => (
+                <li key={type}>
+                  <button
+                    type="button"
+                    onClick={() => handleAddExpression([type])}
+                  >
+                    {expressionLabels[type] || type}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <button
+          type="button"
+          className="btn btn-sm btn-ghost text-red-500 hover:bg-red-50 hover:text-red-600 ml-auto"
+          onClick={() => setShowDeleteConfirm(true)}
+        >
+          <Trash2 className="w-4 h-4" />
+          Delete
+        </button>
+      </div>
+
       {/* Delete Confirmation Modal */}
       <dialog className={`modal ${showDeleteConfirm ? "modal-open" : ""}`}>
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Delete Avatar?</h3>
-          <p className="py-4">
-            Delete {avatar.name}? This action cannot be undone. Credits will not
-            be refunded.
-          </p>
+          <h3 className="font-bold text-lg text-gray-900">Delete Avatar?</h3>
+          <div className="py-4 space-y-3">
+            <p className="text-gray-600">
+              Are you sure you want to delete <strong>{avatar.name}</strong>?
+            </p>
+            <ul className="text-sm text-gray-500 space-y-1.5">
+              <li className="flex items-start gap-2">
+                <span className="text-red-500">•</span>
+                <span>This action is permanent and cannot be undone</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-red-500">•</span>
+                <span>All expressions and variations will be deleted</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-red-500">•</span>
+                <span>Credits used for generation will not be refunded</span>
+              </li>
+            </ul>
+          </div>
           <div className="modal-action">
             <form method="dialog">
               <button
                 type="button"
-                className="btn"
+                className="btn btn-ghost"
                 onClick={() => setShowDeleteConfirm(false)}
               >
                 Cancel
@@ -355,7 +377,8 @@ export default function AvatarDetailClient({
               className="btn btn-error"
               onClick={handleDelete}
             >
-              Delete
+              <Trash2 className="w-4 h-4 mr-1" />
+              Delete Permanently
             </button>
           </div>
         </div>

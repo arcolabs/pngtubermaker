@@ -1,5 +1,11 @@
 // ============================================================================
-// PNGTuber Preview Engine — zero-framework-dependency TypeScript class
+// PNGTuber Preview Engine — sprite-animation-machine approach
+//
+// Inspired by game sprite animators:
+// - Instant frame swap (no alpha crossfade — avoids white flash on transparent PNGs)
+// - Squash & stretch bounce on expression change (classic animation principle)
+// - Blinks are instant (eye closure is fast IRL, no transition needed)
+// - Mic talk toggles are instant (resolved per-frame via isTalking flag)
 // ============================================================================
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -29,10 +35,12 @@ export interface EngineConfig {
   mode?: EngineMode;
   /** Volume threshold for mic mode (0-1). Default 0.06 */
   micThreshold?: number;
-  /** Enable flip bounce on expression change. Default true */
-  flipOnChange?: boolean;
-  /** Crossfade duration in ms. Default 120 */
-  fadeDuration?: number;
+  /** Enable bounce animation on expression change. Default true */
+  bounceOnChange?: boolean;
+  /** Bounce animation duration in ms. Default 300 */
+  bounceDuration?: number;
+  /** Base URL for image proxy (to bypass CORS). Default '/api/proxy-image?url=' */
+  proxyBaseUrl?: string;
 }
 
 export type EngineEventType =
@@ -58,6 +66,11 @@ function randomBetween(min: number, max: number): number {
   return min + Math.random() * (max - min);
 }
 
+/** Hermite smoothstep interpolation (smooth start and end). */
+function smoothstep(t: number): number {
+  return t * t * (3 - 2 * t);
+}
+
 // ── Engine ─────────────────────────────────────────────────────────────
 
 export class PNGTuberEngine {
@@ -66,8 +79,9 @@ export class PNGTuberEngine {
   private expressions: ExpressionAsset[];
   private mode: EngineMode;
   private micThreshold: number;
-  private flipOnChange: boolean;
-  private fadeDuration: number;
+  private bounceOnChange: boolean;
+  private bounceDuration: number;
+  private proxyBaseUrl: string;
 
   // Loaded images keyed by expression type
   private imageMap = new Map<EngineExpressionType, HTMLImageElement>();
@@ -81,9 +95,10 @@ export class PNGTuberEngine {
   // Rendering
   private rafId: number | null = null;
   private lastRenderTime = 0;
-  private flipScale = 1; // 1 = normal, goes to 0 and back for flip effect
-  private flipDirection: "shrink" | "grow" | null = null;
-  private pendingExpression: EngineExpressionType | null = null;
+
+  // Bounce animation state (squash & stretch)
+  private bounceTime = 0;
+  private bounceActive = false;
 
   // Blink timer
   private blinkTimeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -111,8 +126,9 @@ export class PNGTuberEngine {
     this.expressions = config.expressions;
     this.mode = config.mode ?? "demo";
     this.micThreshold = config.micThreshold ?? 0.06;
-    this.flipOnChange = config.flipOnChange ?? true;
-    this.fadeDuration = config.fadeDuration ?? 120;
+    this.bounceOnChange = config.bounceOnChange ?? true;
+    this.bounceDuration = config.bounceDuration ?? 300;
+    this.proxyBaseUrl = config.proxyBaseUrl ?? "/api/proxy-image?url=";
   }
 
   // ── Public API ─────────────────────────────────────────────────────
@@ -157,10 +173,10 @@ export class PNGTuberEngine {
   updateConfig(partial: Partial<EngineConfig>): void {
     if (partial.micThreshold !== undefined)
       this.micThreshold = partial.micThreshold;
-    if (partial.flipOnChange !== undefined)
-      this.flipOnChange = partial.flipOnChange;
-    if (partial.fadeDuration !== undefined)
-      this.fadeDuration = partial.fadeDuration;
+    if (partial.bounceOnChange !== undefined)
+      this.bounceOnChange = partial.bounceOnChange;
+    if (partial.bounceDuration !== undefined)
+      this.bounceDuration = partial.bounceDuration;
   }
 
   on(listener: EngineEventListener): () => void {
@@ -181,6 +197,36 @@ export class PNGTuberEngine {
 
   // ── Image Preloading ───────────────────────────────────────────────
 
+  /**
+   * Converts external URLs to proxy URLs to bypass CORS restrictions.
+   * Canvas drawImage requires CORS-enabled images, so we proxy external images.
+   */
+  private getProxiedUrl(url: string): string {
+    // If it's already a relative URL (same origin), no proxy needed
+    if (url.startsWith("/")) {
+      return url;
+    }
+
+    // If it's from our CDN domain, use proxy
+    const cdnDomains = ["cdn.pngtubermaker.com", "pngtubermaker.com"];
+    try {
+      const urlObj = new URL(url);
+      if (
+        cdnDomains.some(
+          (domain) =>
+            urlObj.hostname === domain ||
+            urlObj.hostname.endsWith(`.${domain}`),
+        )
+      ) {
+        return `${this.proxyBaseUrl}${encodeURIComponent(url)}`;
+      }
+    } catch {
+      // Invalid URL, return as-is
+    }
+
+    return url;
+  }
+
   private async preloadImages(): Promise<void> {
     const total = this.expressions.length;
     let loaded = 0;
@@ -189,7 +235,12 @@ export class PNGTuberEngine {
       (asset) =>
         new Promise<void>((resolve) => {
           const img = new Image();
-          img.crossOrigin = "anonymous";
+          // For proxied URLs, we don't need crossOrigin since they're same-origin
+          // For external URLs, we still try with anonymous mode
+          const proxiedUrl = this.getProxiedUrl(asset.url);
+          if (proxiedUrl === asset.url) {
+            img.crossOrigin = "anonymous";
+          }
           img.onload = () => {
             this.imageMap.set(asset.type, img);
             loaded++;
@@ -202,7 +253,7 @@ export class PNGTuberEngine {
             this.emit({ type: "loadProgress", progress: loaded / total });
             resolve();
           };
-          img.src = asset.url;
+          img.src = proxiedUrl;
         }),
     );
 
@@ -225,10 +276,12 @@ export class PNGTuberEngine {
     const render = (timestamp: number) => {
       if (this.destroyed) return;
 
-      const dt = timestamp - this.lastRenderTime;
+      // Guard against first-frame spike (lastRenderTime starts at 0)
+      const dt =
+        this.lastRenderTime === 0 ? 16 : timestamp - this.lastRenderTime;
       this.lastRenderTime = timestamp;
 
-      this.updateFlip(dt);
+      this.updateBounce(dt);
       this.draw();
 
       this.rafId = requestAnimationFrame(render);
@@ -236,51 +289,77 @@ export class PNGTuberEngine {
     this.rafId = requestAnimationFrame(render);
   }
 
-  private updateFlip(dt: number): void {
-    if (!this.flipDirection) return;
+  // ── Bounce Animation (squash & stretch) ────────────────────────────
 
-    const speed = dt / (this.fadeDuration / 2);
+  private updateBounce(dt: number): void {
+    if (!this.bounceActive) return;
 
-    if (this.flipDirection === "shrink") {
-      this.flipScale = Math.max(0, this.flipScale - speed);
-      if (this.flipScale <= 0) {
-        this.flipScale = 0;
-        // Switch expression at midpoint
-        if (this.pendingExpression) {
-          this.currentExpression = this.pendingExpression;
-          this.pendingExpression = null;
-        }
-        this.flipDirection = "grow";
-      }
-    } else {
-      this.flipScale = Math.min(1, this.flipScale + speed);
-      if (this.flipScale >= 1) {
-        this.flipScale = 1;
-        this.flipDirection = null;
-      }
+    this.bounceTime += dt;
+    if (this.bounceTime >= this.bounceDuration) {
+      this.bounceActive = false;
+      this.bounceTime = 0;
     }
   }
+
+  /**
+   * Squash & stretch curve — classic animation principle.
+   *
+   * Three phases:
+   *   Phase 1 (0–35%):  Squash down  (scaleY: 1.0 → 0.95)
+   *   Phase 2 (35–65%): Stretch up   (scaleY: 0.95 → 1.03, overshoot)
+   *   Phase 3 (65–100%): Settle      (scaleY: 1.03 → 1.0)
+   *
+   * scaleX = 2 - scaleY to preserve visual area (volume preservation).
+   * Anchor at bottom-center so the character "bounces on their feet".
+   */
+  private bounceScaleY(t: number): number {
+    if (t < 0.35) {
+      // Squash: 1.0 → 0.95
+      const p = smoothstep(t / 0.35);
+      return 1 - 0.05 * p;
+    }
+    if (t < 0.65) {
+      // Stretch: 0.95 → 1.03
+      const p = smoothstep((t - 0.35) / 0.3);
+      return 0.95 + 0.08 * p;
+    }
+    // Settle: 1.03 → 1.0
+    const p = smoothstep((t - 0.65) / 0.35);
+    return 1.03 - 0.03 * p;
+  }
+
+  // ── Draw ───────────────────────────────────────────────────────────
 
   private draw(): void {
     const ctx = this.ctx;
     const { width, height } = this.canvas;
-    ctx.clearRect(0, 0, width, height);
 
+    // Resolve which frame to display this tick
     const resolved = this.resolveExpression();
     const img = this.imageMap.get(resolved) ?? this.imageMap.get("idle");
     if (!img) return;
 
-    ctx.save();
+    // Clear canvas (transparent for PNG support)
+    ctx.clearRect(0, 0, width, height);
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "source-over";
 
-    if (this.flipOnChange && this.flipScale < 1) {
-      // Horizontal flip/squeeze effect
-      ctx.translate(width / 2, 0);
-      ctx.scale(this.flipScale, 1);
-      ctx.translate(-width / 2, 0);
+    // Apply bounce transform if active
+    if (this.bounceActive) {
+      const t = this.bounceTime / this.bounceDuration;
+      const sy = this.bounceScaleY(t);
+      const sx = 2 - sy; // Volume preservation
+
+      ctx.save();
+      // Anchor at bottom-center (character stands/sits at bottom)
+      ctx.translate(width / 2, height);
+      ctx.scale(sx, sy);
+      ctx.translate(-width / 2, -height);
+      ctx.drawImage(img, 0, 0, width, height);
+      ctx.restore();
+    } else {
+      ctx.drawImage(img, 0, 0, width, height);
     }
-
-    ctx.drawImage(img, 0, 0, width, height);
-    ctx.restore();
   }
 
   // ── State Resolution ───────────────────────────────────────────────
@@ -488,16 +567,17 @@ export class PNGTuberEngine {
     }
   }
 
-  // ── Expression Transitions ─────────────────────────────────────────
+  // ── Expression Changes ──────────────────────────────────────────────
 
   private setExpression(type: EngineExpressionType): void {
-    if (type === this.currentExpression && !this.pendingExpression) return;
+    if (type === this.currentExpression) return;
 
-    if (this.flipOnChange) {
-      this.pendingExpression = type;
-      this.flipDirection = "shrink";
-    } else {
-      this.currentExpression = type;
+    this.currentExpression = type;
+
+    // Trigger bounce animation (sprite-style squash & stretch)
+    if (this.bounceOnChange) {
+      this.bounceTime = 0;
+      this.bounceActive = true;
     }
 
     this.emit({ type: "expressionChange", expression: type });

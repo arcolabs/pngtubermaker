@@ -80,7 +80,9 @@ async function submitTask(
   const apiKey = getApiKey();
 
   const taskType = referenceUrl ? "image-edit" : "txt2img";
-  console.log(`[Qwen] task_type=${taskType}, referenceUrl=${referenceUrl ?? "none"}`);
+  console.log(
+    `[Qwen] task_type=${taskType}, referenceUrl=${referenceUrl ?? "none"}`,
+  );
 
   const input: Record<string, unknown> = {
     prompt,
@@ -167,7 +169,10 @@ export class QwenAdapter {
 
     console.log("[Qwen] Submitting character generation:", prompt);
     if (request.referenceUrl)
-      console.log("[Qwen] With reference image (image-edit):", request.referenceUrl);
+      console.log(
+        "[Qwen] With reference image (image-edit):",
+        request.referenceUrl,
+      );
     const taskId = await submitTask(prompt, request.referenceUrl);
     console.log("[Qwen] Task submitted:", taskId);
 
@@ -208,7 +213,10 @@ export class QwenAdapter {
   ): Promise<GenerateExpressionResult> {
     const prompt = `based on image1, ${buildImageEditExpressionPrompt(request.expression)}`;
 
-    console.log(`[Qwen] Generating ${request.expression} expression (image-edit):`, prompt);
+    console.log(
+      `[Qwen] Generating ${request.expression} expression (image-edit):`,
+      prompt,
+    );
     const taskId = await submitTask(prompt, request.baseImageUrl);
     console.log("[Qwen] Expression task submitted:", taskId);
 
@@ -222,7 +230,8 @@ export class QwenAdapter {
             if (isCompleted(status)) return data;
             if (isFailed(status)) {
               throw new PollFailedError(
-                data.data?.error?.message || "Qwen expression generation failed",
+                data.data?.error?.message ||
+                  "Qwen expression generation failed",
               );
             }
             return null;
@@ -248,7 +257,8 @@ export class QwenAdapter {
       return {
         status: "failed",
         imageUrl: null,
-        error: error instanceof Error ? error.message : "Qwen expression failed",
+        error:
+          error instanceof Error ? error.message : "Qwen expression failed",
       };
     }
   }

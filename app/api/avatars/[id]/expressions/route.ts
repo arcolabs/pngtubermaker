@@ -21,7 +21,11 @@ import {
   type ExpressionType,
   getGenerationAdapter,
 } from "@/lib/services/generation";
-import { generateAvatarKey, uploadImageToR2 } from "@/lib/services/storage";
+import {
+  generateAvatarKey,
+  persistExternalImage,
+} from "@/lib/services/storage";
+import { staggeredAllSettled } from "@/lib/utils";
 
 /**
  * POST /api/avatars/[id]/expressions
@@ -41,7 +45,6 @@ const generateSchema = z.object({
   expressions: z
     .array(
       z.enum([
-        "idle",
         "talking",
         "blink",
         "blink_talking",
@@ -134,6 +137,8 @@ export async function POST(
       );
     }
 
+    const baseImageUrl = a.baseImageUrl;
+
     // 5. Calculate cost
     const costPerExpression = TASK_COSTS.expression_edit;
     const totalCost = costPerExpression * expressions.length;
@@ -187,74 +192,83 @@ export async function POST(
 
     const { expressionRecords } = consumeResult.result;
 
-    // 7. Generate expressions sequentially (outside initial transaction)
+    // 7. Generate expressions with staggered concurrency (Qwen)
     const adapter = getGenerationAdapter();
-    let failedCount = 0;
-    const bgRemovalTasks: { imageUrl: string; r2Key: string }[] = [];
+    const bgRemovalTasks: {
+      imageUrl: string;
+      r2Key: string;
+      expressionId: string;
+    }[] = [];
 
-    for (const record of expressionRecords) {
-      try {
-        // Update status to generating
-        await db
+    // Mark all as generating
+    await Promise.all(
+      expressionRecords.map((record) =>
+        db
           .update(avatarExpressions)
           .set({ status: "generating" })
-          .where(eq(avatarExpressions.id, record.id));
+          .where(eq(avatarExpressions.id, record.id)),
+      ),
+    );
 
-        // Generate expression
+    // Staggered generation: 500ms between each task submission to avoid rate limits
+    const results = await staggeredAllSettled(
+      expressionRecords.map((record) => async () => {
         const result = await adapter.generateExpression({
-          baseImageUrl: a.baseImageUrl,
+          baseImageUrl,
           expression: record.type,
           style: a.style as ArtStyle,
           prompt: a.prompt,
         });
 
-        if (result.status === "completed" && result.imageUrl) {
-          // Fetch and upload to R2
-          const imageResponse = await fetch(result.imageUrl);
-          if (!imageResponse.ok) {
-            throw new Error(
-              `Failed to fetch generated image: ${imageResponse.status}`,
-            );
-          }
-          const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
-
-          const key = generateAvatarKey(
-            session.user.id,
-            avatarId,
-            "expression",
-            record.type,
-          );
-          const publicUrl = await uploadImageToR2(
-            imageBuffer,
-            key,
-            "image/png",
-          );
-
-          // Update record
-          await db
-            .update(avatarExpressions)
-            .set({
-              status: "completed",
-              imageUrl: publicUrl,
-              imageR2Key: key,
-            })
-            .where(eq(avatarExpressions.id, record.id));
-
-          record.status = "completed";
-          record.imageUrl = publicUrl;
-
-          // Queue for async background removal
-          bgRemovalTasks.push({ imageUrl: publicUrl, r2Key: key });
-        } else {
+        if (result.status !== "completed" || !result.imageUrl) {
           throw new Error(result.error || "Generation failed");
         }
-      } catch (error) {
+
+        const key = generateAvatarKey(
+          session.user.id,
+          avatarId,
+          "expression",
+          record.type,
+        );
+        const publicUrl = await persistExternalImage(result.imageUrl, key);
+
+        return { record, publicUrl, key };
+      }),
+      500,
+    );
+
+    // Process results
+    let failedCount = 0;
+
+    for (let i = 0; i < results.length; i++) {
+      const result = results[i];
+      const record = expressionRecords[i];
+
+      if (result.status === "fulfilled") {
+        const { publicUrl, key } = result.value;
+
+        await db
+          .update(avatarExpressions)
+          .set({
+            status: "completed",
+            imageUrl: publicUrl,
+            imageR2Key: key,
+          })
+          .where(eq(avatarExpressions.id, record.id));
+
+        record.status = "completed";
+        record.imageUrl = publicUrl;
+        bgRemovalTasks.push({
+          imageUrl: publicUrl,
+          r2Key: key,
+          expressionId: record.id,
+        });
+      } else {
         console.error(
           `[Expressions] Failed to generate ${record.type}:`,
-          error,
+          result.reason,
         );
 
-        // Update status to failed
         await db
           .update(avatarExpressions)
           .set({ status: "failed" })
@@ -273,7 +287,6 @@ export async function POST(
         refundAmount,
         `Expression generation failed - ${failedCount} expression(s) refunded`,
         async (_tx) => {
-          // No additional DB updates needed here
           return { refunded: true };
         },
         { avatarId, failedCount },
@@ -281,11 +294,22 @@ export async function POST(
     }
 
     // 9. Async background removal for all completed expressions (fire-and-forget)
+    //    Uploads to new _nobg keys and updates DB to avoid CDN cache issues
     if (bgRemovalTasks.length > 0) {
       after(async () => {
         await Promise.all(
           bgRemovalTasks.map((t) =>
-            processBackgroundRemoval(t.imageUrl, t.r2Key),
+            processBackgroundRemoval(t.imageUrl, t.r2Key, {
+              onComplete: async (result) => {
+                await db
+                  .update(avatarExpressions)
+                  .set({
+                    imageUrl: result.imageUrl,
+                    imageR2Key: result.imageR2Key,
+                  })
+                  .where(eq(avatarExpressions.id, t.expressionId));
+              },
+            }),
           ),
         );
       });

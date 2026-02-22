@@ -1,5 +1,6 @@
 import { ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { listActivePartners } from "@/lib/services/partners";
 
 export const metadata: Metadata = {
@@ -45,9 +46,11 @@ export default async function PartnersPage() {
                       dangerouslySetInnerHTML={{ __html: partner.badgeHtml }}
                     />
                   ) : partner.logoUrl ? (
-                    <img
+                    <Image
                       src={partner.logoUrl}
                       alt={`${partner.name} logo`}
+                      width={112}
+                      height={112}
                       className="w-full h-full object-contain p-3"
                     />
                   ) : (

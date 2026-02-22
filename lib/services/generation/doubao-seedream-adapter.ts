@@ -1,8 +1,16 @@
 /**
- * Doubao Seedream 4.5 adapter for character generation via ByteDance Ark API.
+ * Doubao Seedream adapter for character generation via ByteDance Ark API.
  *
- * API: synchronous POST → returns image URL directly (no polling).
+ * API: POST https://ark.cn-beijing.volces.com/api/v3/images/generations
  * Auth: Authorization Bearer with ARK_API_KEY env var.
+ * Response: base64 image data (b64_json) — returned as data URI for downstream R2 upload.
+ *
+ * Uses b64_json response format to avoid CDN download issues
+ * (ByteDance CDN nodes may be unreachable from non-China servers).
+ *
+ * Models:
+ * - doubao-seedream-4-5-251128 (current, 4.5)
+ * - doubao-seedream-5-0-lite (available ~2026-02-24, 5.0 lite)
  *
  * Supports text-to-image and image-to-image (with `image` field).
  */
@@ -15,8 +23,8 @@ import {
   type GenerateExpressionResult,
 } from "./types";
 
-const API_URL =
-  "https://ark.cn-beijing.volces.com/api/v3/images/generations";
+const API_URL = "https://ark.cn-beijing.volces.com/api/v3/images/generations";
+const MODEL_ID = process.env.DOUBAO_MODEL_ID || "doubao-seedream-4-5-251128";
 
 function getApiKey(): string {
   const key = process.env.ARK_API_KEY;
@@ -27,11 +35,24 @@ function getApiKey(): string {
 // ── API types ────────────────────────────────────────────────────────────────
 
 interface DoubaoResponse {
-  data?: {
-    url?: string;
-    size?: string;
-  }[];
-  [key: string]: unknown;
+  data?: (
+    | { url?: string; b64_json?: string; size?: string }
+    | { error?: { code?: string; message?: string } }
+  )[];
+  usage?: {
+    generated_images?: number;
+    output_tokens?: number;
+    total_tokens?: number;
+  };
+  error?: { code?: string; message?: string };
+}
+
+/** Extract base64 image data from the first successful item in data array */
+function extractImageBase64(response: DoubaoResponse): string | undefined {
+  for (const item of response.data ?? []) {
+    if ("b64_json" in item && item.b64_json) return item.b64_json;
+  }
+  return undefined;
 }
 
 // ── Adapter ──────────────────────────────────────────────────────────────────
@@ -49,9 +70,11 @@ export class DoubaoSeedreamAdapter {
     console.log("[Doubao] Submitting character generation:", prompt);
 
     const body: Record<string, unknown> = {
-      model: "doubao-seedream-4-5-251128",
+      model: MODEL_ID,
       prompt,
-      size: "1920x1920",
+      size: "2048x2048",
+      response_format: "b64_json",
+      sequential_image_generation: "disabled",
       watermark: false,
     };
 
@@ -76,18 +99,22 @@ export class DoubaoSeedreamAdapter {
     }
 
     const data = (await res.json()) as DoubaoResponse;
-    const imageUrl = data.data?.[0]?.url;
 
-    if (!imageUrl) {
-      console.error(
-        "[Doubao] No image in response:",
-        JSON.stringify(data, null, 2),
+    if (data.error) {
+      throw new Error(
+        `Doubao API error: ${data.error.code} - ${data.error.message}`,
       );
+    }
+
+    const b64 = extractImageBase64(data);
+
+    if (!b64) {
+      console.error("[Doubao] No image data in response");
       return null;
     }
 
-    console.log("[Doubao] Generation complete");
-    return imageUrl;
+    console.log("[Doubao] Generation complete (b64_json)");
+    return `data:image/png;base64,${b64}`;
   }
 
   async generateExpression(
@@ -107,10 +134,12 @@ export class DoubaoSeedreamAdapter {
         Authorization: `Bearer ${getApiKey()}`,
       },
       body: JSON.stringify({
-        model: "doubao-seedream-4-5-251128",
+        model: MODEL_ID,
         prompt,
         image: request.baseImageUrl,
-        size: "1920x1920",
+        size: "2048x2048",
+        response_format: "b64_json",
+        sequential_image_generation: "disabled",
         watermark: false,
       }),
       signal: AbortSignal.timeout(120_000),
@@ -126,17 +155,31 @@ export class DoubaoSeedreamAdapter {
     }
 
     const data = (await res.json()) as DoubaoResponse;
-    const imageUrl = data.data?.[0]?.url;
 
-    if (!imageUrl) {
+    if (data.error) {
       return {
         status: "failed",
         imageUrl: null,
-        error: "No image URL in Doubao response",
+        error: `Doubao API error: ${data.error.code} - ${data.error.message}`,
       };
     }
 
-    console.log(`[Doubao] Expression ${request.expression} complete`);
-    return { status: "completed", imageUrl };
+    const b64 = extractImageBase64(data);
+
+    if (!b64) {
+      return {
+        status: "failed",
+        imageUrl: null,
+        error: "No image data in Doubao response",
+      };
+    }
+
+    console.log(
+      `[Doubao] Expression ${request.expression} complete (b64_json)`,
+    );
+    return {
+      status: "completed",
+      imageUrl: `data:image/png;base64,${b64}`,
+    };
   }
 }

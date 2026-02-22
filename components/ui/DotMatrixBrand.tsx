@@ -8,7 +8,7 @@ export default function DotMatrixBrand() {
   return (
     <div className="w-full overflow-hidden" aria-hidden="true">
       <div
-        className="w-full text-center font-black text-primary/40 select-none whitespace-nowrap uppercase pointer-events-none"
+        className="w-full text-center font-black text-primary/20 select-none whitespace-nowrap uppercase pointer-events-none"
         style={{
           fontFamily: "var(--font-geist-sans), sans-serif",
           fontSize: "clamp(100px, 16vw, 320px)",

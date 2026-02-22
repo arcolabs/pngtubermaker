@@ -9,7 +9,13 @@
  *   - (2 additional model slots reserved)
  */
 
-export type ArtStyle = "anime" | "vtuber" | "chibi" | "retro-90s" | "cartoon";
+export type ArtStyle =
+  | "anime"
+  | "vtuber"
+  | "chibi"
+  | "retro-90s"
+  | "cartoon"
+  | "none";
 
 export type ExpressionType =
   | "idle"
@@ -55,7 +61,11 @@ export const CUSTOM_EXPRESSIONS: ExpressionType[] = [
 
 // ── Shared prompt constants ──────────────────────────────────────────────────
 
-/** Style hints — brief keywords prepended to the user prompt per art style */
+/**
+ * [DEPRECATED] Old English style hints - kept for reference
+ * Replaced with Chinese descriptions for better Seedream 4.5 compatibility
+ */
+/*
 export const STYLE_HINTS: Record<ArtStyle, string> = {
   anime: "anime character illustration,",
   vtuber: "modern VTuber character, hololive aesthetic,",
@@ -63,19 +73,31 @@ export const STYLE_HINTS: Record<ArtStyle, string> = {
   "retro-90s": "90s retro anime character, vintage cel animation,",
   cartoon: "cartoon character illustration, western animation style,",
 };
-
-/** PNGTuber composition framing appended to all character prompts */
-export const PNGTUBER_FRAME =
-  "solo, half body portrait, looking at viewer, white background";
-
-/** Prefix added when a person reference image is provided */
-export const REFERENCE_PREFIX =
-  "character inspired by the person in the reference image, keeping their key facial features and appearance,";
+*/
 
 /**
- * Build a standard character prompt from style + user text + optional reference.
- * All adapters should use this for consistency.
+ * [DEPRECATED] Old English framing - kept for reference
+ * Replaced with Chinese composition for better Seedream 4.5 compatibility
  */
+/*
+export const PNGTUBER_FRAME =
+  "solo, half body portrait, looking at viewer, white background";
+*/
+
+/**
+ * [DEPRECATED] Old English reference prefix - kept for reference
+ * Replaced with Chinese description for better Seedream 4.5 compatibility
+ */
+/*
+export const REFERENCE_PREFIX =
+  "character inspired by the person in the reference image, keeping their key facial features and appearance,";
+*/
+
+/**
+ * [DEPRECATED] Old English character prompt builder - kept for reference
+ * Replaced with Chinese version for better Seedream 4.5 compatibility
+ */
+/*
 export function buildCharacterPrompt(
   prompt: string,
   style: ArtStyle,
@@ -84,6 +106,57 @@ export function buildCharacterPrompt(
   const hint = STYLE_HINTS[style];
   const refPrefix = hasReference ? `${REFERENCE_PREFIX} ` : "";
   return `${refPrefix}${hint} ${prompt}, ${PNGTUBER_FRAME}`;
+}
+*/
+
+// ── NEW Chinese prompt constants (Seedream 4.5 optimized) ────────────────────
+
+/**
+ * 风格描述 - 自然语言描述各风格特征
+ * Seedream 4.5 最佳实践：使用简洁连贯的自然语言
+ */
+export const STYLE_DESCRIPTIONS: Record<ArtStyle, string> = {
+  anime: "日式动漫风格，线条清晰，色彩鲜艳，大眼睛，精致细节",
+  vtuber: "现代VTuber风格，精致数字绘画，表情生动丰富",
+  chibi: "Q版卡通风格，大头小身，可爱萌系画风",
+  "retro-90s": "90年代复古动漫风格，老式赛璐珞动画质感",
+  cartoon: "欧美卡通风格，西部动画画风，配色大胆",
+  none: "",
+};
+
+/**
+ * PNGTuber 构图框架
+ * 明确应用场景和用途，符合 Seedream 4.5 推荐做法
+ */
+export const PNGTUBER_COMPOSITION = "半身像，正面朝向观众，纯白背景，单人角色";
+
+/**
+ * 参考图描述前缀
+ * 当提供人物参考图时使用
+ */
+export const REFERENCE_DESC = "参考图中的人物形象，保留其关键面部特征和外貌";
+
+/**
+ * 构建标准角色生成提示词（中文版本，Seedream 4.5 优化）
+ *
+ * 结构：参考描述 + 风格描述 + 用户提示 + 构图框架
+ * 示例：参考图中的人物形象，保留其关键面部特征和外貌，现代VTuber风格，
+ *       精致数字绘画，表情生动丰富，一个可爱的猫耳游戏少女，粉色双马尾，
+ *       电竞耳机，半身像，正面朝向观众，纯白背景，单人角色，透明背景，
+ *       用于直播的PNG虚拟形象
+ */
+export function buildCharacterPrompt(
+  prompt: string,
+  style: ArtStyle,
+  hasReference: boolean,
+): string {
+  const styleDesc = STYLE_DESCRIPTIONS[style];
+  const refPrefix = hasReference ? `${REFERENCE_DESC}，` : "";
+  // When style is "none", don't add style description, let user fully customize
+  if (style === "none") {
+    return `${refPrefix}${prompt}，${PNGTUBER_COMPOSITION}`;
+  }
+  return `${refPrefix}${styleDesc}，${prompt}，${PNGTUBER_COMPOSITION}`;
 }
 
 // ── Request / Response types ─────────────────────────────────────────────────
