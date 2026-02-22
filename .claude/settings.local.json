@@ -65,7 +65,20 @@
       "Bash(which sshd 2>/dev/null && sshd -T 2>/dev/null | grep -E \"^port |^listenaddress |^passwordauthentication |^pubkeyauthentication \" | head -10)",
       "Bash(mkdir -p ~/.ssh && cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys && echo \"authorized_keys 已创建\")",
       "Bash(sudo service ssh start 2>&1)",
-      "WebFetch(domain:biomejs.dev)"
+      "WebFetch(domain:biomejs.dev)",
+      "WebFetch(domain:www.etsy.com)",
+      "WebFetch(domain:www.fiverr.com)",
+      "WebFetch(domain:vtubermodelcommissions.com)",
+      "WebFetch(domain:vtubermodels.com)",
+      "WebFetch(domain:smbillion.com)",
+      "WebFetch(domain:itch.io)",
+      "WebFetch(domain:kilisuciartlabs.com)",
+      "WebFetch(domain:hexeum.net)",
+      "WebFetch(domain:kudos.tv)",
+      "WebFetch(domain:www.own3d.tv)",
+      "WebFetch(domain:www.vidnoz.com)",
+      "Bash(git diff -- app/api/avatars/generate/route.ts app/api/avatars/[id]/expressions/route.ts app/api/avatars/[id]/packs/route.ts app/api/avatars/[id]/select/route.ts app/api/avatars/[id]/expressions/[expressionId]/regenerate/route.ts)",
+      "Bash(npx @biomejs/biome check lib/pngtuber-engine.ts components/avatars/PNGTuberPreview.tsx components/avatars/AudioWaveButton.tsx 2>&1)"
     ]
   }
 }

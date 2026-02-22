@@ -87,14 +87,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const validStyles = [
-      "anime",
-      "vtuber",
-      "chibi",
-      "retro-90s",
-      "cartoon",
-      "none",
-    ];
+    const validStyles = ["anime", "chibi", "cartoon", "pixel-art", "none"];
     if (!style || !validStyles.includes(style)) {
       return NextResponse.json(
         {

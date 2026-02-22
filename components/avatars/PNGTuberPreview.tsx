@@ -1,7 +1,8 @@
 "use client";
 
-import { Mic, Play } from "lucide-react";
+import { Download, Mic, Play, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import AudioWaveButton from "@/components/avatars/AudioWaveButton";
 import {
   type EngineEvent,
   type EngineExpressionType,
@@ -14,11 +15,27 @@ import { cn } from "@/lib/utils";
 interface PNGTuberPreviewProps {
   expressions: ExpressionAsset[];
   onExpressionChange?: (type: EngineExpressionType) => void;
+  selectedSize?: number;
+  onSizeChange?: (size: number) => void;
+  onDownload?: () => void;
+  onDelete?: () => void;
+  downloading?: boolean;
 }
+
+const AUDIO_SAMPLES = [
+  { id: "girl", label: "Luna", url: "/audio/girl.mp3" },
+  { id: "female", label: "Aria", url: "/audio/female.mp3" },
+  { id: "male", label: "Rex", url: "/audio/male.mp3" },
+] as const;
 
 export default function PNGTuberPreview({
   expressions,
   onExpressionChange,
+  selectedSize = 1080,
+  onSizeChange,
+  onDownload,
+  onDelete,
+  downloading = false,
 }: PNGTuberPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<PNGTuberEngine | null>(null);
@@ -28,6 +45,7 @@ export default function PNGTuberPreview({
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [audioPlaying, setAudioPlaying] = useState<string | null>(null);
 
   // Stable callback ref to avoid re-triggering effect
   const onExpressionChangeRef = useRef(onExpressionChange);
@@ -52,11 +70,21 @@ export default function PNGTuberPreview({
       case "modeChange":
         if (event.mode) {
           setMode(event.mode);
-          modeRef.current = event.mode;
+          // Don't overwrite modeRef when entering/exiting audio mode
+          // (modeRef tracks the user-selected mode: demo or mic)
+          if (event.mode !== "audio") {
+            modeRef.current = event.mode;
+          }
           if (event.mode === "demo") {
             setError(null);
           }
+          if (event.mode !== "audio") {
+            setAudioPlaying(null);
+          }
         }
+        break;
+      case "audioEnded":
+        setAudioPlaying(null);
         break;
     }
   }, []);
@@ -89,74 +117,147 @@ export default function PNGTuberPreview({
 
   const switchMode = (newMode: EngineMode) => {
     if (newMode === mode) return;
+    // If audio is playing, stop it first
+    if (audioPlaying) {
+      engineRef.current?.stopAudio();
+      setAudioPlaying(null);
+    }
     setMode(newMode);
     modeRef.current = newMode;
     setError(null);
     engineRef.current?.setMode(newMode);
   };
 
+  const toggleAudio = (id: string, url: string) => {
+    if (audioPlaying === id) {
+      engineRef.current?.stopAudio();
+      setAudioPlaying(null);
+    } else {
+      engineRef.current?.playAudio(url);
+      setAudioPlaying(id);
+    }
+  };
+
+  const getVolume = useCallback(
+    () => engineRef.current?.getNormalizedVolume() ?? 0,
+    [],
+  );
+
   return (
-    <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h3 className="font-semibold text-gray-900">Live Preview</h3>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Real-time animation preview
-          </p>
-        </div>
-        <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
-          <button
-            type="button"
-            className={cn(
-              "btn btn-xs gap-1 rounded-md border-0",
-              mode === "demo"
-                ? "bg-white text-primary shadow-sm"
-                : "bg-transparent text-gray-500 hover:text-gray-700",
-            )}
-            onClick={() => switchMode("demo")}
-          >
-            <Play className="w-3 h-3" />
-            Demo
-          </button>
-          <button
-            type="button"
-            className={cn(
-              "btn btn-xs gap-1 rounded-md border-0",
-              mode === "mic"
-                ? "bg-white text-primary shadow-sm"
-                : "bg-transparent text-gray-500 hover:text-gray-700",
-            )}
-            onClick={() => switchMode("mic")}
-          >
-            <Mic className="w-3 h-3" />
-            Mic
-          </button>
-        </div>
-      </div>
-
-      {/* Canvas container with solid background - Responsive sizing */}
-      <div className="relative mx-auto max-w-[320px] sm:max-w-[400px] lg:max-w-[480px] aspect-square rounded-xl overflow-hidden bg-white">
-        <canvas ref={canvasRef} className="w-full h-full object-contain" />
-
-        {/* Loading overlay */}
-        {loading && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm gap-2">
-            <span className="loading loading-spinner loading-md text-primary" />
-            <span className="text-xs text-gray-500">
-              Loading {Math.round(progress * 100)}%
-            </span>
+    <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/60 shadow-sm">
+      <div className="flex flex-col gap-4">
+        {/* Header with title and mode toggle */}
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h3 className="font-semibold text-gray-900">Live Preview</h3>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Real-time animation preview
+            </p>
           </div>
+          <div className="flex flex-col items-end gap-2">
+            {/* Mode toggle */}
+            <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
+              <button
+                type="button"
+                className={cn(
+                  "btn btn-xs gap-1 rounded-md border-0",
+                  mode === "demo" && !audioPlaying
+                    ? "bg-white text-primary shadow-sm"
+                    : "bg-transparent text-gray-500 hover:text-gray-700",
+                )}
+                onClick={() => switchMode("demo")}
+              >
+                <Play className="w-3 h-3" />
+                Demo
+              </button>
+              <button
+                type="button"
+                className={cn(
+                  "btn btn-xs gap-1 rounded-md border-0",
+                  mode === "mic" && !audioPlaying
+                    ? "bg-white text-primary shadow-sm"
+                    : "bg-transparent text-gray-500 hover:text-gray-700",
+                )}
+                onClick={() => switchMode("mic")}
+              >
+                <Mic className="w-3 h-3" />
+                Mic
+              </button>
+            </div>
+            {/* Controls below toggle */}
+            <div className="flex items-center gap-2">
+              <select
+                className="select select-xs bg-gray-50 border-gray-200 rounded-md text-xs h-7 min-h-0"
+                value={selectedSize}
+                onChange={(e) => onSizeChange?.(Number(e.target.value))}
+              >
+                <option value={512}>512px</option>
+                <option value={1080}>1080px</option>
+                <option value={2160}>2160px (4K)</option>
+              </select>
+              <button
+                type="button"
+                className="btn btn-xs bg-gray-50 hover:bg-primary hover:text-white border border-gray-200 hover:border-primary rounded-md text-gray-600 h-7 min-h-0 px-2"
+                onClick={onDownload}
+                disabled={downloading}
+              >
+                <Download className="w-3 h-3" />
+                Download
+              </button>
+              <button
+                type="button"
+                className="btn btn-xs bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-500 border border-gray-200 hover:border-red-200 rounded-md h-7 min-h-0 px-2"
+                onClick={onDelete}
+              >
+                <Trash2 className="w-3 h-3" />
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Canvas area with audio buttons on the left */}
+        <div className="relative">
+          {/* Canvas centered */}
+          <div className="mx-auto max-w-[320px] sm:max-w-[400px] lg:max-w-[480px] aspect-square rounded-xl overflow-hidden bg-white relative">
+            <canvas ref={canvasRef} className="w-full h-full object-contain" />
+
+            {/* Loading overlay */}
+            {loading && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm gap-2">
+                <span className="loading loading-spinner loading-md text-primary" />
+                <span className="text-xs text-gray-500">
+                  Loading {Math.round(progress * 100)}%
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Audio wave buttons — left side of canvas */}
+          {!loading && (
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col gap-2">
+              {AUDIO_SAMPLES.map((sample) => (
+                <AudioWaveButton
+                  key={sample.id}
+                  label={sample.label}
+                  isPlaying={audioPlaying === sample.id}
+                  getVolume={getVolume}
+                  onClick={() => toggleAudio(sample.id, sample.url)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Error message */}
+        {error && (
+          <p className="mt-2 text-xs text-center text-amber-600">
+            {error === "Microphone access denied"
+              ? "Microphone denied — using demo mode"
+              : error}
+          </p>
         )}
       </div>
-
-      {/* Error message */}
-      {error && (
-        <p className="mt-2 text-xs text-center text-amber-600">
-          {error === "Microphone access denied"
-            ? "Microphone denied — using demo mode"
-            : error}
-        </p>
-      )}
     </div>
   );
 }

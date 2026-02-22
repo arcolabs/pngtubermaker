@@ -7,13 +7,7 @@ import { useSubscriptionStore } from "@/hooks/use-subscription-store";
 // Types
 // ============================================================================
 
-export type ArtStyle =
-  | "anime"
-  | "vtuber"
-  | "chibi"
-  | "retro-90s"
-  | "cartoon"
-  | "none";
+export type ArtStyle = "anime" | "chibi" | "cartoon" | "pixel-art" | "none";
 export type AspectRatio = "1:1" | "3:4" | "9:16";
 export type TaskType = "avatar" | "expression_base" | "expression_custom";
 export type ExpressionSubtype = "happy" | "angry" | "sad";
@@ -177,7 +171,7 @@ function historyPackToGeneration(
 
 const INITIAL_STATE: GeneratorState = {
   prompt: "",
-  style: "anime",
+  style: "chibi",
   aspectRatio: "1:1",
   generations: [],
   isGenerating: false,

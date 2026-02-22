@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Plus, Trash2 } from "lucide-react";
+import { Sparkles, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
@@ -99,6 +99,26 @@ function ExpressionCard({
   );
 }
 
+// Placeholder for expressions that haven't been generated yet
+function ExpressionPlaceholder({
+  type,
+  label,
+}: {
+  type: string;
+  label: string;
+}) {
+  return (
+    <div className="space-y-2 opacity-50">
+      <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 border-2 border-dashed border-gray-200 flex items-center justify-center">
+        <span className="text-2xl text-gray-300">{label}</span>
+      </div>
+      <p className="text-center text-sm text-gray-400">
+        {expressionLabels[type] || type}
+      </p>
+    </div>
+  );
+}
+
 export default function AvatarDetailClient({
   avatar,
   expressions: initialExpressions,
@@ -108,8 +128,9 @@ export default function AvatarDetailClient({
   const [selectedSize, setSelectedSize] = useState(1080);
   const [downloading, setDownloading] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [expressions, setExpressions] = useState(initialExpressions);
-  const [addingExpression, setAddingExpression] = useState(false);
+  const [expressions] = useState(initialExpressions);
+  const [packs, setPacks] = useState(initialPacks);
+  const [generatingPack, setGeneratingPack] = useState<string | null>(null);
   const [activeExpressionType, setActiveExpressionType] = useState<
     string | null
   >(null);
@@ -142,7 +163,7 @@ export default function AvatarDetailClient({
     }
 
     // Pack expressions first (most organized)
-    for (const pack of initialPacks) {
+    for (const pack of packs) {
       for (const expr of pack.expressions) {
         addExpr(expr);
       }
@@ -154,7 +175,7 @@ export default function AvatarDetailClient({
     }
 
     return assets;
-  }, [avatar.baseImageUrl, initialPacks, expressions]);
+  }, [avatar.baseImageUrl, packs, expressions]);
 
   const handleDownload = async () => {
     setDownloading(true);
@@ -192,151 +213,215 @@ export default function AvatarDetailClient({
     }
   };
 
-  const handleAddExpression = async (types: string[]) => {
-    if (!types.length) return;
-    setAddingExpression(true);
+  // Fixed 10 expression slots in display order
+  const EXPRESSION_SLOTS = [
+    "idle",
+    "talking",
+    "blink",
+    "blink_talking",
+    "happy",
+    "happy_talking",
+    "sad",
+    "sad_talking",
+    "angry",
+    "angry_talking",
+  ] as const;
 
+  // Build a type→Expression lookup from all sources (packs take priority over legacy)
+  const expressionByType = useMemo(() => {
+    const map = new Map<string, Expression>();
+    // Legacy expressions first (lower priority)
+    for (const expr of expressions) {
+      if (expr.status === "completed" && expr.imageUrl) {
+        map.set(expr.type, expr);
+      }
+    }
+    // Pack expressions override legacy
+    for (const pack of packs) {
+      for (const expr of pack.expressions) {
+        map.set(expr.type, expr);
+      }
+    }
+    return map;
+  }, [packs, expressions]);
+
+  const existingPackSubtypes = useMemo(() => {
+    // A subtype is "generated" if we have a custom pack for it, OR if both
+    // expression types for that subtype exist from any source (legacy included)
+    const fromPacks = new Set(
+      packs
+        .filter((p) => p.packType === "custom" && p.subtype)
+        .map((p) => p.subtype as string),
+    );
+    // Also consider legacy expressions that cover both slots of a subtype
+    for (const sub of ["happy", "sad", "angry"]) {
+      if (
+        !fromPacks.has(sub) &&
+        expressionByType.has(sub) &&
+        expressionByType.has(`${sub}_talking`)
+      ) {
+        fromPacks.add(sub);
+      }
+    }
+    return fromPacks;
+  }, [packs, expressionByType]);
+
+  const packOptions = [
+    { key: "happy", label: "Happy Pack", emoji: "😊" },
+    { key: "sad", label: "Sad Pack", emoji: "😢" },
+    { key: "angry", label: "Angry Pack", emoji: "😠" },
+  ];
+
+  // Emoji lookup for placeholder display
+  const slotEmoji: Record<string, string> = {
+    happy: "😊",
+    happy_talking: "😊",
+    sad: "😢",
+    sad_talking: "😢",
+    angry: "😠",
+    angry_talking: "😠",
+  };
+
+  const canAddMore = packOptions.some(
+    (opt) => !existingPackSubtypes.has(opt.key),
+  );
+
+  const handleGeneratePack = async (subtype: string) => {
+    setGeneratingPack(subtype);
+    const toastId = toast.loading(`Generating ${subtype} expressions...`);
     try {
-      const res = await fetch(`/api/avatars/${avatar.id}/expressions`, {
+      const res = await fetch(`/api/avatars/${avatar.id}/packs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ expressions: types }),
+        body: JSON.stringify({ packType: "custom", subtype }),
       });
 
       if (!res.ok) {
         const data = await res.json();
         if (data.error === "insufficient_credits") {
-          alert(
+          toast.error(
             `Not enough credits. Balance: ${data.balance}, Required: ${data.required}`,
+            { id: toastId },
           );
           return;
         }
-        throw new Error(data.error || "Failed to generate expressions");
+        throw new Error(data.error || "Failed to generate pack");
       }
 
       const data = await res.json();
-      setExpressions((prev) => [...prev, ...data.expressions]);
+      setPacks((prev) => [
+        ...prev,
+        {
+          id: data.packId,
+          packType: data.packType,
+          subtype: data.subtype,
+          status: "completed",
+          createdAt: new Date().toISOString(),
+          expressions: data.expressions,
+        },
+      ]);
+      toast.success(`${subtype} pack generated!`, { id: toastId });
     } catch (error) {
-      console.error("Failed to add expression:", error);
-      alert(
-        error instanceof Error ? error.message : "Failed to add expression",
+      console.error("Failed to generate pack:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to generate pack",
+        { id: toastId },
       );
     } finally {
-      setAddingExpression(false);
+      setGeneratingPack(null);
     }
   };
 
-  // Collect all expression types across packs and legacy expressions
-  const allExpressionTypes = new Set([
-    ...expressions.map((e) => e.type),
-    ...initialPacks.flatMap((p) => p.expressions.map((e) => e.type)),
-  ]);
-  const availableTypes = ["idle", "talking", "happy", "sad", "angry"].filter(
-    (t) => !allExpressionTypes.has(t),
-  );
-  const canAddMore = availableTypes.length > 0;
-
   return (
     <div className="space-y-8">
-      {/* 1. PNGTuber Live Preview */}
-      {previewExpressions.length >= 2 && (
+      {/* 1. PNGTuber Live Preview with controls */}
+      {previewExpressions.length >= 2 ? (
         <PNGTuberPreview
           expressions={previewExpressions}
           onExpressionChange={setActiveExpressionType}
+          selectedSize={selectedSize}
+          onSizeChange={setSelectedSize}
+          onDownload={handleDownload}
+          onDelete={() => setShowDeleteConfirm(true)}
+          downloading={downloading}
         />
+      ) : (
+        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm text-center py-12">
+          <p className="text-gray-400 mb-4">
+            Generate expressions to enable live preview
+          </p>
+        </div>
       )}
 
       {/* 2. Expressions - All packs merged into one grid */}
-      {initialPacks.length > 0 && (
-        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/60 shadow-sm">
-          <h3 className="font-semibold text-gray-900 mb-3 text-sm">
-            Expressions
-          </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-10 gap-3">
-            {initialPacks.flatMap((pack) =>
-              pack.expressions.map((expression) => (
-                <ExpressionCard
-                  key={expression.id}
-                  expression={expression}
-                  isHighlighted={activeExpressionType === expression.type}
-                />
-              )),
-            )}
-          </div>
-        </div>
-      )}
+      <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/60 shadow-sm">
+        <h3 className="font-semibold text-gray-900 text-sm mb-3">
+          Expressions
+        </h3>
 
-      {/* 3. Legacy expressions (not belonging to any pack) */}
-      {expressions.length > 0 && (
-        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm">
-          <h3 className="font-semibold text-gray-900 mb-4">
-            {initialPacks.length > 0 ? "Additional Expressions" : "Expressions"}
-          </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {expressions.map((expression) => (
-              <ExpressionCard
-                key={expression.id}
-                expression={expression}
-                isHighlighted={activeExpressionType === expression.type}
+        {/* Fixed 10-slot expression grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-10 gap-3 mb-4">
+          {EXPRESSION_SLOTS.map((type) => {
+            const expr = expressionByType.get(type);
+            if (expr) {
+              return (
+                <ExpressionCard
+                  key={type}
+                  expression={expr}
+                  isHighlighted={activeExpressionType === type}
+                />
+              );
+            }
+            return (
+              <ExpressionPlaceholder
+                key={type}
+                type={type}
+                label={slotEmoji[type] || "⏳"}
               />
+            );
+          })}
+        </div>
+
+        {/* Generate Pack Buttons below the grid */}
+        {canAddMore && (
+          <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-200/60">
+            {packOptions.map((opt) => (
+              <button
+                key={opt.key}
+                type="button"
+                onClick={() => handleGeneratePack(opt.key)}
+                disabled={
+                  generatingPack !== null || existingPackSubtypes.has(opt.key)
+                }
+                className={cn(
+                  "btn gap-2 px-6 py-2.5 h-auto text-base font-medium shadow-sm",
+                  generatingPack === opt.key
+                    ? "btn-primary"
+                    : existingPackSubtypes.has(opt.key)
+                      ? "btn-ghost bg-green-50 text-green-600 hover:bg-green-100 cursor-default"
+                      : "btn-primary hover:shadow-md hover:scale-105 transition-all",
+                )}
+              >
+                {generatingPack === opt.key ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm" />
+                    <span>Generating...</span>
+                  </>
+                ) : existingPackSubtypes.has(opt.key) ? (
+                  <>
+                    <span className="text-lg">✓</span>
+                    <span>{opt.label} Generated</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5" />
+                    <span>Generate {opt.label}</span>
+                  </>
+                )}
+              </button>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* 4. Download & Actions - Simplified bottom bar */}
-      <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-gray-200">
-        <select
-          className="select select-bordered select-sm bg-white"
-          value={selectedSize}
-          onChange={(e) => setSelectedSize(Number(e.target.value))}
-        >
-          <option value={512}>512x512</option>
-          <option value={1080}>1080x1080</option>
-          <option value={2160}>2160x2160 (4K)</option>
-        </select>
-        <button
-          type="button"
-          className="btn btn-sm border-0 text-white bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all"
-          onClick={handleDownload}
-          disabled={downloading}
-        >
-          <Download className="w-4 h-4" />
-          {downloading ? "Preparing..." : "Download ZIP"}
-        </button>
-        {canAddMore && (
-          <div className="dropdown dropdown-top">
-            <button
-              type="button"
-              tabIndex={0}
-              className="btn btn-sm btn-outline border-gray-200 hover:border-primary hover:text-primary"
-              disabled={addingExpression}
-            >
-              <Plus className="w-4 h-4" />
-              {addingExpression ? "Generating..." : "Add Expression"}
-            </button>
-            <ul className="dropdown-content z-10 menu p-2 shadow-lg bg-white rounded-xl w-52 mb-2">
-              {availableTypes.map((type) => (
-                <li key={type}>
-                  <button
-                    type="button"
-                    onClick={() => handleAddExpression([type])}
-                  >
-                    {expressionLabels[type] || type}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
         )}
-        <button
-          type="button"
-          className="btn btn-sm btn-ghost text-red-500 hover:bg-red-50 hover:text-red-600 ml-auto"
-          onClick={() => setShowDeleteConfirm(true)}
-        >
-          <Trash2 className="w-4 h-4" />
-          Delete
-        </button>
       </div>
 
       {/* Delete Confirmation Modal */}
@@ -348,17 +433,23 @@ export default function AvatarDetailClient({
               Are you sure you want to delete <strong>{avatar.name}</strong>?
             </p>
             <ul className="text-sm text-gray-500 space-y-1.5">
-              <li className="flex items-start gap-2">
+              <li className="flex items-start gap-2" suppressHydrationWarning>
                 <span className="text-red-500">•</span>
-                <span>This action is permanent and cannot be undone</span>
+                <span suppressHydrationWarning>
+                  This action is permanent and cannot be undone
+                </span>
               </li>
-              <li className="flex items-start gap-2">
+              <li className="flex items-start gap-2" suppressHydrationWarning>
                 <span className="text-red-500">•</span>
-                <span>All expressions and variations will be deleted</span>
+                <span suppressHydrationWarning>
+                  All expressions and variations will be deleted
+                </span>
               </li>
-              <li className="flex items-start gap-2">
+              <li className="flex items-start gap-2" suppressHydrationWarning>
                 <span className="text-red-500">•</span>
-                <span>Credits used for generation will not be refunded</span>
+                <span suppressHydrationWarning>
+                  Credits used for generation will not be refunded
+                </span>
               </li>
             </ul>
           </div>

@@ -101,60 +101,44 @@ const IMAGE_EDIT_PROMPTS_OLD: Record<ExpressionType, string> = {
 */
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// NEW: Seedream 4.5 Optimized Chinese Prompts (Concise & Clear)
+// Expression prompts for image-edit generation
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
- * Base Pack 提示词 - 嘴眼组合的帧动画
- *
- * Seedream 4.5 最佳实践：简洁明确的指令
- * 结构：参考图中角色 + [嘴部状态] + [眼部状态] + 其他保持不变 + 用途
+ * Base Pack — mouth/eye 2x2 combinations for frame animation.
+ * Follows Seedream editing pattern: [what to change] + [what to keep]
  */
 const BASE_EXPRESSION_PROMPTS: Record<string, string> = {
-  // 2x2 组合：闭嘴/张嘴 × 睁眼/闭眼
-  idle: "图中角色，闭嘴睁眼，除嘴巴和眼睛外其他元素均保持不变，确保一致性用于帧动画",
-  talking: "图中角色，张嘴说话，除嘴巴和眼睛外其他元素均保持不变，确保一致性用于帧动画",
-  blink: "图中角色，闭眼闭嘴，除嘴巴和眼睛外其他元素均保持不变，确保一致性用于帧动画",
-  blink_talking: "图中角色，闭眼张嘴，除嘴巴和眼睛外其他元素均保持不变，确保一致性用于帧动画",
+  idle: "close mouth, open eyes, keep everything else unchanged",
+  talking: "open mouth, keep everything else unchanged",
+  blink: "close eyes, close mouth, keep everything else unchanged",
+  blink_talking: "close eyes, open mouth, keep everything else unchanged",
 };
 
 /**
- * Custom Pack 提示词 - 情绪表情
- *
- * Seedream 4.5 最佳实践：用自然语言描述情绪
- * 避免形容词堆砌，单一明确描述
+ * Custom Pack — emotion expressions.
+ * Minimal emotion descriptor + explicit mouth state + keep unchanged.
  */
 const CUSTOM_EXPRESSION_PROMPTS: Record<string, string> = {
-  happy: "参考图中角色，开心地笑，嘴巴闭合，其他保持不变",
-  happy_talking: "参考图中角色，开心地笑着说话，嘴巴张开，其他保持不变",
-  sad: "参考图中角色，露出悲伤表情，嘴角下垂，眼睛含泪，其他保持不变",
-  sad_talking: "参考图中角色，悲伤地说话，嘴角下垂，其他保持不变",
-  angry: "参考图中角色，露出愤怒表情，眉头紧锁，怒视前方，其他保持不变",
+  happy: "happy smile, mouth closed, keep everything else unchanged",
+  happy_talking: "happy smile, mouth open, keep everything else unchanged",
+  sad: "sad expression with teary eyes, mouth closed, keep everything else unchanged",
+  sad_talking: "sad expression, mouth open, keep everything else unchanged",
+  angry:
+    "angry expression with furrowed brows, mouth closed, keep everything else unchanged",
   angry_talking:
-    "参考图中角色，愤怒地大声说话，眉头紧锁，嘴巴大张，其他保持不变",
-  surprised: "参考图中角色，露出惊讶表情，睁大眼睛张开嘴巴，其他保持不变",
+    "angry expression with furrowed brows, mouth open, keep everything else unchanged",
+  surprised:
+    "surprised expression, wide eyes, mouth open, keep everything else unchanged",
 };
 
 /**
- * 构建图片编辑表情提示词（Seedream 4.5 优化版本）
- *
- * 用于图生图场景（image-edit 任务类型）
- * - Doubao (Seedream 4.5)
- * - Qwen image-edit
- *
- * 所有提示词均为中文，遵循 Seedream 简洁指令最佳实践
- *
- * @param expression - 表情类型
- * @returns 中文提示词字符串
- *
- * 示例输出：
- * - idle: "参考图中角色，闭嘴睁眼，其他保持不变，用于帧动画"
- * - happy: "参考图中角色，开心地笑，嘴巴闭合，其他保持不变"
+ * Build expression prompt for image-edit generation.
+ * Follows Seedream 4.5 editing pattern: [instruction] + [keep unchanged].
  */
 export function buildImageEditExpressionPrompt(
   expression: ExpressionType,
 ): string {
-  // 优先从 Base Pack 查找，找不到则从 Custom Pack 查找
   return (
     BASE_EXPRESSION_PROMPTS[expression] || CUSTOM_EXPRESSION_PROMPTS[expression]
   );

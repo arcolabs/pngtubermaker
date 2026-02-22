@@ -20,10 +20,9 @@ const API_BASE = "https://api.legnext.ai/api/v1";
  */
 const STYLE_HINTS: Record<ArtStyle, string> = {
   anime: "anime character illustration,",
-  vtuber: "modern VTuber character, hololive aesthetic,",
   chibi: "chibi character, large head small body,",
-  "retro-90s": "90s retro anime character, vintage cel animation,",
   cartoon: "cartoon character illustration, western animation style,",
+  "pixel-art": "pixel art character, retro game pixel style,",
   none: "",
 };
 

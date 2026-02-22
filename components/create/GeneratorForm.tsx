@@ -21,76 +21,63 @@ const TAG_CATEGORIES: TagCategory[] = [
   {
     label: "Character",
     options: [
-      { id: "girl", text: "Girl" },
-      { id: "boy", text: "Boy" },
       { id: "cat-girl", text: "Cat Girl" },
-      { id: "furry", text: "Furry" },
-      { id: "elf", text: "Elf" },
+      { id: "wolf-boy", text: "Wolf Boy" },
+      { id: "bunny-girl", text: "Bunny Girl" },
       { id: "demon", text: "Demon" },
+      { id: "fox-girl", text: "Fox Girl" },
+      { id: "elf", text: "Elf" },
     ],
   },
   {
-    label: "Role",
+    label: "Vibe",
     options: [
-      { id: "gamer", text: "Gamer" },
-      { id: "musician", text: "Musician" },
-      { id: "artist", text: "Artist" },
-      { id: "streamer", text: "Streamer" },
-      { id: "witch", text: "Witch" },
-      { id: "knight", text: "Knight" },
-    ],
-  },
-  {
-    label: "Aesthetic",
-    options: [
-      { id: "cozy", text: "Cozy" },
+      { id: "kawaii", text: "Kawaii" },
       { id: "dark", text: "Dark" },
-      { id: "colorful", text: "Colorful" },
+      { id: "cozy", text: "Cozy" },
       { id: "pastel", text: "Pastel" },
       { id: "neon", text: "Neon" },
       { id: "gothic", text: "Gothic" },
     ],
   },
   {
-    label: "Signature",
+    label: "Gear",
     options: [
       { id: "headset", text: "Gaming Headset" },
-      { id: "cat-ears", text: "Cat Ears" },
       { id: "hoodie", text: "Hoodie" },
+      { id: "cat-ears", text: "Cat Ears" },
       { id: "glasses", text: "Glasses" },
       { id: "horns", text: "Horns" },
-      { id: "wings", text: "Wings" },
+      { id: "scarf", text: "Scarf" },
     ],
   },
 ];
 
 const QUICK_TEMPLATES = [
-  "A cozy gamer girl with gaming headset, purple hoodie, long silver hair",
-  "A dark elf boy with pointy ears, mysterious glowing eyes, hooded cloak",
-  "A colorful cat girl streamer with cat ears and tail, cheerful smile",
-  "A pastel witch girl with a big hat, holding a magic staff, soft colors",
-  "Genshin Impact style girl in traditional Chinese hanfu, flowing dark hair, elegant floral accessories",
-  "Genshin Impact style boy in Knights of Favonius armor, silver hair, glowing elemental aura",
+  "A kawaii cat girl with pink twin tails, gaming headset, cozy hoodie, cheerful smile",
+  "A dark wolf boy with silver hair, glowing eyes, black hoodie, sharp fangs",
+  "A cute demon girl with small horns, red eyes, mischievous grin, dark outfit",
+  "A pastel bunny girl with long floppy ears, soft pink outfit, gentle smile",
+  "A cool anime boy with headphones, messy dark hair, confident look, casual jacket",
+  "A fox girl shrine maiden with fluffy tail, traditional outfit, warm golden eyes",
 ];
 
 function buildPromptFromTags(selections: Record<string, string>): string {
   const character = selections.Character;
-  const role = selections.Role;
-  const aesthetic = selections.Aesthetic;
-  const signature = selections.Signature;
+  const vibe = selections.Vibe;
+  const gear = selections.Gear;
 
-  // Build: "A [aesthetic] [role] [character], with [signature]"
+  // Build: "A [vibe] [character], with [gear]"
   const subjectParts: string[] = [];
-  if (aesthetic) subjectParts.push(aesthetic.toLowerCase());
-  if (role) subjectParts.push(role.toLowerCase());
+  if (vibe) subjectParts.push(vibe.toLowerCase());
   if (character) subjectParts.push(character.toLowerCase());
 
   const parts: string[] = [];
   if (subjectParts.length > 0) {
     parts.push(`A ${subjectParts.join(" ")}`);
   }
-  if (signature) {
-    parts.push(`with ${signature.toLowerCase()}`);
+  if (gear) {
+    parts.push(`with ${gear.toLowerCase()}`);
   }
 
   return parts.join(", ");
@@ -108,11 +95,10 @@ interface GeneratorFormProps {
 }
 
 const STYLE_OPTIONS: { id: ArtStyle; label: string; description?: string }[] = [
-  { id: "anime", label: "Anime" },
-  { id: "vtuber", label: "VTuber" },
   { id: "chibi", label: "Chibi" },
-  { id: "retro-90s", label: "Retro 90s" },
+  { id: "anime", label: "Anime" },
   { id: "cartoon", label: "Cartoon" },
+  { id: "pixel-art", label: "Pixel Art" },
   {
     id: "none",
     label: "None",
