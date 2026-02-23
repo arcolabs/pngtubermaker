@@ -11,14 +11,14 @@ export default function Hero() {
 
           {/* Main Heading */}
           <h1 className="mb-3 sm:mb-4 text-gray-900 font-bold text-3xl sm:text-5xl lg:text-7xl leading-tight px-2 sm:px-0">
-            Your <span className="text-primary">Virtual Identity</span>,
-            Pixel-Perfect.
+            From <span className="text-primary">Idea</span> to{" "}
+            <span className="text-primary">Live Stream</span> in Minutes.
           </h1>
 
           {/* Subheading */}
           <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-5xl mx-auto px-4 sm:px-0 mb-8">
-            Design your unique PNGTuber persona in minutes. Professional
-            streaming avatars made easy, affordable, and fun.
+            Create your PNGTuber avatar, generate expressions, and go live with
+            real-time mic lip sync in OBS — all without drawing a single line.
           </p>
 
           {/* Video Player - 16:9 aspect ratio, auto loop, no controls */}

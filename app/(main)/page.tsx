@@ -6,6 +6,7 @@ import {
   PricingSection,
   type Tier,
 } from "@/components/pricing";
+import AgentTeaser from "@/components/sections/AgentTeaser";
 import AITools from "@/components/sections/AITools";
 import CharacterShowcase from "@/components/sections/CharacterShowcase";
 import Comparison from "@/components/sections/Comparison";
@@ -38,6 +39,7 @@ export default function Home() {
       <PricingSection onSubscribe={handleSubscribe} isLoading={isLoading} />
       <Testimonials />
       <FAQ />
+      <AgentTeaser />
       <DiscordCTA />
     </>
   );

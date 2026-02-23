@@ -4,15 +4,16 @@ import {
   ArrowUp,
   Check,
   Copy,
+  Download,
   FileText,
+  FolderArchive,
   Image,
-  MessageSquare,
+  Mic,
   Monitor,
   MousePointer,
   Palette,
   Repeat,
   Sparkles,
-  Volume2,
   Wand2,
 } from "lucide-react";
 import NextImage from "next/image";
@@ -21,6 +22,7 @@ import { useEffect, useRef, useState } from "react";
 const tools = [
   {
     id: "avatar_generation",
+    step: 1,
     title: "AI Avatar Generation",
     description:
       "Turn text or sketches into a professional avatar. Upload a description or reference, get 4 unique characters with transparent backgrounds, ready for OBS/Discord.",
@@ -36,13 +38,14 @@ const tools = [
   },
   {
     id: "expression_pack",
-    title: "Expression Pack Auto-Creation",
+    step: 2,
+    title: "Expression Pack",
     description:
-      "All emotions, one click. Happy, angry, sad, surprised — AI generates consistent expressions for your avatar without hiring an artist.",
+      "All emotions, one click. Happy, angry, sad, surprised, and 10+ more — AI generates consistent expressions for your avatar without hiring an artist.",
     icon: Palette,
     image: "/images/AITools/input_2.png",
     features: [
-      { icon: Wand2, text: "Auto-generate emotions" },
+      { icon: Wand2, text: "10+ expression types" },
       { icon: Copy, text: "Character consistency" },
       { icon: MousePointer, text: "Manual selection" },
       { icon: Repeat, text: "Variation options" },
@@ -50,36 +53,38 @@ const tools = [
     benefit: "Skip commissioning multiple expressions, save time & cost",
   },
   {
-    id: "animation_stills",
-    title: "Animation from Stills",
+    id: "obs_live",
+    step: 3,
+    title: "Go Live with OBS",
     description:
-      "Bring your avatar to life. AI adds blinking, mouth movements, and emotional transitions. Export as MP4/GIF/WebM for instant streaming use.",
+      "Add your avatar to OBS as a Browser Source and start streaming instantly. Your avatar's mouth moves in real time with your microphone — no plugins, no complex setup.",
     icon: Monitor,
     image: "/images/AITools/input_3.webm",
     isVideo: true,
     features: [
-      { icon: Sparkles, text: "Blinking animations" },
-      { icon: Volume2, text: "Mouth movements" },
-      { icon: MessageSquare, text: "Emotion transitions" },
-      { icon: ArrowUp, text: "Multiple export formats" },
+      { icon: Mic, text: "Real-time mic lip sync" },
+      { icon: Monitor, text: "OBS Browser Source" },
+      { icon: Sparkles, text: "Expression switching" },
+      { icon: Check, text: "Zero-config setup" },
     ],
-    benefit: "Instant broadcast-ready content for Twitch/YouTube",
+    benefit: "One link, paste into OBS, and you're live",
   },
   {
-    id: "smart_upscale",
-    title: "Smart Upscale & Variations",
+    id: "download_export",
+    step: 4,
+    title: "Download & Export",
     description:
-      "Polish until perfect. Upscale for HD quality, explore endless variations, and refine until you find your unique streaming persona.",
-    icon: ArrowUp,
+      "Download your avatar and full expression pack as transparent PNGs or a bundled ZIP. Choose your resolution — 512px (Free), 1080p (Start), or 4K (Pro).",
+    icon: Download,
     image: "/images/AITools/input_4.webm",
     isVideo: true,
     features: [
-      { icon: ArrowUp, text: "High-resolution upscale" },
-      { icon: Check, text: "Quality preservation" },
-      { icon: Copy, text: "Generate variations" },
-      { icon: Repeat, text: "Iterative refinement" },
+      { icon: Download, text: "Transparent PNG export" },
+      { icon: FolderArchive, text: "ZIP bundle download" },
+      { icon: ArrowUp, text: "Up to 4K resolution" },
+      { icon: Check, text: "Commercial license" },
     ],
-    benefit: "Perfect your unique character through continuous refinement",
+    benefit: "Stream-ready files for OBS, Discord, and Twitch",
   },
 ];
 
@@ -125,14 +130,14 @@ export default function AITools() {
           {/* Header */}
           <div className="text-center mb-8 md:mb-12">
             <p className="text-xs md:text-sm font-semibold uppercase text-primary mb-2">
-              AI Tools for Streamers
+              How It Works
             </p>
             <h2 className="text-base-content font-sans mb-4 md:mb-5 text-2xl md:text-3xl lg:text-4xl font-bold leading-tight">
-              Create Your PNGTuber Avatar in Minutes — Not Weeks
+              From Idea to Live Stream in 4 Steps
             </h2>
             <p className="text-base-content/70 font-medium mb-6 md:mb-8 text-base md:text-xl leading-relaxed max-w-3xl mx-auto">
-              Generate avatars, expressions, and animations instantly with AI.
-              No commissions. No waiting. Just stream-ready results.
+              Generate your avatar, create expressions, set up OBS with mic lip
+              sync, and go live. No commissions. No waiting.
             </p>
           </div>
 
@@ -157,12 +162,15 @@ export default function AITools() {
                               : "bg-base-300 text-base-content/70 hover:bg-base-300/80"
                           }`}
                         >
+                          <span className="text-[10px] font-bold opacity-60">
+                            {tool.step}
+                          </span>
                           <Icon className="w-4 h-4" />
                           <span>
                             {tool.id === "avatar_generation" && "Generate"}
                             {tool.id === "expression_pack" && "Expressions"}
-                            {tool.id === "animation_stills" && "Animate"}
-                            {tool.id === "smart_upscale" && "Upscale"}
+                            {tool.id === "obs_live" && "Go Live"}
+                            {tool.id === "download_export" && "Export"}
                           </span>
                         </button>
                       );
@@ -186,6 +194,9 @@ export default function AITools() {
                             : "text-base-content/70 hover:text-base-content hover:bg-base-300"
                         }`}
                       >
+                        <span className="text-xs font-bold opacity-60">
+                          {tool.step}
+                        </span>
                         <Icon className="w-5 h-5" />
                         <span>{tool.title}</span>
                       </button>
@@ -246,6 +257,9 @@ export default function AITools() {
                               <Icon className="w-5 h-5 md:w-6 md:h-6" />
                             </div>
                             <h3 className="text-lg md:text-2xl font-bold text-base-content leading-tight">
+                              <span className="text-primary/50 mr-1">
+                                {tool.step}.
+                              </span>
                               {tool.title}
                             </h3>
                           </div>

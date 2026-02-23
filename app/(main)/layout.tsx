@@ -1,6 +1,7 @@
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import DotMatrixBrand from "@/components/ui/DotMatrixBrand";
+import FloatingAvatar from "@/components/widget/FloatingAvatar";
 
 export default function MainLayout({
   children,
@@ -15,6 +16,7 @@ export default function MainLayout({
       <div className="mt-2">
         <DotMatrixBrand />
       </div>
+      <FloatingAvatar />
     </>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Mic, Play, Trash2 } from "lucide-react";
+import { Mic, Play } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import AudioWaveButton from "@/components/avatars/AudioWaveButton";
 import {
@@ -15,11 +15,6 @@ import { cn } from "@/lib/utils";
 interface PNGTuberPreviewProps {
   expressions: ExpressionAsset[];
   onExpressionChange?: (type: EngineExpressionType) => void;
-  selectedSize?: number;
-  onSizeChange?: (size: number) => void;
-  onDownload?: () => void;
-  onDelete?: () => void;
-  downloading?: boolean;
 }
 
 const AUDIO_SAMPLES = [
@@ -31,11 +26,6 @@ const AUDIO_SAMPLES = [
 export default function PNGTuberPreview({
   expressions,
   onExpressionChange,
-  selectedSize = 1080,
-  onSizeChange,
-  onDownload,
-  onDelete,
-  downloading = false,
 }: PNGTuberPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<PNGTuberEngine | null>(null);
@@ -154,65 +144,34 @@ export default function PNGTuberPreview({
               Real-time animation preview
             </p>
           </div>
-          <div className="flex flex-col items-end gap-2">
-            {/* Mode toggle */}
-            <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
-              <button
-                type="button"
-                className={cn(
-                  "btn btn-xs gap-1 rounded-md border-0",
-                  mode === "demo" && !audioPlaying
-                    ? "bg-white text-primary shadow-sm"
-                    : "bg-transparent text-gray-500 hover:text-gray-700",
-                )}
-                onClick={() => switchMode("demo")}
-              >
-                <Play className="w-3 h-3" />
-                Demo
-              </button>
-              <button
-                type="button"
-                className={cn(
-                  "btn btn-xs gap-1 rounded-md border-0",
-                  mode === "mic" && !audioPlaying
-                    ? "bg-white text-primary shadow-sm"
-                    : "bg-transparent text-gray-500 hover:text-gray-700",
-                )}
-                onClick={() => switchMode("mic")}
-              >
-                <Mic className="w-3 h-3" />
-                Mic
-              </button>
-            </div>
-            {/* Controls below toggle */}
-            <div className="flex items-center gap-2">
-              <select
-                className="select select-xs bg-gray-50 border-gray-200 rounded-md text-xs h-7 min-h-0"
-                value={selectedSize}
-                onChange={(e) => onSizeChange?.(Number(e.target.value))}
-              >
-                <option value={512}>512px</option>
-                <option value={1080}>1080px</option>
-                <option value={2160}>2160px (4K)</option>
-              </select>
-              <button
-                type="button"
-                className="btn btn-xs bg-gray-50 hover:bg-primary hover:text-white border border-gray-200 hover:border-primary rounded-md text-gray-600 h-7 min-h-0 px-2"
-                onClick={onDownload}
-                disabled={downloading}
-              >
-                <Download className="w-3 h-3" />
-                Download
-              </button>
-              <button
-                type="button"
-                className="btn btn-xs bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-500 border border-gray-200 hover:border-red-200 rounded-md h-7 min-h-0 px-2"
-                onClick={onDelete}
-              >
-                <Trash2 className="w-3 h-3" />
-                Delete
-              </button>
-            </div>
+          {/* Mode toggle */}
+          <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
+            <button
+              type="button"
+              className={cn(
+                "btn btn-xs gap-1 rounded-md border-0",
+                mode === "demo" && !audioPlaying
+                  ? "bg-white text-primary shadow-sm"
+                  : "bg-transparent text-gray-500 hover:text-gray-700",
+              )}
+              onClick={() => switchMode("demo")}
+            >
+              <Play className="w-3 h-3" />
+              Demo
+            </button>
+            <button
+              type="button"
+              className={cn(
+                "btn btn-xs gap-1 rounded-md border-0",
+                mode === "mic" && !audioPlaying
+                  ? "bg-white text-primary shadow-sm"
+                  : "bg-transparent text-gray-500 hover:text-gray-700",
+              )}
+              onClick={() => switchMode("mic")}
+            >
+              <Mic className="w-3 h-3" />
+              Mic
+            </button>
           </div>
         </div>
 

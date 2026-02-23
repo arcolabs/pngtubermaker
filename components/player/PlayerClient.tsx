@@ -90,6 +90,7 @@ export default function PlayerClient({ avatarId }: PlayerClientProps) {
         const threshold = searchParams.get("threshold");
         const bounce = searchParams.get("bounce");
         const bounceDuration = searchParams.get("bounceDuration");
+        const calibrate = searchParams.get("calibrate");
 
         const engine = new PNGTuberEngine({
           canvas: canvasEl,
@@ -99,6 +100,7 @@ export default function PlayerClient({ avatarId }: PlayerClientProps) {
           ...(threshold ? { micThreshold: Number(threshold) } : {}),
           ...(bounce !== null ? { bounceOnChange: bounce !== "false" } : {}),
           ...(bounceDuration ? { bounceDuration: Number(bounceDuration) } : {}),
+          ...(calibrate === "false" ? { disableCalibration: true } : {}),
         });
 
         engine.on(handleEvent);

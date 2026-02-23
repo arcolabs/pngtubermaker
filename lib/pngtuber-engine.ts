@@ -43,6 +43,8 @@ export interface EngineConfig {
   bounceDuration?: number;
   /** Base URL for image proxy (to bypass CORS). Default '/api/proxy-image?url=' */
   proxyBaseUrl?: string;
+  /** Disable ambient noise auto-calibration. Default false */
+  disableCalibration?: boolean;
 }
 
 export type EngineEventType =
@@ -51,7 +53,9 @@ export type EngineEventType =
   | "expressionChange"
   | "modeChange"
   | "loadProgress"
-  | "audioEnded";
+  | "audioEnded"
+  | "calibrating"
+  | "calibrated";
 
 export interface EngineEvent {
   type: EngineEventType;
@@ -59,6 +63,7 @@ export interface EngineEvent {
   mode?: EngineMode;
   progress?: number; // 0-1
   error?: string;
+  calibratedThreshold?: number;
 }
 
 export type EngineEventListener = (event: EngineEvent) => void;
@@ -101,21 +106,62 @@ export class PNGTuberEngine {
   private lastRenderTime = 0;
   private engineTime = 0;
 
+  // Off-screen back buffer (eliminates clearRect flicker on visible canvas)
+  private backCanvas: HTMLCanvasElement | null = null;
+  private backCtx: CanvasRenderingContext2D | null = null;
+
   // Bounce animation state (squash & stretch)
   private bounceTime = 0;
   private bounceActive = false;
   private bounceAmplitude = 1;
 
-  // Continuous animation constants
-  private static readonly BREATH_AMPLITUDE = 0.003;
-  private static readonly BREATH_PERIOD = 3500;
-  private static readonly SWAY_AMPLITUDE = 0.005;
-  private static readonly SWAY_PERIOD = 5000;
-  private static readonly MIC_BOUNCE_AMPLITUDE = 0.5;
+  // Volume-proportional bounce
+  private static readonly MIC_BOUNCE_AMPLITUDE_MIN = 0.3;
+  private static readonly MIC_BOUNCE_AMPLITUDE_MAX = 1.0;
+
+  // Activity-adaptive animation ranges (min = calm, max = active)
+  private static readonly BREATH_AMPLITUDE_MIN = 0.002;
+  private static readonly BREATH_AMPLITUDE_MAX = 0.005;
+  private static readonly BREATH_PERIOD_MIN = 3000; // faster when active
+  private static readonly BREATH_PERIOD_MAX = 4500; // slower when calm
+  private static readonly SWAY_AMPLITUDE_MIN = 0.003;
+  private static readonly SWAY_AMPLITUDE_MAX = 0.008;
+  private static readonly SWAY_PERIOD_MIN = 4000;
+  private static readonly SWAY_PERIOD_MAX = 6000;
+  private static readonly ACTIVITY_EMA = 0.005; // ~3.3s to shift at 60fps
+
+  // Context-aware blink timing
+  private static readonly BLINK_DELAY_SPEAKING_MIN = 4000;
+  private static readonly BLINK_DELAY_SPEAKING_MAX = 8000;
+  private static readonly BLINK_DELAY_IDLE_MIN = 3000;
+  private static readonly BLINK_DELAY_IDLE_MAX = 7000;
+  private static readonly DOUBLE_BLINK_CHANCE = 0.25;
+  private static readonly DOUBLE_BLINK_PAUSE = 100;
+  private static readonly LONG_SILENCE_THRESHOLD = 10000;
+
+  // Ambient noise calibration
+  private static readonly CALIBRATION_DURATION_MS = 2000;
+  private static readonly CALIBRATION_MIN_THRESHOLD = 0.02;
+  private static readonly CALIBRATION_MAX_THRESHOLD = 0.15;
+  private static readonly CALIBRATION_STDDEV_FACTOR = 1.5;
 
   // Blink timer
   private blinkTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private blinkEndTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  private doubleBlinkTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  // Context-aware blink state
+  private lastSpeakingEndTime = 0;
+
+  // Activity level (0=calm, 1=active)
+  private activityLevel = 0;
+
+  // Calibration state
+  private isCalibrating = false;
+  private calibrationSamples: number[] = [];
+  private calibrationStartTime = 0;
+  private explicitThreshold = false;
+  private disableCalibration = false;
 
   // Demo mode
   private demoSequence: EngineExpressionType[] = [];
@@ -168,6 +214,8 @@ export class PNGTuberEngine {
     this.bounceOnChange = config.bounceOnChange ?? true;
     this.bounceDuration = config.bounceDuration ?? 300;
     this.proxyBaseUrl = config.proxyBaseUrl ?? "/api/proxy-image?url=";
+    this.explicitThreshold = config.micThreshold !== undefined;
+    this.disableCalibration = config.disableCalibration ?? false;
   }
 
   // ── Public API ─────────────────────────────────────────────────────
@@ -194,6 +242,12 @@ export class PNGTuberEngine {
       this.canvas.width = firstImg.naturalWidth;
       this.canvas.height = firstImg.naturalHeight;
     }
+
+    // Initialize off-screen back buffer (same size as visible canvas)
+    this.backCanvas = document.createElement("canvas");
+    this.backCanvas.width = this.canvas.width;
+    this.backCanvas.height = this.canvas.height;
+    this.backCtx = this.backCanvas.getContext("2d");
 
     this.emit({ type: "ready" });
     this.startRenderLoop();
@@ -260,8 +314,10 @@ export class PNGTuberEngine {
   }
 
   updateConfig(partial: Partial<EngineConfig>): void {
-    if (partial.micThreshold !== undefined)
+    if (partial.micThreshold !== undefined) {
       this.micThreshold = partial.micThreshold;
+      this.explicitThreshold = true;
+    }
     if (partial.bounceOnChange !== undefined)
       this.bounceOnChange = partial.bounceOnChange;
     if (partial.bounceDuration !== undefined)
@@ -287,6 +343,8 @@ export class PNGTuberEngine {
     }
     this.analyser = null;
     this.volumeDataArray = null;
+    this.backCanvas = null;
+    this.backCtx = null;
     this.listeners.clear();
     this.imageMap.clear();
   }
@@ -444,6 +502,12 @@ export class PNGTuberEngine {
   private updateVolume(): void {
     if (!this.analyser || !this.volumeDataArray) return;
 
+    // During calibration, collect samples instead of normal processing
+    if (this.isCalibrating) {
+      this.updateCalibration();
+      return;
+    }
+
     this.analyser.getByteTimeDomainData(this.volumeDataArray);
 
     // Calculate RMS volume
@@ -526,8 +590,21 @@ export class PNGTuberEngine {
 
     // Emit events on state changes
     if (wasSpeaking !== this.isSpeaking) {
-      // Macro state changed — trigger bounce
-      this.triggerBounce(PNGTuberEngine.MIC_BOUNCE_AMPLITUDE);
+      // Macro state changed — volume-proportional bounce
+      const normalizedVol =
+        this.peakVolume > 0.001 ? this.smoothedVolume / this.peakVolume : 0.5;
+      const bounceAmp =
+        PNGTuberEngine.MIC_BOUNCE_AMPLITUDE_MIN +
+        (PNGTuberEngine.MIC_BOUNCE_AMPLITUDE_MAX -
+          PNGTuberEngine.MIC_BOUNCE_AMPLITUDE_MIN) *
+          Math.min(normalizedVol, 1);
+      this.triggerBounce(bounceAmp);
+
+      // Track when speaking ends (for double-blink timing)
+      if (!this.isSpeaking) {
+        this.lastSpeakingEndTime = performance.now();
+      }
+
       this.emit({
         type: "expressionChange",
         expression: this.resolveExpression(),
@@ -539,6 +616,11 @@ export class PNGTuberEngine {
         expression: this.resolveExpression(),
       });
     }
+
+    // Activity EMA: move toward 1 when speaking, 0 when silent
+    const activityTarget = this.isSpeaking ? 1 : 0;
+    this.activityLevel +=
+      (activityTarget - this.activityLevel) * PNGTuberEngine.ACTIVITY_EMA;
   }
 
   private resetVolumeState(): void {
@@ -548,6 +630,59 @@ export class PNGTuberEngine {
     this.mouthOpenHoldUntil = 0;
     this.mouthOpenSince = 0;
     this.forcedCloseUntil = 0;
+    this.activityLevel = 0;
+    this.isCalibrating = false;
+    this.calibrationSamples = [];
+    this.calibrationStartTime = 0;
+  }
+
+  // ── Ambient Noise Calibration ─────────────────────────────────────
+
+  private startCalibration(): void {
+    this.isCalibrating = true;
+    this.calibrationSamples = [];
+    this.calibrationStartTime = performance.now();
+    this.emit({ type: "calibrating" });
+  }
+
+  private updateCalibration(): void {
+    if (!this.analyser || !this.volumeDataArray) return;
+
+    this.analyser.getByteTimeDomainData(this.volumeDataArray);
+
+    // Calculate RMS for this frame
+    let sum = 0;
+    for (let i = 0; i < this.volumeDataArray.length; i++) {
+      const normalized = (this.volumeDataArray[i] - 128) / 128;
+      sum += normalized * normalized;
+    }
+    const rms = Math.sqrt(sum / this.volumeDataArray.length);
+    this.calibrationSamples.push(rms);
+
+    // Check if calibration period is complete
+    if (
+      performance.now() - this.calibrationStartTime >=
+      PNGTuberEngine.CALIBRATION_DURATION_MS
+    ) {
+      const n = this.calibrationSamples.length;
+      if (n > 0) {
+        const mean = this.calibrationSamples.reduce((a, b) => a + b, 0) / n;
+        const variance =
+          this.calibrationSamples.reduce((a, b) => a + (b - mean) ** 2, 0) / n;
+        const stddev = Math.sqrt(variance);
+        const threshold = Math.min(
+          Math.max(
+            mean + stddev * PNGTuberEngine.CALIBRATION_STDDEV_FACTOR,
+            PNGTuberEngine.CALIBRATION_MIN_THRESHOLD,
+          ),
+          PNGTuberEngine.CALIBRATION_MAX_THRESHOLD,
+        );
+        this.micThreshold = threshold;
+        this.emit({ type: "calibrated", calibratedThreshold: threshold });
+      }
+      this.isCalibrating = false;
+      this.calibrationSamples = [];
+    }
   }
 
   // ── Bounce Animation (squash & stretch) ────────────────────────────
@@ -564,7 +699,7 @@ export class PNGTuberEngine {
 
   /**
    * Squash & stretch curve — classic animation principle.
-   * Amplitude is scaled by `bounceAmplitude` (1.0 = full, 0.5 = mic talk).
+   * Amplitude is scaled by `bounceAmplitude` (1.0 = full, 0.3–1.0 = mic talk).
    *
    * At full amplitude (a=1):
    *   Phase 1 (0–35%):  Squash   (scaleY: 1.0 → 0.95)
@@ -594,7 +729,6 @@ export class PNGTuberEngine {
   // ── Draw ───────────────────────────────────────────────────────────
 
   private draw(): void {
-    const ctx = this.ctx;
     const { width, height } = this.canvas;
 
     // Resolve which frame to display this tick
@@ -602,24 +736,39 @@ export class PNGTuberEngine {
     const img = this.imageMap.get(resolved) ?? this.imageMap.get("idle");
     if (!img) return;
 
-    // Clear canvas (transparent for PNG support)
-    ctx.clearRect(0, 0, width, height);
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = "source-over";
+    // ── Draw to off-screen back buffer first ──
+    // This eliminates the clearRect → transparent intermediate state on the
+    // visible canvas, which can be sampled by compositors / OBS capture
+    // between clear and draw, causing brightness flicker.
+    const back = this.backCtx ?? this.ctx;
+    back.clearRect(0, 0, width, height);
+    back.globalAlpha = 1;
+    back.globalCompositeOperation = "source-over";
 
     // ── Compose transforms (all anchored at bottom-center) ──
     const t = this.engineTime;
 
-    // Continuous: breathing (subtle scaleY sine wave)
-    const breathSy =
-      1 +
-      PNGTuberEngine.BREATH_AMPLITUDE *
-        Math.sin((t / PNGTuberEngine.BREATH_PERIOD) * Math.PI * 2);
+    // Activity-adaptive breathing (subtle scaleY sine wave)
+    const a = this.activityLevel;
+    const breathAmp =
+      PNGTuberEngine.BREATH_AMPLITUDE_MIN +
+      (PNGTuberEngine.BREATH_AMPLITUDE_MAX -
+        PNGTuberEngine.BREATH_AMPLITUDE_MIN) *
+        a;
+    const breathPeriod =
+      PNGTuberEngine.BREATH_PERIOD_MAX -
+      (PNGTuberEngine.BREATH_PERIOD_MAX - PNGTuberEngine.BREATH_PERIOD_MIN) * a;
+    const breathSy = 1 + breathAmp * Math.sin((t / breathPeriod) * Math.PI * 2);
 
-    // Continuous: sway (subtle rotation sine wave)
-    const swayAngle =
-      PNGTuberEngine.SWAY_AMPLITUDE *
-      Math.sin((t / PNGTuberEngine.SWAY_PERIOD) * Math.PI * 2);
+    // Activity-adaptive sway (subtle rotation sine wave)
+    const swayAmp =
+      PNGTuberEngine.SWAY_AMPLITUDE_MIN +
+      (PNGTuberEngine.SWAY_AMPLITUDE_MAX - PNGTuberEngine.SWAY_AMPLITUDE_MIN) *
+        a;
+    const swayPeriod =
+      PNGTuberEngine.SWAY_PERIOD_MAX -
+      (PNGTuberEngine.SWAY_PERIOD_MAX - PNGTuberEngine.SWAY_PERIOD_MIN) * a;
+    const swayAngle = swayAmp * Math.sin((t / swayPeriod) * Math.PI * 2);
 
     // Triggered: bounce (squash & stretch, only when active)
     let bounceSx = 1;
@@ -634,14 +783,24 @@ export class PNGTuberEngine {
     const finalSx = bounceSx;
     const finalSy = breathSy * bounceSy;
 
-    ctx.save();
+    back.save();
     // Anchor at bottom-center (character "stands" at bottom edge)
-    ctx.translate(width / 2, height);
-    ctx.rotate(swayAngle);
-    ctx.scale(finalSx, finalSy);
-    ctx.translate(-width / 2, -height);
-    ctx.drawImage(img, 0, 0, width, height);
-    ctx.restore();
+    back.translate(width / 2, height);
+    back.rotate(swayAngle);
+    back.scale(finalSx, finalSy);
+    back.translate(-width / 2, -height);
+    back.drawImage(img, 0, 0, width, height);
+    back.restore();
+
+    // ── Atomic copy to visible canvas ──
+    // Single drawImage with "copy" mode — no clearRect on the visible canvas,
+    // so it is never in a transparent state between frames.
+    if (this.backCanvas) {
+      const ctx = this.ctx;
+      ctx.globalCompositeOperation = "copy";
+      ctx.drawImage(this.backCanvas, 0, 0);
+      ctx.globalCompositeOperation = "source-over";
+    }
   }
 
   // ── State Resolution ───────────────────────────────────────────────
@@ -688,13 +847,49 @@ export class PNGTuberEngine {
   private startBlinkTimer(): void {
     const scheduleBlink = () => {
       if (this.destroyed) return;
-      const delay = randomBetween(3000, 7000);
+
+      // Context-aware timing: blink less when speaking
+      const [delayMin, delayMax] = this.isSpeaking
+        ? [
+            PNGTuberEngine.BLINK_DELAY_SPEAKING_MIN,
+            PNGTuberEngine.BLINK_DELAY_SPEAKING_MAX,
+          ]
+        : [
+            PNGTuberEngine.BLINK_DELAY_IDLE_MIN,
+            PNGTuberEngine.BLINK_DELAY_IDLE_MAX,
+          ];
+      const delay = randomBetween(delayMin, delayMax);
+
       this.blinkTimeoutId = setTimeout(() => {
         if (this.destroyed) return;
         this.isBlinking = true;
         this.blinkEndTimeoutId = setTimeout(() => {
           this.isBlinking = false;
-          scheduleBlink();
+
+          // Double-blink chance after long silence
+          const now = performance.now();
+          const silenceDuration =
+            this.lastSpeakingEndTime > 0
+              ? now - this.lastSpeakingEndTime
+              : Number.POSITIVE_INFINITY;
+
+          const shouldDoubleBlink =
+            !this.isSpeaking &&
+            silenceDuration > PNGTuberEngine.LONG_SILENCE_THRESHOLD &&
+            Math.random() < PNGTuberEngine.DOUBLE_BLINK_CHANCE;
+
+          if (shouldDoubleBlink) {
+            this.doubleBlinkTimeoutId = setTimeout(() => {
+              if (this.destroyed) return;
+              this.isBlinking = true;
+              this.blinkEndTimeoutId = setTimeout(() => {
+                this.isBlinking = false;
+                scheduleBlink();
+              }, 150);
+            }, PNGTuberEngine.DOUBLE_BLINK_PAUSE);
+          } else {
+            scheduleBlink();
+          }
         }, 150);
       }, delay);
     };
@@ -704,6 +899,8 @@ export class PNGTuberEngine {
   private stopBlinkTimer(): void {
     if (this.blinkTimeoutId !== null) clearTimeout(this.blinkTimeoutId);
     if (this.blinkEndTimeoutId !== null) clearTimeout(this.blinkEndTimeoutId);
+    if (this.doubleBlinkTimeoutId !== null)
+      clearTimeout(this.doubleBlinkTimeoutId);
     this.isBlinking = false;
   }
 
@@ -755,8 +952,8 @@ export class PNGTuberEngine {
       // Base expression changed — setExpression triggers full bounce
       this.setExpression(baseExpression);
     } else if (mouthChanged) {
-      // Same base but mouth state changed — half bounce
-      this.triggerBounce(PNGTuberEngine.MIC_BOUNCE_AMPLITUDE);
+      // Same base but mouth state changed — half bounce (fixed for demo)
+      this.triggerBounce(0.5);
       this.emit({
         type: "expressionChange",
         expression: this.resolveExpression(),
@@ -818,6 +1015,12 @@ export class PNGTuberEngine {
     // Mic: don't connect to destination (don't play mic audio through speakers)
 
     this.resetVolumeState();
+
+    // Start ambient noise calibration unless disabled or user set explicit threshold
+    if (!this.disableCalibration && !this.explicitThreshold) {
+      this.startCalibration();
+    }
+
     this.setExpression("idle");
   }
 
@@ -898,7 +1101,7 @@ export class PNGTuberEngine {
 
   /**
    * Trigger a bounce animation with the given amplitude.
-   * amplitude: 1.0 = full (expression change), 0.5 = half (mic talk toggle)
+   * amplitude: 1.0 = full (expression change), 0.3–1.0 = volume-proportional (mic talk)
    */
   private triggerBounce(amplitude: number): void {
     if (!this.bounceOnChange) return;

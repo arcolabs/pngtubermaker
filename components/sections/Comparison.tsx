@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Pencil, Star, Users, X } from "lucide-react";
+import { Download, Monitor, Pencil, Star, Users, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -66,15 +66,21 @@ export default function Comparison() {
                 },
                 {
                   icon: Users,
-                  title: "2. AI generates multiple expressions",
+                  title: "2. AI generates expressions",
                   time: "1-2 minutes",
-                  desc: "Smiling, angry, surprised, sad — all auto-generated with consistent style.",
+                  desc: "Smiling, angry, surprised, sad — 10+ expressions auto-generated with consistent style.",
+                },
+                {
+                  icon: Monitor,
+                  title: "3. One-click OBS setup",
+                  time: "instant",
+                  desc: "Paste a single Browser Source link into OBS. Your avatar lip-syncs to your mic in real time.",
                 },
                 {
                   icon: Download,
-                  title: "3. Download and go live",
+                  title: "4. Download and go live",
                   time: "instant",
-                  desc: "Use your PNG avatar with OBS, Twitch, Discord right away.",
+                  desc: "Export PNGs or ZIP bundles for OBS, Twitch, Discord — stream-ready in seconds.",
                 },
               ].map((step) => (
                 <li

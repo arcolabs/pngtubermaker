@@ -25,7 +25,7 @@ const DEFAULT_TESTIMONIALS: Testimonial[] = [
     role: "VTuber",
     platform: "Twitch",
     content:
-      "Finally found the perfect tool to create my PNGTuber avatar! The expressions are so smooth and my viewers love the new look. Set up took less than 10 minutes.",
+      "The OBS integration is insane — I pasted the Browser Source link and my avatar was lip-syncing to my mic instantly. No plugins, no fuss. My chat went wild the first time they saw it react in real time!",
     avatar: "/avatar/avatar_003.jpg",
   },
   {
@@ -34,7 +34,7 @@ const DEFAULT_TESTIMONIALS: Testimonial[] = [
     role: "Content Creator",
     platform: "YouTube",
     content:
-      "As someone who can't draw, this is a game-changer. My avatar looks professional and the auto-generated expressions match my voice perfectly. Highly recommend!",
+      "I can't draw at all, but now I have a full avatar with 10+ expressions that all look consistent. The AI generated happy, angry, surprised — even a smug face. My thumbnails have never looked this good.",
     avatar: "/avatar/avatar_004.jpg",
   },
   {
@@ -43,7 +43,7 @@ const DEFAULT_TESTIMONIALS: Testimonial[] = [
     role: "Indie Streamer",
     platform: "Kick",
     content:
-      "Switched from a complex Live2D setup to this and never looked back. It's lightweight, looks great, and saves me so much time. Best decision for my channel!",
+      "Switched from a complex Live2D setup to PNGTuberMaker and never looked back. It's so much lighter on my PC, works directly in OBS, and honestly looks just as good on stream. Wish I'd found this sooner.",
     avatar: "/avatar/avatar_005.jpg",
   },
 ];

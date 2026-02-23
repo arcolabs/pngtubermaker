@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, Monitor, Sparkles, Trash2 } from "lucide-react";
+import { Check, Copy, Download, Monitor, Sparkles, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
@@ -425,11 +425,6 @@ export default function AvatarDetailClient({
         <PNGTuberPreview
           expressions={previewExpressions}
           onExpressionChange={setActiveExpressionType}
-          selectedSize={selectedSize}
-          onSizeChange={setSelectedSize}
-          onDownload={handleDownload}
-          onDelete={() => setShowDeleteConfirm(true)}
-          downloading={downloading}
         />
       ) : (
         <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm text-center py-12">
@@ -441,9 +436,37 @@ export default function AvatarDetailClient({
 
       {/* 2. Expressions - All packs merged into one grid */}
       <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/60 shadow-sm">
-        <h3 className="font-semibold text-gray-900 text-sm mb-3">
-          Expressions
-        </h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold text-gray-900 text-sm">Expressions</h3>
+          <div className="flex items-center gap-2">
+            <select
+              className="select select-xs bg-gray-50 border-gray-200 rounded-md text-xs h-7 min-h-0"
+              value={selectedSize}
+              onChange={(e) => setSelectedSize(Number(e.target.value))}
+            >
+              <option value={512}>512px</option>
+              <option value={1080}>1080px</option>
+              <option value={2160}>2160px (4K)</option>
+            </select>
+            <button
+              type="button"
+              className="btn btn-xs bg-gray-50 hover:bg-primary hover:text-white border border-gray-200 hover:border-primary rounded-md text-gray-600 h-7 min-h-0 px-2"
+              onClick={handleDownload}
+              disabled={downloading}
+            >
+              <Download className="w-3 h-3" />
+              Download
+            </button>
+            <button
+              type="button"
+              className="btn btn-xs bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-500 border border-gray-200 hover:border-red-200 rounded-md h-7 min-h-0 px-2"
+              onClick={() => setShowDeleteConfirm(true)}
+            >
+              <Trash2 className="w-3 h-3" />
+              Delete
+            </button>
+          </div>
+        </div>
 
         {/* Fixed 10-slot expression grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-10 gap-3 mb-4">

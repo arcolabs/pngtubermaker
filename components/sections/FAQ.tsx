@@ -40,7 +40,7 @@ const defaultFaqData: FAQItem[] = [
     id: "4",
     question: "What file formats do you export?",
     answer:
-      "We support transparent PNG for static avatars and GIF / MP4 / WebM for animations. Perfect for OBS, Discord, or Twitch overlays.",
+      "We export transparent PNG files for individual avatars and expressions, plus a ZIP bundle containing your full expression pack. Perfect for OBS, Discord, or Twitch overlays.",
   },
   {
     id: "5",
@@ -58,13 +58,31 @@ const defaultFaqData: FAQItem[] = [
     id: "7",
     question: "What's included in the free plan?",
     answer:
-      "The free plan gives you 500 welcome credits to try PNGTuberMaker — enough to generate a full avatar with expressions. Upgrade to Start or Pro for monthly credits, HD/4K export, and more expression packs.",
+      "The free plan gives you 3 avatar generations per month at 512px resolution — enough to try the full workflow including expressions and OBS preview. Upgrade to Start or Pro for more generations, HD/4K export, and full expression packs.",
   },
   {
     id: "8",
     question: "How long does it take to generate an avatar?",
     answer:
-      "Most avatars are generated in under 1 minute. Expression packs and short animations take 1–3 minutes depending on complexity. You can preview, pick your favorite, and refine instantly.",
+      "Most avatars are generated in under 1 minute. Expression packs take 1–3 minutes depending on complexity. You can preview, pick your favorite, and refine instantly.",
+  },
+  {
+    id: "9",
+    question: "How does the OBS integration work?",
+    answer:
+      "After creating your avatar and expressions, you get a unique Browser Source URL. Paste it into OBS Studio as a Browser Source — your avatar appears on stream with a transparent background, ready to react to your mic input. No plugins or extra software needed.",
+  },
+  {
+    id: "10",
+    question: "Does it sync with my microphone?",
+    answer:
+      "Yes! The OBS player uses your browser's microphone access to detect when you're speaking. Your avatar's mouth opens and closes in real time, giving your stream a natural, responsive PNGTuber experience — all running directly in the Browser Source.",
+  },
+  {
+    id: "11",
+    question: "What's coming next?",
+    answer:
+      "We're working on Agent Avatars — give your AI agent a virtual face that can appear on stream, in Discord, or anywhere you need a visual presence. Join our Discord to get early access and shape what comes next.",
   },
 ];
 
