@@ -17,6 +17,9 @@ ARG NEXT_PUBLIC_CONTACT_EMAIL
 ARG NEXT_PUBLIC_SOCIAL_DISCORD
 ARG NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 
+# Dummy DATABASE_URL for build-time page collection (not used for actual connections)
+ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+
 RUN bun run build
 
 # ── Stage 3: Production ──────────────────────────────────────────
@@ -27,16 +30,25 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-# sharp needs these system libs
+# sharp runtime dependency (libvips, not libvips-dev) + curl for healthcheck
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libvips-dev \
+    libvips \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy standalone output
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+# Non-root user for security
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
+# Copy standalone output
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+USER nextjs
 EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:3000/ || exit 1
 
 CMD ["node", "server.js"]
