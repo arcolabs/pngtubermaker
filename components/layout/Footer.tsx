@@ -2,10 +2,58 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { brand } from "@/lib/brand";
+
+interface BadgeData {
+  id: string;
+  url: string;
+  imageUrl: string;
+  altText: string;
+  width: number;
+  height: number;
+}
+
+function FooterBadges() {
+  const [badges, setBadges] = useState<BadgeData[]>([]);
+
+  useEffect(() => {
+    fetch("/api/badges")
+      .then((res) => (res.ok ? res.json() : { badges: [] }))
+      .then((data) => setBadges(data.badges))
+      .catch(() => {});
+  }, []);
+
+  if (badges.length === 0) return null;
+
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      {badges.map((b) => (
+        <a
+          key={b.id}
+          href={b.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="opacity-50 hover:opacity-80 transition-opacity"
+        >
+          {/* biome-ignore lint/performance/noImgElement: external badge image */}
+          <img
+            src={b.imageUrl}
+            alt={b.altText}
+            width={Math.round(b.width * 0.55)}
+            height={Math.round(b.height * 0.55)}
+          />
+        </a>
+      ))}
+    </div>
+  );
+}
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const pathname = usePathname();
+  const isHomepage = pathname === "/";
 
   return (
     <footer className="bg-base-100 text-base-content">
@@ -138,16 +186,19 @@ export default function Footer() {
           </nav>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 mt-6 sm:mt-10 pt-5 sm:pt-8 border-t border-base-content/10">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-6 sm:mt-10 pt-5 sm:pt-8 border-t border-base-content/10">
           <p className="text-sm text-base-content/40">
             © {currentYear} {brand.name}
           </p>
-          <a
-            href={`mailto:${brand.contact.email}`}
-            className="text-sm text-base-content/40 hover:text-primary transition-colors"
-          >
-            {brand.contact.email}
-          </a>
+          <div className="flex items-center gap-4">
+            {isHomepage && <FooterBadges />}
+            <a
+              href={`mailto:${brand.contact.email}`}
+              className="text-sm text-base-content/40 hover:text-primary transition-colors"
+            >
+              {brand.contact.email}
+            </a>
+          </div>
         </div>
       </div>
     </footer>

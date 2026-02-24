@@ -249,6 +249,24 @@ export const partners = pgTable("partners", {
 });
 
 // ============================================================================
+// Badges (featured-on badges for homepage footer)
+// ============================================================================
+
+export const badges = pgTable("badges", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  url: text("url").notNull(),
+  imageUrl: text("image_url").notNull(),
+  altText: text("alt_text").notNull(),
+  width: integer("width").notNull().default(200),
+  height: integer("height").notNull().default(54),
+  sortOrder: integer("sort_order").notNull().default(0),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// ============================================================================
 // Type exports
 // ============================================================================
 
@@ -291,3 +309,7 @@ export type NewAvatarExpression = InferInsertModel<typeof avatarExpressions>;
 // Partners
 export type Partner = InferSelectModel<typeof partners>;
 export type NewPartner = InferInsertModel<typeof partners>;
+
+// Badges
+export type Badge = InferSelectModel<typeof badges>;
+export type NewBadge = InferInsertModel<typeof badges>;
