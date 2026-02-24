@@ -130,8 +130,9 @@ async function submitTask(
 
 async function checkTask(taskId: string): Promise<TaskResponse> {
   const apiKey = getApiKey();
+  const url = `${API_BASE}/v1/piapi/task/${taskId}`;
 
-  const res = await fetch(`${API_BASE}/v1/piapi/task/${taskId}`, {
+  const res = await fetch(url, {
     headers: { Authorization: `Bearer ${apiKey}` },
     cache: "no-store",
     signal: AbortSignal.timeout(15_000),
@@ -139,7 +140,11 @@ async function checkTask(taskId: string): Promise<TaskResponse> {
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Qwen poll failed (${res.status}): ${body}`);
+    const reqId = res.headers.get("x-request-id") || "n/a";
+    console.error(
+      `[Qwen] checkTask failed: taskId=${taskId} status=${res.status} reqId=${reqId} body=${body.slice(0, 500)}`,
+    );
+    throw new Error(`Qwen poll failed (${res.status}): ${body.slice(0, 200)}`);
   }
 
   return (await res.json()) as TaskResponse;
@@ -185,27 +190,31 @@ export class QwenAdapter {
 
           if (isCompleted(status)) return data;
           if (isFailed(status)) {
-            throw new PollFailedError(
-              data.data?.error?.message || "Qwen generation failed",
+            const errMsg =
+              data.data?.error?.message || "Qwen generation failed";
+            console.error(
+              `[Qwen] Character generation failed: taskId=${taskId} error=${errMsg}`,
             );
+            throw new PollFailedError(errMsg);
           }
           return null;
         },
         onPending: () => console.log("[Qwen] Still generating..."),
       },
       { initialDelay: 5000, interval: 5000, timeout: 180_000 },
+      `Qwen:character:${taskId.slice(0, 8)}`,
     );
 
     const imageUrl = extractImageUrl(result.data);
     if (!imageUrl) {
       console.error(
-        "[Qwen] No image in response:",
+        `[Qwen] No image in response: taskId=${taskId}`,
         JSON.stringify(result, null, 2),
       );
       return null;
     }
 
-    console.log("[Qwen] Generation complete");
+    console.log(`[Qwen] Generation complete: taskId=${taskId}`);
     return imageUrl;
   }
 
@@ -230,10 +239,13 @@ export class QwenAdapter {
 
             if (isCompleted(status)) return data;
             if (isFailed(status)) {
-              throw new PollFailedError(
+              const errMsg =
                 data.data?.error?.message ||
-                  "Qwen expression generation failed",
+                "Qwen expression generation failed";
+              console.error(
+                `[Qwen] Expression ${request.expression} failed: taskId=${taskId} error=${errMsg}`,
               );
+              throw new PollFailedError(errMsg);
             }
             return null;
           },
@@ -241,10 +253,14 @@ export class QwenAdapter {
             console.log(`[Qwen] Still generating ${request.expression}...`),
         },
         { initialDelay: 5000, interval: 5000, timeout: 180_000 },
+        `Qwen:${request.expression}:${taskId.slice(0, 8)}`,
       );
 
       const imageUrl = extractImageUrl(result.data);
       if (!imageUrl) {
+        console.error(
+          `[Qwen] No image in expression response: taskId=${taskId} type=${request.expression}`,
+        );
         return {
           status: "failed",
           imageUrl: null,
@@ -252,9 +268,15 @@ export class QwenAdapter {
         };
       }
 
-      console.log(`[Qwen] Expression ${request.expression} complete`);
+      console.log(
+        `[Qwen] Expression ${request.expression} complete: taskId=${taskId}`,
+      );
       return { status: "completed", imageUrl };
     } catch (error) {
+      console.error(
+        `[Qwen] Expression ${request.expression} error: taskId=${taskId}`,
+        error instanceof Error ? error.message : error,
+      );
       return {
         status: "failed",
         imageUrl: null,

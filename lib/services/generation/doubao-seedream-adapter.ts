@@ -77,6 +77,7 @@ export class DoubaoSeedreamAdapter {
       console.log("[Doubao] With reference image:", request.referenceUrl);
     }
 
+    const startTime = Date.now();
     const res = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -87,14 +88,23 @@ export class DoubaoSeedreamAdapter {
       signal: AbortSignal.timeout(120_000),
     });
 
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    const reqId = res.headers.get("x-request-id") || "n/a";
+
     if (!res.ok) {
       const text = await res.text();
+      console.error(
+        `[Doubao] Character generation failed: status=${res.status} reqId=${reqId} elapsed=${elapsed}s body=${text.slice(0, 500)}`,
+      );
       throw new Error(`Doubao submit failed (${res.status}): ${text}`);
     }
 
     const data = (await res.json()) as DoubaoResponse;
 
     if (data.error) {
+      console.error(
+        `[Doubao] API error: code=${data.error.code} message=${data.error.message} reqId=${reqId}`,
+      );
       throw new Error(
         `Doubao API error: ${data.error.code} - ${data.error.message}`,
       );
@@ -103,11 +113,16 @@ export class DoubaoSeedreamAdapter {
     const imageUrl = extractImageUrl(data);
 
     if (!imageUrl) {
-      console.error("[Doubao] No image data in response");
+      console.error(
+        `[Doubao] No image in response: reqId=${reqId}`,
+        JSON.stringify(data, null, 2),
+      );
       return null;
     }
 
-    console.log("[Doubao] Generation complete");
+    console.log(
+      `[Doubao] Generation complete: elapsed=${elapsed}s reqId=${reqId}`,
+    );
     return imageUrl;
   }
 
@@ -121,6 +136,7 @@ export class DoubaoSeedreamAdapter {
       prompt,
     );
 
+    const startTime = Date.now();
     const res = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -138,8 +154,14 @@ export class DoubaoSeedreamAdapter {
       signal: AbortSignal.timeout(120_000),
     });
 
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    const reqId = res.headers.get("x-request-id") || "n/a";
+
     if (!res.ok) {
       const text = await res.text();
+      console.error(
+        `[Doubao] Expression ${request.expression} failed: status=${res.status} reqId=${reqId} elapsed=${elapsed}s body=${text.slice(0, 500)}`,
+      );
       return {
         status: "failed",
         imageUrl: null,
@@ -150,6 +172,9 @@ export class DoubaoSeedreamAdapter {
     const data = (await res.json()) as DoubaoResponse;
 
     if (data.error) {
+      console.error(
+        `[Doubao] Expression ${request.expression} API error: code=${data.error.code} message=${data.error.message} reqId=${reqId}`,
+      );
       return {
         status: "failed",
         imageUrl: null,
@@ -160,6 +185,10 @@ export class DoubaoSeedreamAdapter {
     const imageUrl = extractImageUrl(data);
 
     if (!imageUrl) {
+      console.error(
+        `[Doubao] Expression ${request.expression} no image: reqId=${reqId}`,
+        JSON.stringify(data, null, 2),
+      );
       return {
         status: "failed",
         imageUrl: null,
@@ -167,7 +196,9 @@ export class DoubaoSeedreamAdapter {
       };
     }
 
-    console.log(`[Doubao] Expression ${request.expression} complete`);
+    console.log(
+      `[Doubao] Expression ${request.expression} complete: elapsed=${elapsed}s reqId=${reqId}`,
+    );
     return {
       status: "completed",
       imageUrl,

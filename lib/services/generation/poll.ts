@@ -56,34 +56,57 @@ function delay(ms: number): Promise<void> {
 export async function pollUntilDone<T>(
   callbacks: PollCallbacks<T>,
   config?: PollConfig,
+  /** Optional label for log messages (e.g. "Qwen:talking" ) */
+  label?: string,
 ): Promise<T> {
   const { initialDelay, interval, timeout, maxRetries } = {
     ...DEFAULTS,
     ...config,
   };
-  const deadline = Date.now() + timeout;
+  const tag = label ? `[poll:${label}]` : "[poll]";
+  const startTime = Date.now();
+  const deadline = startTime + timeout;
   let consecutiveErrors = 0;
+  let pollCount = 0;
 
   await delay(initialDelay);
 
   while (Date.now() < deadline) {
+    pollCount++;
     try {
       const result = await callbacks.check();
       consecutiveErrors = 0; // reset on success
-      if (result !== null) return result;
+      if (result !== null) {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        console.log(
+          `${tag} Completed after ${pollCount} polls, ${elapsed}s total`,
+        );
+        return result;
+      }
       callbacks.onPending?.();
     } catch (error) {
       // PollFailedError = explicit API failure, throw immediately
-      if (error instanceof PollFailedError) throw error;
+      if (error instanceof PollFailedError) {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        console.error(
+          `${tag} API failure after ${pollCount} polls, ${elapsed}s:`,
+          error.message,
+        );
+        throw error;
+      }
 
       // Transient error (network timeout, fetch failure, etc.)
       consecutiveErrors++;
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
       console.warn(
-        `[poll] Transient error (${consecutiveErrors}/${maxRetries}):`,
+        `${tag} Transient error (${consecutiveErrors}/${maxRetries}) at ${elapsed}s, poll #${pollCount}:`,
         error instanceof Error ? error.message : error,
       );
 
       if (consecutiveErrors >= maxRetries) {
+        console.error(
+          `${tag} Giving up after ${consecutiveErrors} consecutive failures`,
+        );
         throw error; // too many consecutive failures
       }
     }
@@ -93,5 +116,9 @@ export async function pollUntilDone<T>(
     await delay(Math.min(interval, remaining));
   }
 
+  const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+  console.error(
+    `${tag} Timeout after ${pollCount} polls, ${elapsed}s (limit: ${timeout}ms)`,
+  );
   throw new PollTimeoutError(timeout);
 }
