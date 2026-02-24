@@ -67,17 +67,11 @@ export default function CreditBar() {
 
   const getTierBadge = () => {
     switch (tier) {
-      case "pro":
+      case "creator":
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r from-primary to-cyan-400">
             <Crown className="w-3 h-3" />
-            PRO
-          </span>
-        );
-      case "start":
-        return (
-          <span className="px-3 py-1 rounded-full text-xs font-semibold text-primary bg-primary/10">
-            START
+            CREATOR
           </span>
         );
       default:
@@ -209,35 +203,47 @@ export default function CreditBar() {
         </div>
       </div>
 
+      {/* Expiration warning for free users */}
+      {isFreeUser && expirationInfo?.isExpiringSoon && subCredits > 0 && (
+        <div className="mt-4 flex items-start gap-2 rounded-xl bg-amber-50 border border-amber-200/60 px-4 py-3 text-sm text-amber-800">
+          <span className="mt-0.5 flex-shrink-0">⚠</span>
+          <p>
+            Your welcome credits expire in {expirationInfo.daysLeft} day
+            {expirationInfo.daysLeft !== 1 && "s"}.{" "}
+            <span className="text-amber-600">
+              Purchased credits never expire.
+            </span>{" "}
+            <Link
+              href="/pricing"
+              className="font-semibold text-amber-900 underline underline-offset-2 hover:text-amber-700"
+            >
+              Buy Credits
+            </Link>
+          </p>
+        </div>
+      )}
+
       {/* Actions */}
       <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100">
         {tier !== "free" && (
           <Link
-            href="/pricing#topup"
+            href="/pricing"
             className="btn btn-sm btn-outline border-gray-200 hover:border-primary hover:text-primary flex-1 min-w-[120px]"
           >
             <ArrowUpCircle className="w-4 h-4" />
-            Top Up
+            Buy Credits
           </Link>
         )}
 
-        {tier === "free" ? (
+        {tier === "free" && (
           <Link
             href="/pricing"
             className="btn btn-sm border-0 text-white bg-gradient-to-r from-primary to-cyan-400 hover:shadow-md transition-all flex-1"
           >
             <Crown className="w-4 h-4" />
-            Upgrade Plan
+            Buy Credits
           </Link>
-        ) : tier === "start" ? (
-          <Link
-            href="/pricing"
-            className="btn btn-sm border-0 text-white bg-gradient-to-r from-primary to-cyan-400 hover:shadow-md transition-all flex-1 min-w-[120px]"
-          >
-            <Crown className="w-4 h-4" />
-            Upgrade to Pro
-          </Link>
-        ) : null}
+        )}
 
         {tier !== "free" && (
           <button

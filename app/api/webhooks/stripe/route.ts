@@ -13,7 +13,6 @@ import { getDatabase } from "@/lib/db";
 import {
   grantPurchasedCredits,
   grantSubscriptionCredits,
-  TOPUP_PACKAGES,
 } from "@/lib/services/credits";
 import {
   notifyNewSubscription,
@@ -21,7 +20,9 @@ import {
   notifyTopup,
 } from "@/lib/services/lark";
 import {
-  PRICING_CONFIG,
+  CREATOR_PASS,
+  CREDIT_PACKS,
+  type CreditPackId,
   STRIPE_WEBHOOK_SECRET,
   stripe,
   type Tier,
@@ -95,9 +96,8 @@ async function handleCheckoutSessionCompleted(
         : session.subscription.id;
 
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-    const tier = (session.metadata?.tier || "pro") as Tier;
-    const tierConfig = PRICING_CONFIG[tier];
-    const monthlyCredits = tierConfig?.monthlyCredits ?? 0;
+    const tier = (session.metadata?.tier || "creator") as Tier;
+    const monthlyCredits = CREATOR_PASS.monthlyCredits;
 
     const existingSub = await db
       .select()
@@ -153,11 +153,10 @@ async function handleCheckoutSessionCompleted(
 
     if (userRecord[0]) {
       const cycle = session.metadata?.cycle || "monthly";
-      const price = tierConfig
-        ? cycle === "yearly"
-          ? `$${tierConfig.yearlyPrice}/yr`
-          : `$${tierConfig.monthlyPrice}/mo`
-        : "N/A";
+      const price =
+        cycle === "yearly"
+          ? `$${CREATOR_PASS.yearlyPrice}/yr`
+          : `$${CREATOR_PASS.monthlyPrice}/mo`;
 
       notifyNewSubscription({
         userId,
@@ -178,9 +177,9 @@ async function handleCheckoutSessionCompleted(
 
     // Calculate credits to grant
     let creditsToGrant = 0;
-    if (packageId && packageId in TOPUP_PACKAGES) {
-      const pkg = TOPUP_PACKAGES[packageId as keyof typeof TOPUP_PACKAGES];
-      creditsToGrant = pkg.credits + pkg.bonusCredits;
+    if (packageId && packageId in CREDIT_PACKS) {
+      const pack = CREDIT_PACKS[packageId as CreditPackId];
+      creditsToGrant = pack.credits;
     } else {
       // Fallback: 1000 credits per $1 (amount is in cents)
       creditsToGrant = Math.floor(amount / 100) * 1000;
@@ -218,8 +217,8 @@ async function handleCheckoutSessionCompleted(
     if (topupUser[0]) {
       const packageNames: Record<string, string> = {
         starter: "Starter",
-        value: "Value",
-        power: "Power",
+        popular: "Popular",
+        best_value: "Best Value",
       };
 
       notifyTopup({

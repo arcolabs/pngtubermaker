@@ -3,29 +3,21 @@
 import { Download, Monitor, Pencil, Star, Users, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
+import { useAuthStore } from "@/hooks/use-auth-store";
 
 export default function Comparison() {
+  const { user, isHydrated, hydrate } = useAuthStore();
+
+  useEffect(() => {
+    if (!isHydrated) hydrate();
+  }, [isHydrated, hydrate]);
   return (
     <section className="py-20 md:py-24 bg-white">
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="text-left md:text-center">
-          <div className="flex items-center justify-start gap-x-3 md:justify-center">
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4].map((i) => (
-                <Star
-                  key={i}
-                  className="w-4 h-4 text-yellow-400 fill-yellow-400"
-                />
-              ))}
-              <Star className="w-4 h-4 text-gray-300 fill-gray-300" />
-            </div>
-            <span className="text-sm font-medium text-gray-600">
-              4.5 stars from happy creators
-            </span>
-          </div>
-
-          <h2 className="max-w-2xl mx-auto mt-3 text-2xl font-bold tracking-tight text-primary sm:text-3xl lg:text-[42px] lg:leading-[48px]">
+          <h2 className="max-w-2xl mx-auto text-2xl font-bold tracking-tight text-primary sm:text-3xl lg:text-[42px] lg:leading-[48px]">
             How Your Ideas Become Professional PNGTubers
           </h2>
 
@@ -157,48 +149,35 @@ export default function Comparison() {
         {/* CTA Section */}
         <div className="relative mt-8 text-center sm:mt-12">
           <Link
-            href="/login"
+            href={user ? "/create" : "/login"}
             className="inline-flex h-12 w-full items-center justify-center gap-1.5 rounded-lg border border-primary bg-primary px-6 pb-3.5 pt-2.5 text-lg font-bold leading-6 text-white shadow-lg shadow-primary/25 transition-all duration-150 hover:bg-primary/90 sm:w-auto"
           >
             <span className="hidden md:inline-flex">
-              Create Your PNGTuber Avatar in Minutes
+              {user
+                ? "Create Your PNGTuber Now"
+                : "Create Your PNGTuber Avatar — Free"}
             </span>
-            <span className="md:hidden">Create Your Avatar</span>
+            <span className="md:hidden">
+              {user ? "Create Now" : "Get Started Free"}
+            </span>
           </Link>
 
-          {/* Trust Badge */}
-          <div className="w-full flex items-center justify-center mt-6">
-            <div className="max-w-[400px] bg-gray-50 p-4 text-left rounded-md space-y-2 opacity-70 hover:opacity-100 transition-opacity duration-300">
-              <div className="flex items-center gap-3 relative">
-                <div className="uppercase size-6 shrink-0 rounded-full font-bold text-xs flex items-center justify-center text-gray-700 bg-gray-300">
-                  AK
-                </div>
-                <p className="font-semibold text-[13px] leading-[18px] tracking-tight text-gray-900">
-                  Alex Kim - Twitch Streamer
-                </p>
-                <div className="absolute top-1 right-0 flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Star
-                      key={i}
-                      className="w-3 h-3 text-yellow-400 fill-yellow-400"
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <p className="text-sm font-bold leading-5 tracking-tight text-gray-900">
-                Perfect for streaming
-              </p>
-
-              <p className="text-[13px] font-normal tracking-tight text-gray-600 line-clamp-2">
-                Generated my avatar in 3 minutes and my viewers love it! Way
-                better than spending weeks waiting for commissioned art.
-              </p>
-
-              <p className="text-[12px] text-gray-500">
-                Date of experience: January 15, 2025
-              </p>
-            </div>
+          {/* Value Props */}
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-6 text-sm text-gray-500">
+            <span className="flex items-center gap-1.5">
+              <Star className="w-4 h-4 text-primary fill-primary" />
+              No drawing skills needed
+            </span>
+            <span className="hidden sm:inline text-gray-300">|</span>
+            <span className="flex items-center gap-1.5">
+              <Star className="w-4 h-4 text-primary fill-primary" />
+              Ready in under 5 minutes
+            </span>
+            <span className="hidden sm:inline text-gray-300">|</span>
+            <span className="flex items-center gap-1.5">
+              <Star className="w-4 h-4 text-primary fill-primary" />
+              Works directly in OBS
+            </span>
           </div>
         </div>
       </div>

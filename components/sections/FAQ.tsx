@@ -22,7 +22,7 @@ const defaultFaqData: FAQItem[] = [
     id: "1",
     question: "What is PNGTuberMaker and how does it work?",
     answer:
-      "PNGTuberMaker is an AI-powered tool that lets you create custom PNG avatars for streaming. Just describe your character or upload a reference image, and our AI will generate multiple avatar options — complete with expressions and optional animations. No art skills needed.",
+      "PNGTuberMaker is an AI-powered tool that lets you create custom PNG avatars for streaming. Just describe your character or upload a reference image, and our AI will generate multiple avatar options — complete with expression packs for different emotions. No art skills needed.",
   },
   {
     id: "2",
@@ -34,7 +34,7 @@ const defaultFaqData: FAQItem[] = [
     id: "3",
     question: "Can I upload my own sketches or reference images?",
     answer:
-      "Yes. You can upload sketches, character references, or screenshots. The AI will use them to match your style and keep your character consistent across expressions and animations.",
+      "Yes. You can upload sketches, character references, or screenshots. The AI will use them to match your style and keep your character consistent across all expressions.",
   },
   {
     id: "4",
@@ -52,13 +52,13 @@ const defaultFaqData: FAQItem[] = [
     id: "6",
     question: "Can I use the avatars commercially?",
     answer:
-      "Absolutely. The Pro plan comes with a full commercial license. You can use your avatars in streams, videos, thumbnails, merchandise, or even resell to clients.",
+      "Yes. All avatars you generate are yours to use freely — in streams, videos, thumbnails, and social media. You own what you create.",
   },
   {
     id: "7",
     question: "What's included in the free plan?",
     answer:
-      "The free plan gives you 3 avatar generations per month at 512px resolution — enough to try the full workflow including expressions and OBS preview. Upgrade to Start or Pro for more generations, HD/4K export, and full expression packs.",
+      "New users get 1,000 welcome credits — enough for a full avatar with an expression pack. Exports are at 512px. You can buy more credits anytime, or subscribe to the Creator Pass for 6,000 credits/month and HD (1080p) export.",
   },
   {
     id: "8",

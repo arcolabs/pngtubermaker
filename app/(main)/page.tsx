@@ -6,20 +6,19 @@ import {
   PricingSection,
   type Tier,
 } from "@/components/pricing";
-import AgentTeaser from "@/components/sections/AgentTeaser";
 import AITools from "@/components/sections/AITools";
-import CharacterShowcase from "@/components/sections/CharacterShowcase";
 import Comparison from "@/components/sections/Comparison";
 import DiscordCTA from "@/components/sections/DiscordCTA";
 import FAQ from "@/components/sections/FAQ";
 import Hero from "@/components/sections/Hero";
 import Testimonials from "@/components/sections/Testimonials";
-import { useSubscription } from "@/hooks/use-stripe";
+import { useSubscription, useTopup } from "@/hooks/use-stripe";
 import { authClient } from "@/lib/auth-client";
 
 export default function Home() {
   const router = useRouter();
-  const { subscribe, isLoading } = useSubscription();
+  const { subscribe, isLoading: subscribeLoading } = useSubscription();
+  const { topup, isLoading: topupLoading } = useTopup();
 
   const handleSubscribe = async (tier: Tier, cycle: BillingCycle) => {
     const session = await authClient.getSession();
@@ -30,16 +29,31 @@ export default function Home() {
     await subscribe(tier, cycle);
   };
 
+  const handleTopUp = async (
+    packageId: string,
+    _credits: number,
+    price: number,
+  ) => {
+    const session = await authClient.getSession();
+    if (!session.data?.user) {
+      router.push("/login");
+      return;
+    }
+    await topup(price * 100, packageId);
+  };
+
   return (
     <>
       <Hero />
-      <CharacterShowcase />
       <AITools />
       <Comparison />
-      <PricingSection onSubscribe={handleSubscribe} isLoading={isLoading} />
+      <PricingSection
+        onSubscribe={handleSubscribe}
+        onTopUp={handleTopUp}
+        isLoading={subscribeLoading || topupLoading}
+      />
       <Testimonials />
       <FAQ />
-      <AgentTeaser />
       <DiscordCTA />
     </>
   );

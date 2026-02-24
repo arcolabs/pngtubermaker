@@ -32,6 +32,12 @@ export default function Footer() {
           <nav className="flex flex-col gap-2">
             <h6 className="footer-title">Product</h6>
             <Link
+              href="/create"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              Create Avatar
+            </Link>
+            <Link
               href="/pricing"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
@@ -40,7 +46,7 @@ export default function Footer() {
           </nav>
 
           <nav className="flex flex-col gap-2">
-            <h6 className="footer-title">Resources</h6>
+            <h6 className="footer-title">Community</h6>
             <Link
               href={brand.social.discord || "https://discord.com"}
               target="_blank"
@@ -91,6 +97,12 @@ export default function Footer() {
             {brand.description}
           </p>
           <nav className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+            <Link
+              href="/create"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              Create Avatar
+            </Link>
             <Link
               href="/pricing"
               className="text-base-content/70 hover:text-primary transition-colors"

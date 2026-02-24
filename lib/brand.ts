@@ -3,7 +3,7 @@ export const brand = {
   shortName: process.env.NEXT_PUBLIC_APP_SHORT_NAME || "PNGTuber",
   description:
     process.env.NEXT_PUBLIC_APP_DESCRIPTION ||
-    "Create professional PNGTuber avatars in minutes with AI. Generate custom characters, expressions, and animations for streaming on Twitch, YouTube, and Discord.",
+    "Create professional PNGTuber avatars in minutes with AI. Generate custom characters and expression packs for streaming on Twitch, YouTube, and Discord.",
 
   contact: {
     email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "support@pngtubermaker.com",
@@ -12,7 +12,6 @@ export const brand = {
 
   social: {
     twitter: process.env.NEXT_PUBLIC_SOCIAL_TWITTER || "",
-    github: process.env.NEXT_PUBLIC_SOCIAL_GITHUB || "",
     discord:
       process.env.NEXT_PUBLIC_SOCIAL_DISCORD || "https://discord.gg/zysPAnvP8f",
   },

@@ -39,8 +39,9 @@ export default function PlayerClient({ avatarId }: PlayerClientProps) {
         setState("ready");
         break;
       case "error":
-        if (event.error === "Microphone access denied") {
+        if (event.error?.startsWith("Microphone access denied")) {
           setState("mic-denied");
+          setErrorMsg(event.error);
         } else {
           setState("error");
           setErrorMsg(event.error ?? "Unknown error");
@@ -91,6 +92,7 @@ export default function PlayerClient({ avatarId }: PlayerClientProps) {
         const bounce = searchParams.get("bounce");
         const bounceDuration = searchParams.get("bounceDuration");
         const calibrate = searchParams.get("calibrate");
+        const delay = searchParams.get("delay");
 
         const engine = new PNGTuberEngine({
           canvas: canvasEl,
@@ -101,6 +103,7 @@ export default function PlayerClient({ avatarId }: PlayerClientProps) {
           ...(bounce !== null ? { bounceOnChange: bounce !== "false" } : {}),
           ...(bounceDuration ? { bounceDuration: Number(bounceDuration) } : {}),
           ...(calibrate === "false" ? { disableCalibration: true } : {}),
+          ...(delay ? { speakingHoldMs: Number(delay) } : {}),
         });
 
         engine.on(handleEvent);
@@ -172,22 +175,34 @@ export default function PlayerClient({ avatarId }: PlayerClientProps) {
             background: "rgba(0,0,0,0.6)",
           }}
         >
-          <p
+          <div
             style={{
               color: "#fff",
-              fontSize: "1.25rem",
               textAlign: "center",
-              padding: "1rem",
-              maxWidth: "400px",
+              padding: "1.5rem",
+              maxWidth: "380px",
             }}
           >
-            Microphone access is required for the PNGTuber player.
-            <br />
-            <span style={{ fontSize: "0.875rem", opacity: 0.7 }}>
-              In OBS: right-click the Browser Source &rarr; Properties &rarr;
-              check &quot;Control audio via OBS&quot;
-            </span>
-          </p>
+            <p style={{ fontSize: "1.25rem", marginBottom: "0.75rem" }}>
+              Microphone access required
+            </p>
+            <p style={{ fontSize: "0.85rem", opacity: 0.8, lineHeight: 1.6 }}>
+              Allow microphone access in your browser, or restart OBS to retry.
+            </p>
+            {errorMsg && (
+              <p
+                style={{
+                  marginTop: "1rem",
+                  fontSize: "0.65rem",
+                  opacity: 0.4,
+                  fontFamily: "monospace",
+                  wordBreak: "break-all",
+                }}
+              >
+                {errorMsg}
+              </p>
+            )}
+          </div>
         </div>
       )}
 

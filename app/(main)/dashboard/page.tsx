@@ -21,6 +21,11 @@ export default async function DashboardPage() {
   const userId = session.user.id;
   const recentAvatars = await listUserAvatars(userId, 6).catch(() => []);
 
+  // New users with no avatars → skip empty dashboard, go straight to create
+  if (recentAvatars.length === 0) {
+    redirect("/create?welcome=1");
+  }
+
   return (
     <div className="min-h-screen bg-base-100">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">

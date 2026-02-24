@@ -4,6 +4,7 @@ import { Loader2, Sparkles } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAutoResizeTextarea } from "@/hooks/use-auto-resize-textarea";
 import type { ArtStyle } from "@/hooks/use-avatar-generator";
+import { useBuyCreditsModal } from "@/hooks/use-buy-credits-modal";
 import { TASK_COSTS } from "@/lib/services/credits";
 import type { ReferenceHandlers } from "@/types/reference";
 import { ReferenceUploadArea } from "./ReferenceUploadArea";
@@ -340,11 +341,9 @@ export function GeneratorForm({
           </div>
           <ReferenceUploadArea
             referenceFile={reference.referenceFile}
-            gallery={reference.gallery}
             onFileSelected={(file) => reference.onReferenceFileChange(file)}
             onImageUploaded={reference.onImageUploaded}
             onRemoveFile={() => reference.onReferenceFileChange(null)}
-            onRemoveFromGallery={reference.onRemoveFromGallery}
             disabled={isGenerating}
           />
         </div>
@@ -375,9 +374,15 @@ export function GeneratorForm({
           <div className="alert alert-warning py-2 text-sm">
             <span>
               Not enough credits.{" "}
-              <a href="/pricing" className="link link-primary">
-                Get more credits
-              </a>
+              <button
+                type="button"
+                onClick={() =>
+                  useBuyCreditsModal.getState().open(CHARACTER_COST)
+                }
+                className="link link-primary"
+              >
+                Buy credits
+              </button>
             </span>
           </div>
         )}

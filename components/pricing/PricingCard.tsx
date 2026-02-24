@@ -1,100 +1,83 @@
 "use client";
 
-import { Check } from "lucide-react";
-import type { BillingCycle, Tier } from "@/lib/stripe";
-import { formatPrice } from "@/lib/stripe";
+import { Check, Crown } from "lucide-react";
+import { useState } from "react";
+import {
+  type BillingCycle,
+  CREATOR_PASS,
+  formatPrice,
+  getYearlySavings,
+  type Tier,
+} from "@/lib/stripe";
 import { cn } from "@/lib/utils";
+import { PricingToggle } from "./PricingToggle";
 
-interface PricingCardProps {
-  tier: Tier;
-  name: string;
-  description: string;
-  monthlyPrice: number;
-  yearlyPrice: number;
-  features: string[];
-  highlighted?: boolean;
-  cycle: BillingCycle;
+interface CreatorPassCardProps {
   isLoading?: boolean;
   isCurrentPlan?: boolean;
-  onSubscribe: (tier: Tier) => void;
+  onSubscribe: (tier: Tier, cycle: BillingCycle) => void;
 }
 
-export function PricingCard({
-  tier,
-  name,
-  description,
-  monthlyPrice,
-  yearlyPrice,
-  features,
-  highlighted = false,
-  cycle,
+export function CreatorPassCard({
   isLoading = false,
   isCurrentPlan = false,
   onSubscribe,
-}: PricingCardProps) {
-  const price = cycle === "monthly" ? monthlyPrice : yearlyPrice;
+}: CreatorPassCardProps) {
+  const [cycle, setCycle] = useState<BillingCycle>("monthly");
+
+  const price =
+    cycle === "monthly"
+      ? CREATOR_PASS.monthlyPrice
+      : CREATOR_PASS.yearlyPrice / 12;
+  const savings = getYearlySavings();
 
   return (
-    <div
-      className={cn(
-        "relative flex flex-col rounded-2xl p-8 transition-all duration-300",
-        highlighted
-          ? "border-2 border-primary bg-gradient-to-b from-primary/10 to-transparent"
-          : "border border-base-content/10 bg-base-200/50 hover:border-base-content/20 hover:bg-base-200",
-      )}
-    >
-      {highlighted && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-xs font-semibold text-primary-content">
-          Most Popular
+    <div className="relative rounded-2xl border border-base-content/10 bg-base-200/50 p-8 max-w-lg mx-auto">
+      <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-primary to-cyan-400 px-4 py-1 text-xs font-semibold text-white flex items-center gap-1">
+        <Crown className="w-3 h-3" />
+        Subscribe & Save
+      </div>
+
+      <div className="mb-6 text-center">
+        <h3 className="mb-1 text-xl font-bold text-base-content">
+          {CREATOR_PASS.name}
+        </h3>
+        <p className="text-sm text-base-content/60">
+          For creators who want the best value on credits and HD export
+        </p>
+      </div>
+
+      <div className="mb-6">
+        <PricingToggle
+          cycle={cycle}
+          onCycleChange={setCycle}
+          savingsPercentage={savings}
+        />
+      </div>
+
+      <div className="mb-6 text-center">
+        <div className="flex items-baseline justify-center gap-2">
+          <span className="text-4xl font-bold text-base-content">
+            {formatPrice(price)}
+          </span>
+          <span className="text-base-content/50">/mo</span>
         </div>
-      )}
-
-      <div className="mb-6">
-        <h3 className="mb-2 text-xl font-bold text-base-content">{name}</h3>
-        <p className="text-sm text-base-content/60">{description}</p>
-      </div>
-
-      <div className="mb-6">
-        {tier === "free" ? (
-          <div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-bold text-base-content">$0</span>
-              <span className="text-base-content/50">forever</span>
-            </div>
-            <p className="mt-1 text-sm text-base-content/50">
-              No credit card required
-            </p>
-          </div>
+        {cycle === "yearly" ? (
+          <p className="mt-1 text-sm text-success">
+            {formatPrice(CREATOR_PASS.yearlyPrice)}/yr — Save {savings}%
+          </p>
         ) : (
-          <div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-bold text-base-content">
-                {formatPrice(price)}
-              </span>
-              <span className="text-base-content/50">
-                /{cycle === "monthly" ? "mo" : "yr"}
-              </span>
-            </div>
-            {cycle === "yearly" ? (
-              <p className="mt-1 text-sm text-success">
-                Save{" "}
-                {Math.round(
-                  ((monthlyPrice * 12 - yearlyPrice) / (monthlyPrice * 12)) *
-                    100,
-                )}
-                % vs monthly
-              </p>
-            ) : (
-              <p className="mt-1 text-sm text-base-content/50">
-                {formatPrice(yearlyPrice / 12)}/mo when billed annually
-              </p>
-            )}
-          </div>
+          <p className="mt-1 text-sm text-base-content/50">
+            {formatPrice(CREATOR_PASS.yearlyPrice / 12)}/mo when billed annually
+          </p>
         )}
+        <p className="mt-2 text-sm font-medium text-primary">
+          ~30% savings vs buying credits
+        </p>
       </div>
 
-      <ul className="mb-8 flex-1 space-y-3">
-        {features.map((feature) => (
+      <ul className="mb-8 space-y-3">
+        {CREATOR_PASS.features.map((feature) => (
           <li key={feature} className="flex items-start gap-3">
             <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
             <span className="text-sm text-base-content/70">{feature}</span>
@@ -109,24 +92,19 @@ export function PricingCard({
       ) : (
         <button
           type="button"
-          onClick={() => onSubscribe(tier)}
+          onClick={() => onSubscribe("creator", cycle)}
           disabled={isLoading}
           className={cn(
-            "w-full rounded-xl py-3 font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 disabled:opacity-50",
-            tier === "free"
-              ? "btn btn-outline btn-primary"
-              : highlighted
-                ? "btn btn-primary"
-                : "btn btn-outline",
+            "w-full rounded-xl py-3 font-semibold transition-all duration-200",
+            "btn btn-outline btn-primary",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 disabled:opacity-50",
           )}
         >
           {isLoading
             ? "Loading..."
-            : tier === "free"
-              ? "Get Started Free"
-              : cycle === "yearly"
-                ? `Subscribe Yearly`
-                : `Subscribe Monthly`}
+            : cycle === "yearly"
+              ? "Subscribe Yearly"
+              : "Subscribe Monthly"}
         </button>
       )}
     </div>

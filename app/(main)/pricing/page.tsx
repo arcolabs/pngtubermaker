@@ -23,7 +23,7 @@ function PricingContent() {
     const canceledParam = searchParams.get("canceled");
 
     if (successParam) {
-      toast.success("Subscription successful! Welcome to premium.", {
+      toast.success("Payment successful! Credits have been added.", {
         duration: 5000,
       });
       window.history.replaceState({}, "", "/pricing");

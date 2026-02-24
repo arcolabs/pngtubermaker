@@ -21,30 +21,29 @@ interface TestimonialsProps {
 const DEFAULT_TESTIMONIALS: Testimonial[] = [
   {
     id: "1",
-    name: "Kira Stream",
-    role: "VTuber",
+    name: "kira_ttv",
+    role: "Streamer",
     platform: "Twitch",
     content:
-      "The OBS integration is insane — I pasted the Browser Source link and my avatar was lip-syncing to my mic instantly. No plugins, no fuss. My chat went wild the first time they saw it react in real time!",
-    avatar: "/avatar/avatar_003.jpg",
+      "Pasted the OBS link, and my avatar just started moving with my mic. Took maybe 2 minutes total. My chat noticed before I even said anything lol.",
+    avatar: "/images/showcase/1.WEBP",
   },
   {
     id: "2",
-    name: "PixelGamer",
+    name: "jakedraws",
     role: "Content Creator",
     platform: "YouTube",
     content:
-      "I can't draw at all, but now I have a full avatar with 10+ expressions that all look consistent. The AI generated happy, angry, surprised — even a smug face. My thumbnails have never looked this good.",
-    avatar: "/avatar/avatar_004.jpg",
+      "I literally cannot draw a stick figure. Typed a description, picked from 4 options, generated the expressions — done. The fact that they all look consistent is what sold me.",
+    avatar: "/images/showcase/3.WEBP",
   },
   {
     id: "3",
-    name: "LunaLive",
+    name: "noa_plays",
     role: "Indie Streamer",
-    platform: "Kick",
     content:
-      "Switched from a complex Live2D setup to PNGTuberMaker and never looked back. It's so much lighter on my PC, works directly in OBS, and honestly looks just as good on stream. Wish I'd found this sooner.",
-    avatar: "/avatar/avatar_005.jpg",
+      "Was using a Live2D model that kept crashing OBS. This is just a browser source — way lighter, no plugins, and honestly looks better on stream than what I had before.",
+    avatar: "/images/showcase/5.WEBP",
   },
 ];
 
@@ -108,7 +107,7 @@ const TestimonialCard = memo(function TestimonialCard({
 
 export default function Testimonials({
   title = "Loved by Streamers Worldwide",
-  description = "Join thousands of content creators who transformed their streaming presence with PNGTuber avatars.",
+  description = "See what creators are saying about PNGTuberMaker.",
   testimonials = DEFAULT_TESTIMONIALS,
 }: TestimonialsProps) {
   return (

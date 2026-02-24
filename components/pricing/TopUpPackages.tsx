@@ -1,87 +1,96 @@
 "use client";
 
-import { Coins } from "lucide-react";
+import { Coins, Sparkles } from "lucide-react";
+import { CREDIT_PACKS, type CreditPackId } from "@/lib/stripe";
+import { cn } from "@/lib/utils";
 
-interface TopUpPackagesProps {
+interface CreditPacksProps {
   onPurchase: (packageId: string, credits: number, price: number) => void;
   isLoading?: boolean;
 }
 
-const TOP_UP_PACKAGES = [
-  {
-    id: "starter",
-    name: "Starter",
-    credits: 5000,
-    price: 5,
-    bonus: 0,
-  },
-  {
-    id: "value",
-    name: "Value",
-    credits: 12000,
-    price: 10,
-    bonus: 2000,
-  },
-  {
-    id: "power",
-    name: "Power",
-    credits: 35000,
-    price: 25,
-    bonus: 10000,
-  },
-];
+const PACK_DISPLAY: Record<
+  CreditPackId,
+  { name: string; highlighted: boolean }
+> = {
+  starter: { name: "Starter", highlighted: false },
+  popular: { name: "Popular", highlighted: true },
+  best_value: { name: "Best Value", highlighted: false },
+};
 
-export default function TopUpPackages({
+export default function CreditPacks({
   onPurchase,
   isLoading = false,
-}: TopUpPackagesProps) {
-  return (
-    <section className="py-16 bg-base-200/50">
-      <div className="container mx-auto max-w-4xl px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Need More Credits?</h2>
-          <p className="text-base-content/60">
-            Credits purchased never expire. Top up anytime.
-          </p>
-        </div>
+}: CreditPacksProps) {
+  const packEntries = Object.entries(CREDIT_PACKS) as [
+    CreditPackId,
+    (typeof CREDIT_PACKS)[CreditPackId],
+  ][];
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {TOP_UP_PACKAGES.map((pkg) => (
+  return (
+    <div>
+      <div className="text-center mb-10">
+        <h3 className="text-2xl font-bold mb-2">Buy Credits</h3>
+        <p className="text-base-content/60">
+          Pay as you go. Credits never expire.
+        </p>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-3">
+        {packEntries.map(([id, pack]) => {
+          const display = PACK_DISPLAY[id];
+          const priceInDollars = pack.priceInCents / 100;
+
+          return (
             <div
-              key={pkg.name}
-              className="card bg-base-200 border border-base-content/10 hover:border-primary/30 transition-colors"
+              key={id}
+              className={cn(
+                "relative card border transition-all duration-200",
+                display.highlighted
+                  ? "border-2 border-primary bg-gradient-to-b from-primary/10 to-transparent"
+                  : "border-base-content/10 bg-base-200/50 hover:border-base-content/20 hover:bg-base-200",
+              )}
             >
-              <div className="card-body items-center text-center">
-                <h3 className="card-title">{pkg.name}</h3>
-                <div className="flex items-center gap-2 my-2">
+              {display.highlighted && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-xs font-semibold text-primary-content flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  Most Popular
+                </div>
+              )}
+
+              <div className="card-body items-center text-center pt-8">
+                <h4 className="card-title text-lg">{display.name}</h4>
+
+                <div className="flex items-center gap-2 my-3">
                   <Coins className="w-6 h-6 text-primary" />
                   <span className="text-3xl font-bold">
-                    {pkg.credits.toLocaleString()}
+                    {pack.credits.toLocaleString()}
                   </span>
+                  <span className="text-sm text-base-content/50">credits</span>
                 </div>
-                <p className="text-2xl font-bold text-primary">${pkg.price}</p>
-                {pkg.bonus > 0 && (
-                  <span className="badge badge-primary badge-outline">
-                    +{pkg.bonus.toLocaleString()} bonus
-                  </span>
-                )}
+
+                <p className="text-2xl font-bold text-primary mb-4">
+                  ${priceInDollars.toFixed(2)}
+                </p>
+
                 <button
                   type="button"
-                  className="btn btn-outline btn-primary mt-4"
+                  className={cn(
+                    "w-full rounded-xl py-3 font-semibold transition-all duration-200",
+                    display.highlighted
+                      ? "btn btn-primary"
+                      : "btn btn-outline btn-primary",
+                  )}
                   disabled={isLoading}
-                  onClick={() => onPurchase(pkg.id, pkg.credits, pkg.price)}
+                  onClick={() => onPurchase(id, pack.credits, priceInDollars)}
                 >
-                  {isLoading ? "Loading..." : "Buy"}
+                  {isLoading ? "Loading..." : "Buy Credits"}
                 </button>
               </div>
             </div>
-          ))}
-        </div>
-
-        <p className="text-center text-sm text-base-content/50 mt-8">
-          Credits purchased never expire.
-        </p>
+          );
+        })}
       </div>
-    </section>
+    </div>
   );
 }

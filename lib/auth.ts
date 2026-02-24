@@ -35,7 +35,7 @@ if (process.env.NODE_ENV === "development") {
 
 // Environment variables for welcome credits
 const WELCOME_CREDITS = Number.parseInt(
-  process.env.WELCOME_CREDITS || "500",
+  process.env.WELCOME_CREDITS || "1000",
   10,
 );
 const WELCOME_CREDITS_EXPIRY_DAYS = Number.parseInt(
@@ -54,10 +54,6 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     },
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID || "",
-      clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
-    },
     discord: {
       clientId: process.env.DISCORD_CLIENT_ID || "",
       clientSecret: process.env.DISCORD_CLIENT_SECRET || "",
@@ -69,7 +65,7 @@ export const auth = betterAuth({
   },
   accountLinking: {
     enabled: true,
-    trustedProviders: ["google", "github", "discord", "twitch"],
+    trustedProviders: ["google", "discord", "twitch"],
   },
   secret: process.env.BETTER_AUTH_SECRET,
   databaseHooks: {

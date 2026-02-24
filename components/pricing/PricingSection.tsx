@@ -1,15 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  type BillingCycle,
-  getYearlySavings,
-  PRICING_CONFIG,
-  type Tier,
-} from "@/lib/stripe";
-import { PricingCard } from "./PricingCard";
-import { PricingToggle } from "./PricingToggle";
-import TopUpPackages from "./TopUpPackages";
+import type { BillingCycle, Tier } from "@/lib/stripe";
+import { CreatorPassCard } from "./PricingCard";
+import CreditPacks from "./TopUpPackages";
 
 interface PricingSectionProps {
   onSubscribe: (tier: Tier, cycle: BillingCycle) => void;
@@ -22,7 +16,6 @@ export function PricingSection({
   onTopUp,
   isLoading = false,
 }: PricingSectionProps) {
-  const [cycle, setCycle] = useState<BillingCycle>("monthly");
   const [currentTier, setCurrentTier] = useState<Tier | null>(null);
 
   useEffect(() => {
@@ -42,10 +35,6 @@ export function PricingSection({
     fetchSubscription();
   }, []);
 
-  const handleSubscribe = (tier: Tier) => {
-    onSubscribe(tier, cycle);
-  };
-
   const handleTopUp = (packageId: string, credits: number, price: number) => {
     if (onTopUp) {
       onTopUp(packageId, credits, price);
@@ -60,70 +49,37 @@ export function PricingSection({
             Simple, transparent pricing
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-base-content/60">
-            Choose the plan that fits your needs. Upgrade or downgrade at any
-            time.
+            Buy credits when you need them. Subscribe to save more.
           </p>
         </div>
 
-        <div className="mb-12">
-          <PricingToggle
-            cycle={cycle}
-            onCycleChange={setCycle}
-            savingsPercentage={getYearlySavings("pro")}
-          />
-        </div>
-
-        <div className="grid gap-8 md:grid-cols-3">
-          <PricingCard
-            tier="free"
-            name={PRICING_CONFIG.free.name}
-            description={PRICING_CONFIG.free.description}
-            monthlyPrice={PRICING_CONFIG.free.monthlyPrice}
-            yearlyPrice={PRICING_CONFIG.free.yearlyPrice}
-            features={PRICING_CONFIG.free.features}
-            highlighted={PRICING_CONFIG.free.highlighted}
-            cycle={cycle}
-            isLoading={isLoading}
-            isCurrentPlan={currentTier === "free"}
-            onSubscribe={handleSubscribe}
-          />
-
-          <PricingCard
-            tier="start"
-            name={PRICING_CONFIG.start.name}
-            description={PRICING_CONFIG.start.description}
-            monthlyPrice={PRICING_CONFIG.start.monthlyPrice}
-            yearlyPrice={PRICING_CONFIG.start.yearlyPrice}
-            features={PRICING_CONFIG.start.features}
-            highlighted={PRICING_CONFIG.start.highlighted}
-            cycle={cycle}
-            isLoading={isLoading}
-            isCurrentPlan={currentTier === "start"}
-            onSubscribe={handleSubscribe}
-          />
-
-          <PricingCard
-            tier="pro"
-            name={PRICING_CONFIG.pro.name}
-            description={PRICING_CONFIG.pro.description}
-            monthlyPrice={PRICING_CONFIG.pro.monthlyPrice}
-            yearlyPrice={PRICING_CONFIG.pro.yearlyPrice}
-            features={PRICING_CONFIG.pro.features}
-            highlighted={PRICING_CONFIG.pro.highlighted}
-            cycle={cycle}
-            isLoading={isLoading}
-            isCurrentPlan={currentTier === "pro"}
-            onSubscribe={handleSubscribe}
-          />
-        </div>
-
+        {/* Primary: Credit Packs */}
         {onTopUp && (
-          <TopUpPackages onPurchase={handleTopUp} isLoading={isLoading} />
+          <div className="mb-20">
+            <CreditPacks onPurchase={handleTopUp} isLoading={isLoading} />
+          </div>
         )}
+
+        {/* Divider */}
+        <div className="flex items-center gap-4 mb-12">
+          <div className="flex-1 h-px bg-base-content/10" />
+          <span className="text-sm text-base-content/40 uppercase tracking-wider font-medium">
+            or
+          </span>
+          <div className="flex-1 h-px bg-base-content/10" />
+        </div>
+
+        {/* Secondary: Creator Pass */}
+        <CreatorPassCard
+          isLoading={isLoading}
+          isCurrentPlan={currentTier === "creator"}
+          onSubscribe={onSubscribe}
+        />
 
         <div className="mt-12 text-center">
           <p className="text-sm text-base-content/50">
-            All plans include a 14-day free trial. No credit card required.
+            Credits purchased via packs never expire. Subscription credits
+            refresh monthly and expire at billing cycle end.
           </p>
         </div>
       </div>
@@ -131,5 +87,6 @@ export function PricingSection({
   );
 }
 
-export { PricingCard, PricingToggle };
+export { CreatorPassCard as PricingCard } from "./PricingCard";
+export { PricingToggle } from "./PricingToggle";
 export type { Tier, BillingCycle };

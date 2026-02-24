@@ -29,72 +29,38 @@ export const STRIPE_PUBLISHABLE_KEY =
 export const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || "";
 
 // Price IDs from environment
-export const STRIPE_PRICE_START_MONTHLY =
-  process.env.STRIPE_PRICE_START_MONTHLY || "";
-export const STRIPE_PRICE_START_YEARLY =
-  process.env.STRIPE_PRICE_START_YEARLY || "";
-export const STRIPE_PRICE_PRO_MONTHLY =
-  process.env.STRIPE_PRICE_PRO_MONTHLY || "";
-export const STRIPE_PRICE_PRO_YEARLY =
-  process.env.STRIPE_PRICE_PRO_YEARLY || "";
+export const STRIPE_PRICE_CREATOR_MONTHLY =
+  process.env.STRIPE_PRICE_CREATOR_MONTHLY || "";
+export const STRIPE_PRICE_CREATOR_YEARLY =
+  process.env.STRIPE_PRICE_CREATOR_YEARLY || "";
 
-// Pricing configuration (credit-based model)
-export const PRICING_CONFIG = {
-  free: {
-    name: "Free",
-    description: "Perfect for trying out PNGTuberMaker",
-    monthlyPrice: 0,
-    yearlyPrice: 0,
-    monthlyCredits: 0,
-    monthlyPriceId: "",
-    yearlyPriceId: "",
-    features: [
-      "500 welcome credits",
-      "Basic avatar generation",
-      "512px export",
-      "Community support",
-    ],
-    highlighted: false,
-  },
-  start: {
-    name: "Start",
-    description: "For casual streamers and hobbyists",
-    monthlyPrice: 9,
-    yearlyPrice: 86.4, // 20% savings
-    monthlyCredits: 12_000,
-    monthlyPriceId: STRIPE_PRICE_START_MONTHLY,
-    yearlyPriceId: STRIPE_PRICE_START_YEARLY,
-    features: [
-      "12,000 credits/month ($12 value)",
-      "HD export (1080p)",
-      "Basic expression pack",
-      "Standard generation queue",
-      "Email support",
-    ],
-    highlighted: false,
-  },
-  pro: {
-    name: "Pro",
-    description: "For serious streamers and content creators",
-    monthlyPrice: 30,
-    yearlyPrice: 288, // 20% savings
-    monthlyCredits: 50_000,
-    monthlyPriceId: STRIPE_PRICE_PRO_MONTHLY,
-    yearlyPriceId: STRIPE_PRICE_PRO_YEARLY,
-    features: [
-      "50,000 credits/month ($50 value)",
-      "4K export (2160p)",
-      "All expressions & animations",
-      "Priority generation queue",
-      "Full commercial license",
-      "Access to avatar library",
-      "Priority email support",
-    ],
-    highlighted: true,
-  },
-};
+// Credit Packs (one-time purchase, never expire)
+export const CREDIT_PACKS = {
+  starter: { credits: 2_000, priceInCents: 299 },
+  popular: { credits: 5_500, priceInCents: 699 },
+  best_value: { credits: 13_000, priceInCents: 1499 },
+} as const;
 
-export type Tier = "free" | "start" | "pro";
+export type CreditPackId = keyof typeof CREDIT_PACKS;
+
+// Creator Pass (optional subscription)
+export const CREATOR_PASS = {
+  name: "Creator Pass",
+  monthlyPrice: 7.99,
+  yearlyPrice: 71.88, // $5.99/mo
+  monthlyCredits: 6_000,
+  monthlyPriceId: STRIPE_PRICE_CREATOR_MONTHLY,
+  yearlyPriceId: STRIPE_PRICE_CREATOR_YEARLY,
+  features: [
+    "6,000 credits/month (~30% savings vs top-up)",
+    "HD export (1080p)",
+    "All expression packs",
+    "Manage subscription anytime",
+    "Priority email support",
+  ],
+} as const;
+
+export type Tier = "free" | "creator";
 export type BillingCycle = "monthly" | "yearly";
 
 export function isStripeConfigured(): boolean {
@@ -124,17 +90,17 @@ export function formatPrice(amountInDollars: number): string {
   }).format(amountInDollars);
 }
 
-// Get price ID for tier and cycle
-export function getPriceId(tier: Tier, cycle: BillingCycle): string {
-  const config = PRICING_CONFIG[tier];
-  return cycle === "monthly" ? config.monthlyPriceId : config.yearlyPriceId;
+// Get price ID for Creator Pass
+export function getPriceId(_tier: Tier, cycle: BillingCycle): string {
+  return cycle === "monthly"
+    ? CREATOR_PASS.monthlyPriceId
+    : CREATOR_PASS.yearlyPriceId;
 }
 
-// Get savings percentage
-export function getYearlySavings(tier: Tier): number {
-  const config = PRICING_CONFIG[tier];
-  const monthlyCost = config.monthlyPrice * 12;
-  const savings = monthlyCost - config.yearlyPrice;
+// Get yearly savings percentage for Creator Pass
+export function getYearlySavings(): number {
+  const monthlyCost = CREATOR_PASS.monthlyPrice * 12;
+  const savings = monthlyCost - CREATOR_PASS.yearlyPrice;
   return Math.round((savings / monthlyCost) * 100);
 }
 

@@ -9,7 +9,6 @@ import {
   Sparkles,
   Tag,
   User,
-  Zap,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,15 +48,10 @@ const TIER_DISPLAY: Record<
     icon: User,
     className: "bg-base-300 text-base-content/60",
   },
-  start: {
-    label: "Start",
-    icon: Zap,
-    className: "bg-primary/10 text-primary border-primary/20",
-  },
-  pro: {
-    label: "Pro",
+  creator: {
+    label: "Creator",
     icon: Crown,
-    className: "bg-amber-100 text-amber-700 border-amber-200",
+    className: "bg-primary/10 text-primary border-primary/20",
   },
 };
 
@@ -106,7 +100,7 @@ export default function Header() {
 
   const isLoggedIn = !!user;
   const currentTier: Tier = subscription?.tier || "free";
-  const tierDisplay = TIER_DISPLAY[currentTier];
+  const tierDisplay = TIER_DISPLAY[currentTier] ?? TIER_DISPLAY.free;
   const monthlyCredits = subscription?.monthlyCredits ?? 0;
   const creditProgress = getCreditProgress(credits, monthlyCredits);
   const TierIcon = tierDisplay.icon;

@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageIcon, Loader2, Upload, X } from "lucide-react";
+import { Loader2, Upload, X } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { useReferenceImageUpload } from "@/hooks/use-reference-image-upload";
@@ -8,21 +8,17 @@ import type { ReferenceFile } from "@/types/reference";
 
 interface ReferenceUploadAreaProps {
   referenceFile: ReferenceFile | null;
-  gallery: ReferenceFile[];
   onFileSelected: (file: ReferenceFile) => void;
   onImageUploaded: (file: ReferenceFile) => void;
   onRemoveFile: () => void;
-  onRemoveFromGallery: (fileKey: string) => void;
   disabled?: boolean;
 }
 
 export function ReferenceUploadArea({
   referenceFile,
-  gallery,
   onFileSelected,
   onImageUploaded,
   onRemoveFile,
-  onRemoveFromGallery,
   disabled = false,
 }: ReferenceUploadAreaProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -92,12 +88,6 @@ export function ReferenceUploadArea({
   const handleClick = () => {
     if (!disabled && !isUploading) {
       fileInputRef.current?.click();
-    }
-  };
-
-  const handleGallerySelect = (file: ReferenceFile) => {
-    if (!disabled) {
-      onFileSelected(file);
     }
   };
 
@@ -193,62 +183,6 @@ export function ReferenceUploadArea({
           </div>
         </div>
       </div>
-
-      {/* Gallery */}
-      {gallery.length > 0 && (
-        <div className="rounded-lg border border-gray-200 bg-gray-50/30 p-2">
-          <div className="flex items-center gap-2 mb-1.5 px-1">
-            <ImageIcon className="w-3 h-3 text-gray-400" />
-            <span className="text-xs text-gray-400">Recent uploads</span>
-          </div>
-          <div className="grid grid-cols-6 sm:grid-cols-8 lg:grid-cols-10 gap-1.5">
-            {gallery.map((file) => (
-              <div
-                key={file.fileKey}
-                className={`
-                  relative aspect-square rounded-md overflow-hidden border
-                  transition-all duration-200 group
-                  ${
-                    referenceFile?.fileKey === file.fileKey
-                      ? "border-primary ring-1 ring-primary/30"
-                      : disabled
-                        ? "opacity-50 cursor-not-allowed border-gray-200"
-                        : "cursor-pointer border-gray-200 hover:border-primary hover:shadow-sm"
-                  }
-                `}
-              >
-                <button
-                  type="button"
-                  onClick={() => handleGallerySelect(file)}
-                  className="w-full h-full p-0 border-0 bg-transparent"
-                  disabled={disabled}
-                >
-                  <SafeImage
-                    src={file.url}
-                    alt={file.fileName}
-                    fill
-                    className="object-cover"
-                  />
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onRemoveFromGallery(file.fileKey);
-                  }}
-                  disabled={disabled}
-                  className="absolute top-0.5 right-0.5 w-4 h-4 bg-red-500 text-white rounded-full
-                           flex items-center justify-center opacity-0 group-hover:opacity-100
-                           transition-opacity shadow-sm hover:bg-red-600 disabled:opacity-0"
-                  aria-label="Remove from gallery"
-                >
-                  <X className="w-2.5 h-2.5" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Error message */}
       {error && (

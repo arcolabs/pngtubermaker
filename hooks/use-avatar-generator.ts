@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useBuyCreditsModal } from "@/hooks/use-buy-credits-modal";
 import { useSubscriptionStore } from "@/hooks/use-subscription-store";
 
 // ============================================================================
@@ -337,6 +338,9 @@ export function useAvatarGenerator() {
         const data = await res.json();
 
         if (!res.ok) {
+          if (data.error === "insufficient_credits") {
+            useBuyCreditsModal.getState().open(data.required);
+          }
           setState((prev) => ({
             ...prev,
             isGenerating: false,
@@ -570,6 +574,9 @@ export function useAvatarGenerator() {
         const data = await res.json();
 
         if (!res.ok) {
+          if (data.error === "insufficient_credits") {
+            useBuyCreditsModal.getState().open(data.required);
+          }
           setState((prev) => ({
             ...prev,
             generations: prev.generations.map((g) =>

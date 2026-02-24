@@ -17,9 +17,9 @@ export async function POST(req: NextRequest) {
 
     const { amount, packageId } = await req.json();
 
-    if (!amount || amount < 500 || amount > 100000) {
+    if (!amount || amount < 299 || amount > 100000) {
       return NextResponse.json(
-        { error: "Invalid amount. Must be between $5 and $1000 (in cents)" },
+        { error: "Invalid amount. Must be between $2.99 and $1000 (in cents)" },
         { status: 400 },
       );
     }

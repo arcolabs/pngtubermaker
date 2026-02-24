@@ -45,6 +45,8 @@ export interface EngineConfig {
   proxyBaseUrl?: string;
   /** Disable ambient noise auto-calibration. Default false */
   disableCalibration?: boolean;
+  /** How long speaking state holds after volume drops (ms). Default 150 */
+  speakingHoldMs?: number;
 }
 
 export type EngineEventType =
@@ -90,6 +92,7 @@ export class PNGTuberEngine {
   private bounceOnChange: boolean;
   private bounceDuration: number;
   private proxyBaseUrl: string;
+  private speakingHoldMs: number;
 
   // Loaded images keyed by expression type
   private imageMap = new Map<EngineExpressionType, HTMLImageElement>();
@@ -104,7 +107,6 @@ export class PNGTuberEngine {
   // Rendering (single unified RAF loop)
   private rafId: number | null = null;
   private lastRenderTime = 0;
-  private engineTime = 0;
 
   // Off-screen back buffer (eliminates clearRect flicker on visible canvas)
   private backCanvas: HTMLCanvasElement | null = null;
@@ -114,6 +116,10 @@ export class PNGTuberEngine {
   private bounceTime = 0;
   private bounceActive = false;
   private bounceAmplitude = 1;
+
+  // Phase accumulators for continuous animation (avoids discontinuity when period changes)
+  private breathPhase = 0;
+  private swayPhase = 0;
 
   // Volume-proportional bounce
   private static readonly MIC_BOUNCE_AMPLITUDE_MIN = 0.3;
@@ -125,10 +131,15 @@ export class PNGTuberEngine {
   private static readonly BREATH_PERIOD_MIN = 3000; // faster when active
   private static readonly BREATH_PERIOD_MAX = 4500; // slower when calm
   private static readonly SWAY_AMPLITUDE_MIN = 0.003;
-  private static readonly SWAY_AMPLITUDE_MAX = 0.008;
+  private static readonly SWAY_AMPLITUDE_MAX = 0.006;
   private static readonly SWAY_PERIOD_MIN = 4000;
   private static readonly SWAY_PERIOD_MAX = 6000;
-  private static readonly ACTIVITY_EMA = 0.005; // ~3.3s to shift at 60fps
+  private static readonly ACTIVITY_EMA = 0.003; // ~5.5s half-life at 60fps
+
+  // Arousal-based expression thresholds (hysteresis gap prevents oscillation)
+  // Enter=0.85 requires ~10s sustained speaking; Exit=0.45 clears after ~4s silence
+  private static readonly AROUSAL_ENTER = 0.85;
+  private static readonly AROUSAL_EXIT = 0.45;
 
   // Context-aware blink timing
   private static readonly BLINK_DELAY_SPEAKING_MIN = 4000;
@@ -155,6 +166,7 @@ export class PNGTuberEngine {
 
   // Activity level (0=calm, 1=active)
   private activityLevel = 0;
+  private isAroused = false;
 
   // Calibration state
   private isCalibrating = false;
@@ -190,7 +202,6 @@ export class PNGTuberEngine {
 
   private static readonly MIC_SMOOTHING = 0.3; // EMA factor (macro)
   private static readonly MIC_CLOSE_RATIO = 0.65; // macro close = threshold × this
-  private static readonly SPEAKING_HOLD_MS = 150; // macro minimum speaking duration
   private static readonly MOUTH_HOLD_MS = 30; // micro debounce (~2 frames)
   private static readonly MOUTH_CLOSE_RATIO = 0.5; // micro close = threshold × this
   private static readonly MOUTH_MAX_OPEN_MS = 200; // max continuous open before forced close
@@ -214,6 +225,7 @@ export class PNGTuberEngine {
     this.bounceOnChange = config.bounceOnChange ?? true;
     this.bounceDuration = config.bounceDuration ?? 300;
     this.proxyBaseUrl = config.proxyBaseUrl ?? "/api/proxy-image?url=";
+    this.speakingHoldMs = config.speakingHoldMs ?? 150;
     this.explicitThreshold = config.micThreshold !== undefined;
     this.disableCalibration = config.disableCalibration ?? false;
   }
@@ -322,6 +334,8 @@ export class PNGTuberEngine {
       this.bounceOnChange = partial.bounceOnChange;
     if (partial.bounceDuration !== undefined)
       this.bounceDuration = partial.bounceDuration;
+    if (partial.speakingHoldMs !== undefined)
+      this.speakingHoldMs = partial.speakingHoldMs;
   }
 
   on(listener: EngineEventListener): () => void {
@@ -482,15 +496,13 @@ export class PNGTuberEngine {
         this.lastRenderTime === 0 ? 16 : timestamp - this.lastRenderTime;
       this.lastRenderTime = timestamp;
 
-      this.engineTime += dt;
-
       // Volume detection (only in mic/audio modes with active analyser)
       if (this.analyser && (this.mode === "mic" || this.mode === "audio")) {
         this.updateVolume();
       }
 
       this.updateBounce(dt);
-      this.draw();
+      this.draw(dt);
 
       this.rafId = requestAnimationFrame(render);
     };
@@ -537,11 +549,11 @@ export class PNGTuberEngine {
     if (!this.isSpeaking) {
       if (this.smoothedVolume > this.micThreshold) {
         this.isSpeaking = true;
-        this.speakingHoldUntil = now + PNGTuberEngine.SPEAKING_HOLD_MS;
+        this.speakingHoldUntil = now + this.speakingHoldMs;
       }
     } else {
       if (this.smoothedVolume > closeThreshold) {
-        this.speakingHoldUntil = now + PNGTuberEngine.SPEAKING_HOLD_MS;
+        this.speakingHoldUntil = now + this.speakingHoldMs;
       } else if (now >= this.speakingHoldUntil) {
         this.isSpeaking = false;
       }
@@ -583,9 +595,10 @@ export class PNGTuberEngine {
       this.forcedCloseUntil = 0;
     }
 
-    // Keep base expression as idle in mic/audio modes
-    if (this.currentExpression !== "idle") {
-      this.setExpression("idle");
+    // Arousal-based expression: happy when excited, idle when calm
+    const arousalTarget = this.resolveArousalExpression();
+    if (this.currentExpression !== arousalTarget) {
+      this.setExpression(arousalTarget);
     }
 
     // Emit events on state changes
@@ -631,6 +644,7 @@ export class PNGTuberEngine {
     this.mouthOpenSince = 0;
     this.forcedCloseUntil = 0;
     this.activityLevel = 0;
+    this.isAroused = false;
     this.isCalibrating = false;
     this.calibrationSamples = [];
     this.calibrationStartTime = 0;
@@ -728,7 +742,7 @@ export class PNGTuberEngine {
 
   // ── Draw ───────────────────────────────────────────────────────────
 
-  private draw(): void {
+  private draw(dt: number): void {
     const { width, height } = this.canvas;
 
     // Resolve which frame to display this tick
@@ -746,9 +760,9 @@ export class PNGTuberEngine {
     back.globalCompositeOperation = "source-over";
 
     // ── Compose transforms (all anchored at bottom-center) ──
-    const t = this.engineTime;
 
     // Activity-adaptive breathing (subtle scaleY sine wave)
+    // Uses phase accumulator: period changes only affect advance rate, not current position
     const a = this.activityLevel;
     const breathAmp =
       PNGTuberEngine.BREATH_AMPLITUDE_MIN +
@@ -758,7 +772,9 @@ export class PNGTuberEngine {
     const breathPeriod =
       PNGTuberEngine.BREATH_PERIOD_MAX -
       (PNGTuberEngine.BREATH_PERIOD_MAX - PNGTuberEngine.BREATH_PERIOD_MIN) * a;
-    const breathSy = 1 + breathAmp * Math.sin((t / breathPeriod) * Math.PI * 2);
+    this.breathPhase += (dt / breathPeriod) * Math.PI * 2;
+    if (this.breathPhase > Math.PI * 2) this.breathPhase -= Math.PI * 2;
+    const breathSy = 1 + breathAmp * Math.sin(this.breathPhase);
 
     // Activity-adaptive sway (subtle rotation sine wave)
     const swayAmp =
@@ -768,7 +784,9 @@ export class PNGTuberEngine {
     const swayPeriod =
       PNGTuberEngine.SWAY_PERIOD_MAX -
       (PNGTuberEngine.SWAY_PERIOD_MAX - PNGTuberEngine.SWAY_PERIOD_MIN) * a;
-    const swayAngle = swayAmp * Math.sin((t / swayPeriod) * Math.PI * 2);
+    this.swayPhase += (dt / swayPeriod) * Math.PI * 2;
+    if (this.swayPhase > Math.PI * 2) this.swayPhase -= Math.PI * 2;
+    const swayAngle = swayAmp * Math.sin(this.swayPhase);
 
     // Triggered: bounce (squash & stretch, only when active)
     let bounceSx = 1;
@@ -840,6 +858,27 @@ export class PNGTuberEngine {
       return "idle";
     }
     return "idle";
+  }
+
+  /**
+   * Arousal-based expression selection with hysteresis.
+   * Switches to "happy" after ~10s sustained speaking, back to "idle" after ~4s silence.
+   * No-op if imageMap lacks a "happy" expression.
+   */
+  private resolveArousalExpression(): EngineExpressionType {
+    if (
+      !this.isAroused &&
+      this.activityLevel > PNGTuberEngine.AROUSAL_ENTER &&
+      this.imageMap.has("happy")
+    ) {
+      this.isAroused = true;
+    } else if (
+      this.isAroused &&
+      this.activityLevel < PNGTuberEngine.AROUSAL_EXIT
+    ) {
+      this.isAroused = false;
+    }
+    return this.isAroused ? "happy" : "idle";
   }
 
   // ── Blink Timer ────────────────────────────────────────────────────
@@ -986,13 +1025,19 @@ export class PNGTuberEngine {
 
   private async startMic(): Promise<void> {
     try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error(
+          "getUserMedia not available (not a secure context or unsupported browser)",
+        );
+      }
       this.mediaStream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
-    } catch {
+    } catch (err) {
+      const detail = err instanceof Error ? err.message : String(err);
       this.emit({
         type: "error",
-        error: "Microphone access denied",
+        error: `Microphone access denied: ${detail}`,
       });
       // Fallback to demo
       this.mode = "demo";

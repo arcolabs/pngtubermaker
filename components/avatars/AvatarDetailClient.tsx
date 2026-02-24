@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { useBuyCreditsModal } from "@/hooks/use-buy-credits-modal";
 import type {
   EngineExpressionType,
   ExpressionAsset,
@@ -119,14 +120,26 @@ function ExpressionPlaceholder({
   );
 }
 
-function OBSSetupSection({ avatarId }: { avatarId: string }) {
+function OBSSetupSection({
+  avatarId,
+  micThreshold,
+  speakingDelay,
+}: {
+  avatarId: string;
+  micThreshold: number | null;
+  speakingDelay: number | null;
+}) {
   const [copied, setCopied] = useState(false);
 
   const appUrl =
     typeof window !== "undefined"
       ? window.location.origin
       : (process.env.NEXT_PUBLIC_APP_URL ?? "");
-  const playerUrl = `${appUrl}/player/${avatarId}`;
+  const params = new URLSearchParams();
+  if (micThreshold !== null) params.set("threshold", micThreshold.toFixed(3));
+  if (speakingDelay !== null) params.set("delay", String(speakingDelay));
+  const qs = params.toString();
+  const playerUrl = `${appUrl}/player/${avatarId}${qs ? `?${qs}` : ""}`;
 
   const handleCopy = async () => {
     try {
@@ -146,9 +159,9 @@ function OBSSetupSection({ avatarId }: { avatarId: string }) {
         <h3 className="font-semibold text-gray-900 text-sm">Use in OBS</h3>
       </div>
 
-      <p className="text-xs text-gray-500 mb-3">
-        Add your PNGTuber to OBS as a Browser Source. Mic-driven talking
-        animation works automatically.
+      <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200/60 rounded-lg px-3 py-2 mb-3">
+        Tip: Switch to <strong>Mic</strong> mode in Live Preview above to
+        fine-tune sensitivity before copying.
       </p>
 
       {/* URL + Copy */}
@@ -190,15 +203,8 @@ function OBSSetupSection({ avatarId }: { avatarId: string }) {
             In OBS, click <strong>+</strong> under Sources &rarr;{" "}
             <strong>Browser</strong>
           </li>
-          <li>
-            Paste the URL above, set width/height to 512&times;512 (or your
-            export size)
-          </li>
-          <li>
-            Right-click the source &rarr; Properties &rarr; check{" "}
-            <strong>&quot;Control audio via OBS&quot;</strong> to enable mic
-            access
-          </li>
+          <li>Paste the URL above, set size to match your export resolution</li>
+          <li>Done &mdash; mic-driven animation starts automatically</li>
         </ol>
       </div>
     </div>
@@ -220,6 +226,8 @@ export default function AvatarDetailClient({
   const [activeExpressionType, setActiveExpressionType] = useState<
     string | null
   >(null);
+  const [micThreshold, setMicThreshold] = useState<number | null>(null);
+  const [speakingDelay, setSpeakingDelay] = useState<number | null>(null);
 
   // Build expression assets for the preview engine from all completed expressions
   const previewExpressions = useMemo<ExpressionAsset[]>(() => {
@@ -385,10 +393,8 @@ export default function AvatarDetailClient({
       if (!res.ok) {
         const data = await res.json();
         if (data.error === "insufficient_credits") {
-          toast.error(
-            `Not enough credits. Balance: ${data.balance}, Required: ${data.required}`,
-            { id: toastId },
-          );
+          toast.dismiss(toastId);
+          useBuyCreditsModal.getState().open(data.required);
           return;
         }
         throw new Error(data.error || "Failed to generate pack");
@@ -425,6 +431,8 @@ export default function AvatarDetailClient({
         <PNGTuberPreview
           expressions={previewExpressions}
           onExpressionChange={setActiveExpressionType}
+          onMicThresholdChange={setMicThreshold}
+          onSpeakingDelayChange={setSpeakingDelay}
         />
       ) : (
         <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/60 shadow-sm text-center py-12">
@@ -535,7 +543,11 @@ export default function AvatarDetailClient({
 
       {/* 3. Use in OBS — Player URL + Quick Guide */}
       {previewExpressions.length >= 2 && (
-        <OBSSetupSection avatarId={avatar.id} />
+        <OBSSetupSection
+          avatarId={avatar.id}
+          micThreshold={micThreshold}
+          speakingDelay={speakingDelay}
+        />
       )}
 
       {/* Delete Confirmation Modal */}

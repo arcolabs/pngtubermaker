@@ -1,5 +1,6 @@
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
+import BuyCreditsModal from "@/components/pricing/BuyCreditsModal";
 import DotMatrixBrand from "@/components/ui/DotMatrixBrand";
 import FloatingAvatar from "@/components/widget/FloatingAvatar";
 
@@ -17,6 +18,7 @@ export default function MainLayout({
         <DotMatrixBrand />
       </div>
       <FloatingAvatar />
+      <BuyCreditsModal />
     </>
   );
 }

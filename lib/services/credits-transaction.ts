@@ -9,8 +9,7 @@ import { getDatabase } from "@/lib/db";
 
 export const TIER_CREDITS = {
   free: 0,
-  start: 12_000,
-  pro: 50_000,
+  creator: 6_000,
 } as const;
 
 export const TASK_COSTS = {
@@ -18,14 +17,6 @@ export const TASK_COSTS = {
   expression_edit: 200,
   hd_upscale: 100,
 } as const;
-
-export const TOPUP_PACKAGES = {
-  starter: { credits: 5_000, priceInCents: 500, bonusCredits: 0 },
-  value: { credits: 12_000, priceInCents: 1000, bonusCredits: 2_000 },
-  power: { credits: 35_000, priceInCents: 2500, bonusCredits: 10_000 },
-} as const;
-
-export type TopupPackageId = keyof typeof TOPUP_PACKAGES;
 
 export interface CreditBalance {
   total: number;

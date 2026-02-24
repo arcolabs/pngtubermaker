@@ -1,8 +1,16 @@
 "use client";
 
+import Link from "next/link";
+import { useEffect } from "react";
 import { UserCountBadge } from "@/components/ui/UserCountBadge";
+import { useAuthStore } from "@/hooks/use-auth-store";
 
 export default function Hero() {
+  const { user, isHydrated, hydrate } = useAuthStore();
+
+  useEffect(() => {
+    if (!isHydrated) hydrate();
+  }, [isHydrated, hydrate]);
   return (
     <section className="relative overflow-hidden bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 lg:pt-12 pb-6 sm:pb-8">
@@ -16,10 +24,35 @@ export default function Hero() {
           </h1>
 
           {/* Subheading */}
-          <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-5xl mx-auto px-4 sm:px-0 mb-8">
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-5xl mx-auto px-4 sm:px-0 mb-6">
             Create your PNGTuber avatar, generate expressions, and go live with
             real-time mic lip sync in OBS — all without drawing a single line.
           </p>
+
+          {/* Auth-aware CTA buttons */}
+          {isHydrated && (
+            <div className="flex items-center justify-center gap-3 mb-8">
+              {user ? (
+                <>
+                  <Link href="/create" className="btn btn-primary">
+                    Create PNGTuber
+                  </Link>
+                  <Link href="/dashboard" className="btn btn-outline">
+                    My Dashboard
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="btn btn-primary">
+                    Get Started Free
+                  </Link>
+                  <Link href="/pricing" className="btn btn-outline">
+                    See Pricing
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
 
           {/* Video Player - 16:9 aspect ratio, auto loop, no controls */}
           <div className="relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden border border-gray-200 bg-white">

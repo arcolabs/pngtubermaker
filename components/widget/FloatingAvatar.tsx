@@ -26,7 +26,7 @@ const DEMO_EXPRESSIONS: ExpressionAsset[] = [
   { type: "sad_talking", url: `${AVATAR_BASE}_sad_talking.png` },
 ];
 
-const WIDGET_AUDIO_URL = "/audio/female.mp3";
+const WIDGET_AUDIO_URL = "/audio/girl.mp3";
 
 // ── Mini waveform config (simplified 5-bar version) ──────────────────
 
@@ -198,12 +198,12 @@ export default function FloatingAvatar() {
   return (
     <div
       ref={widgetRef}
-      className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40"
+      className="fixed bottom-3 right-3 sm:bottom-6 sm:right-6 z-40"
     >
       {/* ── Speech bubble (above avatar) ──────────────────────────── */}
       {showBubble && (
-        <div className="absolute bottom-full right-0 mb-3 animate-fade-in">
-          <div className="w-64 sm:w-72 rounded-2xl bg-white/95 backdrop-blur-xl border border-gray-200/60 shadow-[0_8px_40px_rgba(6,182,212,0.15)] p-4">
+        <div className="absolute bottom-full right-0 mb-2 animate-fade-in">
+          <div className="w-60 sm:w-72 rounded-2xl bg-white/95 backdrop-blur-xl border border-gray-200/60 shadow-[0_8px_40px_rgba(6,182,212,0.15)] p-3 sm:p-4">
             {/* Close button */}
             <button
               type="button"
@@ -215,7 +215,7 @@ export default function FloatingAvatar() {
             </button>
 
             {/* Message */}
-            <p className="text-sm text-gray-600 pr-5">
+            <p className="text-xs sm:text-sm text-gray-600 pr-5">
               Hey! I&apos;m Aria, your AI PNGTuber. Want to hear me talk?
             </p>
 
@@ -269,20 +269,20 @@ export default function FloatingAvatar() {
           </div>
 
           {/* Bubble tail pointing down-right toward avatar */}
-          <div className="absolute -bottom-2 right-10 w-4 h-4 bg-white/95 border-r border-b border-gray-200/60 rotate-45" />
+          <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white/95 border-r border-b border-gray-200/60 rotate-45" />
         </div>
       )}
 
       {/* ── Avatar (always visible, full size) ────────────────────── */}
       <button
         type="button"
-        className="relative w-72 h-72 sm:w-96 sm:h-96 animate-widget-bounce-in cursor-pointer hover:scale-105 transition-transform duration-200 bg-transparent border-0 p-0"
+        className="relative w-24 h-24 sm:w-32 sm:h-32 animate-widget-bounce-in cursor-pointer hover:scale-105 transition-transform duration-200 bg-transparent border-0 p-0"
         onClick={() => setShowBubble((v) => !v)}
         aria-label="Talk to Aria"
       >
         {/* Floating "Hi!" label */}
         {showLabel && engineReady && (
-          <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10 whitespace-nowrap bg-white rounded-full px-3 py-1 text-xs font-medium text-gray-700 shadow-md border border-gray-100 animate-fade-in pointer-events-none">
+          <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-10 whitespace-nowrap bg-white rounded-full px-2.5 py-0.5 text-[11px] font-medium text-gray-700 shadow-md border border-gray-100 animate-fade-in pointer-events-none">
             Hi! I&apos;m Aria
             <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white border-r border-b border-gray-100 rotate-45" />
           </div>

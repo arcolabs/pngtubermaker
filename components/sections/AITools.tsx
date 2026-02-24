@@ -74,15 +74,15 @@ const tools = [
     step: 4,
     title: "Download & Export",
     description:
-      "Download your avatar and full expression pack as transparent PNGs or a bundled ZIP. Choose your resolution — 512px (Free), 1080p (Start), or 4K (Pro).",
+      "Download your avatar and full expression pack as transparent PNGs or a bundled ZIP. Free users export at 512px, Creator Pass unlocks HD (1080p).",
     icon: Download,
     image: "/images/AITools/input_4.webm",
     isVideo: true,
     features: [
       { icon: Download, text: "Transparent PNG export" },
       { icon: FolderArchive, text: "ZIP bundle download" },
-      { icon: ArrowUp, text: "Up to 4K resolution" },
-      { icon: Check, text: "Commercial license" },
+      { icon: ArrowUp, text: "Up to 1080p HD export" },
+      { icon: Check, text: "Watermark-free" },
     ],
     benefit: "Stream-ready files for OBS, Discord, and Twitch",
   },

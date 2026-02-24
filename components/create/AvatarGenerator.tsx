@@ -1,7 +1,8 @@
 "use client";
 
+import { X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   type ArtStyle,
   useAvatarGenerator,
@@ -11,6 +12,27 @@ import type { ReferenceHandlers } from "@/types/reference";
 import { ExpressionResultsCard } from "./ExpressionResultsCard";
 import { GenerationGroup } from "./GenerationGroup";
 import { GeneratorForm } from "./GeneratorForm";
+
+function WelcomeBanner({ onDismiss }: { onDismiss: () => void }) {
+  return (
+    <div className="mb-6 relative rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 to-cyan-400/5 px-5 py-4">
+      <button
+        type="button"
+        onClick={onDismiss}
+        className="absolute top-3 right-3 p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+        aria-label="Dismiss"
+      >
+        <X className="w-4 h-4" />
+      </button>
+      <p className="text-sm sm:text-base text-gray-700 pr-8">
+        <span className="font-semibold text-gray-900">Welcome!</span> You have{" "}
+        <span className="font-semibold text-primary">1,000 free credits</span> —
+        enough for a full avatar with expressions. Describe your character below
+        to get started.
+      </p>
+    </div>
+  );
+}
 
 export function AvatarGenerator() {
   const searchParams = useSearchParams();
@@ -37,10 +59,18 @@ export function AvatarGenerator() {
     removeFromGallery,
   } = useReferencePersistentState();
 
+  const isWelcome = searchParams.get("welcome") === "1";
+  const [showWelcome, setShowWelcome] = useState(isWelcome);
+
   useEffect(() => {
     fetchBalance();
     loadHistory();
   }, [fetchBalance, loadHistory]);
+
+  // Dismiss welcome banner when user starts generating
+  useEffect(() => {
+    if (state.isGenerating) setShowWelcome(false);
+  }, [state.isGenerating]);
 
   // Pre-fill prompt from URL query parameter (e.g. /create?prompt=...)
   useEffect(() => {
@@ -74,6 +104,8 @@ export function AvatarGenerator() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {showWelcome && <WelcomeBanner onDismiss={() => setShowWelcome(false)} />}
+
       {/* Generator form — always visible at top */}
       <GeneratorForm
         prompt={state.prompt}
