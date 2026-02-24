@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import AvatarGrid from "@/components/dashboard/AvatarGrid";
@@ -6,6 +7,12 @@ import QuickActionCard from "@/components/dashboard/QuickActionCard";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { auth } from "@/lib/auth";
 import { listUserAvatars } from "@/lib/services/avatars";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Your PNGTuber studio — manage avatars, credits, and creations.",
+  robots: { index: false },
+};
 
 export const dynamic = "force-dynamic";
 

@@ -1,4 +1,5 @@
 import { and, asc, eq, or } from "drizzle-orm";
+import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -7,6 +8,13 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import { avatarExpressions, avatars, expressionPacks } from "@/database/schema";
 import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
+
+export const metadata: Metadata = {
+  title: "Avatar Details",
+  description:
+    "View and manage your PNGTuber avatar expressions and animation packs.",
+  robots: { index: false },
+};
 
 export const dynamic = "force-dynamic";
 

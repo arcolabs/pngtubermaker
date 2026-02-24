@@ -1,0 +1,28 @@
+# PNGTuberMaker
+
+> AI-powered PNGTuber avatar generator for streamers
+
+PNGTuberMaker helps Twitch, YouTube, and Discord streamers create professional PNG avatars using AI. Generate custom characters and expression packs in minutes — no artistic skills required.
+
+## Features
+
+- AI avatar generation from text or image prompts
+- Expression packs (happy, angry, sad, surprised, and more)
+- Animation generation (blinking, mouth movement)
+- HD/4K upscale and variations
+- Commercial license available (Pro tier)
+
+## Pricing
+
+- Free: 3 generations/month, 512px export
+- Start ($9/mo): 50 generations/month, HD 1080p export, basic expressions
+- Pro ($30/mo): Unlimited generations, 4K export, all expressions & animations, commercial license
+
+## Links
+
+- Website: https://pngtubermaker.com
+- Pricing: https://pngtubermaker.com/pricing
+- Create: https://pngtubermaker.com/create
+- Showcase: https://pngtubermaker.com/showcase
+- Discord: https://discord.gg/zysPAnvP8f
+- Contact: support@pngtubermaker.com

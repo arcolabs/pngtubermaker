@@ -38,9 +38,7 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  alternates: {
-    canonical: brand.contact.website,
-  },
+  metadataBase: new URL(brand.contact.website),
   icons: {
     icon: [
       { url: "/favicon/favicon.ico", sizes: "any" },
@@ -87,6 +85,22 @@ export const metadata: Metadata = {
   classification: "Software",
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: brand.name,
+  url: brand.contact.website,
+  description: brand.description,
+  applicationCategory: "DesignApplication",
+  operatingSystem: "Web",
+  offers: {
+    "@type": "AggregateOffer",
+    lowPrice: "0",
+    highPrice: "30",
+    priceCurrency: "USD",
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -94,6 +108,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="light">
+      <head>
+        <script
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable} font-sans antialiased flex flex-col min-h-screen`}
       >

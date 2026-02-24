@@ -1,4 +1,5 @@
 import { Sparkles } from "lucide-react";
+import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -6,6 +7,13 @@ import AvatarGrid from "@/components/dashboard/AvatarGrid";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { auth } from "@/lib/auth";
 import { listUserAvatars } from "@/lib/services/avatars";
+
+export const metadata: Metadata = {
+  title: "My Avatars",
+  description:
+    "Manage your AI-generated PNGTuber avatars and expression packs.",
+  robots: { index: false },
+};
 
 export const dynamic = "force-dynamic";
 
