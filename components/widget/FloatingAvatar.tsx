@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 // ── Demo avatar assets ───────────────────────────────────────────────
 
 const AVATAR_BASE =
-  "/images/Kawaii Cat Girl Pink_pngtuber/Kawaii Cat Girl Pink";
+  "/images/Small Witch Huge Wizard_pngtuber/Small Witch Huge Wizard";
 
 const DEMO_EXPRESSIONS: ExpressionAsset[] = [
   { type: "idle", url: `${AVATAR_BASE}_idle.png` },
@@ -24,6 +24,8 @@ const DEMO_EXPRESSIONS: ExpressionAsset[] = [
   { type: "happy_talking", url: `${AVATAR_BASE}_happy_talking.png` },
   { type: "sad", url: `${AVATAR_BASE}_sad.png` },
   { type: "sad_talking", url: `${AVATAR_BASE}_sad_talking.png` },
+  { type: "angry", url: `${AVATAR_BASE}_angry.png` },
+  { type: "angry_talking", url: `${AVATAR_BASE}_angry_talking.png` },
 ];
 
 const WIDGET_AUDIO_URL = "/audio/girl.mp3";

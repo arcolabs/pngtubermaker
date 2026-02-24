@@ -51,19 +51,19 @@ function getStatusBadge(status?: string) {
   switch (status) {
     case "generating":
       return (
-        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 border border-amber-200">
+        <span className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 text-amber-700 border border-amber-200">
           Generating...
         </span>
       );
     case "draft":
       return (
-        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
+        <span className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200">
           Draft
         </span>
       );
     default:
       return (
-        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 border border-green-200">
+        <span className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-green-100 text-green-700 border border-green-200">
           Ready
         </span>
       );
@@ -140,15 +140,14 @@ export default function AvatarCard({ avatar }: AvatarCardProps) {
           {getStatusBadge(status)}
 
           {/* Glassmorphism Info Overlay */}
-          <div className="absolute inset-x-0 bottom-0 bg-black/60 backdrop-blur-md border-t border-white/10 p-3 transform translate-y-0">
-            <div className="flex items-start justify-between gap-2">
+          <div className="absolute inset-x-0 bottom-0 bg-black/60 backdrop-blur-md border-t border-white/10 p-2 transform translate-y-0">
+            <div className="flex items-start justify-between gap-1.5">
               <div className="min-w-0 flex-1">
-                <h3 className="font-medium text-white truncate text-sm">
+                <h3 className="font-medium text-white truncate text-xs">
                   {avatar.name}
                 </h3>
-                <p className="text-xs text-white/70 mt-0.5">
-                  {avatar.expressionCount} expression
-                  {avatar.expressionCount !== 1 ? "s" : ""} · {formattedDate}
+                <p className="text-[10px] text-white/70 mt-0.5">
+                  {avatar.expressionCount} expr · {formattedDate}
                 </p>
               </div>
 

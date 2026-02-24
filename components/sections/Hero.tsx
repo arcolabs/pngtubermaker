@@ -53,28 +53,6 @@ export default function Hero() {
               )}
             </div>
           )}
-
-          {/* Product Showcase Video */}
-          <div className="relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-xl">
-            <div className="aspect-video">
-              <iframe
-                src="/showcase"
-                className="w-full h-full"
-                title="PNGTuberMaker Showcase"
-              />
-            </div>
-          </div>
-
-          <p className="text-center mt-4 text-sm text-gray-500">
-            <a
-              href="/showcase"
-              target="_blank"
-              rel="noopener"
-              className="text-primary hover:underline"
-            >
-              View fullscreen demo →
-            </a>
-          </p>
         </div>
       </div>
     </section>
