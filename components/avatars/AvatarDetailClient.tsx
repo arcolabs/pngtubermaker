@@ -1,6 +1,15 @@
 "use client";
 
-import { Check, Copy, Download, Monitor, Sparkles, Trash2 } from "lucide-react";
+import {
+  Check,
+  Copy,
+  Download,
+  ExternalLink,
+  Monitor,
+  MonitorPlay,
+  Sparkles,
+  Trash2,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
@@ -208,6 +217,68 @@ function OBSSetupSection({
         </ol>
       </div>
     </div>
+  );
+}
+
+function VeadotubeGuideSection() {
+  return (
+    <details className="bg-white/70 backdrop-blur-sm rounded-2xl border border-gray-200/60 shadow-sm">
+      <summary className="cursor-pointer p-4 sm:p-6 list-none [&::-webkit-details-marker]:hidden">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <MonitorPlay className="w-4 h-4 text-gray-400" />
+            <h3 className="font-semibold text-gray-900 text-sm">
+              Use with veadotube
+            </h3>
+          </div>
+          <span className="text-xs text-gray-400">Click to expand</span>
+        </div>
+        <p className="text-xs text-gray-500 mt-1">
+          Prefer using veadotube mini? Download your assets and import them.
+        </p>
+      </summary>
+
+      <div className="px-4 sm:px-6 pb-4 sm:pb-6 -mt-2 space-y-3">
+        {/* Step-by-step guide */}
+        <div className="bg-base-200/50 rounded-xl p-3">
+          <p className="text-xs font-medium text-gray-700 mb-2">Setup Guide</p>
+          <ol className="text-xs text-gray-500 space-y-1.5 list-decimal list-inside">
+            <li>
+              Download your expression pack (ZIP) using the{" "}
+              <strong>Download</strong> button above
+            </li>
+            <li>
+              Unzip the files &mdash; each expression is named (idle, talking,
+              blink, etc.)
+            </li>
+            <li>
+              Open veadotube mini &rarr; click <strong>+</strong> to add a new
+              avatar
+            </li>
+            <li>Import each expression PNG into the corresponding slot</li>
+            <li>Set up OBS window capture for veadotube mini</li>
+            <li>Done &mdash; your PNGTuber is ready to stream!</li>
+          </ol>
+        </div>
+
+        {/* External link */}
+        <a
+          href="https://olmewe.itch.io/veadotube-mini"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
+        >
+          <ExternalLink className="w-3 h-3" />
+          Get veadotube mini on itch.io
+        </a>
+
+        {/* Tip nudging toward Browser Source */}
+        <p className="text-xs text-gray-400">
+          Tip: The <strong>Browser Source</strong> method above requires zero
+          install &mdash; paste a URL and go live instantly.
+        </p>
+      </div>
+    </details>
   );
 }
 
@@ -549,6 +620,9 @@ export default function AvatarDetailClient({
           speakingDelay={speakingDelay}
         />
       )}
+
+      {/* 4. Use with veadotube — Download + Import Guide */}
+      {previewExpressions.length >= 2 && <VeadotubeGuideSection />}
 
       {/* Delete Confirmation Modal */}
       <dialog className={`modal ${showDeleteConfirm ? "modal-open" : ""}`}>
