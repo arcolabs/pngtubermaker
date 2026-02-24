@@ -8,17 +8,52 @@
 
 ## 目录
 
-1. [获取 API 密钥](#1-获取-api-密钥)
-2. [创建产品和价格](#2-创建产品和价格)
-3. [配置 Webhook](#3-配置-webhook)
-4. [填写环境变量](#4-填写环境变量)
-5. [推送数据库变更](#5-推送数据库变更)
-6. [本地测试 Webhook（可选）](#6-本地测试-webhook可选)
-7. [验证清单](#7-验证清单)
+1. [计费模型概览](#1-计费模型概览)
+2. [获取 API 密钥](#2-获取-api-密钥)
+3. [创建产品和价格](#3-创建产品和价格)
+4. [配置 Webhook](#4-配置-webhook)
+5. [填写环境变量](#5-填写环境变量)
+6. [推送数据库变更](#6-推送数据库变更)
+7. [本地测试 Webhook（可选）](#7-本地测试-webhook可选)
+8. [验证清单](#8-验证清单)
 
 ---
 
-## 1. 获取 API 密钥
+## 1. 计费模型概览
+
+项目采用 **Credits（积分）** 计费模型，有两种购买方式：
+
+### Credit Packs（一次性购买，永不过期）
+
+| 包名 | 积分 | 价格 | 单价 |
+|------|------|------|------|
+| Starter | 2,000 | $2.99 | $1.50/1000 |
+| Popular | 5,500 | $6.99 | $1.27/1000 |
+| Best Value | 13,000 | $14.99 | $1.15/1000 |
+
+### Creator Pass（可选订阅）
+
+| 周期 | 价格 | 每月积分 | 折算单价 |
+|------|------|---------|---------|
+| 月付 | $7.99/mo | 6,000 | $1.33/1000 |
+| 年付 | $71.88/yr ($5.99/mo) | 6,000/月 | $1.00/1000 |
+
+Creator Pass 额外权益：HD 导出 (1080p)、所有表情包、优先邮件支持。
+
+### 注册赠送
+
+新用户注册时自动获赠 **1,000 积分**（30 天后过期），可免费体验生成流程。
+
+### 积分消耗
+
+| 操作 | 消耗 |
+|------|------|
+| 角色生成（首图） | 300 积分 |
+| 表情生成（单个） | 200 积分 |
+
+---
+
+## 2. 获取 API 密钥
 
 1. 登录 [Stripe Dashboard](https://dashboard.stripe.com/)
 2. 确保左上角开关处于 **"Test mode"**（橙色标识）
@@ -34,62 +69,48 @@
 
 ---
 
-## 2. 创建产品和价格
+## 3. 创建产品和价格
 
-本项目有两个订阅套餐（Starter 和 Pro），每个套餐有月付和年付两种价格，共需创建 **4 个 Price ID**。
+本项目需要创建 **1 个订阅产品**（Creator Pass，2 个价格）。Credit Packs 使用 Stripe Checkout 的 `price_data` 动态创建，无需预先配置 Price ID。
 
-### 2.1 创建 Starter 产品
+### 3.1 创建 Creator Pass 产品
 
 1. 进入 **"Products"** → 点击 **"+ Add product"**
 2. 填写：
-   - **Name**: `Starter`
-   - **Description**: `Perfect for individuals getting started`
+   - **Name**: `Creator Pass`
+   - **Description**: `6,000 credits/month + HD export + all expression packs`
 3. 在 **Pricing** 区域添加第一个价格（月付）：
    - **Pricing model**: Standard pricing
-   - **Price**: `$9.00`
+   - **Price**: `$7.99`
    - **Billing period**: `Monthly`
    - **Currency**: `USD`
    - 点击 **"Add another price"**
 4. 添加第二个价格（年付）：
-   - **Price**: `$86.40`（相当于 $7.20/月，省 20%）
+   - **Price**: `$71.88`（相当于 $5.99/月，省 25%）
    - **Billing period**: `Yearly`
    - **Currency**: `USD`
 5. 点击 **"Save product"**
 
-### 2.2 创建 Pro 产品
+### 3.2 获取 Price ID
 
-1. 再次点击 **"+ Add product"**
-2. 填写：
-   - **Name**: `Pro`
-   - **Description**: `For professionals and growing teams`
-3. 添加月付价格：
-   - **Price**: `$30.00`
-   - **Billing period**: `Monthly`
-4. 添加年付价格：
-   - **Price**: `$288.00`（相当于 $24/月，省 20%）
-   - **Billing period**: `Yearly`
-5. 点击 **"Save product"**
-
-### 2.3 获取 Price ID
-
-创建完成后，进入每个产品的详情页：
+创建完成后，进入产品详情页：
 
 1. 点击产品名称进入详情
 2. 在 **Pricing** 区域，每个价格行右侧有一个 ID，格式为 `price_xxxxxxxxxxxxxxxx`
 3. 点击 ID 即可复制
 
-你需要收集 4 个 Price ID：
+你需要收集 **2 个 Price ID**：
 
-| 套餐 | 周期 | 价格 | 对应环境变量 |
+| 产品 | 周期 | 价格 | 对应环境变量 |
 |------|------|------|-------------|
-| Starter | Monthly | $9/mo | `STRIPE_PRICE_START_MONTHLY` |
-| Starter | Yearly | $86.40/yr | `STRIPE_PRICE_START_YEARLY` |
-| Pro | Monthly | $30/mo | `STRIPE_PRICE_PRO_MONTHLY` |
-| Pro | Yearly | $288/yr | `STRIPE_PRICE_PRO_YEARLY` |
+| Creator Pass | Monthly | $7.99/mo | `STRIPE_PRICE_CREATOR_MONTHLY` |
+| Creator Pass | Yearly | $71.88/yr | `STRIPE_PRICE_CREATOR_YEARLY` |
+
+> Credit Packs 不需要 Price ID — 代码中通过 `price_data` 动态生成价格（见 `lib/stripe.ts` 的 `CREDIT_PACKS` 常量）。
 
 ---
 
-## 3. 配置 Webhook
+## 4. 配置 Webhook
 
 Webhook 让 Stripe 在支付完成、订阅变更等事件发生时通知你的应用。
 
@@ -101,10 +122,10 @@ Webhook 让 Stripe 在支付完成、订阅变更等事件发生时通知你的�
    - **Endpoint URL**: `https://你的域名/api/webhooks/stripe`
    - **Description**: `Production webhook`
 4. 点击 **"Select events"**，勾选以下事件：
-   - `checkout.session.completed`
-   - `customer.subscription.updated`
-   - `customer.subscription.deleted`
-   - `payment_intent.payment_failed`
+   - `checkout.session.completed` — 订阅/充值支付完成
+   - `customer.subscription.updated` — 订阅续费、取消计划等变更
+   - `customer.subscription.deleted` — 订阅最终删除
+   - `payment_intent.payment_failed` — 支付失败
 5. 点击 **"Add endpoint"**
 6. 创建后进入 endpoint 详情页，点击 **"Reveal"** 查看 **Signing secret**
    - 格式为 `whsec_xxxxxxxxxxxxxxxx`
@@ -112,7 +133,7 @@ Webhook 让 Stripe 在支付完成、订阅变更等事件发生时通知你的�
 
 ---
 
-## 4. 填写环境变量
+## 5. 填写环境变量
 
 将上面获取的所有值填入项目根目录的 `.env` 文件：
 
@@ -124,18 +145,16 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxx
 # Stripe Webhook 签名密钥
 STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxxxxxxxxxxxxx
 
-# Stripe Price IDs
-STRIPE_PRICE_START_MONTHLY=price_xxxxxxxxxxxxxxxx
-STRIPE_PRICE_START_YEARLY=price_xxxxxxxxxxxxxxxx
-STRIPE_PRICE_PRO_MONTHLY=price_xxxxxxxxxxxxxxxx
-STRIPE_PRICE_PRO_YEARLY=price_xxxxxxxxxxxxxxxx
+# Stripe Price IDs (Creator Pass)
+STRIPE_PRICE_CREATOR_MONTHLY=price_xxxxxxxxxxxxxxxx
+STRIPE_PRICE_CREATOR_YEARLY=price_xxxxxxxxxxxxxxxx
 ```
 
 > **安全提示**：`.env` 文件已在 `.gitignore` 中，不会被提交到代码仓库。绝不要将 `sk_test_` 或 `sk_live_` 开头的密钥提交到 Git。
 
 ---
 
-## 5. 推送数据库变更
+## 6. 推送数据库变更
 
 Stripe 集成需要以下数据库表，运行命令同步 schema：
 
@@ -144,14 +163,14 @@ bun run db:push
 ```
 
 这会创建/更新以下表：
-- `subscriptions` — 用户订阅记录
-- `wallets` — 用户钱包余额
+- `subscriptions` — 用户订阅记录（Creator Pass）
+- `credit_transactions` — 积分变动记录（充值、消耗、过期）
 - `transactions` — 支付交易记录
 - `webhook_events` — Webhook 幂等性记录
 
 ---
 
-## 6. 本地测试 Webhook（可选）
+## 7. 本地测试 Webhook（可选）
 
 本地开发时 Stripe 无法直接访问 `localhost`，需要使用 Stripe CLI 转发事件。
 
@@ -193,18 +212,19 @@ stripe trigger customer.subscription.updated
 
 ---
 
-## 7. 验证清单
+## 8. 验证清单
 
 配置完成后，逐项确认：
 
-- [ ] `.env` 中 6 个 Stripe 变量都已填写（不含空值）
+- [ ] `.env` 中 5 个 Stripe 变量都已填写（不含空值）
 - [ ] `bun run db:push` 执行成功
 - [ ] `bun run dev` 启动无报错
-- [ ] 访问 `/pricing` 页面能正常显示两个套餐卡片
-- [ ] 点击 Subscribe 按钮能跳转到 Stripe Checkout 页面
+- [ ] 访问 `/pricing` 页面能正常显示 Credit Packs 和 Creator Pass
+- [ ] 点击 Credit Pack 购买按钮能跳转到 Stripe Checkout 页面
+- [ ] 点击 Creator Pass 订阅按钮能跳转到 Stripe Checkout 页面
 - [ ] 使用测试卡号 `4242 4242 4242 4242`（任意未来日期、任意 CVC）完成支付
-- [ ] 支付后跳转回 `/pricing?success=true` 并显示成功提示
-- [ ] 数据库 `subscriptions` 表中出现新记录
+- [ ] Credit Pack 支付后积分到账（永不过期）
+- [ ] Creator Pass 支付后积分到账（周期结束过期）+ 订阅记录写入数据库
 
 ### Stripe 测试卡号速查
 
@@ -224,7 +244,7 @@ stripe trigger customer.subscription.updated
 
 1. 关闭 Stripe Dashboard 的 Test mode 开关
 2. 在 Live mode 下重新获取 `pk_live_` 和 `sk_live_` 密钥
-3. 重新创建产品和价格（或从 Test 复制到 Live）
+3. 重新创建 Creator Pass 产品和价格（或从 Test 复制到 Live）
 4. 重新创建 Webhook endpoint 并获取新的 signing secret
-5. 更新生产环境的环境变量（Vercel / 服务器）
+5. 更新生产环境的环境变量
 6. **不要**在生产环境使用 `test` 前缀的密钥

@@ -177,7 +177,7 @@ export const avatars = pgTable(
     style: text("style").notNull(), // 'anime' | 'chibi' | 'cartoon' | 'pixel-art' | 'none'
     aspectRatio: text("aspect_ratio").default("1:1"), // '1:1' | '3:4' | '9:16'
     status: text("status").notNull(), // 'generating' | 'selecting' | 'completed' | 'failed'
-    // Candidate images from Midjourney (4 options, stored as JSON array of URLs)
+    // Candidate images (4 options from parallel generation, stored as JSON array of URLs)
     candidateImages: jsonb("candidate_images").$type<string[]>(),
     // Selected base image (after user picks one of the 4 candidates)
     baseImageUrl: text("base_image_url"),
@@ -186,7 +186,7 @@ export const avatars = pgTable(
     thumbnailR2Key: text("thumbnail_r2_key"),
     creditsUsed: integer("credits_used").notNull().default(0),
     transactionId: text("transaction_id"), // Links to credit_transactions for audit trail
-    metadata: jsonb("metadata"), // extra info: midjourneyJobId, etc.
+    metadata: jsonb("metadata"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },

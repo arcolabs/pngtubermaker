@@ -3,10 +3,9 @@
  *
  * Implementations:
  * - MockAdapter: Returns placeholder images with simulated delays (dev)
- * - ProductionAdapter: Multi-model parallel character generation + Nano Banana expressions
- *   - NanoBananaAdapter: Character generation + expression editing via piapi.ai
- *   - QwenAdapter: Character generation via piapi.ai (Qubico/qwen-image)
- *   - (2 additional model slots reserved)
+ * - ProductionAdapter: Multi-model parallel character generation (2×Qwen + 2×Doubao)
+ *   - QwenAdapter: Character + expression generation via piapi.ai (Qubico/qwen-image)
+ *   - DoubaoSeedreamAdapter: Character + expression generation via ByteDance Ark (Seedream 5.0)
  */
 
 export type ArtStyle = "anime" | "chibi" | "cartoon" | "pixel-art" | "none";
@@ -52,56 +51,6 @@ export const CUSTOM_EXPRESSIONS: ExpressionType[] = [
   "angry",
   "surprised",
 ] as const;
-
-// ── Shared prompt constants ──────────────────────────────────────────────────
-
-/**
- * [DEPRECATED] Old English style hints - kept for reference
- * Replaced with Chinese descriptions for better Seedream 4.5 compatibility
- */
-/*
-export const STYLE_HINTS: Record<ArtStyle, string> = {
-  anime: "anime character illustration,",
-  vtuber: "modern VTuber character, hololive aesthetic,",
-  chibi: "chibi character, large head small body,",
-  "retro-90s": "90s retro anime character, vintage cel animation,",
-  cartoon: "cartoon character illustration, western animation style,",
-};
-*/
-
-/**
- * [DEPRECATED] Old English framing - kept for reference
- * Replaced with Chinese composition for better Seedream 4.5 compatibility
- */
-/*
-export const PNGTUBER_FRAME =
-  "solo, half body portrait, looking at viewer, white background";
-*/
-
-/**
- * [DEPRECATED] Old English reference prefix - kept for reference
- * Replaced with Chinese description for better Seedream 4.5 compatibility
- */
-/*
-export const REFERENCE_PREFIX =
-  "character inspired by the person in the reference image, keeping their key facial features and appearance,";
-*/
-
-/**
- * [DEPRECATED] Old English character prompt builder - kept for reference
- * Replaced with Chinese version for better Seedream 4.5 compatibility
- */
-/*
-export function buildCharacterPrompt(
-  prompt: string,
-  style: ArtStyle,
-  hasReference: boolean,
-): string {
-  const hint = STYLE_HINTS[style];
-  const refPrefix = hasReference ? `${REFERENCE_PREFIX} ` : "";
-  return `${refPrefix}${hint} ${prompt}, ${PNGTUBER_FRAME}`;
-}
-*/
 
 // ── Prompt constants ─────────────────────────────────────────────────────────
 

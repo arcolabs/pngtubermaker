@@ -47,7 +47,7 @@ export class MockAdapter implements GenerationAdapter {
   async generateCharacter(
     _request: GenerateCharacterRequest,
   ): Promise<GenerateCharacterResult> {
-    // Simulate Midjourney generation time (3-5 seconds)
+    // Simulate generation time (3-5 seconds)
     await delay(2000 + Math.random() * 3000);
 
     // Return 4 random images from our showcase

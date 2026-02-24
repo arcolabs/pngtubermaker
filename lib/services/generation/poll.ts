@@ -1,6 +1,5 @@
 /**
  * Shared polling utility for submit-then-poll AI generation APIs.
- * Used by both MidjourneyAdapter and NanoBananaAdapter.
  *
  * Transient network errors (ETIMEDOUT, fetch failures) are tolerated
  * up to maxRetries times before the polling loop gives up.

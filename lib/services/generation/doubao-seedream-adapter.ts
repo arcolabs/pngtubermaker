@@ -1,5 +1,5 @@
 /**
- * Doubao Seedream adapter for character generation via ByteDance Ark API.
+ * Doubao Seedream 5.0 adapter for character generation via ByteDance Ark API.
  *
  * API: POST https://ark.cn-beijing.volces.com/api/v3/images/generations
  * Auth: Authorization Bearer with ARK_API_KEY env var.
@@ -7,10 +7,6 @@
  *
  * Uses b64_json response format to avoid CDN download issues
  * (ByteDance CDN nodes may be unreachable from non-China servers).
- *
- * Models:
- * - doubao-seedream-4-5-251128 (current, 4.5)
- * - doubao-seedream-5-0-lite (available ~2026-02-24, 5.0 lite)
  *
  * Supports text-to-image and image-to-image (with `image` field).
  */
@@ -24,7 +20,7 @@ import {
 } from "./types";
 
 const API_URL = "https://ark.cn-beijing.volces.com/api/v3/images/generations";
-const MODEL_ID = process.env.DOUBAO_MODEL_ID || "doubao-seedream-4-5-251128";
+const MODEL_ID = "doubao-seedream-5-0-lite";
 
 function getApiKey(): string {
   const key = process.env.ARK_API_KEY;

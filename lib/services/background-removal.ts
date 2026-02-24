@@ -1,7 +1,7 @@
 /**
  * Async background removal via PiAPI (Qubico/image-toolkit).
  *
- * Uses the same submit→poll pattern as NanoBananaAdapter.
+ * Uses the same submit→poll pattern as other PiAPI adapters.
  * Designed to run as a fire-and-forget task via Next.js `after()`,
  * so failures are logged but never thrown to the caller.
  *

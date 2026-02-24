@@ -21,7 +21,7 @@ let _adapter: GenerationAdapter | undefined;
  * Get the generation adapter based on environment configuration.
  *
  * GENERATION_ADAPTER=mock       → MockAdapter (development)
- * GENERATION_ADAPTER=production → Production adapters (Midjourney + Nano Banana)
+ * GENERATION_ADAPTER=production → Production adapters (Qwen + Doubao Seedream)
  *
  * Default: mock
  */
