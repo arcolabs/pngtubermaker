@@ -71,11 +71,18 @@ async function submitRemoveBackground(imageUrl: string): Promise<string> {
 async function checkTask(taskId: string): Promise<TaskResponse> {
   const res = await fetch(`${API_BASE}/v1/piapi/task/${taskId}`, {
     headers: { Authorization: `Bearer ${getApiKey()}` },
+    signal: AbortSignal.timeout(15_000),
   });
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Remove background poll failed (${res.status}): ${body}`);
+    const reqId = res.headers.get("x-request-id") || "n/a";
+    console.error(
+      `[BackgroundRemoval] checkTask failed: taskId=${taskId} status=${res.status} reqId=${reqId} body=${body.slice(0, 500)}`,
+    );
+    throw new Error(
+      `Remove background poll failed (${res.status}): ${body.slice(0, 200)}`,
+    );
   }
 
   return (await res.json()) as TaskResponse;
@@ -106,6 +113,7 @@ export async function removeBackground(imageUrl: string): Promise<Buffer> {
       onPending: () => console.log("[BackgroundRemoval] Still processing..."),
     },
     { initialDelay: 3000, interval: 3000, timeout: 60_000 },
+    `BgRemoval:${taskId.slice(0, 8)}`,
   );
 
   const resultUrl = result.data?.output?.image_url;
@@ -151,9 +159,33 @@ export async function processBackgroundRemoval(
     onComplete?: (result: BgRemovalResult) => Promise<void>;
   },
 ): Promise<void> {
+  const MAX_RETRIES = 2;
+
   try {
     console.log(`[BackgroundRemoval] Starting for ${r2Key}`);
-    const processedBuffer = await removeBackground(sourceImageUrl);
+
+    let processedBuffer: Buffer | null = null;
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        processedBuffer = await removeBackground(sourceImageUrl);
+        break;
+      } catch (err) {
+        lastError = err;
+        if (attempt < MAX_RETRIES) {
+          const waitMs = 5000 * (attempt + 1);
+          console.warn(
+            `[BackgroundRemoval] Attempt ${attempt + 1} failed for ${r2Key}, retrying in ${waitMs / 1000}s:`,
+            err instanceof Error ? err.message : err,
+          );
+          await new Promise((r) => setTimeout(r, waitMs));
+        }
+      }
+    }
+
+    if (!processedBuffer) {
+      throw lastError ?? new Error("Background removal failed after retries");
+    }
 
     // Upload to a NEW key with _nobg suffix
     const newR2Key = toNoBgKey(r2Key);

@@ -324,7 +324,7 @@ export default function AvatarDetailClient({
   const [selectedSize, setSelectedSize] = useState(1080);
   const [downloading, setDownloading] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [expressions] = useState(initialExpressions);
+  const [expressions, setExpressions] = useState(initialExpressions);
   const [packs, setPacks] = useState(initialPacks);
   const [generatingPack, setGeneratingPack] = useState<string | null>(null);
   const [activeExpressionType, setActiveExpressionType] = useState<
@@ -342,7 +342,7 @@ export default function AvatarDetailClient({
     try {
       const res = await fetch(
         `/api/avatars/${avatar.id}/expressions/${expression.id}/regenerate`,
-        { method: "POST" },
+        { method: "POST", signal: AbortSignal.timeout(200_000) },
       );
       if (!res.ok) {
         const data = await res.json();
@@ -354,16 +354,17 @@ export default function AvatarDetailClient({
         throw new Error(data.error || "Regeneration failed");
       }
       const data = await res.json();
+      const updateExpr = (e: Expression) =>
+        e.id === expression.id
+          ? { ...e, status: "completed" as const, imageUrl: data.imageUrl }
+          : e;
       setPacks((prev) =>
         prev.map((pack) => ({
           ...pack,
-          expressions: pack.expressions.map((e) =>
-            e.id === expression.id
-              ? { ...e, status: "completed" as const, imageUrl: data.imageUrl }
-              : e,
-          ),
+          expressions: pack.expressions.map(updateExpr),
         })),
       );
+      setExpressions((prev) => prev.map(updateExpr));
       toast.success(
         `${expressionLabels[expression.type] || expression.type} regenerated!`,
         { id: toastId },
