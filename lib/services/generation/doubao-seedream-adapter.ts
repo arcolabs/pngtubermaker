@@ -20,7 +20,7 @@ import {
 } from "./types";
 
 const API_URL = "https://ark.cn-beijing.volces.com/api/v3/images/generations";
-const MODEL_ID = "doubao-seedream-5-0-lite";
+const MODEL_ID = "doubao-seedream-5-0-260128";
 
 function getApiKey(): string {
   const key = process.env.ARK_API_KEY;

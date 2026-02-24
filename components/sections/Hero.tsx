@@ -54,22 +54,22 @@ export default function Hero() {
             </div>
           )}
 
-          {/* TODO: Video Player - 暂时隐藏，后续替换新视频后恢复 */}
-          {/* <div className="relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden border border-gray-200 bg-white">
+          {/* Product Showcase Video */}
+          <div className="relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-xl">
             <div className="aspect-video">
-              <video
-                className="w-full h-full object-cover opacity-0 animate-video-fade-in"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="metadata"
-              >
-                <source src="/videos/Thumbfree.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+              <iframe
+                src="/showcase"
+                className="w-full h-full"
+                title="PNGTuberMaker Showcase"
+              />
             </div>
-          </div> */}
+          </div>
+          
+          <p className="text-center mt-4 text-sm text-gray-500">
+            <a href="/showcase" target="_blank" className="text-primary hover:underline">
+              View fullscreen demo →
+            </a>
+          </p>
 
         </div>
       </div>
