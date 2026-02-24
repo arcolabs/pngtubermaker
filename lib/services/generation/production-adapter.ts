@@ -6,8 +6,8 @@
  * Character generation: 2×Qwen + 2×Doubao in parallel, failed calls
  * are retried once with Doubao to ensure 4 candidate images.
  *
- * Expression generation: Qwen-only (image-edit). Callers handle
- * staggered concurrency to avoid PiAPI rate limits.
+ * Expression generation: Qwen first, Doubao fallback on failure.
+ * Callers handle staggered concurrency to avoid PiAPI rate limits.
  *
  * Set GENERATION_ADAPTER=production to use this.
  */
@@ -132,6 +132,25 @@ export class ProductionAdapter implements GenerationAdapter {
     request: GenerateExpressionRequest,
   ): Promise<GenerateExpressionResult> {
     console.log(`[Production] Expression ${request.expression} → Qwen`);
-    return this.qwen.generateExpression(request);
+    const qwenResult = await this.qwen.generateExpression(request);
+
+    if (qwenResult.status === "completed") return qwenResult;
+
+    console.warn(
+      `[Production] Expression ${request.expression} Qwen failed: ${qwenResult.error ?? "unknown"}, falling back to Doubao`,
+    );
+    const doubaoResult = await this.doubao.generateExpression(request);
+
+    if (doubaoResult.status === "completed") {
+      console.log(
+        `[Production] Expression ${request.expression} Doubao fallback succeeded`,
+      );
+    } else {
+      console.error(
+        `[Production] Expression ${request.expression} both Qwen and Doubao failed`,
+      );
+    }
+
+    return doubaoResult;
   }
 }
