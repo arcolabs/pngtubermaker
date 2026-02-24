@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { listActivePartners } from "@/lib/services/partners";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Partners | PNGTuberMaker",
   description: "Our amazing partners and friends in the creator ecosystem.",

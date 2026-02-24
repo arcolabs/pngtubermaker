@@ -7,6 +7,8 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import { auth } from "@/lib/auth";
 import { listUserAvatars } from "@/lib/services/avatars";
 
+export const dynamic = "force-dynamic";
+
 export default async function AvatarsPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");

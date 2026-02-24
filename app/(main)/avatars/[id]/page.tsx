@@ -8,6 +8,8 @@ import { avatarExpressions, avatars, expressionPacks } from "@/database/schema";
 import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 async function getAvatar(idOrSlug: string, userId: string) {
   const db = getDatabase();
 

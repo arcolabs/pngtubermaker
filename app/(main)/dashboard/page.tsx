@@ -7,6 +7,8 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import { auth } from "@/lib/auth";
 import { listUserAvatars } from "@/lib/services/avatars";
 
+export const dynamic = "force-dynamic";
+
 function getGreeting() {
   const hour = new Date().getHours();
   if (hour < 12) return "Good morning";

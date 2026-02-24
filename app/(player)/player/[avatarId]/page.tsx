@@ -4,6 +4,8 @@ import PlayerClient from "@/components/player/PlayerClient";
 import { avatars } from "@/database/schema";
 import { getDatabase } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {
