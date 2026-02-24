@@ -168,60 +168,10 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // 5. Download candidate images and re-upload to R2
-      //    External CDN URLs are temporary (24-48h TTL), so we persist to R2
-      //    to avoid OpaqueResponseBlocking and broken images in history.
+      // 5. CocoRouter already uploaded images to R2 — use CDN URLs directly
+      const r2Urls = result.images;
+
       const { getDatabase } = await import("@/lib/db");
-      const { generateAvatarKey, persistExternalImage } = await import(
-        "@/lib/services/storage"
-      );
-
-      const persistResults = await Promise.allSettled(
-        result.images.map(async (externalUrl, index) => {
-          const key = generateAvatarKey(
-            userId,
-            avatarId,
-            "candidate",
-            `${index}`,
-          );
-          return await persistExternalImage(externalUrl, key);
-        }),
-      );
-
-      const r2Urls: string[] = [];
-      for (let i = 0; i < persistResults.length; i++) {
-        const r = persistResults[i];
-        if (r.status === "fulfilled") {
-          r2Urls.push(r.value);
-        } else {
-          console.warn(
-            `[Generate] Failed to persist candidate ${i} to R2:`,
-            r.reason,
-          );
-        }
-      }
-
-      if (r2Urls.length === 0) {
-        // All persists failed — refund
-        await refundWithUpdate(
-          userId,
-          cost,
-          "Character generation succeeded but R2 persist failed — refund",
-          async (tx) => {
-            await tx
-              .update(avatars)
-              .set({ status: "failed", updatedAt: new Date() })
-              .where(eq(avatars.id, avatarId));
-          },
-          { avatarId },
-        );
-
-        return NextResponse.json(
-          { error: "Failed to save generated images" },
-          { status: 500 },
-        );
-      }
-
       const db = getDatabase();
       await db
         .update(avatars)

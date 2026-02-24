@@ -1,5 +1,5 @@
 /**
- * Async background removal via PiAPI (Qubico/image-toolkit).
+ * Async background removal via CocoRouter → PiAPI (Qubico/image-toolkit).
  *
  * Uses the same submit→poll pattern as other PiAPI adapters.
  * Designed to run as a fire-and-forget task via Next.js `after()`,
@@ -13,11 +13,12 @@
 import { PollFailedError, pollUntilDone } from "./generation/poll";
 import { deleteFromR2, generateThumbnail, uploadImageToR2 } from "./storage";
 
-const API_BASE = "https://api.piapi.ai/api/v1";
+const API_BASE =
+  process.env.COCOROUTER_URL || "https://router.interastralpeace.online";
 
 function getApiKey(): string {
-  const key = process.env.PIAPI_API_KEY;
-  if (!key) throw new Error("PIAPI_API_KEY environment variable not set");
+  const key = process.env.COCOROUTER_KEY;
+  if (!key) throw new Error("COCOROUTER_KEY environment variable not set");
   return key;
 }
 
@@ -35,11 +36,11 @@ interface TaskResponse {
 }
 
 async function submitRemoveBackground(imageUrl: string): Promise<string> {
-  const res = await fetch(`${API_BASE}/task`, {
+  const res = await fetch(`${API_BASE}/v1/piapi/task`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-Key": getApiKey(),
+      Authorization: `Bearer ${getApiKey()}`,
     },
     body: JSON.stringify({
       model: "Qubico/image-toolkit",
@@ -68,8 +69,8 @@ async function submitRemoveBackground(imageUrl: string): Promise<string> {
 }
 
 async function checkTask(taskId: string): Promise<TaskResponse> {
-  const res = await fetch(`${API_BASE}/task/${taskId}`, {
-    headers: { "X-API-Key": getApiKey() },
+  const res = await fetch(`${API_BASE}/v1/piapi/task/${taskId}`, {
+    headers: { Authorization: `Bearer ${getApiKey()}` },
   });
 
   if (!res.ok) {

@@ -21,10 +21,7 @@ import {
   type ExpressionType,
   getGenerationAdapter,
 } from "@/lib/services/generation";
-import {
-  generateAvatarKey,
-  persistExternalImage,
-} from "@/lib/services/storage";
+import { generateAvatarKey } from "@/lib/services/storage";
 import { staggeredAllSettled } from "@/lib/utils";
 
 /**
@@ -224,15 +221,15 @@ export async function POST(
           throw new Error(result.error || "Generation failed");
         }
 
+        // CocoRouter already uploaded to R2 — use CDN URL directly
         const key = generateAvatarKey(
           session.user.id,
           avatarId,
           "expression",
           record.type,
         );
-        const publicUrl = await persistExternalImage(result.imageUrl, key);
 
-        return { record, publicUrl, key };
+        return { record, publicUrl: result.imageUrl, key };
       }),
       500,
     );

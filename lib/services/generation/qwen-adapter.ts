@@ -1,8 +1,8 @@
 /**
- * Qwen Image adapter for character generation via piapi.ai.
+ * Qwen Image adapter for character generation via CocoRouter → PiAPI.
  *
  * API flow: submit task → poll until done → extract 1 character image URL.
- * Auth: X-API-Key header with PIAPI_API_KEY env var.
+ * Auth: Authorization Bearer with COCOROUTER_KEY env var.
  *
  * Supports two task types:
  * - txt2img: text-only generation
@@ -18,11 +18,12 @@ import {
   type GenerateExpressionResult,
 } from "./types";
 
-const API_BASE = "https://api.piapi.ai/api/v1";
+const API_BASE =
+  process.env.COCOROUTER_URL || "https://router.interastralpeace.online";
 
 function getApiKey(): string {
-  const key = process.env.PIAPI_API_KEY;
-  if (!key) throw new Error("PIAPI_API_KEY environment variable not set");
+  const key = process.env.COCOROUTER_KEY;
+  if (!key) throw new Error("COCOROUTER_KEY environment variable not set");
   return key;
 }
 
@@ -97,11 +98,11 @@ async function submitTask(
     input.image1 = referenceUrl;
   }
 
-  const res = await fetch(`${API_BASE}/task`, {
+  const res = await fetch(`${API_BASE}/v1/piapi/task`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-API-Key": apiKey,
+      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model: "Qubico/qwen-image",
@@ -130,8 +131,8 @@ async function submitTask(
 async function checkTask(taskId: string): Promise<TaskResponse> {
   const apiKey = getApiKey();
 
-  const res = await fetch(`${API_BASE}/task/${taskId}`, {
-    headers: { "X-API-Key": apiKey },
+  const res = await fetch(`${API_BASE}/v1/piapi/task/${taskId}`, {
+    headers: { Authorization: `Bearer ${apiKey}` },
     cache: "no-store",
     signal: AbortSignal.timeout(15_000),
   });

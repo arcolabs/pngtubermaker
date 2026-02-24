@@ -1,12 +1,9 @@
 /**
- * Doubao Seedream 5.0 adapter for character generation via ByteDance Ark API.
+ * Doubao Seedream 5.0 adapter for character generation via CocoRouter → ByteDance Ark API.
  *
- * API: POST https://ark.cn-beijing.volces.com/api/v3/images/generations
- * Auth: Authorization Bearer with ARK_API_KEY env var.
- * Response: base64 image data (b64_json) — returned as data URI for downstream R2 upload.
- *
- * Uses b64_json response format to avoid CDN download issues
- * (ByteDance CDN nodes may be unreachable from non-China servers).
+ * API: POST {COCOROUTER_URL}/v1/ark/images/generations
+ * Auth: Authorization Bearer with COCOROUTER_KEY env var.
+ * Response: CDN URL (CocoRouter auto-uploads to R2).
  *
  * Supports text-to-image and image-to-image (with `image` field).
  */
@@ -19,12 +16,14 @@ import {
   type GenerateExpressionResult,
 } from "./types";
 
-const API_URL = "https://ark.cn-beijing.volces.com/api/v3/images/generations";
+const API_BASE =
+  process.env.COCOROUTER_URL || "https://router.interastralpeace.online";
+const API_URL = `${API_BASE}/v1/ark/images/generations`;
 const MODEL_ID = "doubao-seedream-5-0-260128";
 
 function getApiKey(): string {
-  const key = process.env.ARK_API_KEY;
-  if (!key) throw new Error("ARK_API_KEY environment variable not set");
+  const key = process.env.COCOROUTER_KEY;
+  if (!key) throw new Error("COCOROUTER_KEY environment variable not set");
   return key;
 }
 
@@ -43,10 +42,10 @@ interface DoubaoResponse {
   error?: { code?: string; message?: string };
 }
 
-/** Extract base64 image data from the first successful item in data array */
-function extractImageBase64(response: DoubaoResponse): string | undefined {
+/** Extract image URL from the first item (CocoRouter returns CDN URL) */
+function extractImageUrl(response: DoubaoResponse): string | undefined {
   for (const item of response.data ?? []) {
-    if ("b64_json" in item && item.b64_json) return item.b64_json;
+    if ("url" in item && item.url) return item.url;
   }
   return undefined;
 }
@@ -69,7 +68,6 @@ export class DoubaoSeedreamAdapter {
       model: MODEL_ID,
       prompt,
       size: "2048x2048",
-      response_format: "b64_json",
       sequential_image_generation: "disabled",
       watermark: false,
     };
@@ -102,15 +100,15 @@ export class DoubaoSeedreamAdapter {
       );
     }
 
-    const b64 = extractImageBase64(data);
+    const imageUrl = extractImageUrl(data);
 
-    if (!b64) {
+    if (!imageUrl) {
       console.error("[Doubao] No image data in response");
       return null;
     }
 
-    console.log("[Doubao] Generation complete (b64_json)");
-    return `data:image/png;base64,${b64}`;
+    console.log("[Doubao] Generation complete");
+    return imageUrl;
   }
 
   async generateExpression(
@@ -134,7 +132,6 @@ export class DoubaoSeedreamAdapter {
         prompt,
         image: request.baseImageUrl,
         size: "2048x2048",
-        response_format: "b64_json",
         sequential_image_generation: "disabled",
         watermark: false,
       }),
@@ -160,9 +157,9 @@ export class DoubaoSeedreamAdapter {
       };
     }
 
-    const b64 = extractImageBase64(data);
+    const imageUrl = extractImageUrl(data);
 
-    if (!b64) {
+    if (!imageUrl) {
       return {
         status: "failed",
         imageUrl: null,
@@ -170,12 +167,10 @@ export class DoubaoSeedreamAdapter {
       };
     }
 
-    console.log(
-      `[Doubao] Expression ${request.expression} complete (b64_json)`,
-    );
+    console.log(`[Doubao] Expression ${request.expression} complete`);
     return {
       status: "completed",
-      imageUrl: `data:image/png;base64,${b64}`,
+      imageUrl,
     };
   }
 }

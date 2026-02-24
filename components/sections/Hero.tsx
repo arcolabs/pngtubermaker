@@ -64,13 +64,17 @@ export default function Hero() {
               />
             </div>
           </div>
-          
+
           <p className="text-center mt-4 text-sm text-gray-500">
-            <a href="/showcase" target="_blank" className="text-primary hover:underline">
+            <a
+              href="/showcase"
+              target="_blank"
+              rel="noopener"
+              className="text-primary hover:underline"
+            >
               View fullscreen demo →
             </a>
           </p>
-
         </div>
       </div>
     </section>

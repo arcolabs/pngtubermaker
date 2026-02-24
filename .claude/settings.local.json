@@ -104,7 +104,8 @@
       "Bash(echo \"=== clawdbot ===\" && ssh -o ConnectTimeout=5 -o BatchMode=yes -o StrictHostKeyChecking=no root@167.235.65.166 'echo \"Hostname: $\\(hostname\\)\"; echo \"OS: $\\(cat /etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d= -f2 | tr -d \\\\\"\\)\"; echo \"Region: $\\(curl -s --max-time 3 ipinfo.io/city 2>/dev/null || echo unknown\\)\"; echo \"Provider: $\\(curl -s --max-time 3 ipinfo.io/org 2>/dev/null || echo unknown\\)\"' 2>&1)",
       "Bash(echo \"=== hetzner-nbg-166 ===\" && ssh -o ConnectTimeout=5 -o BatchMode=yes -o StrictHostKeyChecking=no root@167.235.65.166 'echo \"ALIVE\" && echo \"Hostname: $\\(hostname\\)\" && echo \"CPU: $\\(nproc\\) cores\" && free -h | grep Mem && df -h / && echo \"K3s: $\\(which k3s 2>/dev/null || echo none\\)\" && echo \"Docker: $\\(docker version --format \"{{.Server.Version}}\" 2>/dev/null || echo none\\)\" && echo \"Containers:\" && docker ps --format \"{{.Names}} \\({{.Image}}\\)\" 2>/dev/null || echo \"no docker\"' 2>&1)",
       "Bash(sshpass -p 'g$a^yvY{3^&saGhDX*' ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no root@135.181.97.219 'echo \"=== K3s version ===\" && k3s --version && echo \"=== K3s service ===\" && systemctl is-active k3s 2>/dev/null && echo \"=== K3s pods ===\" && k3s kubectl get pods -A 2>/dev/null | head -20 && echo \"=== Zeabur components ===\" && k3s kubectl get pods -A --no-headers 2>/dev/null | awk \"{print \\\\$2}\" | sort' 2>&1)",
-      "Bash(bunx biome format --write components/avatars/AvatarDetailClient.tsx 2>&1)"
+      "Bash(bunx biome format --write components/avatars/AvatarDetailClient.tsx 2>&1)",
+      "Bash(bunx biome format --write app/api/avatars/\\\\[id\\\\]/expressions/\\\\[expressionId\\\\]/regenerate/route.ts 2>&1)"
     ]
   }
 }

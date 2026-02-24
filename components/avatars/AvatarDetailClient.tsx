@@ -5,8 +5,10 @@ import {
   Copy,
   Download,
   ExternalLink,
+  Info,
   Monitor,
   MonitorPlay,
+  RefreshCw,
   Sparkles,
   Trash2,
 } from "lucide-react";
@@ -65,9 +67,13 @@ const expressionLabels: Record<string, string> = {
 function ExpressionCard({
   expression,
   isHighlighted,
+  isRegenerating,
+  onRegenerate,
 }: {
   expression: Expression;
   isHighlighted?: boolean;
+  isRegenerating?: boolean;
+  onRegenerate?: (expression: Expression) => void;
 }) {
   return (
     <div className="space-y-2">
@@ -78,7 +84,11 @@ function ExpressionCard({
             "ring-2 ring-primary shadow-[0_0_20px_rgba(6,182,212,0.3)]",
         )}
       >
-        {expression.status === "completed" && expression.imageUrl ? (
+        {isRegenerating ? (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="loading loading-spinner loading-md text-primary" />
+          </div>
+        ) : expression.status === "completed" && expression.imageUrl ? (
           <>
             <SafeImage
               src={expression.imageUrl}
@@ -86,12 +96,35 @@ function ExpressionCard({
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-3">
-              <span className="text-white text-xs font-medium">
-                {expressionLabels[expression.type] || expression.type}
-              </span>
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              {onRegenerate ? (
+                <button
+                  type="button"
+                  className="btn btn-primary btn-xs"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRegenerate(expression);
+                  }}
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  Regenerate
+                </button>
+              ) : (
+                <span className="text-white text-xs font-medium">
+                  {expressionLabels[expression.type] || expression.type}
+                </span>
+              )}
             </div>
           </>
+        ) : expression.status === "failed" && onRegenerate ? (
+          <button
+            type="button"
+            className="w-full h-full flex flex-col items-center justify-center gap-1.5 cursor-pointer bg-red-50/50 hover:bg-red-50 transition-colors"
+            onClick={() => onRegenerate(expression)}
+          >
+            <RefreshCw className="w-5 h-5 text-red-400" />
+            <span className="text-xs text-red-400 font-medium">Retry</span>
+          </button>
         ) : expression.status === "generating" ? (
           <div className="w-full h-full flex items-center justify-center">
             <span className="loading loading-spinner loading-md text-primary" />
@@ -299,6 +332,51 @@ export default function AvatarDetailClient({
   >(null);
   const [micThreshold, setMicThreshold] = useState<number | null>(null);
   const [speakingDelay, setSpeakingDelay] = useState<number | null>(null);
+  const [regeneratingId, setRegeneratingId] = useState<string | null>(null);
+
+  async function handleRegenerate(expression: Expression) {
+    setRegeneratingId(expression.id);
+    const toastId = toast.loading(
+      `Regenerating ${expressionLabels[expression.type] || expression.type}...`,
+    );
+    try {
+      const res = await fetch(
+        `/api/avatars/${avatar.id}/expressions/${expression.id}/regenerate`,
+        { method: "POST" },
+      );
+      if (!res.ok) {
+        const data = await res.json();
+        if (data.error === "insufficient_credits") {
+          toast.dismiss(toastId);
+          useBuyCreditsModal.getState().open(data.required);
+          return;
+        }
+        throw new Error(data.error || "Regeneration failed");
+      }
+      const data = await res.json();
+      setPacks((prev) =>
+        prev.map((pack) => ({
+          ...pack,
+          expressions: pack.expressions.map((e) =>
+            e.id === expression.id
+              ? { ...e, status: "completed" as const, imageUrl: data.imageUrl }
+              : e,
+          ),
+        })),
+      );
+      toast.success(
+        `${expressionLabels[expression.type] || expression.type} regenerated!`,
+        { id: toastId },
+      );
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Regeneration failed",
+        { id: toastId },
+      );
+    } finally {
+      setRegeneratingId(null);
+    }
+  }
 
   // Build expression assets for the preview engine from all completed expressions
   const previewExpressions = useMemo<ExpressionAsset[]>(() => {
@@ -557,6 +635,8 @@ export default function AvatarDetailClient({
                   key={type}
                   expression={expr}
                   isHighlighted={activeExpressionType === type}
+                  isRegenerating={regeneratingId === expr.id}
+                  onRegenerate={type !== "idle" ? handleRegenerate : undefined}
                 />
               );
             }
@@ -569,6 +649,12 @@ export default function AvatarDetailClient({
             );
           })}
         </div>
+
+        <p className="text-xs text-gray-400 mt-2 flex items-center gap-1.5">
+          <Info className="w-3.5 h-3.5 shrink-0" />
+          Failed generations are automatically refunded — hover any expression
+          to regenerate (200 credits).
+        </p>
 
         {/* Generate Pack Buttons below the grid */}
         {canAddMore && (
