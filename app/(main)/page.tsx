@@ -7,6 +7,7 @@ import {
   type Tier,
 } from "@/components/pricing";
 import AITools from "@/components/sections/AITools";
+import AvatarGallery from "@/components/sections/AvatarGallery";
 import Comparison from "@/components/sections/Comparison";
 import DiscordCTA from "@/components/sections/DiscordCTA";
 import ExplorePages from "@/components/sections/ExplorePages";
@@ -100,6 +101,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }}
       />
       <Hero />
+      <AvatarGallery />
       <AITools />
       <Comparison />
       <PricingSection

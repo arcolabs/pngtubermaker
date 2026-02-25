@@ -8,43 +8,33 @@ import { useState } from "react";
 const exampleImages = [
   {
     id: "1",
-    src: "/test/round1_idle.png",
-    alt: "AI PNGTuber avatar idle pose",
+    src: "/images/showcase/fox_pngtuber.png",
+    alt: "AI-generated fox PNGTuber avatar",
   },
   {
     id: "2",
-    src: "/test/round1_happy.png",
-    alt: "AI PNGTuber avatar happy expression",
+    src: "/images/showcase/pinkbunny_pngtuber.png",
+    alt: "AI-generated pink bunny PNGTuber avatar",
   },
   {
     id: "3",
-    src: "/test/round1_sad.png",
-    alt: "AI PNGTuber avatar sad expression",
+    src: "/images/showcase/sunflower_pngtuber.png",
+    alt: "AI-generated sunflower PNGTuber avatar",
   },
   {
     id: "4",
-    src: "/test/round1_angry.png",
-    alt: "AI PNGTuber avatar angry expression",
+    src: "/images/showcase/round1_idle.png",
+    alt: "AI PNGTuber avatar idle expression",
   },
   {
     id: "5",
-    src: "/test/round2_idle.png",
-    alt: "AI PNGTuber character idle pose",
+    src: "/images/showcase/round2_sad.png",
+    alt: "AI PNGTuber avatar sad expression",
   },
   {
     id: "6",
-    src: "/test/round2_happy.png",
-    alt: "AI PNGTuber character happy expression",
-  },
-  {
-    id: "7",
-    src: "/test/round3_idle.png",
-    alt: "AI PNGTuber character idle pose",
-  },
-  {
-    id: "8",
-    src: "/test/round3_happy.png",
-    alt: "AI PNGTuber character happy expression",
+    src: "/images/showcase/round3_angry.png",
+    alt: "AI PNGTuber avatar angry expression",
   },
 ];
 

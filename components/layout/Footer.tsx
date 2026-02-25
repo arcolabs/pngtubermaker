@@ -129,6 +129,12 @@ export default function Footer() {
             >
               VTuber Maker
             </Link>
+            <Link
+              href="/style/anime"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              Anime Avatar Maker
+            </Link>
           </nav>
 
           <nav className="flex flex-col gap-2">
@@ -236,10 +242,34 @@ export default function Footer() {
               VTuber Maker
             </Link>
             <Link
+              href="/style/anime"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              Anime Avatar Maker
+            </Link>
+            <Link
               href="/guides/how-to-make-a-pngtuber"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
               How to Make a PNGTuber
+            </Link>
+            <Link
+              href="/for/twitch"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              Twitch Avatar Maker
+            </Link>
+            <Link
+              href="/for/discord"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              Discord Avatar Maker
+            </Link>
+            <Link
+              href="/for/youtube"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              YouTube Avatar Maker
             </Link>
             <Link
               href={brand.social.discord || "https://discord.com"}

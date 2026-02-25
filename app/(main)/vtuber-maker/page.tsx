@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import AvatarShowcase from "@/components/landing/AvatarShowcase";
 import ComparisonTable from "@/components/landing/ComparisonTable";
 import FeatureGrid from "@/components/landing/FeatureGrid";
 import FinalCTA from "@/components/landing/FinalCTA";
 import LandingHero from "@/components/landing/LandingHero";
 import RelatedPages from "@/components/landing/RelatedPages";
+import AvatarGallery from "@/components/sections/AvatarGallery";
 import DiscordCTA from "@/components/sections/DiscordCTA";
 import FAQ from "@/components/sections/FAQ";
 import Testimonials from "@/components/sections/Testimonials";
@@ -54,7 +54,13 @@ export default function VTuberMakerPage() {
         <FeatureGrid title={page.features.title} items={page.features.items} />
       )}
       {page.comparison && <ComparisonTable comparison={page.comparison} />}
-      {page.showcase && <AvatarShowcase showcase={page.showcase} />}
+      {page.showcase && (
+        <AvatarGallery
+          title={page.showcase.title}
+          description={page.showcase.description}
+          avatars={page.showcase.images}
+        />
+      )}
       <Testimonials />
       <FAQ faqData={page.faqs} />
       <FinalCTA cta={page.cta} />
