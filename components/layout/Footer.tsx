@@ -85,7 +85,7 @@ export default function Footer() {
     <footer className="bg-base-100 text-base-content">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-16">
         {/* Mobile: compact single-column / Desktop: 4-col grid */}
-        <div className="hidden md:grid md:grid-cols-4 gap-10">
+        <div className="hidden md:grid md:grid-cols-5 gap-10">
           <div>
             <Link href="/" className="inline-block">
               <Image
@@ -116,6 +116,46 @@ export default function Footer() {
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
               Pricing
+            </Link>
+            <Link
+              href="/free-pngtuber-maker"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              Free PNGTuber Maker
+            </Link>
+            <Link
+              href="/vtuber-maker"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              VTuber Maker
+            </Link>
+          </nav>
+
+          <nav className="flex flex-col gap-2">
+            <h6 className="footer-title">Resources</h6>
+            <Link
+              href="/guides/how-to-make-a-pngtuber"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              How to Make a PNGTuber
+            </Link>
+            <Link
+              href="/for/twitch"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              Twitch Avatar Maker
+            </Link>
+            <Link
+              href="/for/discord"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              Discord Avatar Maker
+            </Link>
+            <Link
+              href="/for/youtube"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              YouTube Avatar Maker
             </Link>
           </nav>
 
@@ -182,6 +222,24 @@ export default function Footer() {
               className="text-base-content/70 hover:text-primary transition-colors"
             >
               Pricing
+            </Link>
+            <Link
+              href="/free-pngtuber-maker"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              Free PNGTuber Maker
+            </Link>
+            <Link
+              href="/vtuber-maker"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              VTuber Maker
+            </Link>
+            <Link
+              href="/guides/how-to-make-a-pngtuber"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              How to Make a PNGTuber
             </Link>
             <Link
               href={brand.social.discord || "https://discord.com"}

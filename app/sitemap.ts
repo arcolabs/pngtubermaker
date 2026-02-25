@@ -56,6 +56,42 @@ const staticRoutes: SitemapRoute[] = [
     priority: 0.3,
     changeFrequency: "monthly",
   },
+  // SEO landing pages
+  {
+    path: "/vtuber-maker",
+    priority: 0.8,
+    changeFrequency: "weekly",
+  },
+  {
+    path: "/style/anime",
+    priority: 0.7,
+    changeFrequency: "weekly",
+  },
+  {
+    path: "/guides/how-to-make-a-pngtuber",
+    priority: 0.7,
+    changeFrequency: "weekly",
+  },
+  {
+    path: "/free-pngtuber-maker",
+    priority: 0.8,
+    changeFrequency: "weekly",
+  },
+  {
+    path: "/for/discord",
+    priority: 0.6,
+    changeFrequency: "monthly",
+  },
+  {
+    path: "/for/twitch",
+    priority: 0.6,
+    changeFrequency: "monthly",
+  },
+  {
+    path: "/for/youtube",
+    priority: 0.6,
+    changeFrequency: "monthly",
+  },
 ];
 
 /**

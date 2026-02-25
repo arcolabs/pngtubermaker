@@ -61,7 +61,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
       {/* Desktop View */}
       <div className="hidden sm:flex items-center gap-1.5 text-sm text-gray-400">
         {items.map((item, i) => {
-          const key = item.href || item.label;
+          const key = `${i}-${item.label}`;
           const isLast = i === items.length - 1;
 
           return (

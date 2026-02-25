@@ -26,7 +26,7 @@ const DEFAULT_TESTIMONIALS: Testimonial[] = [
     platform: "Twitch",
     content:
       "Pasted the OBS link, and my avatar just started moving with my mic. Took maybe 2 minutes total. My chat noticed before I even said anything lol.",
-    avatar: "/images/showcase/1.WEBP",
+    avatar: "/avatar/avatar1.jpg",
   },
   {
     id: "2",
@@ -35,7 +35,7 @@ const DEFAULT_TESTIMONIALS: Testimonial[] = [
     platform: "YouTube",
     content:
       "I literally cannot draw a stick figure. Typed a description, picked from 4 options, generated the expressions — done. The fact that they all look consistent is what sold me.",
-    avatar: "/images/showcase/3.WEBP",
+    avatar: "/avatar/avatar2.jpg",
   },
   {
     id: "3",
@@ -43,7 +43,7 @@ const DEFAULT_TESTIMONIALS: Testimonial[] = [
     role: "Indie Streamer",
     content:
       "Was using a Live2D model that kept crashing OBS. This is just a browser source — way lighter, no plugins, and honestly looks better on stream than what I had before.",
-    avatar: "/images/showcase/5.WEBP",
+    avatar: "/avatar/avatar3.jpg",
   },
 ];
 
