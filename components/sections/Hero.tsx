@@ -53,6 +53,18 @@ export default function Hero() {
               )}
             </div>
           )}
+
+          {/* Video Showcase */}
+          <div className="max-w-5xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-[0_4px_30px_rgba(6,182,212,0.25)]">
+            <video
+              className="w-full h-full object-cover"
+              src="/videos/pngtuber_showcase.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+          </div>
         </div>
       </div>
     </section>
