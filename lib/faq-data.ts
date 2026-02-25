@@ -38,13 +38,13 @@ export const faqData: FAQItem[] = [
     id: "5",
     question: "Are the avatars I generate unique and safe to use?",
     answer:
-      "Yes. All avatars are generated from your own inputs and are unique. You get a full license to use them for streaming, content creation, and commercial use.",
+      "Yes. All avatars are generated from your own inputs and are unique. Free users can use them for streaming, social media, and personal content. Creator Pass subscribers get full commercial rights including merchandise and paid content.",
   },
   {
     id: "6",
     question: "Can I use the avatars commercially?",
     answer:
-      "Yes. All avatars you generate are yours to use freely — in streams, videos, thumbnails, and social media. You own what you create.",
+      "Free avatars can be used for streaming, YouTube videos, Discord, and social media. For full commercial rights (merchandise, brand deals, paid content), upgrade to the Creator Pass at $7.99/month.",
   },
   {
     id: "7",

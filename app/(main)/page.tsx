@@ -9,6 +9,7 @@ import {
 import AITools from "@/components/sections/AITools";
 import Comparison from "@/components/sections/Comparison";
 import DiscordCTA from "@/components/sections/DiscordCTA";
+import ExplorePages from "@/components/sections/ExplorePages";
 import FAQ from "@/components/sections/FAQ";
 import Hero from "@/components/sections/Hero";
 import Testimonials from "@/components/sections/Testimonials";
@@ -18,6 +19,20 @@ import { generateFAQJsonLd } from "@/lib/faq-data";
 
 const faqJsonLd = generateFAQJsonLd();
 
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "PNGTuberMaker",
+  url: "https://pngtubermaker.com",
+  logo: {
+    "@type": "ImageObject",
+    url: "https://pngtubermaker.com/logo.svg",
+  },
+  sameAs: ["https://discord.gg/zysPAnvP8f"],
+  description:
+    "AI-powered PNGTuber avatar generator for Twitch, YouTube, and Discord streamers.",
+};
+
 const videoJsonLd = {
   "@context": "https://schema.org",
   "@type": "VideoObject",
@@ -25,7 +40,7 @@ const videoJsonLd = {
   description:
     "See how PNGTuberMaker lets you create custom PNGTuber avatars with AI, generate expression packs, and go live on Twitch, YouTube & Discord in minutes.",
   thumbnailUrl: "https://pngtubermaker.com/og-image.jpg",
-  uploadDate: "2025-12-01",
+  uploadDate: "2026-01-15",
   contentUrl: "https://pngtubermaker.com/videos/pngtuber_showcase.mp4",
   embedUrl: "https://pngtubermaker.com",
   publisher: {
@@ -69,6 +84,13 @@ export default function Home() {
     <>
       <script
         type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Organization structured data for SEO
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(organizationJsonLd),
+        }}
+      />
+      <script
+        type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: FAQ structured data for SEO
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
@@ -86,6 +108,7 @@ export default function Home() {
         isLoading={subscribeLoading || topupLoading}
       />
       <Testimonials />
+      <ExplorePages />
       <FAQ />
       <DiscordCTA />
     </>

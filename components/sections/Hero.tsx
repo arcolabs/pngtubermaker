@@ -61,10 +61,12 @@ export default function Hero() {
             <video
               className="w-full h-full object-cover"
               src="/videos/pngtuber_showcase.mp4"
+              poster="/og-image.jpg"
               autoPlay
               loop
               muted
               playsInline
+              aria-label="PNGTuberMaker demo — create AI avatars and go live on stream"
             />
           </div>
         </div>

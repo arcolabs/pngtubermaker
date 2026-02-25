@@ -32,6 +32,9 @@ export const metadata: Metadata = {
     "PNGTuber software",
     "anime avatar maker",
   ],
+  alternates: {
+    canonical: "/",
+  },
   authors: [{ name: brand.name }],
   creator: brand.name,
   publisher: brand.name,
@@ -104,7 +107,7 @@ const jsonLd = {
   offers: {
     "@type": "AggregateOffer",
     lowPrice: "0",
-    highPrice: "30",
+    highPrice: "7.99",
     priceCurrency: "USD",
   },
 };
