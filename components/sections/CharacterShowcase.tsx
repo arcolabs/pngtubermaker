@@ -6,14 +6,46 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const exampleImages = [
-  { id: "1", src: "/images/showcase/1.WEBP", alt: "Character example 1" },
-  { id: "2", src: "/images/showcase/2.WEBP", alt: "Character example 2" },
-  { id: "3", src: "/images/showcase/3.WEBP", alt: "Character example 3" },
-  { id: "4", src: "/images/showcase/4.WEBP", alt: "Character example 4" },
-  { id: "5", src: "/images/showcase/5.WEBP", alt: "Character example 5" },
-  { id: "6", src: "/images/showcase/6.WEBP", alt: "Character example 6" },
-  { id: "7", src: "/images/showcase/7.WEBP", alt: "Character example 7" },
-  { id: "8", src: "/images/showcase/8.WEBP", alt: "Character example 8" },
+  {
+    id: "1",
+    src: "/test/round1_idle.png",
+    alt: "AI PNGTuber avatar idle pose",
+  },
+  {
+    id: "2",
+    src: "/test/round1_happy.png",
+    alt: "AI PNGTuber avatar happy expression",
+  },
+  {
+    id: "3",
+    src: "/test/round1_sad.png",
+    alt: "AI PNGTuber avatar sad expression",
+  },
+  {
+    id: "4",
+    src: "/test/round1_angry.png",
+    alt: "AI PNGTuber avatar angry expression",
+  },
+  {
+    id: "5",
+    src: "/test/round2_idle.png",
+    alt: "AI PNGTuber character idle pose",
+  },
+  {
+    id: "6",
+    src: "/test/round2_happy.png",
+    alt: "AI PNGTuber character happy expression",
+  },
+  {
+    id: "7",
+    src: "/test/round3_idle.png",
+    alt: "AI PNGTuber character idle pose",
+  },
+  {
+    id: "8",
+    src: "/test/round3_happy.png",
+    alt: "AI PNGTuber character happy expression",
+  },
 ];
 
 export default function CharacterShowcase() {

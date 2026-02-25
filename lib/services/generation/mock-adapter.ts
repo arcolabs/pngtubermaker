@@ -18,14 +18,14 @@ function getBaseUrl(): string {
 }
 
 const MOCK_CHARACTER_IMAGES = [
-  "/images/showcase/1.WEBP",
-  "/images/showcase/2.WEBP",
-  "/images/showcase/3.WEBP",
-  "/images/showcase/4.WEBP",
-  "/images/showcase/5.WEBP",
-  "/images/showcase/6.WEBP",
-  "/images/showcase/7.WEBP",
-  "/images/showcase/8.WEBP",
+  "/test/round1_idle.png",
+  "/test/round1_happy.png",
+  "/test/round1_sad.png",
+  "/test/round1_angry.png",
+  "/test/round2_idle.png",
+  "/test/round2_happy.png",
+  "/test/round3_idle.png",
+  "/test/round3_happy.png",
 ];
 
 function shuffle<T>(array: T[]): T[] {
@@ -72,7 +72,7 @@ export class MockAdapter implements GenerationAdapter {
 
     return {
       status: "completed",
-      imageUrl: `${baseUrl}${mockImages[0] ?? "/images/showcase/1.WEBP"}`,
+      imageUrl: `${baseUrl}${mockImages[0] ?? "/test/round1_idle.png"}`,
     };
   }
 }
