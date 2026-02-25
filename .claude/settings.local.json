@@ -107,7 +107,9 @@
       "Bash(bunx biome format --write components/avatars/AvatarDetailClient.tsx 2>&1)",
       "Bash(bunx biome format --write app/api/avatars/\\\\[id\\\\]/expressions/\\\\[expressionId\\\\]/regenerate/route.ts 2>&1)",
       "Bash(done)",
-      "Bash(npx next build 2>&1 | grep -E \"\\(error|Error|✓|Route|showcase|Compil\\)\" | head -30)"
+      "Bash(npx next build 2>&1 | grep -E \"\\(error|Error|✓|Route|showcase|Compil\\)\" | head -30)",
+      "Bash(test -f ~/.dataforseo_config.json && echo \"Config exists\" || echo \"Config NOT found\")",
+      "Bash(git status -u)"
     ]
   }
 }
