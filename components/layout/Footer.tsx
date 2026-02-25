@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { brand } from "@/lib/brand";
 
 interface BadgeData {
@@ -15,8 +15,12 @@ interface BadgeData {
   height: number;
 }
 
+const BADGES_PER_PAGE = 2;
+const ROTATE_INTERVAL = 8000; // 8s per group
+
 function FooterBadges() {
   const [badges, setBadges] = useState<BadgeData[]>([]);
+  const [pageIndex, setPageIndex] = useState(0);
 
   useEffect(() => {
     fetch("/api/badges")
@@ -25,17 +29,39 @@ function FooterBadges() {
       .catch(() => {});
   }, []);
 
-  if (badges.length === 0) return null;
+  const pages = useMemo(() => {
+    const result: BadgeData[][] = [];
+    for (let i = 0; i < badges.length; i += BADGES_PER_PAGE) {
+      result.push(badges.slice(i, i + BADGES_PER_PAGE));
+    }
+    return result;
+  }, [badges]);
+
+  const needsRotation = pages.length > 1;
+
+  const rotate = useCallback(() => {
+    setPageIndex((prev) => (prev + 1) % pages.length);
+  }, [pages.length]);
+
+  useEffect(() => {
+    if (!needsRotation) return;
+    const timer = setInterval(rotate, ROTATE_INTERVAL);
+    return () => clearInterval(timer);
+  }, [needsRotation, rotate]);
+
+  if (pages.length === 0) return null;
+
+  const currentPage = pages[pageIndex] ?? pages[0];
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      {badges.map((b) => (
+    <div className="flex items-center gap-3">
+      {currentPage.map((b) => (
         <a
           key={b.id}
           href={b.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="opacity-50 hover:opacity-80 transition-opacity"
+          className="opacity-50 hover:opacity-80 transition-opacity duration-500"
         >
           {/* biome-ignore lint/performance/noImgElement: external badge image */}
           <img
