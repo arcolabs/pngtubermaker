@@ -19,14 +19,16 @@ export default function Hero() {
 
           {/* Main Heading */}
           <h1 className="mb-3 sm:mb-4 text-gray-900 font-bold text-3xl sm:text-5xl lg:text-7xl leading-tight px-2 sm:px-0">
-            From <span className="text-primary">Idea</span> to{" "}
-            <span className="text-primary">Live Stream</span> in Minutes.
+            AI <span className="text-primary">PNGTuber Maker</span> — Idea to{" "}
+            <span className="text-primary">Live Stream</span> in Minutes
           </h1>
 
           {/* Subheading */}
           <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-5xl mx-auto px-4 sm:px-0 mb-6">
             Create your PNGTuber avatar, generate expressions, and go live with
             real-time mic lip sync in OBS — all without drawing a single line.
+            The free AI avatar generator for Twitch, YouTube & Discord
+            streamers.
           </p>
 
           {/* Auth-aware CTA buttons */}

@@ -14,6 +14,29 @@ import Hero from "@/components/sections/Hero";
 import Testimonials from "@/components/sections/Testimonials";
 import { useSubscription, useTopup } from "@/hooks/use-stripe";
 import { authClient } from "@/lib/auth-client";
+import { generateFAQJsonLd } from "@/lib/faq-data";
+
+const faqJsonLd = generateFAQJsonLd();
+
+const videoJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: "PNGTuber Maker — Create AI PNGTuber Avatars for Streaming",
+  description:
+    "See how PNGTuberMaker lets you create custom PNGTuber avatars with AI, generate expression packs, and go live on Twitch, YouTube & Discord in minutes.",
+  thumbnailUrl: "https://pngtubermaker.com/og-image.jpg",
+  uploadDate: "2025-12-01",
+  contentUrl: "https://pngtubermaker.com/videos/pngtuber_showcase.mp4",
+  embedUrl: "https://pngtubermaker.com",
+  publisher: {
+    "@type": "Organization",
+    name: "PNGTuberMaker",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://pngtubermaker.com/logo.svg",
+    },
+  },
+};
 
 export default function Home() {
   const router = useRouter();
@@ -44,6 +67,16 @@ export default function Home() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: FAQ structured data for SEO
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Video structured data for SEO
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }}
+      />
       <Hero />
       <AITools />
       <Comparison />
