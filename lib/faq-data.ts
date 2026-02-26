@@ -50,7 +50,7 @@ export const faqData: FAQItem[] = [
     id: "7",
     question: "What's included in the free plan?",
     answer:
-      "New users get 1,000 welcome credits — enough for a full avatar with an expression pack. Exports are at 512px. You can buy more credits anytime, or subscribe to the Creator Pass for 6,000 credits/month and HD (1080p) export.",
+      "Every new user gets 1 free avatar generation — no credit card required. You'll get 4 candidate images to choose from, exported at 512px PNG with transparent background. To unlock expressions, HD export, and more generations, buy credits or subscribe to the Creator Pass.",
   },
   {
     id: "8",

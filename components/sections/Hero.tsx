@@ -1,5 +1,6 @@
 "use client";
 
+import { ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { UserCountBadge } from "@/components/ui/UserCountBadge";
@@ -31,26 +32,30 @@ export default function Hero() {
             streamers.
           </p>
 
-          {/* Auth-aware CTA buttons */}
+          {/* Auth-aware CTA */}
           {isHydrated && (
-            <div className="flex items-center justify-center gap-3 mb-8">
+            <div className="flex flex-col items-center gap-3 mb-8">
               {user ? (
-                <>
+                <div className="flex items-center gap-3">
                   <Link href="/create" className="btn btn-primary">
                     Create PNGTuber
                   </Link>
                   <Link href="/dashboard" className="btn btn-outline">
                     My Dashboard
                   </Link>
-                </>
+                </div>
               ) : (
                 <>
-                  <Link href="/login" className="btn btn-primary">
-                    Get Started Free
+                  <Link
+                    href="/login"
+                    className="btn btn-primary btn-lg border-0 text-white bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)]"
+                  >
+                    Create Your Free Avatar
                   </Link>
-                  <Link href="/pricing" className="btn btn-outline">
-                    See Pricing
-                  </Link>
+                  <span className="flex items-center gap-1.5 text-sm text-gray-500">
+                    <ShieldCheck className="w-4 h-4 text-primary" />
+                    No credit card required
+                  </span>
                 </>
               )}
             </div>

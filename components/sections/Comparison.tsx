@@ -22,8 +22,8 @@ export default function Comparison() {
           </h2>
 
           <p className="mt-3 text-base font-medium text-gray-600 sm:text-lg md:mx-auto md:max-w-2xl lg:text-xl">
-            Save hundreds of dollars and weeks of waiting by using AI to
-            generate your perfect streaming avatar in minutes.
+            Save $150+ and weeks of waiting by using AI to generate your perfect
+            streaming avatar in minutes.
           </p>
         </div>
 
@@ -155,10 +155,10 @@ export default function Comparison() {
             <span className="hidden md:inline-flex">
               {user
                 ? "Create Your PNGTuber Now"
-                : "Create Your PNGTuber Avatar — Free"}
+                : "Create Your Free PNGTuber — No Credit Card"}
             </span>
             <span className="md:hidden">
-              {user ? "Create Now" : "Get Started Free"}
+              {user ? "Create Now" : "Create Free PNGTuber"}
             </span>
           </Link>
 

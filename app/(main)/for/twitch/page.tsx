@@ -4,7 +4,6 @@ import FeatureGrid from "@/components/landing/FeatureGrid";
 import FinalCTA from "@/components/landing/FinalCTA";
 import HowItWorks from "@/components/landing/HowItWorks";
 import LandingHero from "@/components/landing/LandingHero";
-import RelatedPages from "@/components/landing/RelatedPages";
 import DiscordCTA from "@/components/sections/DiscordCTA";
 import FAQ from "@/components/sections/FAQ";
 import Testimonials from "@/components/sections/Testimonials";
@@ -60,7 +59,6 @@ export default function TwitchAvatarMakerPage() {
       <Testimonials />
       <FAQ faqData={page.faqs} />
       <FinalCTA cta={page.cta} />
-      <RelatedPages pages={page.relatedPages} />
       <DiscordCTA />
     </>
   );

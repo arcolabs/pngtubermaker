@@ -13,6 +13,11 @@ import {
   refundWithUpdate,
   TASK_COSTS,
 } from "@/lib/services/credits-transaction";
+import {
+  canUseFreeTrial,
+  consumeFreeTrial,
+  revertFreeTrial,
+} from "@/lib/services/free-trial";
 import { type ArtStyle, getGenerationAdapter } from "@/lib/services/generation";
 
 /**
@@ -97,11 +102,90 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 3. Atomic operation: Consume credits AND create avatar record
+    // 3. Check free trial eligibility before credit consumption
     const cost = TASK_COSTS.avatar_generation;
     const normalizedAspectRatio = aspectRatio || "1:1";
     const avatarId = crypto.randomUUID();
+    const isTrialEligible = await canUseFreeTrial(userId);
 
+    if (isTrialEligible) {
+      // ── Free trial path: no credits consumed ──────────────────────────
+      const trialResult = await consumeFreeTrial(userId);
+      if (!trialResult.success) {
+        return NextResponse.json(
+          { error: "insufficient_credits", balance: 0, required: cost },
+          { status: 402 },
+        );
+      }
+
+      // Create avatar row directly (no credit transaction link)
+      const { getDatabase } = await import("@/lib/db");
+      const db = getDatabase();
+      await db.insert(avatars).values({
+        id: avatarId,
+        userId,
+        name: "My PNGTuber",
+        prompt: prompt.trim(),
+        style: style as ArtStyle,
+        aspectRatio: normalizedAspectRatio,
+        status: "generating",
+        creditsUsed: 0,
+      });
+
+      try {
+        const adapter = getGenerationAdapter();
+        const result = await adapter.generateCharacter({
+          prompt: prompt.trim(),
+          style: style as ArtStyle,
+          referenceUrl: referenceUrl || undefined,
+        });
+
+        if (result.status === "failed" || result.images.length === 0) {
+          // Generation failed — delete avatar row + trial transaction so user can retry
+          await db
+            .update(avatars)
+            .set({ status: "failed", updatedAt: new Date() })
+            .where(eq(avatars.id, avatarId));
+          await revertFreeTrial(userId);
+
+          return NextResponse.json(
+            { error: result.error || "Generation failed" },
+            { status: 500 },
+          );
+        }
+
+        const r2Urls = result.images;
+        await db
+          .update(avatars)
+          .set({
+            candidateImages: r2Urls,
+            status: "selecting",
+            updatedAt: new Date(),
+          })
+          .where(eq(avatars.id, avatarId));
+
+        return NextResponse.json({
+          avatarId,
+          images: r2Urls,
+          aspectRatio: normalizedAspectRatio,
+        });
+      } catch (error) {
+        console.error("Avatar generation error (trial):", error);
+        const db2 = getDatabase();
+        await db2
+          .update(avatars)
+          .set({ status: "failed", updatedAt: new Date() })
+          .where(eq(avatars.id, avatarId));
+        await revertFreeTrial(userId);
+
+        return NextResponse.json(
+          { error: "Generation failed unexpectedly" },
+          { status: 500 },
+        );
+      }
+    }
+
+    // ── Normal paid path: consume credits AND create avatar record ─────
     const consumeResult = await consumeWithRecord(
       userId,
       cost,

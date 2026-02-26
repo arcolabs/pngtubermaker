@@ -3,7 +3,6 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { eq } from "drizzle-orm";
 import * as schema from "@/database/schema";
 import { getDatabase, isDbConfigured } from "./db";
-import { grantPurchasedCredits } from "./services/credits";
 import { notifyUserSignup } from "./services/lark";
 
 // Validate environment variables
@@ -32,16 +31,6 @@ if (process.env.NODE_ENV === "development") {
     console.warn("[Auth] DATABASE_URL is not set");
   }
 }
-
-// Environment variables for welcome credits
-const WELCOME_CREDITS = Number.parseInt(
-  process.env.WELCOME_CREDITS || "1000",
-  10,
-);
-const WELCOME_CREDITS_EXPIRY_DAYS = Number.parseInt(
-  process.env.WELCOME_CREDITS_EXPIRY_DAYS || "30",
-  10,
-);
 
 // Lazy-initialized auth instance (avoids DB connection at module load / build time)
 let _auth: ReturnType<typeof betterAuth> | undefined;
@@ -73,37 +62,6 @@ function createAuth() {
     },
     secret: process.env.BETTER_AUTH_SECRET,
     databaseHooks: {
-      user: {
-        create: {
-          after: async (user) => {
-            try {
-              // Calculate expiry date (30 days from now by default)
-              const expiresAt = new Date();
-              expiresAt.setDate(
-                expiresAt.getDate() + WELCOME_CREDITS_EXPIRY_DAYS,
-              );
-
-              // Grant welcome credits with expiration
-              await grantPurchasedCredits(
-                user.id,
-                WELCOME_CREDITS,
-                "Welcome bonus",
-                {
-                  source: "signup",
-                  expiresInDays: WELCOME_CREDITS_EXPIRY_DAYS,
-                },
-                expiresAt,
-              );
-
-              console.log(
-                `[Auth] Granted ${WELCOME_CREDITS} welcome credits to user ${user.id} (expires: ${expiresAt.toISOString()})`,
-              );
-            } catch (error) {
-              console.error("[Auth] Failed to grant welcome credits:", error);
-            }
-          },
-        },
-      },
       account: {
         create: {
           after: async (accountRecord) => {

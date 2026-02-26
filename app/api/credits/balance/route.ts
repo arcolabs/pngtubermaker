@@ -2,14 +2,15 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getBalance } from "@/lib/services/credits";
+import { canUseFreeTrial } from "@/lib/services/free-trial";
 
 /**
  * GET /api/credits/balance
  *
- * Get the current user's credit balance.
+ * Get the current user's credit balance + free trial eligibility.
  *
  * Auth: Required
- * Response: { total: number, subscription: number, purchased: number, subscriptionExpiresAt: string | null }
+ * Response: { total, subscription, purchased, subscriptionExpiresAt, trialEligible }
  */
 export async function GET(req: NextRequest) {
   // 1. Auth check
@@ -18,8 +19,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // 2. Get balance from credit service
-  const balance = await getBalance(session.user.id);
+  const userId = session.user.id;
+
+  // 2. Get balance + trial eligibility in parallel
+  const [balance, trialEligible] = await Promise.all([
+    getBalance(userId),
+    canUseFreeTrial(userId),
+  ]);
 
   // 3. Return JSON response
   return NextResponse.json({
@@ -27,5 +33,6 @@ export async function GET(req: NextRequest) {
     subscription: balance.subscription,
     purchased: balance.purchased,
     subscriptionExpiresAt: balance.subscriptionExpiresAt?.toISOString() || null,
+    trialEligible,
   });
 }

@@ -88,6 +88,7 @@ interface GeneratorFormProps {
   prompt: string;
   style: ArtStyle;
   creditBalance: number | null;
+  trialEligible: boolean;
   isGenerating: boolean;
   reference: ReferenceHandlers;
   onPromptChange: (prompt: string) => void;
@@ -111,6 +112,7 @@ export function GeneratorForm({
   prompt,
   style,
   creditBalance,
+  trialEligible,
   isGenerating,
   reference,
   onPromptChange,
@@ -169,9 +171,9 @@ export function GeneratorForm({
   const canSubmit =
     prompt.trim().length >= 10 &&
     !isGenerating &&
-    (creditBalance ?? 0) >= CHARACTER_COST;
+    (trialEligible || (creditBalance ?? 0) >= CHARACTER_COST);
   const insufficientCredits =
-    creditBalance !== null && creditBalance < CHARACTER_COST;
+    creditBalance !== null && !trialEligible && creditBalance < CHARACTER_COST;
 
   const hasAnyTag = Object.keys(tagSelections).length > 0;
 
@@ -364,7 +366,7 @@ export function GeneratorForm({
             ) : (
               <>
                 <Sparkles className="w-4 h-4" />
-                Generate
+                {trialEligible ? "Generate Free Avatar" : "Generate"}
               </>
             )}
           </button>

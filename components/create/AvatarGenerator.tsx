@@ -8,10 +8,12 @@ import {
   useAvatarGenerator,
 } from "@/hooks/use-avatar-generator";
 import { useReferencePersistentState } from "@/hooks/use-reference-persistent-state";
+import { useSubscriptionStore } from "@/hooks/use-subscription-store";
 import type { ReferenceHandlers } from "@/types/reference";
 import { ExpressionResultsCard } from "./ExpressionResultsCard";
 import { GenerationGroup } from "./GenerationGroup";
 import { GeneratorForm } from "./GeneratorForm";
+import { TrialResultUpsell } from "./TrialResultUpsell";
 
 function WelcomeBanner({ onDismiss }: { onDismiss: () => void }) {
   return (
@@ -26,9 +28,11 @@ function WelcomeBanner({ onDismiss }: { onDismiss: () => void }) {
       </button>
       <p className="text-sm sm:text-base text-gray-700 pr-8">
         <span className="font-semibold text-gray-900">Welcome!</span> You have{" "}
-        <span className="font-semibold text-primary">1,000 free credits</span> —
-        enough for a full avatar with expressions. Describe your character below
-        to get started.
+        <span className="font-semibold text-primary">
+          1 free avatar generation
+        </span>{" "}
+        — describe your character below and get 4 unique options to choose from.
+        No credit card required.
       </p>
     </div>
   );
@@ -59,8 +63,14 @@ export function AvatarGenerator() {
     removeFromGallery,
   } = useReferencePersistentState();
 
+  const credits = useSubscriptionStore((s) => s.credits);
+  const trialEligible = credits?.trialEligible ?? false;
+
   const isWelcome = searchParams.get("welcome") === "1";
   const [showWelcome, setShowWelcome] = useState(isWelcome);
+
+  // Track whether user just completed a trial generation
+  const [showTrialUpsell, setShowTrialUpsell] = useState(false);
 
   useEffect(() => {
     fetchBalance();
@@ -79,6 +89,26 @@ export function AvatarGenerator() {
       updatePrompt(promptParam);
     }
   }, [searchParams, state.prompt, updatePrompt]);
+
+  // Show trial upsell when a trial user's generation completes
+  const wasTrialEligibleRef = useMemo(() => ({ current: false }), []);
+  useEffect(() => {
+    if (trialEligible) wasTrialEligibleRef.current = true;
+  }, [trialEligible, wasTrialEligibleRef]);
+
+  useEffect(() => {
+    // If user was trial-eligible before generating, and now has completed generations
+    if (
+      wasTrialEligibleRef.current &&
+      !state.isGenerating &&
+      state.generations.some(
+        (g) => g.type === "avatar" && g.status === "completed",
+      )
+    ) {
+      setShowTrialUpsell(true);
+      wasTrialEligibleRef.current = false;
+    }
+  }, [state.isGenerating, state.generations, wasTrialEligibleRef]);
 
   // Generate with reference
   const handleGenerate = () => {
@@ -111,6 +141,7 @@ export function AvatarGenerator() {
         prompt={state.prompt}
         style={state.style}
         creditBalance={creditBalance}
+        trialEligible={trialEligible}
         isGenerating={state.isGenerating}
         reference={reference}
         onPromptChange={updatePrompt}
@@ -157,6 +188,9 @@ export function AvatarGenerator() {
                 </div>
               );
             })}
+
+          {/* Trial upsell — shown after first free generation */}
+          {showTrialUpsell && <TrialResultUpsell />}
         </div>
       )}
     </div>

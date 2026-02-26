@@ -1,5 +1,6 @@
 "use client";
 
+import { Monitor, Tv, Video } from "lucide-react";
 import Image from "next/image";
 import { memo } from "react";
 
@@ -17,6 +18,12 @@ interface TestimonialsProps {
   description?: string;
   testimonials?: Testimonial[];
 }
+
+const PLATFORM_ICONS: Record<string, typeof Tv> = {
+  Twitch: Tv,
+  YouTube: Video,
+  Discord: Monitor,
+};
 
 const DEFAULT_TESTIMONIALS: Testimonial[] = [
   {
@@ -46,6 +53,34 @@ const DEFAULT_TESTIMONIALS: Testimonial[] = [
     avatar: "/avatar/avatar3.jpg",
   },
 ];
+
+function PlatformBadge({
+  role,
+  platform,
+}: {
+  role: string;
+  platform?: string;
+}) {
+  const PlatformIcon = platform ? PLATFORM_ICONS[platform] : undefined;
+  return (
+    <p className="text-base-content/50 text-xs lg:text-sm truncate flex items-center gap-1">
+      {role}
+      {platform && (
+        <>
+          {" · "}
+          {PlatformIcon ? (
+            <span className="inline-flex items-center gap-1">
+              <PlatformIcon className="w-3 h-3" />
+              {platform}
+            </span>
+          ) : (
+            platform
+          )}
+        </>
+      )}
+    </p>
+  );
+}
 
 const TestimonialCard = memo(function TestimonialCard({
   testimonial,
@@ -94,10 +129,10 @@ const TestimonialCard = memo(function TestimonialCard({
             <h4 className="text-base-content font-semibold text-sm lg:text-base truncate">
               {testimonial.name}
             </h4>
-            <p className="text-base-content/50 text-xs lg:text-sm truncate">
-              {testimonial.role}
-              {testimonial.platform && ` · ${testimonial.platform}`}
-            </p>
+            <PlatformBadge
+              role={testimonial.role}
+              platform={testimonial.platform}
+            />
           </div>
         </div>
       </div>

@@ -3,7 +3,6 @@ import ComparisonTable from "@/components/landing/ComparisonTable";
 import FeatureGrid from "@/components/landing/FeatureGrid";
 import FinalCTA from "@/components/landing/FinalCTA";
 import LandingHero from "@/components/landing/LandingHero";
-import RelatedPages from "@/components/landing/RelatedPages";
 import AvatarGallery from "@/components/sections/AvatarGallery";
 import DiscordCTA from "@/components/sections/DiscordCTA";
 import FAQ from "@/components/sections/FAQ";
@@ -64,7 +63,6 @@ export default function VTuberMakerPage() {
       <Testimonials />
       <FAQ faqData={page.faqs} />
       <FinalCTA cta={page.cta} />
-      <RelatedPages pages={page.relatedPages} />
       <DiscordCTA />
     </>
   );

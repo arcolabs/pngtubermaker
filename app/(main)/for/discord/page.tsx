@@ -4,7 +4,6 @@ import FinalCTA from "@/components/landing/FinalCTA";
 import HowItWorks from "@/components/landing/HowItWorks";
 import LandingHero from "@/components/landing/LandingHero";
 import PlatformSpecs from "@/components/landing/PlatformSpecs";
-import RelatedPages from "@/components/landing/RelatedPages";
 import DiscordCTA from "@/components/sections/DiscordCTA";
 import FAQ from "@/components/sections/FAQ";
 import Breadcrumb from "@/components/ui/Breadcrumb";
@@ -58,7 +57,6 @@ export default function DiscordAvatarMakerPage() {
       )}
       <FAQ faqData={page.faqs} />
       <FinalCTA cta={page.cta} />
-      <RelatedPages pages={page.relatedPages} />
       <DiscordCTA />
     </>
   );

@@ -6,13 +6,13 @@ import {
   PricingSection,
   type Tier,
 } from "@/components/pricing";
-import AITools from "@/components/sections/AITools";
-import AvatarGallery from "@/components/sections/AvatarGallery";
 import Comparison from "@/components/sections/Comparison";
 import DiscordCTA from "@/components/sections/DiscordCTA";
-import ExplorePages from "@/components/sections/ExplorePages";
+
 import FAQ from "@/components/sections/FAQ";
 import Hero from "@/components/sections/Hero";
+import LiveDemo from "@/components/sections/LiveDemo";
+import ResultShowcase from "@/components/sections/ResultShowcase";
 import Testimonials from "@/components/sections/Testimonials";
 import { useSubscription, useTopup } from "@/hooks/use-stripe";
 import { authClient } from "@/lib/auth-client";
@@ -101,8 +101,8 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }}
       />
       <Hero />
-      <AvatarGallery />
-      <AITools />
+      <LiveDemo />
+      <ResultShowcase />
       <Comparison />
       <PricingSection
         onSubscribe={handleSubscribe}
@@ -110,7 +110,6 @@ export default function Home() {
         isLoading={subscribeLoading || topupLoading}
       />
       <Testimonials />
-      <ExplorePages />
       <FAQ />
       <DiscordCTA />
     </>
