@@ -105,7 +105,7 @@ export default function UsageStats({
       {monthlyLimit <= 500 && (
         <div className="mt-4 p-3 bg-amber-50 rounded-lg text-sm">
           <span className="text-amber-600">
-            You&apos;re using welcome credits. Subscribe to get monthly credits!
+            Buy credits or subscribe to the Creator Pass for monthly credits!
           </span>
         </div>
       )}

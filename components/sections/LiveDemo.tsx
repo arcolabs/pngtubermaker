@@ -3,7 +3,8 @@
 import { Wand2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "@/hooks/use-auth-store";
 
 interface DemoAvatar {
   src: string;
@@ -60,7 +61,12 @@ const DEMO_AVATARS: DemoAvatar[] = [
 const STYLE_TABS = ["All", "Chibi", "Anime", "Cartoon", "Pixel Art"] as const;
 
 export default function LiveDemo() {
+  const { user, isHydrated, hydrate } = useAuthStore();
   const [activeStyle, setActiveStyle] = useState<string>("All");
+
+  useEffect(() => {
+    if (!isHydrated) hydrate();
+  }, [isHydrated, hydrate]);
 
   const filtered =
     activeStyle === "All"
@@ -131,10 +137,10 @@ export default function LiveDemo() {
         {/* CTA */}
         <div className="text-center mt-10">
           <Link
-            href="/login"
+            href={user ? "/create" : "/login"}
             className="btn btn-primary border-0 text-white bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)]"
           >
-            Create Yours Free
+            {user ? "Create PNGTuber" : "Create Yours Free"}
           </Link>
         </div>
       </div>

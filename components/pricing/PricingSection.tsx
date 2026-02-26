@@ -3,6 +3,7 @@
 import { Check, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useAuthStore } from "@/hooks/use-auth-store";
 import type { BillingCycle, Tier } from "@/lib/stripe";
 import { CreatorPassCard } from "./PricingCard";
 import CreditPacks from "./TopUpPackages";
@@ -22,6 +23,12 @@ const FREE_TRIAL_FEATURES = [
 ];
 
 function FreeTrialCard() {
+  const { user, isHydrated, hydrate } = useAuthStore();
+
+  useEffect(() => {
+    if (!isHydrated) hydrate();
+  }, [isHydrated, hydrate]);
+
   return (
     <div className="rounded-2xl border border-base-content/10 bg-white p-8 h-full flex flex-col">
       <div className="mb-6 text-center">
@@ -46,11 +53,11 @@ function FreeTrialCard() {
       </ul>
 
       <Link
-        href="/login"
+        href={user ? "/create" : "/login"}
         className="w-full rounded-xl py-3 font-semibold text-center btn btn-primary"
       >
         <ShieldCheck className="w-4 h-4" />
-        Start Free
+        {user ? "Create Avatar" : "Start Free"}
       </Link>
     </div>
   );

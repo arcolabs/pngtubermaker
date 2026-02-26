@@ -100,7 +100,7 @@ export default function CreditBar() {
 
   // Determine subscription row label/color based on tier
   const isFreeUser = tier === "free";
-  const subLabel = isFreeUser ? "Welcome Credits" : "Subscription Credits";
+  const subLabel = isFreeUser ? "Free Credits" : "Subscription Credits";
   const SubIcon = isFreeUser ? Gift : Sparkles;
   // Cyan for paid subscription, violet for free welcome
   const subBarColor = isFreeUser
@@ -208,7 +208,7 @@ export default function CreditBar() {
         <div className="mt-4 flex items-start gap-2 rounded-xl bg-amber-50 border border-amber-200/60 px-4 py-3 text-sm text-amber-800">
           <span className="mt-0.5 flex-shrink-0">⚠</span>
           <p>
-            Your welcome credits expire in {expirationInfo.daysLeft} day
+            Your credits expire in {expirationInfo.daysLeft} day
             {expirationInfo.daysLeft !== 1 && "s"}.{" "}
             <span className="text-amber-600">
               Purchased credits never expire.

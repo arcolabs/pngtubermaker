@@ -323,7 +323,7 @@ export const landingPages: Record<string, LandingPageData> = {
         id: "vm-5",
         question: "How much does it cost to create a VTuber avatar?",
         answer:
-          "New users get free credits to create their first avatar and expression pack. Traditional VTuber commissions cost $200-$2,000+ and take weeks — PNGTuberMaker delivers in minutes for a fraction of the cost.",
+          "New users get 1 free avatar generation to try it out — no credit card required. Traditional VTuber commissions cost $200-$2,000+ and take weeks — PNGTuberMaker delivers in minutes for a fraction of the cost.",
       },
       {
         id: "vm-6",
@@ -501,7 +501,7 @@ export const landingPages: Record<string, LandingPageData> = {
         id: "aa-6",
         question: "Is this anime avatar maker free?",
         answer:
-          "Yes! PNGTuberMaker offers free credits for new users — enough to create your first anime avatar with expressions. No credit card required. You can create, preview, and download your anime character completely free. Premium plans unlock higher resolution exports and more generations.",
+          "Yes! PNGTuberMaker gives you 1 free avatar generation — enough to create your first anime avatar. No credit card required. You can create, preview, and download your anime character completely free. Premium plans unlock higher resolution exports, expression packs, and more generations.",
       },
       {
         id: "aa-7",
@@ -618,7 +618,7 @@ export const landingPages: Record<string, LandingPageData> = {
         },
         {
           subtitle: "How Much Does It Cost to Become a PNGTuber?",
-          text: "Getting started as a PNGTuber can be completely free. PNGTuberMaker gives new users free credits to create their first avatar with a full expression pack. OBS Studio is 100% free and open-source. You can start streaming on Twitch, YouTube, or Kick without spending a dollar. Traditional PNGTuber commissions from artists typically cost $50-$200 for a single static avatar, plus extra for each expression. With AI generation, you get unlimited variations, instant results, and the ability to tweak your design anytime. Premium features like HD exports and more generations are available but not required to start streaming.",
+          text: "Getting started as a PNGTuber can be completely free. PNGTuberMaker gives new users 1 free avatar generation — no credit card required. OBS Studio is 100% free and open-source. You can start streaming on Twitch, YouTube, or Kick without spending a dollar. Traditional PNGTuber commissions from artists typically cost $50-$200 for a single static avatar, plus extra for each expression. With AI generation, you get unlimited variations, instant results, and the ability to tweak your design anytime. Premium features like HD exports, expression packs, and more generations are available but not required to start streaming.",
         },
         {
           subtitle: "Tips for Creating a Great PNGTuber Avatar",
@@ -694,7 +694,7 @@ export const landingPages: Record<string, LandingPageData> = {
         id: "htmp-2",
         question: "Is PNGTuber maker free?",
         answer:
-          "Yes, PNGTuberMaker is free to start. New users receive free generation credits to create their first avatar with a complete expression pack. You can create, customize, and start streaming without spending anything. Free exports are at 512px resolution, which is perfect for streaming. Optional upgrades unlock HD/4K exports and additional generation credits.",
+          "Yes, PNGTuberMaker is free to start. New users get 1 free avatar generation — no credit card required. You can create, customize, and start streaming without spending anything. Free exports are at 512px resolution, which is perfect for streaming. Optional upgrades unlock HD/4K exports, expression packs, and additional generations.",
       },
       {
         id: "htmp-3",
@@ -749,8 +749,7 @@ export const landingPages: Record<string, LandingPageData> = {
     relatedPages: [
       {
         title: "Free PNGTuber Maker",
-        description:
-          "Start creating with free credits — no credit card required.",
+        description: "Try 1 free avatar generation — no credit card required.",
         href: "/free-pngtuber-maker",
       },
       {
@@ -808,7 +807,7 @@ export const landingPages: Record<string, LandingPageData> = {
       badge: "🎁 100% Free — No Credit Card Required",
       title: "Free PNGTuber Maker: Create Your Avatar at Zero Cost",
       subtitle:
-        "Create your PNGTuber avatar with free welcome credits — enough for a full avatar and expression pack. No credit card, no watermarks, no hidden fees. Start streaming today.",
+        "Create your PNGTuber avatar with 1 free generation — no credit card required. No watermarks, no hidden fees. Start streaming today.",
       ctaText: "Create Free Avatar — No Credit Card Required",
       ctaHref: "/create",
     },
@@ -819,7 +818,7 @@ export const landingPages: Record<string, LandingPageData> = {
           icon: "Gift",
           title: "Free Avatar + Expression Pack",
           description:
-            "Get enough free credits to create a complete PNGTuber avatar with a 5-expression pack (talking, happy, sad, angry, surprised). No credit card, no time limits, no watermarks — just free.",
+            "Get 1 free avatar generation to create your first PNGTuber character. No credit card, no time limits, no watermarks — just free. Purchase credits anytime to unlock expression packs and more characters.",
         },
         {
           icon: "Wand2",
@@ -907,7 +906,7 @@ export const landingPages: Record<string, LandingPageData> = {
         id: "fp-1",
         question: "Is PNGTuber Maker really 100% free?",
         answer:
-          "Yes, PNGTuberMaker is genuinely free to start. You get free credits when you sign up — no credit card required, no trial period, no hidden fees. These credits are enough to create a complete avatar with an expression pack. You can start streaming immediately without paying anything. We only ask for payment if you want additional generations or HD/4K exports.",
+          "Yes, PNGTuberMaker is genuinely free to start. You get 1 free avatar generation when you sign up — no credit card required, no trial period, no hidden fees. That's enough to create your first avatar and start streaming immediately without paying anything. We only ask for payment if you want additional generations, expression packs, or HD/4K exports.",
       },
       {
         id: "fp-2",
@@ -919,7 +918,7 @@ export const landingPages: Record<string, LandingPageData> = {
         id: "fp-3",
         question: "Do free avatars have watermarks or restrictions?",
         answer:
-          "Absolutely no watermarks. Free avatars are identical to paid ones in quality and usage rights. The only differences are: (1) export resolution is 512px (perfect for streaming, just not 4K), and (2) you get one free generation bundle to start. Everything else — OBS integration, commercial rights, all features — is fully included.",
+          "Absolutely no watermarks. Free avatars are identical to paid ones in quality and usage rights. The only differences are: (1) export resolution is 512px (perfect for streaming, just not 4K), and (2) you get 1 free avatar generation to start. Everything else — OBS integration, commercial rights, all features — is fully included.",
       },
       {
         id: "fp-4",
@@ -929,9 +928,9 @@ export const landingPages: Record<string, LandingPageData> = {
       },
       {
         id: "fp-5",
-        question: "What happens when I run out of free credits?",
+        question: "What happens after my free generation?",
         answer:
-          "You have two options: (1) Purchase a one-time credit pack starting at $2.99 for more generations, or (2) Subscribe to Creator Pass at $7.99/month for monthly credits and HD exports. But your existing avatars keep working forever — they don't expire. You only pay if you want to create more characters.",
+          "You have two options: (1) Purchase a one-time credit pack starting at $2.99 for more generations, or (2) Subscribe to Creator Pass at $7.99/month for monthly credits and HD exports. But your existing avatar keeps working forever — it doesn't expire. You only pay if you want to create more characters or unlock expression packs.",
       },
       {
         id: "fp-6",
@@ -955,7 +954,7 @@ export const landingPages: Record<string, LandingPageData> = {
     cta: {
       title: "Start Streaming Free Today",
       subtitle:
-        "Create your first avatar with free welcome credits. No credit card, no risk, no reason not to try.",
+        "Create your first avatar with 1 free generation. No credit card, no risk, no reason not to try.",
       ctaText: "Create My Free PNGTuber Now",
       ctaHref: "/create",
     },
@@ -1197,7 +1196,7 @@ export const landingPages: Record<string, LandingPageData> = {
       },
       {
         title: "Free PNGTuber Maker",
-        description: "Start creating with free credits — no credit card.",
+        description: "Try 1 free avatar generation — no credit card required.",
         href: "/free-pngtuber-maker",
       },
     ],
@@ -1437,7 +1436,7 @@ export const landingPages: Record<string, LandingPageData> = {
       },
       {
         title: "Free PNGTuber Maker",
-        description: "Start creating with free credits — no credit card.",
+        description: "Try 1 free avatar generation — no credit card required.",
         href: "/free-pngtuber-maker",
       },
     ],

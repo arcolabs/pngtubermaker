@@ -35,8 +35,7 @@ const pages = [
     href: "/free-pngtuber-maker",
     icon: Zap,
     title: "Free PNGTuber Maker",
-    description:
-      "Start creating with free welcome credits, no credit card required.",
+    description: "Try 1 free avatar generation — no credit card required.",
   },
   {
     href: "/for/twitch",

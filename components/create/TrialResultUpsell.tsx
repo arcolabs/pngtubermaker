@@ -9,7 +9,8 @@ import {
   Sparkles,
   Wand2,
 } from "lucide-react";
-import Link from "next/link";
+import { useBuyCreditsModal } from "@/hooks/use-buy-credits-modal";
+import { useSubscription } from "@/hooks/use-stripe";
 
 const LOCKED_FEATURES = [
   { icon: Wand2, label: "Expression Packs", desc: "Happy, angry, sad & more" },
@@ -19,6 +20,9 @@ const LOCKED_FEATURES = [
 ];
 
 export function TrialResultUpsell() {
+  const { subscribe, isLoading: subLoading } = useSubscription();
+  const openBuyCredits = useBuyCreditsModal((s) => s.open);
+
   return (
     <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-white to-cyan-50 p-6 sm:p-8">
       <div className="flex items-center gap-2 mb-4">
@@ -54,16 +58,22 @@ export function TrialResultUpsell() {
 
       {/* CTAs */}
       <div className="flex flex-col sm:flex-row gap-3">
-        <Link
-          href="/pricing"
-          className="btn border-0 text-white bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] flex-1"
+        <button
+          type="button"
+          onClick={() => subscribe("creator", "monthly")}
+          disabled={subLoading}
+          className="btn border-0 text-white bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] flex-1 disabled:opacity-50"
         >
           <Crown className="w-4 h-4" />
-          Get Creator Pass — $7.99/mo
-        </Link>
-        <Link href="/pricing" className="btn btn-outline btn-primary flex-1">
+          {subLoading ? "Loading..." : "Get Creator Pass — $7.99/mo"}
+        </button>
+        <button
+          type="button"
+          onClick={() => openBuyCredits()}
+          className="btn btn-outline btn-primary flex-1"
+        >
           Buy Credits
-        </Link>
+        </button>
       </div>
     </div>
   );
