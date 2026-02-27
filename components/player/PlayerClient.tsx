@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   type EngineEvent,
   type EngineExpressionType,
@@ -22,6 +22,13 @@ export default function PlayerClient({ avatarId }: PlayerClientProps) {
 
   const [state, setState] = useState<PlayerState>("loading");
   const [errorMsg, setErrorMsg] = useState("");
+  const [platformTab, setPlatformTab] = useState<"windows" | "mac">("windows");
+
+  const isOBS = useMemo(
+    () =>
+      typeof navigator !== "undefined" && /OBS\//i.test(navigator.userAgent),
+    [],
+  );
 
   // Make background transparent for OBS Browser Source
   useEffect(() => {
@@ -163,7 +170,7 @@ export default function PlayerClient({ avatarId }: PlayerClientProps) {
         </div>
       )}
 
-      {/* Mic denied message */}
+      {/* Mic denied overlay */}
       {state === "mic-denied" && (
         <div
           style={{
@@ -172,29 +179,203 @@ export default function PlayerClient({ avatarId }: PlayerClientProps) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "rgba(0,0,0,0.6)",
+            background: "rgba(0,0,0,0.75)",
           }}
         >
           <div
             style={{
               color: "#fff",
-              textAlign: "center",
               padding: "1.5rem",
-              maxWidth: "380px",
+              maxWidth: "420px",
+              width: "90%",
             }}
           >
-            <p style={{ fontSize: "1.25rem", marginBottom: "0.75rem" }}>
+            <p
+              style={{
+                fontSize: "1.1rem",
+                fontWeight: 600,
+                marginBottom: "0.5rem",
+              }}
+            >
               Microphone access required
             </p>
-            <p style={{ fontSize: "0.85rem", opacity: 0.8, lineHeight: 1.6 }}>
-              Allow microphone access in your browser, or restart OBS to retry.
-            </p>
+
+            {isOBS ? (
+              <>
+                <p
+                  style={{
+                    fontSize: "0.8rem",
+                    opacity: 0.8,
+                    lineHeight: 1.5,
+                    marginBottom: "0.75rem",
+                  }}
+                >
+                  OBS Browser Source blocks mic access by default. Add a launch
+                  parameter to fix this:
+                </p>
+
+                {/* Platform tabs */}
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "0.25rem",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  {(["windows", "mac"] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => setPlatformTab(tab)}
+                      style={{
+                        padding: "0.25rem 0.75rem",
+                        fontSize: "0.75rem",
+                        fontWeight: platformTab === tab ? 600 : 400,
+                        background:
+                          platformTab === tab
+                            ? "rgba(6,182,212,0.9)"
+                            : "rgba(255,255,255,0.15)",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "0.375rem",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {tab === "windows" ? "Windows" : "Mac"}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Platform-specific instructions */}
+                <div
+                  style={{
+                    background: "rgba(255,255,255,0.1)",
+                    borderRadius: "0.5rem",
+                    padding: "0.75rem",
+                    fontSize: "0.75rem",
+                    lineHeight: 1.6,
+                    marginBottom: "0.75rem",
+                  }}
+                >
+                  {platformTab === "windows" ? (
+                    <ol
+                      style={{
+                        margin: 0,
+                        paddingLeft: "1.25rem",
+                        listStyleType: "decimal",
+                      }}
+                    >
+                      <li>Close OBS</li>
+                      <li>Right-click OBS shortcut &rarr; Properties</li>
+                      <li>
+                        In <strong>Target</strong>, add to the very end:{" "}
+                        <code
+                          style={{
+                            background: "rgba(6,182,212,0.3)",
+                            padding: "0.1rem 0.35rem",
+                            borderRadius: "0.25rem",
+                            fontSize: "0.7rem",
+                          }}
+                        >
+                          --enable-media-stream
+                        </code>
+                      </li>
+                      <li>Click OK &rarr; Relaunch OBS</li>
+                    </ol>
+                  ) : (
+                    <ol
+                      style={{
+                        margin: 0,
+                        paddingLeft: "1.25rem",
+                        listStyleType: "decimal",
+                      }}
+                    >
+                      <li>Close OBS</li>
+                      <li>Open Terminal and run:</li>
+                      <li
+                        style={{
+                          listStyleType: "none",
+                          marginLeft: "-1.25rem",
+                        }}
+                      >
+                        <code
+                          style={{
+                            display: "block",
+                            background: "rgba(6,182,212,0.3)",
+                            padding: "0.35rem 0.5rem",
+                            borderRadius: "0.25rem",
+                            fontSize: "0.7rem",
+                            marginTop: "0.25rem",
+                          }}
+                        >
+                          open -a OBS --args --enable-media-stream
+                        </code>
+                      </li>
+                    </ol>
+                  )}
+                </div>
+
+                {/* Veadotube alternative */}
+                <p
+                  style={{
+                    fontSize: "0.7rem",
+                    opacity: 0.6,
+                    lineHeight: 1.5,
+                    marginBottom: "0.75rem",
+                  }}
+                >
+                  Too complex? Use <strong>veadotube mini</strong> instead
+                  &mdash; download your expressions from the avatar page and
+                  import them. No launch parameters needed.
+                </p>
+              </>
+            ) : (
+              <p
+                style={{
+                  fontSize: "0.8rem",
+                  opacity: 0.8,
+                  lineHeight: 1.5,
+                  marginBottom: "0.75rem",
+                }}
+              >
+                Your browser blocked microphone access. Click the lock/camera
+                icon in the address bar, allow microphone, then click Retry.
+              </p>
+            )}
+
+            {/* Retry button */}
+            <button
+              type="button"
+              onClick={() => {
+                const engine = engineRef.current;
+                if (engine) {
+                  setState("loading");
+                  engine.setMode("mic");
+                }
+              }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.35rem",
+                padding: "0.4rem 1rem",
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                background: "rgba(6,182,212,0.9)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "0.5rem",
+                cursor: "pointer",
+              }}
+            >
+              Retry Microphone
+            </button>
+
             {errorMsg && (
               <p
                 style={{
-                  marginTop: "1rem",
-                  fontSize: "0.65rem",
-                  opacity: 0.4,
+                  marginTop: "0.75rem",
+                  fontSize: "0.6rem",
+                  opacity: 0.35,
                   fontFamily: "monospace",
                   wordBreak: "break-all",
                 }}

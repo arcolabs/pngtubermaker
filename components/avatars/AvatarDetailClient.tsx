@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AlertTriangle,
   Check,
   Copy,
   Download,
@@ -172,6 +173,7 @@ function OBSSetupSection({
   speakingDelay: number | null;
 }) {
   const [copied, setCopied] = useState(false);
+  const [osPlatform, setOsPlatform] = useState<"windows" | "mac">("windows");
 
   const appUrl =
     typeof window !== "undefined"
@@ -196,58 +198,184 @@ function OBSSetupSection({
 
   return (
     <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/60 shadow-sm">
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-5">
         <Monitor className="w-4 h-4 text-primary" />
         <h3 className="font-semibold text-gray-900 text-sm">Use in OBS</h3>
       </div>
 
-      <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200/60 rounded-lg px-3 py-2 mb-3">
-        Tip: Switch to <strong>Mic</strong> mode in Live Preview above to
-        fine-tune sensitivity before copying.
-      </p>
+      {/* Timeline steps */}
+      <div className="space-y-0">
+        {/* Step 1 — Copy Player URL */}
+        <div className="flex gap-3">
+          <div className="flex flex-col items-center">
+            <div className="w-7 h-7 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center shrink-0">
+              1
+            </div>
+            <div className="flex-1 border-l-2 border-primary/20" />
+          </div>
+          <div className="pb-6 flex-1 min-w-0">
+            <p className="text-sm font-semibold text-gray-900">
+              Copy your Player URL
+            </p>
+            <p className="text-xs text-gray-500 mt-0.5 mb-3">
+              Tip: Switch to <strong>Mic</strong> mode in Live Preview above to
+              fine-tune sensitivity first.
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                readOnly
+                value={playerUrl}
+                className="input input-bordered input-sm flex-1 text-xs font-mono bg-gray-50 min-w-0"
+                onClick={(e) => (e.target as HTMLInputElement).select()}
+              />
+              <button
+                type="button"
+                className={cn(
+                  "btn btn-sm gap-1.5 min-w-[80px]",
+                  copied ? "btn-success text-white" : "btn-primary",
+                )}
+                onClick={handleCopy}
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    Copy
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
 
-      {/* URL + Copy */}
-      <div className="flex gap-2 mb-4">
-        <input
-          type="text"
-          readOnly
-          value={playerUrl}
-          className="input input-bordered input-sm flex-1 text-xs font-mono bg-gray-50"
-          onClick={(e) => (e.target as HTMLInputElement).select()}
-        />
-        <button
-          type="button"
-          className={cn(
-            "btn btn-sm gap-1.5 min-w-[80px]",
-            copied ? "btn-success text-white" : "btn-primary",
-          )}
-          onClick={handleCopy}
-        >
-          {copied ? (
-            <>
-              <Check className="w-3.5 h-3.5" />
-              Copied
-            </>
-          ) : (
-            <>
-              <Copy className="w-3.5 h-3.5" />
-              Copy
-            </>
-          )}
-        </button>
-      </div>
+        {/* Step 2 — Add Browser Source */}
+        <div className="flex gap-3">
+          <div className="flex flex-col items-center">
+            <div className="w-7 h-7 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center shrink-0">
+              2
+            </div>
+            <div className="flex-1 border-l-2 border-primary/20" />
+          </div>
+          <div className="pb-6 flex-1">
+            <p className="text-sm font-semibold text-gray-900">
+              Add Browser Source in OBS
+            </p>
+            <p className="text-sm text-gray-600 mt-1">
+              In OBS, click <strong>+</strong> under Sources &rarr;{" "}
+              <strong>Browser</strong> &rarr; paste the URL above.
+            </p>
+          </div>
+        </div>
 
-      {/* Quick Guide */}
-      <div className="bg-base-200/50 rounded-xl p-3">
-        <p className="text-xs font-medium text-gray-700 mb-2">Quick Setup</p>
-        <ol className="text-xs text-gray-500 space-y-1.5 list-decimal list-inside">
-          <li>
-            In OBS, click <strong>+</strong> under Sources &rarr;{" "}
-            <strong>Browser</strong>
-          </li>
-          <li>Paste the URL above, set size to match your export resolution</li>
-          <li>Done &mdash; mic-driven animation starts automatically</li>
-        </ol>
+        {/* Step 3 — Enable Microphone (warning) */}
+        <div className="flex gap-3">
+          <div className="flex flex-col items-center">
+            <div className="w-7 h-7 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center shrink-0">
+              3
+            </div>
+            <div className="flex-1 border-l-2 border-primary/20" />
+          </div>
+          <div className="pb-6 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="text-sm font-semibold text-gray-900">
+                Enable Microphone Access
+              </p>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 border border-amber-200/60">
+                <AlertTriangle className="w-3 h-3" />
+                Required
+              </span>
+            </div>
+            <p className="text-sm text-gray-600 mt-1 mb-3">
+              OBS Browser Source blocks microphone by default. Add a launch
+              parameter to enable it:
+            </p>
+
+            {/* Windows / Mac tabs */}
+            <div className="bg-amber-50 border border-amber-200/60 rounded-lg p-3">
+              <div className="flex gap-1 mb-3">
+                <button
+                  type="button"
+                  className={cn(
+                    "px-3 py-1 rounded-md text-xs font-medium transition-colors",
+                    osPlatform === "windows"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200",
+                  )}
+                  onClick={() => setOsPlatform("windows")}
+                >
+                  Windows
+                </button>
+                <button
+                  type="button"
+                  className={cn(
+                    "px-3 py-1 rounded-md text-xs font-medium transition-colors",
+                    osPlatform === "mac"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200",
+                  )}
+                  onClick={() => setOsPlatform("mac")}
+                >
+                  Mac
+                </button>
+              </div>
+
+              {osPlatform === "windows" ? (
+                <div className="space-y-2 text-sm text-gray-700">
+                  <p>
+                    Right-click your OBS shortcut &rarr;{" "}
+                    <strong>Properties</strong>
+                  </p>
+                  <p>
+                    In the <strong>Target</strong> field, add to the end:
+                  </p>
+                  <code className="block bg-gray-100 font-mono text-xs px-3 py-2 rounded select-all">
+                    --enable-media-stream
+                  </code>
+                  <p className="text-xs text-gray-500">
+                    Restart OBS after saving.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2 text-sm text-gray-700">
+                  <p>Open Terminal and run:</p>
+                  <code className="block bg-gray-100 font-mono text-xs px-3 py-2 rounded select-all">
+                    open -a OBS --args --enable-media-stream
+                  </code>
+                  <p className="text-xs text-gray-500">
+                    Run this each time you launch OBS, or create an alias.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <p className="text-xs text-gray-500 mt-2">
+              Too complex? Use{" "}
+              <strong className="text-gray-600">veadotube mini</strong> below
+              instead &mdash; just download your expressions and import, no
+              launch parameters needed.
+            </p>
+          </div>
+        </div>
+
+        {/* Done */}
+        <div className="flex gap-3">
+          <div className="flex flex-col items-center">
+            <div className="w-7 h-7 rounded-full bg-green-500 text-white flex items-center justify-center shrink-0">
+              <Check className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-green-700">You're live!</p>
+            <p className="text-sm text-gray-600">
+              Mic-driven animation starts automatically.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -255,46 +383,112 @@ function OBSSetupSection({
 
 function VeadotubeGuideSection() {
   return (
-    <details className="bg-white/70 backdrop-blur-sm rounded-2xl border border-gray-200/60 shadow-sm">
-      <summary className="cursor-pointer p-4 sm:p-6 list-none [&::-webkit-details-marker]:hidden">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <MonitorPlay className="w-4 h-4 text-gray-400" />
-            <h3 className="font-semibold text-gray-900 text-sm">
-              Use with veadotube
-            </h3>
+    <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/60 shadow-sm">
+      <div className="flex items-center gap-2 mb-5">
+        <MonitorPlay className="w-4 h-4 text-primary" />
+        <h3 className="font-semibold text-gray-900 text-sm">
+          Use with veadotube
+        </h3>
+      </div>
+
+      {/* Timeline steps */}
+      <div className="space-y-0">
+        {/* Step 1 */}
+        <div className="flex gap-3">
+          <div className="flex flex-col items-center">
+            <div className="w-7 h-7 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center shrink-0">
+              1
+            </div>
+            <div className="flex-1 border-l-2 border-primary/20" />
           </div>
-          <span className="text-xs text-gray-400">Click to expand</span>
-        </div>
-        <p className="text-xs text-gray-500 mt-1">
-          Prefer using veadotube mini? Download your assets and import them.
-        </p>
-      </summary>
-
-      <div className="px-4 sm:px-6 pb-4 sm:pb-6 -mt-2 space-y-3">
-        {/* Step-by-step guide */}
-        <div className="bg-base-200/50 rounded-xl p-3">
-          <p className="text-xs font-medium text-gray-700 mb-2">Setup Guide</p>
-          <ol className="text-xs text-gray-500 space-y-1.5 list-decimal list-inside">
-            <li>
-              Download your expression pack (ZIP) using the{" "}
-              <strong>Download</strong> button above
-            </li>
-            <li>
-              Unzip the files &mdash; each expression is named (idle, talking,
-              blink, etc.)
-            </li>
-            <li>
-              Open veadotube mini &rarr; click <strong>+</strong> to add a new
-              avatar
-            </li>
-            <li>Import each expression PNG into the corresponding slot</li>
-            <li>Set up OBS window capture for veadotube mini</li>
-            <li>Done &mdash; your PNGTuber is ready to stream!</li>
-          </ol>
+          <div className="pb-6 flex-1">
+            <p className="text-sm font-semibold text-gray-900">
+              Download expression pack
+            </p>
+            <p className="text-sm text-gray-600 mt-1">
+              Use the <strong>Download</strong> button above to get your
+              expression pack (ZIP).
+            </p>
+          </div>
         </div>
 
-        {/* External link */}
+        {/* Step 2 */}
+        <div className="flex gap-3">
+          <div className="flex flex-col items-center">
+            <div className="w-7 h-7 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center shrink-0">
+              2
+            </div>
+            <div className="flex-1 border-l-2 border-primary/20" />
+          </div>
+          <div className="pb-6 flex-1">
+            <p className="text-sm font-semibold text-gray-900">
+              Unzip the files
+            </p>
+            <p className="text-sm text-gray-600 mt-1">
+              Each file is named by expression &mdash; idle, talking, blink, and
+              so on.
+            </p>
+          </div>
+        </div>
+
+        {/* Step 3 */}
+        <div className="flex gap-3">
+          <div className="flex flex-col items-center">
+            <div className="w-7 h-7 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center shrink-0">
+              3
+            </div>
+            <div className="flex-1 border-l-2 border-primary/20" />
+          </div>
+          <div className="pb-6 flex-1">
+            <p className="text-sm font-semibold text-gray-900">
+              Import into veadotube mini
+            </p>
+            <p className="text-sm text-gray-600 mt-1">
+              Open veadotube mini &rarr; click <strong>+</strong> &rarr; import
+              each expression PNG.
+            </p>
+          </div>
+        </div>
+
+        {/* Step 4 */}
+        <div className="flex gap-3">
+          <div className="flex flex-col items-center">
+            <div className="w-7 h-7 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center shrink-0">
+              4
+            </div>
+            <div className="flex-1 border-l-2 border-primary/20" />
+          </div>
+          <div className="pb-6 flex-1">
+            <p className="text-sm font-semibold text-gray-900">
+              Add Window Capture in OBS
+            </p>
+            <p className="text-sm text-gray-600 mt-1">
+              In OBS, add a <strong>Window Capture</strong> source for veadotube
+              mini.
+            </p>
+          </div>
+        </div>
+
+        {/* Done */}
+        <div className="flex gap-3">
+          <div className="flex flex-col items-center">
+            <div className="w-7 h-7 rounded-full bg-green-500 text-white flex items-center justify-center shrink-0">
+              <Check className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-green-700">
+              Ready to stream!
+            </p>
+            <p className="text-sm text-gray-600">
+              Your PNGTuber is set up and ready to go.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer links */}
+      <div className="mt-5 pt-4 border-t border-gray-200/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <a
           href="https://olmewe.itch.io/veadotube-mini"
           target="_blank"
@@ -304,14 +498,12 @@ function VeadotubeGuideSection() {
           <ExternalLink className="w-3 h-3" />
           Get veadotube mini on itch.io
         </a>
-
-        {/* Tip nudging toward Browser Source */}
         <p className="text-xs text-gray-400">
-          Tip: The <strong>Browser Source</strong> method above requires zero
-          install &mdash; paste a URL and go live instantly.
+          Tip: The <strong>Browser Source</strong> method above is zero-install
+          &mdash; paste a URL and go live.
         </p>
       </div>
-    </details>
+    </div>
   );
 }
 
