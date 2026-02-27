@@ -645,14 +645,28 @@ export function useAvatarGenerator() {
     const selected = state.selected;
     if (!selected) return;
 
+    // Still selecting candidates → download candidate image directly without
+    // calling /select (which would prematurely mark the avatar as completed)
     if (!selected.baseSelected) {
-      await fetch(`/api/avatars/${selected.avatarId}/select`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ selectedIndex: selected.candidateIndex }),
-      });
+      const filename = `${selected.avatarName.replace(/\s+/g, "_")}_pngtuber.png`;
+      try {
+        const res = await fetch(selected.candidateUrl);
+        if (!res.ok) throw new Error("fetch failed");
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch {
+        // CORS fallback: open image in new tab
+        window.open(selected.candidateUrl, "_blank");
+      }
+      return;
     }
 
+    // baseSelected=true → expressions generated, use download API
     const hasExpressions = selected.expressions.some(
       (e) => e.status === "completed",
     );
