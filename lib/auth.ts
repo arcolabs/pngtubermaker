@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { eq } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
 import * as schema from "@/database/schema";
 import { getDatabase, isDbConfigured } from "./db";
 import { notifyUserSignup } from "./services/lark";
@@ -80,9 +80,14 @@ function createAuth() {
 
               const u = users[0];
               if (u) {
+                const [{ value: totalUsers }] = await db
+                  .select({ value: count() })
+                  .from(schema.user);
+
                 await notifyUserSignup(
                   { id: u.id, email: u.email, name: u.name },
                   accountRecord.providerId,
+                  totalUsers,
                 );
               }
             } catch (error) {

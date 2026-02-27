@@ -74,6 +74,7 @@ interface UserSignupData {
 export async function notifyUserSignup(
   user: UserSignupData,
   oauthSource: string,
+  userNumber?: number,
 ): Promise<void> {
   const webhookUrl = getLarkWebhookUrl();
   if (!webhookUrl) return;
@@ -130,6 +131,22 @@ export async function notifyUserSignup(
             },
           ],
         },
+        ...(userNumber
+          ? [
+              {
+                tag: "div",
+                fields: [
+                  {
+                    is_short: true,
+                    text: {
+                      tag: "lark_md",
+                      content: `**User #**\n${userNumber.toLocaleString()}`,
+                    },
+                  },
+                ],
+              },
+            ]
+          : []),
         { tag: "hr" },
         {
           tag: "note",
