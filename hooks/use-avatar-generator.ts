@@ -349,7 +349,10 @@ export function useAvatarGenerator() {
                 ? {
                     ...g,
                     status: "failed" as const,
-                    error: data.error || "Generation failed",
+                    error:
+                      data.error === "avatar_trial_used"
+                        ? "Free trial already used. Purchase credits to generate avatars."
+                        : data.error || "Generation failed",
                   }
                 : g,
             ),
@@ -561,6 +564,8 @@ export function useAvatarGenerator() {
                   : g,
               ),
             }));
+            // Avatar is now completed — refresh balance so expressionTrialEligible updates
+            fetchBalance();
           }
         }
 
@@ -584,7 +589,10 @@ export function useAvatarGenerator() {
                 ? {
                     ...g,
                     status: "failed" as const,
-                    error: data.error || "Expression pack generation failed",
+                    error:
+                      data.error === "expression_trial_used"
+                        ? "Free trial already used. Purchase credits to generate expressions."
+                        : data.error || "Expression pack generation failed",
                   }
                 : g,
             ),

@@ -13,6 +13,7 @@ export interface CreditBalance {
   purchased: number;
   subscriptionExpiresAt: string | null;
   trialEligible: boolean;
+  expressionTrialEligible: boolean;
 }
 
 export interface SubscriptionInfo {
@@ -60,6 +61,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set) => ({
           purchased: data.purchased,
           subscriptionExpiresAt: data.subscriptionExpiresAt ?? null,
           trialEligible: data.trialEligible ?? false,
+          expressionTrialEligible: data.expressionTrialEligible ?? false,
         };
       }
 

@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { avatars } from "@/database/schema";
 import { auth } from "@/lib/auth";
+import { getDatabase } from "@/lib/db";
 import {
   avatarGenerationLimiter,
   createRateLimitHeaders,
@@ -109,28 +110,26 @@ export async function POST(req: NextRequest) {
     const isTrialEligible = await canUseFreeTrial(userId);
 
     if (isTrialEligible) {
-      // ── Free trial path: no credits consumed ──────────────────────────
-      const trialResult = await consumeFreeTrial(userId);
+      // ── Free trial path: consume trial + create avatar in one transaction ─
+      const trialResult = await consumeFreeTrial(userId, async (tx) => {
+        await tx.insert(avatars).values({
+          id: avatarId,
+          userId,
+          name: "My PNGTuber",
+          prompt: prompt.trim(),
+          style: style as ArtStyle,
+          aspectRatio: normalizedAspectRatio,
+          status: "generating",
+          creditsUsed: 0,
+        });
+      });
+
       if (!trialResult.success) {
         return NextResponse.json(
-          { error: "insufficient_credits", balance: 0, required: cost },
-          { status: 402 },
+          { error: "avatar_trial_used" },
+          { status: 409 },
         );
       }
-
-      // Create avatar row directly (no credit transaction link)
-      const { getDatabase } = await import("@/lib/db");
-      const db = getDatabase();
-      await db.insert(avatars).values({
-        id: avatarId,
-        userId,
-        name: "My PNGTuber",
-        prompt: prompt.trim(),
-        style: style as ArtStyle,
-        aspectRatio: normalizedAspectRatio,
-        status: "generating",
-        creditsUsed: 0,
-      });
 
       try {
         const adapter = getGenerationAdapter();
@@ -140,8 +139,10 @@ export async function POST(req: NextRequest) {
           referenceUrl: referenceUrl || undefined,
         });
 
+        const db = getDatabase();
+
         if (result.status === "failed" || result.images.length === 0) {
-          // Generation failed — delete avatar row + trial transaction so user can retry
+          // Generation failed — mark avatar as failed + revert trial so user can retry
           await db
             .update(avatars)
             .set({ status: "failed", updatedAt: new Date() })
@@ -171,8 +172,8 @@ export async function POST(req: NextRequest) {
         });
       } catch (error) {
         console.error("Avatar generation error (trial):", error);
-        const db2 = getDatabase();
-        await db2
+        const db = getDatabase();
+        await db
           .update(avatars)
           .set({ status: "failed", updatedAt: new Date() })
           .where(eq(avatars.id, avatarId));
@@ -255,7 +256,6 @@ export async function POST(req: NextRequest) {
       // 5. CocoRouter already uploaded images to R2 — use CDN URLs directly
       const r2Urls = result.images;
 
-      const { getDatabase } = await import("@/lib/db");
       const db = getDatabase();
       await db
         .update(avatars)

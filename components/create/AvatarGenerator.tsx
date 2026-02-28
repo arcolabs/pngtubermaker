@@ -65,6 +65,7 @@ export function AvatarGenerator() {
 
   const credits = useSubscriptionStore((s) => s.credits);
   const trialEligible = credits?.trialEligible ?? false;
+  const expressionTrialEligible = credits?.expressionTrialEligible ?? false;
 
   const isWelcome = searchParams.get("welcome") === "1";
   const [showWelcome, setShowWelcome] = useState(isWelcome);
@@ -172,6 +173,7 @@ export function AvatarGenerator() {
                     allGenerations={state.generations}
                     selected={state.selected}
                     creditBalance={creditBalance}
+                    expressionTrialEligible={expressionTrialEligible}
                     onSelectCandidate={selectCandidate}
                     onGenerateExpressionPack={generateExpressionPack}
                     onDownload={download}

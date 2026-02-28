@@ -24,6 +24,7 @@ interface GenerationGroupProps {
   allGenerations: Generation[];
   selected: SelectedAvatar | null;
   creditBalance: number | null;
+  expressionTrialEligible: boolean;
   onSelectCandidate: (
     generationId: string,
     index: number,
@@ -53,6 +54,7 @@ export function GenerationGroup({
   generation,
   allGenerations,
   selected,
+  expressionTrialEligible,
   onSelectCandidate,
   onGenerateExpressionPack,
   onDownload,
@@ -258,7 +260,7 @@ export function GenerationGroup({
                         {
                           key: "base" as const,
                           label: "Base Pack",
-                          badge: "Required",
+                          badge: expressionTrialEligible ? "Free" : "Required",
                           desc: "idle · talking · blink · blink talk",
                           done: hasBasePack,
                         },
