@@ -421,6 +421,88 @@ export async function expireSubscriptionCredits(): Promise<number> {
 }
 
 // ============================================================================
+// Welcome credits (one-time grant for new users)
+// ============================================================================
+
+/**
+ * Atomically grant one-time welcome credits for new users.
+ * Uses a transaction to prevent concurrent double-grants (e.g. account linking race).
+ * No-op if the user already received welcome credits (idempotent).
+ * Returns true if credits were granted, false if already granted.
+ */
+export async function grantWelcomeCredits(
+  userId: string,
+  amount: number,
+): Promise<boolean> {
+  const db = getDatabase();
+
+  return await db.transaction(async (tx) => {
+    // 1. Check for existing welcome grant (idempotency)
+    const existing = await tx
+      .select({ id: creditTransactions.id })
+      .from(creditTransactions)
+      .where(
+        and(
+          eq(creditTransactions.userId, userId),
+          eq(creditTransactions.type, "grant_welcome"),
+        ),
+      )
+      .limit(1);
+
+    if (existing.length > 0) return false;
+
+    // 2. Ensure wallet exists and grant credits
+    const existingWallet = await tx
+      .select()
+      .from(wallets)
+      .where(eq(wallets.userId, userId))
+      .limit(1);
+
+    let balanceAfter: number;
+
+    if (existingWallet.length > 0 && existingWallet[0]) {
+      const w = existingWallet[0];
+      const now = new Date();
+      const subCredits =
+        w.subscriptionCreditsExpiresAt && w.subscriptionCreditsExpiresAt < now
+          ? 0
+          : w.subscriptionCredits;
+
+      await tx
+        .update(wallets)
+        .set({
+          purchasedCredits: sql`${wallets.purchasedCredits} + ${amount}`,
+          updatedAt: now,
+        })
+        .where(eq(wallets.id, w.id));
+
+      balanceAfter = subCredits + w.purchasedCredits + amount;
+    } else {
+      await tx.insert(wallets).values({
+        id: crypto.randomUUID(),
+        userId,
+        subscriptionCredits: 0,
+        purchasedCredits: amount,
+      });
+      balanceAfter = amount;
+    }
+
+    // 3. Record transaction with grant_welcome type
+    await tx.insert(creditTransactions).values({
+      id: crypto.randomUUID(),
+      userId,
+      type: "grant_welcome",
+      amount,
+      balanceAfter,
+      description: "Welcome credits",
+      metadata: { source: "welcome" },
+    });
+
+    return true;
+  });
+}
+
+// ============================================================================
 // Wallet initialization
 // ============================================================================
 

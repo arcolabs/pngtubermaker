@@ -17,11 +17,6 @@ import {
   TASK_COSTS,
 } from "@/lib/services/credits-transaction";
 import {
-  canUseFreeExpressionTrial,
-  consumeFreeExpressionTrial,
-  revertFreeExpressionTrial,
-} from "@/lib/services/free-trial";
-import {
   type ArtStyle,
   type ExpressionType,
   getGenerationAdapter,
@@ -152,141 +147,72 @@ export async function POST(
     const costPerExpression = TASK_COSTS.expression_edit;
     const totalCost = costPerExpression * toGenerate.length;
 
-    // 7. Check free expression trial eligibility (base pack only)
+    // 7. Consume credits and create pack record
     const packId = crypto.randomUUID();
-    const isTrialEligible =
-      packType === "base" && (await canUseFreeExpressionTrial(session.user.id));
 
-    let expressionRecords: {
-      id: string;
-      type: ExpressionType;
-      status: string;
-      imageUrl: string | null;
-    }[];
-    let usedTrial = false;
+    const consumeResult = await consumeWithRecord(
+      session.user.id,
+      totalCost,
+      `Expression pack (${packType}${subtype ? `: ${subtype}` : ""}): ${toGenerate.join(", ")}`,
+      async (tx, transactionId) => {
+        // Create pack record
+        await tx.insert(expressionPacks).values({
+          id: packId,
+          avatarId,
+          packType,
+          subtype: subtype ?? null,
+          status: "generating",
+          creditsUsed: totalCost,
+          transactionId,
+        });
 
-    if (isTrialEligible) {
-      // ── Free trial path: consume trial + create records in one transaction ─
-      const trialResult = await consumeFreeExpressionTrial(
-        session.user.id,
-        async (tx) => {
-          await tx.insert(expressionPacks).values({
-            id: packId,
+        // Create expression records
+        const records: {
+          id: string;
+          type: ExpressionType;
+          status: string;
+          imageUrl: string | null;
+        }[] = [];
+
+        for (const expressionType of expressionTypes) {
+          const expressionId = crypto.randomUUID();
+          const isIdle = expressionType === "idle";
+
+          await tx.insert(avatarExpressions).values({
+            id: expressionId,
             avatarId,
-            packType,
-            subtype: subtype ?? null,
-            status: "generating",
-            creditsUsed: 0,
+            packId,
+            type: expressionType,
+            status: isIdle ? "completed" : "pending",
+            imageUrl: isIdle ? a.baseImageUrl : null,
+            creditsUsed: isIdle ? 0 : costPerExpression,
           });
 
-          const records: {
-            id: string;
-            type: ExpressionType;
-            status: string;
-            imageUrl: string | null;
-          }[] = [];
-
-          for (const expressionType of expressionTypes) {
-            const expressionId = crypto.randomUUID();
-            const isIdle = expressionType === "idle";
-
-            await tx.insert(avatarExpressions).values({
-              id: expressionId,
-              avatarId,
-              packId,
-              type: expressionType,
-              status: isIdle ? "completed" : "pending",
-              imageUrl: isIdle ? a.baseImageUrl : null,
-              creditsUsed: 0,
-            });
-
-            records.push({
-              id: expressionId,
-              type: expressionType,
-              status: isIdle ? "completed" : "pending",
-              imageUrl: isIdle ? a.baseImageUrl : null,
-            });
-          }
-
-          return records;
-        },
-      );
-
-      if (!trialResult.success) {
-        return NextResponse.json(
-          { error: "expression_trial_used" },
-          { status: 409 },
-        );
-      }
-
-      usedTrial = true;
-      expressionRecords = trialResult.result;
-    } else {
-      // ── Normal paid path: consume credits AND create pack record ─────
-      const consumeResult = await consumeWithRecord(
-        session.user.id,
-        totalCost,
-        `Expression pack (${packType}${subtype ? `: ${subtype}` : ""}): ${toGenerate.join(", ")}`,
-        async (tx, transactionId) => {
-          // Create pack record
-          await tx.insert(expressionPacks).values({
-            id: packId,
-            avatarId,
-            packType,
-            subtype: subtype ?? null,
-            status: "generating",
-            creditsUsed: totalCost,
-            transactionId,
+          records.push({
+            id: expressionId,
+            type: expressionType,
+            status: isIdle ? "completed" : "pending",
+            imageUrl: isIdle ? a.baseImageUrl : null,
           });
+        }
 
-          // Create expression records
-          const records: {
-            id: string;
-            type: ExpressionType;
-            status: string;
-            imageUrl: string | null;
-          }[] = [];
+        return { packId, records };
+      },
+      { avatarId, packType, subtype, taskType: "expression_edit" },
+    );
 
-          for (const expressionType of expressionTypes) {
-            const expressionId = crypto.randomUUID();
-            const isIdle = expressionType === "idle";
-
-            await tx.insert(avatarExpressions).values({
-              id: expressionId,
-              avatarId,
-              packId,
-              type: expressionType,
-              status: isIdle ? "completed" : "pending",
-              imageUrl: isIdle ? a.baseImageUrl : null,
-              creditsUsed: isIdle ? 0 : costPerExpression,
-            });
-
-            records.push({
-              id: expressionId,
-              type: expressionType,
-              status: isIdle ? "completed" : "pending",
-              imageUrl: isIdle ? a.baseImageUrl : null,
-            });
-          }
-
-          return { packId, records };
+    if (!consumeResult.success) {
+      return NextResponse.json(
+        {
+          error: "insufficient_credits",
+          balance: consumeResult.newBalance,
+          required: totalCost,
         },
-        { avatarId, packType, subtype, taskType: "expression_edit" },
+        { status: 402 },
       );
-
-      if (!consumeResult.success) {
-        return NextResponse.json(
-          {
-            error: "insufficient_credits",
-            balance: consumeResult.newBalance,
-            required: totalCost,
-          },
-          { status: 402 },
-        );
-      }
-
-      expressionRecords = consumeResult.result.records;
     }
+
+    const expressionRecords = consumeResult.result.records;
 
     // 8. Process all expressions in parallel (including idle)
     const adapter = getGenerationAdapter();
@@ -411,27 +337,16 @@ export async function POST(
 
     // 9. Refund credits for failed expressions
     if (failedCount > 0) {
-      if (usedTrial) {
-        // Trial path: all expressions failed → revert trial so user can retry
-        const allFailed = expressionRecords
-          .filter((r) => r.type !== "idle")
-          .every((r) => r.status === "failed");
-        if (allFailed) {
-          await revertFreeExpressionTrial(session.user.id);
-        }
-      } else {
-        // Paid path: refund credits for failed expressions
-        const refundAmount = costPerExpression * failedCount;
-        await refundWithUpdate(
-          session.user.id,
-          refundAmount,
-          `Expression pack generation failed - ${failedCount} expression(s) refunded`,
-          async (_tx) => {
-            return { refunded: true };
-          },
-          { avatarId, packId, failedCount },
-        );
-      }
+      const refundAmount = costPerExpression * failedCount;
+      await refundWithUpdate(
+        session.user.id,
+        refundAmount,
+        `Expression pack generation failed - ${failedCount} expression(s) refunded`,
+        async (_tx) => {
+          return { refunded: true };
+        },
+        { avatarId, packId, failedCount },
+      );
     }
 
     // 10. Update pack status

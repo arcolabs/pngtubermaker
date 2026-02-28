@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useBuyCreditsModal } from "@/hooks/use-buy-credits-modal";
 import { useSubscriptionStore } from "@/hooks/use-subscription-store";
+import { TASK_COSTS } from "@/lib/services/credits";
 
 // ============================================================================
 // Types
@@ -194,6 +195,7 @@ export function useAvatarGenerator() {
 
   const credits = useSubscriptionStore((s) => s.credits);
   const refreshStore = useSubscriptionStore((s) => s.refresh);
+  const optimisticDeduct = useSubscriptionStore((s) => s.optimisticDeduct);
   const creditBalance = credits?.total ?? null;
 
   const fetchBalance = useCallback(async () => {
@@ -301,7 +303,7 @@ export function useAvatarGenerator() {
       const tempId = crypto.randomUUID();
       abortControllersRef.current.set(tempId, abortController);
 
-      // Add skeleton immediately
+      // Add skeleton immediately + optimistically deduct credits
       setState((prev) => ({
         ...prev,
         isGenerating: true,
@@ -321,6 +323,7 @@ export function useAvatarGenerator() {
           ...prev.generations,
         ],
       }));
+      optimisticDeduct(TASK_COSTS.avatar_generation);
 
       try {
         const res = await fetch("/api/avatars/generate", {
@@ -349,10 +352,7 @@ export function useAvatarGenerator() {
                 ? {
                     ...g,
                     status: "failed" as const,
-                    error:
-                      data.error === "avatar_trial_used"
-                        ? "Free trial already used. Purchase credits to generate avatars."
-                        : data.error || "Generation failed",
+                    error: data.error || "Generation failed",
                   }
                 : g,
             ),
@@ -405,7 +405,7 @@ export function useAvatarGenerator() {
         isGeneratingRef.current = false;
       }
     },
-    [fetchBalance],
+    [fetchBalance, optimisticDeduct],
   );
 
   const generate = useCallback(
@@ -505,7 +505,10 @@ export function useAvatarGenerator() {
       const skeletonCount = isBase ? 4 : 2;
       const prompt = "Expressions";
 
-      // Insert generating skeleton card
+      // Insert generating skeleton card + optimistically deduct credits
+      const expressionCount = isBase ? 3 : 2; // idle is copied, not generated
+      const expressionCost = expressionCount * TASK_COSTS.expression_edit;
+
       setState((prev) => {
         const latestParent = prev.generations.find(
           (g) => g.id === selected.generationId,
@@ -531,6 +534,7 @@ export function useAvatarGenerator() {
           ],
         };
       });
+      optimisticDeduct(expressionCost);
 
       try {
         // Ensure base image is selected before generating expressions
@@ -564,7 +568,7 @@ export function useAvatarGenerator() {
                   : g,
               ),
             }));
-            // Avatar is now completed — refresh balance so expressionTrialEligible updates
+            // Avatar is now completed — refresh balance
             fetchBalance();
           }
         }
@@ -589,10 +593,7 @@ export function useAvatarGenerator() {
                 ? {
                     ...g,
                     status: "failed" as const,
-                    error:
-                      data.error === "expression_trial_used"
-                        ? "Free trial already used. Purchase credits to generate expressions."
-                        : data.error || "Expression pack generation failed",
+                    error: data.error || "Expression pack generation failed",
                   }
                 : g,
             ),
@@ -644,7 +645,7 @@ export function useAvatarGenerator() {
         pendingRequestsRef.current.delete(requestKey);
       }
     },
-    [state.selected, state.generations, fetchBalance],
+    [state.selected, state.generations, fetchBalance, optimisticDeduct],
   );
 
   // ── Download ───────────────────────────────────────────────────────────

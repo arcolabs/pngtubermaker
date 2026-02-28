@@ -16,6 +16,8 @@ import type {
   Generation,
   SelectedAvatar,
 } from "@/hooks/use-avatar-generator";
+import { useBuyCreditsModal } from "@/hooks/use-buy-credits-modal";
+import { TASK_COSTS } from "@/lib/services/credits";
 import { CandidateCard } from "./CandidateCard";
 import { ImagePreviewModal } from "./ImagePreviewModal";
 
@@ -24,7 +26,6 @@ interface GenerationGroupProps {
   allGenerations: Generation[];
   selected: SelectedAvatar | null;
   creditBalance: number | null;
-  expressionTrialEligible: boolean;
   onSelectCandidate: (
     generationId: string,
     index: number,
@@ -54,7 +55,7 @@ export function GenerationGroup({
   generation,
   allGenerations,
   selected,
-  expressionTrialEligible,
+  creditBalance,
   onSelectCandidate,
   onGenerateExpressionPack,
   onDownload,
@@ -103,9 +104,11 @@ export function GenerationGroup({
   });
   const [isBatchGenerating, setIsBatchGenerating] = useState(false);
 
-  // Ref to always access the latest onGenerateExpressionPack between awaits
+  // Refs to always access the latest values between awaits
   const genPackRef = useRef(onGenerateExpressionPack);
   genPackRef.current = onGenerateExpressionPack;
+  const creditBalanceRef = useRef(creditBalance);
+  creditBalanceRef.current = creditBalance;
 
   const togglePack = useCallback((key: "base" | "happy" | "angry" | "sad") => {
     // Base Pack is required — cannot be unchecked
@@ -125,8 +128,27 @@ export function GenerationGroup({
     return pending;
   }, [packSelections, hasBasePack, existingCustomSubtypes]);
 
+  // Total cost of all pending packs
+  const pendingCost = useMemo(() => {
+    let total = 0;
+    for (const pack of pendingPacks) {
+      // base: 3 generated (idle copied), custom: 2 generated
+      const count = pack.type === "base" ? 3 : 2;
+      total += count * TASK_COSTS.expression_edit;
+    }
+    return total;
+  }, [pendingPacks]);
+
   const handleBatchGenerate = useCallback(async () => {
     if (pendingPacks.length === 0) return;
+
+    // Preflight credit check — block before hitting API
+    const balance = creditBalanceRef.current ?? 0;
+    if (balance < pendingCost) {
+      useBuyCreditsModal.getState().open(pendingCost);
+      return;
+    }
+
     setIsBatchGenerating(true);
     try {
       for (const pack of pendingPacks) {
@@ -135,7 +157,7 @@ export function GenerationGroup({
     } finally {
       setIsBatchGenerating(false);
     }
-  }, [pendingPacks]);
+  }, [pendingPacks, pendingCost]);
 
   // Check if ALL packs are already generated
   const allPacksDone =
@@ -260,7 +282,7 @@ export function GenerationGroup({
                         {
                           key: "base" as const,
                           label: "Base Pack",
-                          badge: expressionTrialEligible ? "Free" : "Required",
+                          badge: "Required",
                           desc: "idle · talking · blink · blink talk",
                           done: hasBasePack,
                         },
@@ -385,24 +407,49 @@ export function GenerationGroup({
               generation.status === "completed" && (
                 <>
                   {!allPacksDone && (
-                    <button
-                      type="button"
-                      onClick={handleBatchGenerate}
-                      disabled={pendingPacks.length === 0 || isBatchGenerating}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary to-cyan-400 rounded-xl shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all duration-200 disabled:opacity-50 disabled:shadow-none"
-                    >
-                      {isBatchGenerating ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          Generating...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="w-4 h-4" />
-                          Generate Expressions
-                        </>
-                      )}
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleBatchGenerate}
+                        disabled={
+                          pendingPacks.length === 0 || isBatchGenerating
+                        }
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary to-cyan-400 rounded-xl shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all duration-200 disabled:opacity-50 disabled:shadow-none"
+                      >
+                        {isBatchGenerating ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Generating...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-4 h-4" />
+                            Generate Expressions
+                            {pendingCost > 0 && (
+                              <span className="text-white/70 text-xs">
+                                ({pendingCost})
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </button>
+                      {creditBalance !== null &&
+                        creditBalance < pendingCost &&
+                        pendingPacks.length > 0 && (
+                          <p className="text-xs text-warning text-center">
+                            Not enough credits ({creditBalance}/{pendingCost}).{" "}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                useBuyCreditsModal.getState().open(pendingCost)
+                              }
+                              className="link link-primary"
+                            >
+                              Buy credits
+                            </button>
+                          </p>
+                        )}
+                    </>
                   )}
                   <button
                     type="button"

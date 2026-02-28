@@ -12,8 +12,6 @@ export interface CreditBalance {
   subscription: number;
   purchased: number;
   subscriptionExpiresAt: string | null;
-  trialEligible: boolean;
-  expressionTrialEligible: boolean;
 }
 
 export interface SubscriptionInfo {
@@ -31,6 +29,10 @@ interface SubscriptionStore {
 
   /** Fetch both credits + subscription from API. Call on mount and after mutations. */
   refresh: () => Promise<void>;
+
+  /** Immediately deduct credits in the UI. Server-side deduction already happened;
+   *  this keeps the displayed balance in sync. refresh() will correct any drift. */
+  optimisticDeduct: (amount: number) => void;
 }
 
 // ============================================================================
@@ -41,6 +43,18 @@ export const useSubscriptionStore = create<SubscriptionStore>((set) => ({
   credits: null,
   subscription: null,
   isLoaded: false,
+
+  optimisticDeduct: (amount: number) => {
+    set((state) => {
+      if (!state.credits) return state;
+      return {
+        credits: {
+          ...state.credits,
+          total: Math.max(0, state.credits.total - amount),
+        },
+      };
+    });
+  },
 
   refresh: async () => {
     try {
@@ -60,8 +74,6 @@ export const useSubscriptionStore = create<SubscriptionStore>((set) => ({
           subscription: data.subscription,
           purchased: data.purchased,
           subscriptionExpiresAt: data.subscriptionExpiresAt ?? null,
-          trialEligible: data.trialEligible ?? false,
-          expressionTrialEligible: data.expressionTrialEligible ?? false,
         };
       }
 

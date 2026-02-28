@@ -14,11 +14,6 @@ import {
   refundWithUpdate,
   TASK_COSTS,
 } from "@/lib/services/credits-transaction";
-import {
-  canUseFreeTrial,
-  consumeFreeTrial,
-  revertFreeTrial,
-} from "@/lib/services/free-trial";
 import { type ArtStyle, getGenerationAdapter } from "@/lib/services/generation";
 
 /**
@@ -103,90 +98,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 3. Check free trial eligibility before credit consumption
+    // 3. Consume credits and create avatar record
     const cost = TASK_COSTS.avatar_generation;
     const normalizedAspectRatio = aspectRatio || "1:1";
     const avatarId = crypto.randomUUID();
-    const isTrialEligible = await canUseFreeTrial(userId);
-
-    if (isTrialEligible) {
-      // ── Free trial path: consume trial + create avatar in one transaction ─
-      const trialResult = await consumeFreeTrial(userId, async (tx) => {
-        await tx.insert(avatars).values({
-          id: avatarId,
-          userId,
-          name: "My PNGTuber",
-          prompt: prompt.trim(),
-          style: style as ArtStyle,
-          aspectRatio: normalizedAspectRatio,
-          status: "generating",
-          creditsUsed: 0,
-        });
-      });
-
-      if (!trialResult.success) {
-        return NextResponse.json(
-          { error: "avatar_trial_used" },
-          { status: 409 },
-        );
-      }
-
-      try {
-        const adapter = getGenerationAdapter();
-        const result = await adapter.generateCharacter({
-          prompt: prompt.trim(),
-          style: style as ArtStyle,
-          referenceUrl: referenceUrl || undefined,
-        });
-
-        const db = getDatabase();
-
-        if (result.status === "failed" || result.images.length === 0) {
-          // Generation failed — mark avatar as failed + revert trial so user can retry
-          await db
-            .update(avatars)
-            .set({ status: "failed", updatedAt: new Date() })
-            .where(eq(avatars.id, avatarId));
-          await revertFreeTrial(userId);
-
-          return NextResponse.json(
-            { error: result.error || "Generation failed" },
-            { status: 500 },
-          );
-        }
-
-        const r2Urls = result.images;
-        await db
-          .update(avatars)
-          .set({
-            candidateImages: r2Urls,
-            status: "selecting",
-            updatedAt: new Date(),
-          })
-          .where(eq(avatars.id, avatarId));
-
-        return NextResponse.json({
-          avatarId,
-          images: r2Urls,
-          aspectRatio: normalizedAspectRatio,
-        });
-      } catch (error) {
-        console.error("Avatar generation error (trial):", error);
-        const db = getDatabase();
-        await db
-          .update(avatars)
-          .set({ status: "failed", updatedAt: new Date() })
-          .where(eq(avatars.id, avatarId));
-        await revertFreeTrial(userId);
-
-        return NextResponse.json(
-          { error: "Generation failed unexpectedly" },
-          { status: 500 },
-        );
-      }
-    }
-
-    // ── Normal paid path: consume credits AND create avatar record ─────
     const consumeResult = await consumeWithRecord(
       userId,
       cost,

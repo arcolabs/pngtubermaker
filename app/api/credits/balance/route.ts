@@ -2,18 +2,14 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getBalance } from "@/lib/services/credits";
-import {
-  canUseFreeExpressionTrial,
-  canUseFreeTrial,
-} from "@/lib/services/free-trial";
 
 /**
  * GET /api/credits/balance
  *
- * Get the current user's credit balance + free trial eligibility.
+ * Get the current user's credit balance.
  *
  * Auth: Required
- * Response: { total, subscription, purchased, subscriptionExpiresAt, trialEligible }
+ * Response: { total, subscription, purchased, subscriptionExpiresAt }
  */
 export async function GET(req: NextRequest) {
   // 1. Auth check
@@ -24,12 +20,8 @@ export async function GET(req: NextRequest) {
 
   const userId = session.user.id;
 
-  // 2. Get balance + trial eligibility in parallel
-  const [balance, trialEligible, expressionTrialEligible] = await Promise.all([
-    getBalance(userId),
-    canUseFreeTrial(userId),
-    canUseFreeExpressionTrial(userId),
-  ]);
+  // 2. Get balance
+  const balance = await getBalance(userId);
 
   // 3. Return JSON response
   return NextResponse.json({
@@ -37,7 +29,5 @@ export async function GET(req: NextRequest) {
     subscription: balance.subscription,
     purchased: balance.purchased,
     subscriptionExpiresAt: balance.subscriptionExpiresAt?.toISOString() || null,
-    trialEligible,
-    expressionTrialEligible,
   });
 }

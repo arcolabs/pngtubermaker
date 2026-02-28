@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { count, eq } from "drizzle-orm";
 import * as schema from "@/database/schema";
 import { getDatabase, isDbConfigured } from "./db";
+import { grantWelcomeCredits } from "./services/credits";
 import { notifyUserSignup } from "./services/lark";
 
 // Validate environment variables
@@ -92,6 +93,26 @@ function createAuth() {
               }
             } catch (error) {
               console.error("[Auth] Failed to send Lark notification:", error);
+            }
+
+            // Grant welcome credits (1000) for new users.
+            // Atomic + idempotent: skips if user already received welcome credits
+            // (e.g. account linking triggers this hook again for the same user).
+            try {
+              console.log(
+                "[Auth] Granting welcome credits for user:",
+                accountRecord.userId,
+              );
+              const granted = await grantWelcomeCredits(
+                accountRecord.userId,
+                1000,
+              );
+              console.log(
+                "[Auth] Welcome credits result:",
+                granted ? "granted" : "already exists",
+              );
+            } catch (error) {
+              console.error("[Auth] Failed to grant welcome credits:", error);
             }
           },
         },
