@@ -1,0 +1,247 @@
+{
+  "slug": "for/discord",
+  "metadata": {
+    "title": "Discord Avatar Maker — Creatore Gratuito di PFP Discord e Icone Server con AI",
+    "description": "Crea avatar Discord gratuiti con AI — immagini del profilo personalizzate, icone server, emoji e personaggi PNGTuber. Nessuna competenza artistica necessaria. Funziona per avatar animati Nitro. Inizia gratis.",
+    "keywords": [
+      "creatore avatar discord",
+      "creatore immagine profilo discord",
+      "creatore pfp discord",
+      "avatar discord personalizzato",
+      "generatore avatar discord",
+      "discord pngtuber",
+      "avatar discord gratuito",
+      "creatore icone server discord",
+      "creatore emoji discord",
+      "avatar nitro discord",
+      "avatar discord animato",
+      "creatore pfp discord"
+    ],
+    "canonical": "/for/discord"
+  },
+  "hero": {
+    "badge": "🎮 Creatore Gratuito di Avatar Discord",
+    "title": "Discord Avatar Maker: PFP, Icone Server ed Emoji",
+    "subtitle": "Crea l'avatar Discord perfetto con AI — immagini del profilo che si fanno notare, icone server che rappresentano il tuo brand e emoji personalizzate che ti fanno esprimere. Un personaggio, infinite possibilità per Discord. Gratis per iniziare.",
+    "ctaText": "Crea Avatar Discord Gratuito",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "Tutto ciò che ti serve per Discord",
+    "items": [
+      {
+        "icon": "User",
+        "title": "Immagini del Profilo che si Distinguono",
+        "description": "Crea un PFP unico che cattura l'attenzione nelle liste server e nei DM. Design generati con AI che appaiono nitidi a 128px (lista server) e straordinari a 1024px (visualizzazione profilo). Niente più avatar generici."
+      },
+      {
+        "icon": "Users",
+        "title": "Icone Server Professionali",
+        "description": "Progetta icone server centralizzate e pulite che rappresentano la tua comunità. Esportazioni perfette da 512×512 che appaiono ottime nel ritaglio circolare di Discord. Costruisci un riconoscimento immediato del brand per il tuo server."
+      },
+      {
+        "icon": "Smile",
+        "title": "Set di Emoji e Adesivi Personalizzati",
+        "description": "Genera set di espressioni coordinati perfetti per emoji Discord (128×128) e adesivi (320×320). Felice, triste, arrabbiato, sorpreso — tutto coerente con lo stile del tuo personaggio."
+      },
+      {
+        "icon": "Zap",
+        "title": "Potenziale Animato Pronto per Nitro",
+        "description": "Crea sequenze di espressioni che funzionano come avatar animati Nitro. Esporta pose multiple e usa strumenti come EZGIF per creare transizioni GIF fluide. Base statica, possibilità animate."
+      }
+    ]
+  },
+  "platformSpecs": {
+    "title": "Specifiche Immagini Discord (2026)",
+    "items": [
+      {
+        "label": "Immagine Profilo (PFP)",
+        "value": "128×128 min, 1024×1024 consigliato"
+      },
+      {
+        "label": "Icona Server",
+        "value": "512×512 pixel, design centralizzato"
+      },
+      {
+        "label": "Emoji Personalizzata",
+        "value": "128×128 pixel, sotto 256 KB"
+      },
+      {
+        "label": "Adesivo",
+        "value": "320×320 pixel, PNG o APNG"
+      },
+      {
+        "label": "Banner Server",
+        "value": "960×540 o 1920×1080"
+      },
+      {
+        "label": "Forma Avatar",
+        "value": "Ritaglio circolare (centralizza gli elementi importanti)"
+      }
+    ]
+  },
+  "steps": {
+    "title": "Come Creare e Impostare il tuo Avatar Discord",
+    "items": [
+      {
+        "title": "Step 1: Progetta il tuo Personaggio Discord",
+        "description": "Apri PNGTuberMaker e descrivi il tuo ideale avatar Discord. Pensando a come apparirà a dimensioni ridotte — colori audaci, sagome chiare e volti centralizzati funzionano meglio. Genera più design e scegli il tuo preferito."
+      },
+      {
+        "title": "Step 2: Genera Set di Espressioni",
+        "description": "Crea un set completo di espressioni — neutro, felice, triste, arrabbiato, sorpreso. Questi funzionano come variazioni dell'immagine del profilo, emoji di reazione e emoticon del server. Tutte le espressioni corrispondono perfettamente allo stile del tuo personaggio."
+      },
+      {
+        "title": "Step 3: Esporta per Discord",
+        "description": "Esporta il tuo avatar come PNG trasparente — 512px nel piano gratuito, o fino a 1080p con Creator Pass. Le esportazioni di PNGTuberMaker che Discord gestisce perfettamente. L'AI centralizza il tuo personaggio per un ritaglio circolare ottimale."
+      },
+      {
+        "title": "Step 4: Imposta come PFP Discord",
+        "description": "Vai su Discord → Impostazioni Utente → Profili → Cambia Avatar → Carica Immagine. Seleziona il tuo PNG esportato. Discord ritaglia automaticamente in forma circolare — il tuo design AI centralizzato appare perfetto."
+      },
+      {
+        "title": "Step 5: Usa come Icona Server ed Emoji",
+        "description": "Per icone server: Impostazioni Server → Panoramica → Icona Server. Per emoji: Impostazioni Server → Emoji → Carica Emoji. Usa espressioni diverse dal tuo set per variare."
+      }
+    ]
+  },
+  "comparison": {
+    "title": "Confronto Opzioni Avatar Discord",
+    "description": "Come PNGTuberMaker si confronta con altri modi di ottenere avatar Discord.",
+    "columns": [
+      {
+        "label": "Opzione"
+      },
+      {
+        "label": "AI PNGTuberMaker",
+        "highlight": true
+      },
+      {
+        "label": "Assumi Artista"
+      },
+      {
+        "label": "Generatori Gratuiti"
+      },
+      {
+        "label": "Disegna tu"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "Costo",
+        "values": [
+          "Gratuito per iniziare",
+          "$30-$150+",
+          "Gratis",
+          "Gratis (tempo)"
+        ]
+      },
+      {
+        "feature": "Tempo per ottenere avatar",
+        "values": ["2 minuti", "3-14 giorni", "Immediato", "Ore-giorni"]
+      },
+      {
+        "feature": "Design unico",
+        "values": [true, true, false, true]
+      },
+      {
+        "feature": "Set di espressioni inclusi",
+        "values": [true, "$10-$30 extra", false, "Disegna tu"]
+      },
+      {
+        "feature": "Puoi modificare quando vuoi",
+        "values": [true, "Paga di nuovo", false, true]
+      },
+      {
+        "feature": "Coerenza qualità",
+        "values": [
+          "Garantito da AI",
+          "Dipende dall'artista",
+          "Generico",
+          "Dipende dalle competenze"
+        ]
+      },
+      {
+        "feature": "Funziona per icone server",
+        "values": [true, true, true, true]
+      },
+      {
+        "feature": "Nessuna competenza artistica necessaria",
+        "values": [true, true, true, false]
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "dc-1",
+      "question": "Qual è la dimensione migliore per un avatar Discord?",
+      "answer": "Discord visualizza gli avatar a 128×128 pixel nelle liste server, ma li memorizza fino a 1024×1024 per le visualizzazioni del profilo. Consigliamo di esportare a 1024×1024 per la massima qualità. PNGTuberMaker esporta PNG ad alta risoluzione che appaiono nitidi a ogni dimensione Discord, dalle piccole icone server alle visualizzazioni profilo complete."
+    },
+    {
+      "id": "dc-2",
+      "question": "Posso usarlo per avatar animati Discord Nitro?",
+      "answer": "Sì! Mentre PNGTuberMaker crea PNG statici, puoi usare il tuo set di espressioni per creare avatar Discord animati. Esporta più espressioni (neutro, felice, sorpreso) e usa strumenti gratuiti come EZGIF per creare una sequenza GIF. Discord Nitro supporta avatar GIF fino a 10MB. Il tuo personaggio generato con AI garantisce coerenza fotogramma per fotogramma."
+    },
+    {
+      "id": "dc-3",
+      "question": "Come faccio a creare una buona icona server Discord?",
+      "answer": "Le icone server Discord migliori sono: (1) Centralizzate — Discord ritaglia in cerchio, quindi mantieni gli elementi importanti al centro. (2) Semplici — i design dettagliati si perdono a dimensioni ridotte. (3) Riconoscibili — colori audaci e sagome chiare funzionano meglio. (4) Coerenti — combinasci con il tema del tuo server. L'AI di PNGTuberMaker centralizza automaticamente i personaggi ed esporta alla dimensione perfetta da 512×512 per le icone server."
+    },
+    {
+      "id": "dc-4",
+      "question": "Posso creare emoji Discord personalizzate con questo?",
+      "answer": "Assolutamente! Esporta le espressioni del tuo personaggio a 128×128 pixel (la dimensione emoji di Discord). Ogni espressione diventa un'emoji unica — felice, triste, arrabbiata, sorpresa. Caricale nel tuo server: Impostazioni Server → Emoji → Carica Emoji. I server Discord premium possono avere fino a 250 emoji personalizzate. Il tuo personaggio generato con AI coerente crea set di emoji dall'aspetto professionale."
+    },
+    {
+      "id": "dc-5",
+      "question": "È meglio rispetto a un generatore gratuito di avatar Discord?",
+      "answer": "I generatori gratuiti di avatar Discord offrono tipicamente template limitati che tutti usano — finisci con un aspetto generico. PNGTuberMaker crea avatar veramente unici basati sulla tua descrizione. Inoltre, ottieni set di espressioni, esportazioni a risoluzione maggiore e diritti commerciali. Per i proprietari di server che vogliono avatar di comunità brandizzati e riconoscibili, la generazione AI è l'investimento migliore."
+    },
+    {
+      "id": "dc-6",
+      "question": "Mantengo i diritti per usare il mio avatar Discord ovunque?",
+      "answer": "Sì! Il tuo avatar generato con AI è tuo da usare su Discord, Twitch, YouTube, Twitter e ovunque altro. Nessuna attribuzione necessaria. Questo è diverso da alcuni creator di avatar che limitano l'uso o richiedono licenze per piattaforme diverse. Che sia il tuo PFP personale o il brand del tuo server, hai pieni diritti."
+    }
+  ],
+  "cta": {
+    "title": "Migliora la tua Presenza su Discord Oggi",
+    "subtitle": "Unisciti a migliaia di utenti Discord che hanno migliorato i loro PFP, server e gioco di emoji — gratis.",
+    "ctaText": "Crea il mio Avatar Discord Gratuito",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "Creatore Avatar Twitch",
+      "description": "Usa il tuo avatar Discord anche per lo streaming su Twitch.",
+      "href": "/for/twitch"
+    },
+    {
+      "title": "Creatore Avatar YouTube",
+      "description": "Crea avatar coordinati per il tuo canale YouTube.",
+      "href": "/for/youtube"
+    },
+    {
+      "title": "Creatore Avatar Anime",
+      "description": "Avatar in stile anime perfetti per le comunità Discord.",
+      "href": "/style/anime"
+    },
+    {
+      "title": "Creatore PNGTuber Gratuito",
+      "description": "Prova 1 generazione avatar gratuita — nessuna carta di credito richiesta.",
+      "href": "/free-pngtuber-maker"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "Home",
+      "href": "/"
+    },
+    {
+      "label": "Piattaforme",
+      "href": "/for"
+    },
+    {
+      "label": "Creatore Avatar Discord"
+    }
+  ]
+}

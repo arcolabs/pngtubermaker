@@ -1,0 +1,51 @@
+{
+  "title": "Come le Tue Idee Diventano PNGTuber Professionali",
+  "subtitle": "Risparmia $150+ e settimane di attesa usando l'IA per generare il tuo avatar perfetto per lo streaming in pochi minuti.",
+  "with": "Con",
+  "brand": "PNGTuberMaker",
+  "steps": [
+    {
+      "title": "1. Descrivi la tua idea di avatar",
+      "time": "1 minuto",
+      "desc": "Digita il tuo stile o carica uno schizzo. L'IA capisce perfettamente la tua visione."
+    },
+    {
+      "title": "2. L'IA genera le espressioni",
+      "time": "1-2 minuti",
+      "desc": "Felice, arrabbiato, sorpreso, triste — 10+ espressioni generate automaticamente con stile coerente."
+    },
+    {
+      "title": "3. Configurazione OBS con un clic",
+      "time": "istantaneo",
+      "desc": "Incolla un singolo link Browser Source in OBS. Il tuo avatar sincronizza le labbra con il tuo microfono in tempo reale."
+    },
+    {
+      "title": "4. Scarica e inizia a trasmettere",
+      "time": "istantaneo",
+      "desc": "Esporta PNG o bundle ZIP per OBS, Twitch, Discord — pronti per lo streaming in pochi secondi."
+    }
+  ],
+  "traditional": {
+    "title": "Commissione Tradizionale",
+    "items": [
+      "Trova e ingaggia un artista su Fiverr/DeviantArt",
+      "Attendi la loro risposta e negozia il prezzo",
+      "Paga $50–$200+ per un set di PNG",
+      "Attendi 1–3 settimane per la consegna",
+      "Rischio di qualità incoerente o revisioni",
+      "Ripeti per nuove espressioni o stili"
+    ],
+    "badge": "Costoso e Lento"
+  },
+  "cta": {
+    "loggedIn": "Crea il Tuo PNGTuber Ora",
+    "loggedOut": "Crea il Tuo PNGTuber Gratis — Nessuna Carta di Credito",
+    "loggedInMobile": "Crea Ora",
+    "loggedOutMobile": "Crea PNGTuber Gratis"
+  },
+  "values": [
+    "Non servono competenze di disegno",
+    "Pronto in meno di 5 minuti",
+    "Funziona direttamente in OBS"
+  ]
+}

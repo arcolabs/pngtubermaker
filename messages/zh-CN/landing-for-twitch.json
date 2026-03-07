@@ -1,0 +1,250 @@
+{
+  "slug": "for/twitch",
+  "metadata": {
+    "title": "Twitch头像制作器 — 免费PNGTuber和直播头像生成器",
+    "description": "使用AI创建免费Twitch头像和PNGTuber。OBS兼容的麦克风反应角色、表情包和直播设置。无需摄像头，5分钟即可开始直播。",
+    "keywords": [
+      "twitch头像制作器",
+      "twitch头像",
+      "twitch头像制作",
+      "twitch pngtuber",
+      "twitch直播头像",
+      "twitch表情制作器",
+      "免费twitch头像",
+      "twitch obs头像",
+      "twitch pngtuber设置",
+      "无露脸twitch直播",
+      "twitch头像无摄像头",
+      "ai twitch头像"
+    ],
+    "canonical": "/for/twitch"
+  },
+  "hero": {
+    "badge": "🎮 免费Twitch直播头像",
+    "title": "Twitch头像制作器：PNGTuber直播设置",
+    "subtitle": "用专业AI头像开启Twitch直播 — 无需摄像头、无需面部追踪、无需昂贵委托。麦克风反应的PNGTuber，OBS即插即用。免费使用，5分钟开始直播。",
+    "ctaText": "创建免费Twitch头像",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "为Twitch主播打造",
+    "items": [
+      {
+        "icon": "Monitor",
+        "title": "即插即用OBS集成",
+        "description": "获取专属浏览器源链接 — 只需粘贴到OBS Studio。您的头像带透明背景出现，对麦克风作出反应，自动更新。无需插件、无需下载、无需复杂设置。"
+      },
+      {
+        "icon": "Mic",
+        "title": "麦克风反应动画",
+        "description": "您说话时头像的嘴巴会张开，不说话时闭上。依靠浏览器麦克风权限工作 — 无需面部追踪软件，无需摄像头。完美适合无露脸直播或害怕镜头的创作者。"
+      },
+      {
+        "icon": "Zap",
+        "title": "零性能影响",
+        "description": "不像占用GPU的VTuber软件，PNGTuber作为轻量级浏览器源运行。满画质直播无掉帧。任何能运行OBS的电脑都能使用 — 即使是廉价笔记本。"
+      },
+      {
+        "icon": "Layers",
+        "title": "Twitch风格表情包",
+        "description": "生成符合Twitch文化的表情 — 大操作时的激动、输了的苦涩、意外的pog、聊天的放松。所有表情与您角色美术风格完美一致。"
+      }
+    ]
+  },
+  "platformSpecs": {
+    "title": "Twitch直播规格",
+    "items": [
+      {
+        "label": "个人资料图片",
+        "value": "256×256 到 1000×1000 像素"
+      },
+      {
+        "label": "离线横幅",
+        "value": "1920×1080 像素"
+      },
+      {
+        "label": "面板图片",
+        "value": "320×160 到 640×320 像素"
+      },
+      {
+        "label": "表情尺寸",
+        "value": "112×112、56×56、28×28 像素"
+      },
+      {
+        "label": "OBS浏览器源",
+        "value": "推荐 400×400 到 800×800"
+      },
+      {
+        "label": "文件格式",
+        "value": "带透明背景的PNG"
+      }
+    ]
+  },
+  "steps": {
+    "title": "如何在OBS中设置Twitch PNGTuber",
+    "items": [
+      {
+        "title": "第一步：创建您的Twitch头像",
+        "description": "打开PNGTuberMaker，描述您的直播人设。考虑可视性 — 粗犷的颜色和清晰的剪影在直播中更醒目。生成多个设计，选择一个能代表您品牌的。"
+      },
+      {
+        "title": "第二步：生成表情包",
+        "description": "创建5个以上表情：中立（说话中）、开心、悲伤、生气、惊讶。这些会根据您的声音活动为头像制作动画。AI确保所有表情风格完全一致。"
+      },
+      {
+        "title": "第三步：复制您的浏览器源链接",
+        "description": "在PNGTuberMaker中，选择头像后点击\"获取OBS链接\"。复制专属的浏览器源链接 — 这就是将您的头像连接到OBS并让它对麦克风作出反应的东西。"
+      },
+      {
+        "title": "第四步：添加到OBS Studio",
+        "description": "在OBS中：来源 → + → 浏览器 → 命名为\"PNGTuber\"。粘贴您的链接。设置宽度：600，高度：600。勾选\"不可见时关闭来源\"。您的头像立即带透明背景出现。"
+      },
+      {
+        "title": "第五步：定位并配置音频",
+        "description": "将头像拖到您喜欢的角落。右键 → 变换 → 编辑变换以精确定位。测试您的麦克风 — 您说话时头像应该作出反应。如有需要，在OBS中调整麦克风灵敏度。"
+      },
+      {
+        "title": "第六步：在Twitch开播",
+        "description": "在OBS设置 → 串流中设置您的Twitch串流密钥。安排您的场景 — 游戏捕获、PNGTuber头像、提醒。点击\"开始直播\"。直播时您的头像会自动对您的声音作出反应！"
+      }
+    ]
+  },
+  "comparison": {
+    "title": "Twitch头像选项：全面对比",
+    "description": "对比所有获取Twitch直播头像的方式。",
+    "columns": [
+      {
+        "label": "方式"
+      },
+      {
+        "label": "PNGTuberMaker",
+        "highlight": true
+      },
+      {
+        "label": "Fiverr委托"
+      },
+      {
+        "label": "Live2D VTuber"
+      },
+      {
+        "label": "真人摄像头"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "总费用",
+        "values": ["免费 – $7.99/月", "$100 – $500+", "$500 – $3,000+", "免费"]
+      },
+      {
+        "feature": "设置时间",
+        "values": ["5分钟", "2-4周", "4-8周", "即时"]
+      },
+      {
+        "feature": "需要摄像头",
+        "values": [false, false, true, true]
+      },
+      {
+        "feature": "需要面部追踪",
+        "values": [false, false, true, "不适用（真脸）"]
+      },
+      {
+        "feature": "对电脑性能影响",
+        "values": ["无", "无", "高（GPU）", "低"]
+      },
+      {
+        "feature": "动画类型",
+        "values": ["麦克风反应", "静态/有限", "全身动作捕捉", "真人"]
+      },
+      {
+        "feature": "可随时更换头像",
+        "values": [true, "需付费", "需重新绑定", "不适用"]
+      },
+      {
+        "feature": "适合新手",
+        "values": [true, true, false, true]
+      },
+      {
+        "feature": "隐私/匿名性",
+        "values": ["完全", "完全", "完全", "无"]
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "tw-1",
+      "question": "如何将PNGTuber头像添加到我的Twitch直播？",
+      "answer": "在PNGTuberMaker创建头像后，复制浏览器源链接。在OBS Studio中，添加新的浏览器源，粘贴链接，设置为600×600尺寸，您的PNGTuber就会出现在直播中。它会自动对麦克风作出反应 — 您说话时嘴巴张开，不说话时闭上。使用OBS的拖放界面可以将其放在直播布局的任何位置。"
+    },
+    {
+      "id": "tw-2",
+      "question": "我可以在Twitch上不用摄像头直播PNGTuber吗？",
+      "answer": "当然可以！这是PNGTuber最大的优势之一。您只需要一个麦克风 — 无需摄像头、无需面部追踪软件、无需相机设置。您的头像对您的声音作出反应，而不是您的脸。这非常适合无露脸直播注重隐私的创作者，或任何不想出现在镜头前的人。成千上万的成功Twitch主播专门使用PNGTuber。"
+    },
+    {
+      "id": "tw-3",
+      "question": "PNGTuber会拖慢我的Twitch直播或游戏吗？",
+      "answer": "绝对不会。PNGTuber在OBS中作为轻量级浏览器源运行 — 它们占用极少的CPU，几乎不使用GPU。不像需要实时渲染可能导致掉帧的Live2D VTuber，PNGTuber本质上只是根据音频切换显示图片。您可以以完整FPS直播竞技游戏，同时使用PNGTuber头像。即使是廉价PC也能轻松处理PNGTuber。"
+    },
+    {
+      "id": "tw-4",
+      "question": "PNGTuber对Twitch新手来说比VTuber更好吗？",
+      "answer": "对大多数新手来说，是的。PNGTuber免费（对比VTuber模型$500+），5分钟设置完成（对比数周的绑定），无需摄像头，任何PC都能使用。VTuber提供更先进的动画，但成本高且复杂。许多成功主播从PNGTuber开始，之后升级到VTuber。PNGTuber是头像直播的完美入门点。"
+    },
+    {
+      "id": "tw-5",
+      "question": "Twitch头像委托通常要多少钱？",
+      "answer": "传统Twitch头像委托价格差异很大：静态PNG头像$50-$200，简单绑定模型$200-$500，完整Live2D VTuber模型$500-$3,000+。每个表情通常额外收费（$10-$50）。周转时间2-8周。使用PNGTuberMaker，您可以在5分钟内获得专业头像和多个表情，免费开始。节省的成本和时间是巨大的。"
+    },
+    {
+      "id": "tw-6",
+      "question": "我可以在Twitch、YouTube和Discord上使用同一个头像吗？",
+      "answer": "可以！您的PNGTuber头像到处可用。在OBS中对Twitch、YouTube和Kick直播使用相同的浏览器源链接。导出静态版本用于Discord个人资料图片和社交媒体。这种一致性有助于您在各平台建立品牌。无论是在Twitch观看还是在Discord发消息，观众都能立即认出您。"
+    },
+    {
+      "id": "tw-7",
+      "question": "除了OBS我还需要其他特殊软件吗？",
+      "answer": "不需要！您只需要两个免费工具：PNGTuberMaker（在浏览器中运行，创建您的头像）和OBS Studio（免费直播软件）。就这些。无需插件、无需额外购买、订阅开始。两种工具都是行业标准，数百万创作者使用。浏览器源集成内置于OBS中 — 只需粘贴您的链接就可以开始了。"
+    }
+  ],
+  "cta": {
+    "title": "开始您的Twitch直播之旅",
+    "subtitle": "加入数千位使用PNGTuberMaker开播的无露脸主播。免费、快速，5分钟即可做好直播准备。",
+    "ctaText": "创建我的免费Twitch头像",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "如何制作PNGTuber",
+      "description": "设置您的第一个PNGTuber直播的完整指南。",
+      "href": "/guides/how-to-make-a-pngtuber"
+    },
+    {
+      "title": "Discord头像制作器",
+      "description": "为您的Discord社区创建配套头像。",
+      "href": "/for/discord"
+    },
+    {
+      "title": "YouTube头像制作器",
+      "description": "用同一个头像在YouTube多平台直播。",
+      "href": "/for/youtube"
+    },
+    {
+      "title": "免费PNGTuber制作器",
+      "description": "试用1次免费头像生成 — 无需信用卡。",
+      "href": "/free-pngtuber-maker"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "首页",
+      "href": "/"
+    },
+    {
+      "label": "平台",
+      "href": "/for"
+    },
+    {
+      "label": "Twitch头像制作器"
+    }
+  ]
+}

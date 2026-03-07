@@ -1,0 +1,10 @@
+{
+  "availableCredits": "可用积分",
+  "freeCredits": "免费积分",
+  "subscriptionCredits": "订阅积分",
+  "topupCredits": "充值积分",
+  "neverExpires": "永不过期",
+  "expired": "已过期",
+  "buyCredits": "购买积分",
+  "creditsLeft": "{count} 积分剩余"
+}

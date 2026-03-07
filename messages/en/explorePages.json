@@ -1,0 +1,18 @@
+{
+  "title": "Create Avatars for Every Platform",
+  "subtitle": "Whether you stream on Twitch, create on YouTube, or hang out on Discord — we've got you covered.",
+  "vtuberMaker": "VTuber Maker",
+  "vtuberMakerDesc": "Create AI VTuber avatars with expression packs — no art skills needed.",
+  "animeAvatarMaker": "Anime Avatar Maker",
+  "animeAvatarMakerDesc": "Generate anime-style characters from text descriptions.",
+  "howToMakePngtuber": "How to Make a PNGTuber",
+  "howToMakePngtuberDesc": "Complete beginner's guide — from zero to streaming in 5 minutes.",
+  "freePngtuberMaker": "Free PNGTuber Maker",
+  "freePngtuberMakerDesc": "Try 1 free avatar generation — no credit card required.",
+  "twitchAvatarMaker": "Twitch Avatar Maker",
+  "twitchAvatarMakerDesc": "OBS-ready streaming avatars with mic-reactive animation.",
+  "youtubeAvatarMaker": "YouTube Avatar Maker",
+  "youtubeAvatarMakerDesc": "Channel avatars, thumbnail expressions, and live stream overlays.",
+  "discordAvatarMaker": "Discord Avatar Maker",
+  "discordAvatarMakerDesc": "Profile pictures, server icons, and custom emoji packs."
+}

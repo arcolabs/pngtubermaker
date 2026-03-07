@@ -1,0 +1,17 @@
+{
+  "badge": "So funktioniert es",
+  "title": "Vom Konzept zum Live-Stream in 3 Schritten",
+  "subtitle": "Keine Provisionen. Kein Warten. Beschreibe, generiere und streame.",
+  "step1": {
+    "title": "Beschreibe deinen Charakter",
+    "description": "Gib eine kurze Beschreibung ein oder lade ein Referenzbild hoch. Die KI generiert 4 einzigartige Optionen zur Auswahl."
+  },
+  "step2": {
+    "title": "Erhalte Ausdrücke automatisch",
+    "description": "Ein Klick generiert ein komplettes Ausdruckspaket — glücklich, wütend, traurig, überrascht — alles im Stil deines Charakters."
+  },
+  "step3": {
+    "title": "Streame live",
+    "description": "Füge einen einzelnen Browser-Quelle-Link in OBS ein. Dein Avatar synchronisiert Lippensynchron zu deinem Mikrofon in Echtzeit."
+  }
+}

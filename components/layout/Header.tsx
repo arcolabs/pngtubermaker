@@ -23,6 +23,7 @@ import {
   useSubscriptionStore,
 } from "@/hooks/use-subscription-store";
 import { brand } from "@/lib/brand";
+import { stripLocalePrefix } from "@/lib/i18n/pathname";
 import type { Tier } from "@/lib/stripe";
 import { formatCreditsCompact } from "@/lib/utils";
 
@@ -66,6 +67,7 @@ export default function Header() {
   const tTier = useTranslations("tier");
   const tCommon = useTranslations("common");
   const pathname = usePathname();
+  const normalizedPathname = stripLocalePrefix(pathname);
   const { user, isHydrated, hydrate, signOut } = useAuthStore();
   const { credits, subscription, refresh } = useSubscriptionStore();
   const [isAvatarOpen, setIsAvatarOpen] = useState(false);
@@ -136,7 +138,7 @@ export default function Header() {
                 <Link
                   href="/dashboard"
                   className={
-                    pathname === "/dashboard"
+                    normalizedPathname === "/dashboard"
                       ? "text-primary font-medium bg-primary/10"
                       : "text-base-content/70 hover:text-primary hover:bg-primary/10"
                   }
@@ -149,7 +151,7 @@ export default function Header() {
               <Link
                 href="/pricing"
                 className={
-                  pathname === "/pricing"
+                  normalizedPathname === "/pricing"
                     ? "text-primary font-medium bg-primary/10"
                     : "text-base-content/70 hover:text-primary hover:bg-primary/10"
                 }
@@ -161,7 +163,7 @@ export default function Header() {
         </div>
 
         <div className="navbar-end gap-2">
-          <LanguageSwitcher variant="header" />
+          {!isLoggedIn && <LanguageSwitcher variant="header" />}
           {isLoggedIn ? (
             <>
               <div className="hidden lg:flex items-center gap-2">
@@ -200,7 +202,7 @@ export default function Header() {
                 </button>
 
                 {isAvatarOpen && (
-                  <div className="absolute right-0 mt-3 w-72 bg-base-100 rounded-2xl shadow-xl border border-base-content/5 z-50 overflow-hidden">
+                  <div className="absolute right-0 mt-3 w-72 bg-base-100 rounded-2xl shadow-xl border border-base-content/5 z-50">
                     {/* User Header */}
                     <div className="p-4 bg-gradient-to-br from-base-200/50 to-base-100">
                       <div className="flex items-center gap-3">
@@ -218,27 +220,25 @@ export default function Header() {
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-sm truncate">
-                            {user?.name || "Creator"}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold text-sm truncate">
+                              {user?.name || "Creator"}
+                            </p>
+                            <div
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border shrink-0 ${tierDisplay.className}`}
+                            >
+                              <TierIcon className="w-3 h-3" />
+                              {tTier(currentTier)}
+                              {subscription?.cancelAtPeriodEnd && (
+                                <span className="opacity-70">
+                                  {tTier("endsSoon")}
+                                </span>
+                              )}
+                            </div>
+                          </div>
                           <p className="text-xs text-base-content/50 truncate">
                             {user?.email}
                           </p>
-                        </div>
-                      </div>
-
-                      {/* Tier Badge */}
-                      <div className="mt-3">
-                        <div
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${tierDisplay.className}`}
-                        >
-                          <TierIcon className="w-3.5 h-3.5" />
-                          {tTier(currentTier)}
-                          {subscription?.cancelAtPeriodEnd && (
-                            <span className="text-[10px] opacity-70">
-                              {tTier("endsSoon")}
-                            </span>
-                          )}
                         </div>
                       </div>
                     </div>
@@ -322,14 +322,15 @@ export default function Header() {
                     </div>
 
                     {/* Footer */}
-                    <div className="p-2 border-t border-base-content/5">
+                    <div className="p-2 border-t border-base-content/5 flex items-center justify-between">
+                      <LanguageSwitcher variant="default" />
                       <button
                         type="button"
                         onClick={() => {
                           closeAvatar();
                           handleSignOut();
                         }}
-                        className="flex items-center gap-2 w-full px-3 py-2 text-sm text-base-content/60 hover:text-base-content hover:bg-base-200 rounded-lg transition-colors"
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-base-content/60 hover:text-base-content hover:bg-base-200 rounded-lg transition-colors"
                       >
                         <LogOut className="w-4 h-4" />
                         {t("logout")}

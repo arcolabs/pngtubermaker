@@ -1,0 +1,48 @@
+{
+  "quickStart": "Início Rápido",
+  "quickStartHint": "— Clique nas tags para criar seu prompt",
+  "hide": "Ocultar",
+  "style": "Estilo",
+  "generate": "Gerar",
+  "generating": "Gerando...",
+  "noCredits": "Créditos insuficientes.",
+  "buyCredits": "Comprar créditos",
+  "promptPlaceholder": "Uma garota anime fofa com cabelos longos prateados, usando moletom, fone de ouvido gamer, fundo aconchegante...",
+  "minChars": "Mínimo de 10 caracteres",
+  "reference": "Referência da Pessoa",
+  "referenceHint": "Envie sua foto ou arte de personagem",
+  "quickTemplates": "Modelos Rápidos",
+  "categories": {
+    "character": "Personagem",
+    "vibe": "Vibe",
+    "gear": "Equipamento"
+  },
+  "tags": {
+    "catGirl": "Garota Gato",
+    "wolfBoy": "Menino Lobo",
+    "bunnyGirl": "Garota Coelho",
+    "demon": "Demônio",
+    "foxGirl": "Garota Raposa",
+    "elf": "Elfo",
+    "kawaii": "Kawaii",
+    "dark": "Escuro",
+    "cozy": "Aconchegante",
+    "pastel": "Pastel",
+    "neon": "Neon",
+    "gothic": "Gótico",
+    "headset": "Fone Gamer",
+    "hoodie": "Moletom",
+    "catEars": "Orelhas de Gato",
+    "glasses": "Óculos",
+    "horns": "Chifres",
+    "scarf": "Lenço"
+  },
+  "styles": {
+    "chibi": "Chibi",
+    "anime": "Anime",
+    "cartoon": "Desenho",
+    "pixelart": "Pixel Art",
+    "none": "Nenhum",
+    "noneHint": "Descreva seu estilo no prompt"
+  }
+}

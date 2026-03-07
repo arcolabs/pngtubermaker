@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import { brand } from "@/lib/brand";
+import { stripLocalePrefix } from "@/lib/i18n/pathname";
 
 interface BadgeData {
   id: string;
@@ -82,7 +83,7 @@ export default function Footer() {
   const t = useTranslations("footer");
   const currentYear = new Date().getFullYear();
   const pathname = usePathname();
-  const isHomepage = pathname === "/";
+  const isHomepage = stripLocalePrefix(pathname) === "/";
 
   return (
     <footer className="bg-base-100 text-base-content">

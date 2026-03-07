@@ -1,0 +1,199 @@
+{
+  "slug": "vtuber-maker",
+  "metadata": {
+    "title": "Criador de VTuber — Gerador de Avatar VTuber com IA Grátis | PNGTuberMaker",
+    "description": "Criador de VTuber com IA Grátis — Crie avatares VTuber personalizados, modelos e pacotes de expressões em minutos. Sem habilidades artísticas. Compatível com OBS para streaming no Twitch, YouTube e Discord. Comece gratuitamente.",
+    "keywords": [
+      "criador de vtuber",
+      "criador de modelo vtuber",
+      "criador de vtuber com ia",
+      "criador de avatar vtuber",
+      "gerador de avatar vtuber",
+      "modelo vtuber",
+      "criador de vtuber gratis",
+      "criador de vtuber online",
+      "avatar vtuber com ia",
+      "criador de vtuber",
+      "gerador de vtuber"
+    ],
+    "canonical": "/vtuber-maker"
+  },
+  "hero": {
+    "badge": "Criador de VTuber com IA",
+    "title": "Criador de VTuber com IA Grátis — Crie Seu Avatar VTuber Online",
+    "subtitle": "Desenhe um modelo de VTuber único em minutos — sem habilidades artísticas necessárias. Gere personagens personalizados com pacotes de expressões e transmita ao vivo em qualquer plataforma de streaming.",
+    "ctaText": "Crie Seu VTuber",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "Tudo Que Você Precisa para Transmitir como um VTuber",
+    "items": [
+      {
+        "icon": "Wand2",
+        "title": "Geração com IA",
+        "description": "Descreva seu personagem ou envie uma imagem de referência. Nossa IA gera vários designs de VTuber exclusivos para você escolher."
+      },
+      {
+        "icon": "Layers",
+        "title": "Pacotes de Expressões",
+        "description": "Gere um conjunto completo de expressões — feliz, bravo, triste, surpreso — tudo consistente com o estilo do seu personagem."
+      },
+      {
+        "icon": "Monitor",
+        "title": "Pronto para Transmissão em Minutos",
+        "description": "Obtenha uma URL de Fonte de Navegador para o OBS Studio. Seu avatar VTuber aparece na transmissão com fundo transparente, reagindo à sua voz em tempo real."
+      },
+      {
+        "icon": "Shield",
+        "title": "Seu Avatar, Sua Marca",
+        "description": "Use seu avatar no Twitch, YouTube, Discord e redes sociais. Assinantes do Creator Pass têm direitos comerciais completos, incluindo uso em merchandising."
+      }
+    ]
+  },
+  "comparison": {
+    "title": "PNGTuber vs VTuber Tradicional",
+    "description": "Veja por que milhares de streamers escolhem PNGTubers em vez de rigs de VTuber completos.",
+    "columns": [
+      {
+        "label": "Recurso"
+      },
+      {
+        "label": "PNGTuberMaker",
+        "highlight": true
+      },
+      {
+        "label": "VTuber Tradicional"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "Custo",
+        "values": ["Grátis – R$7,99/mês", "R$200 – R$2.000+"]
+      },
+      {
+        "feature": "Tempo de configuração",
+        "values": ["Menos de 5 minutos", "2–8 semanas"]
+      },
+      {
+        "feature": "Rastreamento facial",
+        "values": ["Não é necessário", "Webcam + software necessário"]
+      },
+      {
+        "feature": "Hardware",
+        "values": ["Apenas microfone", "Webcam + GPU"]
+      },
+      {
+        "feature": "Configuração no OBS",
+        "values": ["Colar uma URL", "Configuração complexa de NDI/captura"]
+      },
+      {
+        "feature": "Geração com IA",
+        "values": [true, false]
+      },
+      {
+        "feature": "Pacote de expressões",
+        "values": ["Gerado por IA", "Cada expressão custa extra"]
+      }
+    ]
+  },
+  "showcase": {
+    "title": "Avatares VTuber Criados com IA",
+    "description": "Cada avatar abaixo foi gerado em segundos — sem habilidades artísticas necessárias.",
+    "images": [
+      {
+        "src": "/images/showcase/fox_pngtuber.png",
+        "alt": "Avatar de VTuber raposa gerado por IA usando o criador de VTuber gratuito PNGTuberMaker",
+        "prompt": "orelhas de raposa laranjas, cabelos azul ondas longas com presilhas de estrela, olhos âmbar brilhantes, vestido azul marinho com constelações, segurando uma bola de cristal flutuante"
+      },
+      {
+        "src": "/images/showcase/pinkbunny_pngtuber.png",
+        "alt": "Avatar de VTuber coelho rosa gerado com PNGTuberMaker",
+        "prompt": "orelhas de coelho rosa, presilha floral no cabelo, cabelos curtos pêssego macio, olhos verdes esmeralda, moletom creme grande demais, segurando uma cesta de morangos"
+      },
+      {
+        "src": "/images/showcase/sunflower_pngtuber.png",
+        "alt": "Avatar de personagem VTuber girassol fofo gerado pelo criador de VTuber online PNGTuberMaker",
+        "prompt": "coroa de girassol gigante, cabelos verde-menta cacheados, olhos amarelos brilhantes, vestido branco de verão, segurando um regador, pequenas asas amarelas"
+      },
+      {
+        "src": "/images/showcase/round1_idle.png",
+        "alt": "Avatar de garota mágica VTuber com IA criado com o criador de VTuber com IA gratuito PNGTuberMaker",
+        "prompt": "Uma garota mágica clássica com longas tranças douradas soltas amarradas com grandes laços de seda vermelhos. Ela tem olhos azuis expressivos e um rosto em formato de coração."
+      },
+      {
+        "src": "/images/showcase/round2_sad.png",
+        "alt": "Avatar de VTuber expressão de bruxa criado usando o criador de avatar VTuber PNGTuberMaker",
+        "prompt": "pequena bruxa, chapéu de mago enorme, cabelos estrelados, olhos de galáxia, vestido azul marinho, garota mágica"
+      },
+      {
+        "src": "/images/showcase/round3_angry.png",
+        "alt": "Avatar de VTuber expressão brava gerado com o criador de VTuber com IA PNGTuberMaker",
+        "prompt": "Uma jovem com cabelos castanhos escuros volumosos e ondulados e olhos castanhos grandes. Óculos redos com pingentes de sol em prata, top de corpete gótico preto com babados."
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "vm-1",
+      "question": "O que é um criador de VTuber?",
+      "answer": "Um criador de VTuber é uma ferramenta que ajuda você a criar um avatar virtual para streaming. PNGTuberMaker usa IA para gerar personagens VTuber personalizados a partir de descrições textuais ou imagens de referência, completos com pacotes de expressões para streaming ao vivo."
+    },
+    {
+      "id": "vm-2",
+      "question": "PNGTubing é melhor que VTubing?",
+      "answer": "PNGTubers são mais simples e leves que rigs de VTuber completos. Eles não exigem rastreamento facial, webcam ou software caro — apenas uma fonte de navegador no OBS. PNGTuberMaker oferece uma aparência profissional sem complexidade de configuração."
+    },
+    {
+      "id": "vm-3",
+      "question": "Preciso de webcam ou rastreamento facial?",
+      "answer": "Não. Avatares PNGTuber reagem à entrada do microfone, não ao rastreamento facial. Quando você fala, seu avatar é animado automaticamente. Sem webcam, sem plugins, sem hardware extra."
+    },
+    {
+      "id": "vm-4",
+      "question": "Posso usar meu avatar VTuber no Twitch e YouTube?",
+      "answer": "Sim. Seu avatar funciona em qualquer plataforma que suporte Fontes de Navegador do OBS — incluindo Twitch, YouTube, Kick e muito mais. Você recebe uma URL única que cola no OBS como Fonte de Navegador."
+    },
+    {
+      "id": "vm-5",
+      "question": "Quanto custa criar um avatar VTuber?",
+      "answer": "Novos usuários recebem 1 geração de avatar gratuita para testar — sem necessidade de cartão de crédito. Comissões tradicionais de VTuber custam R$200-R$2.000+ e levam semanas — PNGTuberMaker entrega em minutos por uma fração do custo."
+    },
+    {
+      "id": "vm-6",
+      "question": "Pode fazer um avatar VTuber no celular?",
+      "answer": "Sim. PNGTuberMaker funciona em qualquer navegador moderno, incluindo celulares e tablets. Você pode desenhar seu avatar VTuber no celular ou tablet, e depois usar para fazer streaming no seu desktop com o OBS Studio."
+    }
+  ],
+  "cta": {
+    "title": "Pronto para Virar um VTuber?",
+    "subtitle": "Crie seu avatar em minutos. Sem habilidades artísticas, sem comissões caras.",
+    "ctaText": "Começar a Criar Grátis",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "Criador de Avatar Anime",
+      "description": "Crie avatares VTuber no estilo anime com IA.",
+      "href": "/style/anime"
+    },
+    {
+      "title": "Criador de PNGTuber Grátis",
+      "description": "Comece com créditos gratuitos para geração de avatar.",
+      "href": "/free-pngtuber-maker"
+    },
+    {
+      "title": "Como Fazer um PNGTuber",
+      "description": "Guia passo a passo para criar seu primeiro avatar.",
+      "href": "/guides/how-to-make-a-pngtuber"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "Início",
+      "href": "/"
+    },
+    {
+      "label": "Criador de VTuber"
+    }
+  ]
+}

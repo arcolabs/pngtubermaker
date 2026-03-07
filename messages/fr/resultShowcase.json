@@ -1,0 +1,17 @@
+{
+  "badge": "Comment ça marche",
+  "title": "De l'idée au direct en 3 étapes",
+  "subtitle": "Pas de commissions. Pas d'attente. Décrivez, générez et streamez.",
+  "step1": {
+    "title": "Décrivez votre personnage",
+    "description": "Tapez une courte description ou téléchargez une image de référence. L'IA génère 4 options uniques parmi lesquelles choisir."
+  },
+  "step2": {
+    "title": "Obtenez des expressions automatiquement",
+    "description": "Un clic génère un pack d'expressions complet — heureux, en colère, triste, surpris — tout dans le style de votre personnage."
+  },
+  "step3": {
+    "title": "Passez en direct",
+    "description": "Collez un seul lien de source navigateur dans OBS. Votre avatar effectue un lip-sync en temps réel avec votre micro."
+  }
+}

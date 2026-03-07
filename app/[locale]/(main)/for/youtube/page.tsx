@@ -7,24 +7,33 @@ import PlatformSpecs from "@/components/landing/PlatformSpecs";
 import DiscordCTA from "@/components/sections/DiscordCTA";
 import FAQ from "@/components/sections/FAQ";
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import { generateLandingJsonLd, landingPages } from "@/lib/landing-pages";
+import { generateLandingJsonLd, getLandingPage } from "@/lib/landing-pages";
 
-const page = landingPages["for-youtube"];
-const jsonLd = generateLandingJsonLd(page);
+interface Props {
+  params: Promise<{ locale: string }>;
+}
 
-export const metadata: Metadata = {
-  title: page.metadata.title,
-  description: page.metadata.description,
-  keywords: page.metadata.keywords,
-  alternates: { canonical: page.metadata.canonical },
-  openGraph: {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const page = getLandingPage(locale, "for-youtube");
+  return {
     title: page.metadata.title,
     description: page.metadata.description,
-    url: `https://pngtubermaker.com${page.metadata.canonical}`,
-  },
-};
+    keywords: page.metadata.keywords,
+    alternates: { canonical: page.metadata.canonical },
+    openGraph: {
+      title: page.metadata.title,
+      description: page.metadata.description,
+      url: `https://pngtubermaker.com${page.metadata.canonical}`,
+    },
+  };
+}
 
-export default function YouTubeAvatarMakerPage() {
+export default async function YouTubeAvatarMakerPage({ params }: Props) {
+  const { locale } = await params;
+  const page = getLandingPage(locale, "for-youtube");
+  const jsonLd = generateLandingJsonLd(page);
+
   return (
     <>
       <script

@@ -1,0 +1,17 @@
+{
+  "badge": "How It Works",
+  "title": "From Idea to Live Stream in 3 Steps",
+  "subtitle": "No commissions. No waiting. Just describe, generate, and stream.",
+  "step1": {
+    "title": "Describe your character",
+    "description": "Type a short description or upload a reference image. The AI generates 4 unique options to choose from."
+  },
+  "step2": {
+    "title": "Get expressions automatically",
+    "description": "One click generates a full expression pack — happy, angry, sad, surprised — all in your character's style."
+  },
+  "step3": {
+    "title": "Go live on stream",
+    "description": "Paste a single Browser Source link into OBS. Your avatar lip-syncs to your mic in real time."
+  }
+}

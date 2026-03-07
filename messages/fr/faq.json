@@ -1,0 +1,51 @@
+{
+  "title": "Questions Fréquemment Posées",
+  "supportText": "Vous avez d'autres questions ?",
+  "contactUs": "Contactez-nous",
+  "items": [
+    {
+      "question": "Qu'est-ce que PNGTuberMaker et comment cela fonctionne-t-il ?",
+      "answer": "PNGTuberMaker est un outil alimenté par l'IA qui vous permet de créer des avatars PNG personnalisés pour le streaming. Décrivez simplement votre personnage ou téléchargez une image de référence, et notre IA générera plusieurs options d'avatars — complètes avec des packs d'expressions pour différentes émotions. Aucune compétence artistique n'est nécessaire."
+    },
+    {
+      "question": "Dois-je savoir dessiner pour utiliser PNGTuberMaker ?",
+      "answer": "Pas du tout ! PNGTuberMaker est conçu pour tout le monde — des débutants complets aux créateurs expérimentés. Vous pouvez simplement écrire une courte description (par exemple \"fille chat anime aux cheveux bleus\") ou télécharger une image de référence, et l'IA s'occupe du reste."
+    },
+    {
+      "question": "Puis-je télécharger mes propres esquisses ou images de référence ?",
+      "answer": "Oui. Vous pouvez télécharger des esquisses, des références de personnages ou des captures d'écran. L'IA les utilisera pour correspondre à votre style et maintenir la cohérence de votre personnage à travers toutes les expressions."
+    },
+    {
+      "question": "Quels formats de fichiers exportez-vous ?",
+      "answer": "Nous exportons des fichiers PNG transparents pour les avatars et expressions individuels, plus un bundle ZIP contenant votre pack d'expressions complet. Parfait pour les overlays OBS, Discord ou Twitch."
+    },
+    {
+      "question": "Les avatars que je génère sont-ils uniques et sûrs à utiliser ?",
+      "answer": "Oui. Tous les avatars sont générés à partir de vos propres entrées et sont uniques. Les utilisateurs gratuits peuvent les utiliser pour le streaming, les réseaux sociaux et le contenu personnel. Les abonnés au Creator Pass obtiennent tous les droits commerciaux, incluant la marchandise et le contenu payant."
+    },
+    {
+      "question": "Puis-je utiliser les avatars commercialement ?",
+      "answer": "Les avatars gratuits peuvent être utilisés pour le streaming, les vidéos YouTube, Discord et les réseaux sociaux. Pour tous les droits commerciaux (marchandise, partenariats de marque, contenu payant), passez au Creator Pass à 7,99 $/mois."
+    },
+    {
+      "question": "Qu'est-ce qui est inclus dans le plan gratuit ?",
+      "answer": "Chaque nouvel utilisateur reçoit 1 génération d'avatar gratuite — aucune carte de crédit requise. Vous获取4 images candidates au choix, exportées en PNG 512px avec fond transparent. Pour débloquer les expressions, l'export HD et plus de générations, achetez des crédits ou abonnez-vous au Creator Pass."
+    },
+    {
+      "question": "Combien de temps faut-il pour générer un avatar ?",
+      "answer": "La plupart des avatars sont générés en moins d'1 minute. Les packs d'expressions prennent 1 à 3 minutes selon la complexité. Vous pouvez prévisualiser, choisir votre favori et affiner instantanément."
+    },
+    {
+      "question": "Comment fonctionne l'intégration OBS ?",
+      "answer": "Après avoir créé votre avatar et vos expressions, vous obtenez une URL Browser Source unique. Collez-la dans OBS Studio comme source de navigateur — votre avatar apparaît en streaming avec un fond transparent, prêt à réagir à votre entrée microphone. Aucun plugin ou logiciel supplémentaire nécessaire."
+    },
+    {
+      "question": "Cela synchronise-t-il avec mon microphone ?",
+      "answer": "Oui ! Le lecteur OBS utilise l'accès microphone de votre navigateur pour détecter quand vous parlez. La bouche de votre avatar s'ouvre et se ferme en temps réel, offrant à votre streaming une expérience PNGTuber naturelle et réactive — tout fonctionnant directement dans le Browser Source."
+    },
+    {
+      "question": "Qu'est-ce qui arrive ensuite ?",
+      "answer": "Nous travaillons sur les Agent Avatars — donnez à votre agent IA un visage virtuel qui peut apparaître en streaming, sur Discord, ou partout où vous avez besoin d'une présence visuelle. Rejoignez notre Discord pour un accès anticipé et façonnez ce qui vient ensuite."
+    }
+  ]
+}

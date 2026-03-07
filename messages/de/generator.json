@@ -1,0 +1,48 @@
+{
+  "quickStart": "Schnellstart",
+  "quickStartHint": "— Klicke auf Tags um deinen Prompt zu erstellen",
+  "hide": "Ausblenden",
+  "style": "Stil",
+  "generate": "Generieren",
+  "generating": "Generiere...",
+  "noCredits": "Nicht genug Credits.",
+  "buyCredits": "Credits kaufen",
+  "promptPlaceholder": "Ein niedliches Anime-Mädchen mit langen silbernen Haaren, Hoodie, Gaming-Headset, gemütlicher Hintergrund...",
+  "minChars": "Mindestens 10 Zeichen",
+  "reference": "Personenreferenz",
+  "referenceHint": "Lade dein Foto oder Charakterkunst hoch",
+  "quickTemplates": "Schnellvorlagen",
+  "categories": {
+    "character": "Charakter",
+    "vibe": "Stimmung",
+    "gear": "Ausrüstung"
+  },
+  "tags": {
+    "catGirl": "Katzenmädchen",
+    "wolfBoy": "Wolfjunge",
+    "bunnyGirl": "Hasenmädchen",
+    "demon": "Dämon",
+    "foxGirl": "Fuchsmädchen",
+    "elf": "Elfe",
+    "kawaii": "Kawaii",
+    "dark": "Dunkel",
+    "cozy": "Gemütlich",
+    "pastel": "Pastell",
+    "neon": "Neon",
+    "gothic": "Gothic",
+    "headset": "Gaming-Headset",
+    "hoodie": "Hoodie",
+    "catEars": "Katzenohren",
+    "glasses": "Brille",
+    "horns": "Hörner",
+    "scarf": "Schal"
+  },
+  "styles": {
+    "chibi": "Chibi",
+    "anime": "Anime",
+    "cartoon": "Cartoon",
+    "pixelart": "Pixel Art",
+    "none": "Keiner",
+    "noneHint": "Beschreibe deinen Stil im Prompt"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "quickStart": "Inicio Rápido",
+  "quickStartHint": "— Haz clic en las etiquetas para crear tu prompt",
+  "hide": "Ocultar",
+  "style": "Estilo",
+  "generate": "Generar",
+  "generating": "Generando...",
+  "noCredits": "No tienes suficientes créditos.",
+  "buyCredits": "Comprar créditos",
+  "promptPlaceholder": "Una linda chica anime con cabello plateado largo, usando sudadera con capucha, auricular de gaming, fondo acogedor...",
+  "minChars": "Mínimo 10 caracteres",
+  "reference": "Referencia de Persona",
+  "referenceHint": "Sube tu foto o arte de personaje",
+  "quickTemplates": "Plantillas Rápidas",
+  "categories": {
+    "character": "Personaje",
+    "vibe": "Ambiente",
+    "gear": "Equipo"
+  },
+  "tags": {
+    "catGirl": "Chica Gato",
+    "wolfBoy": "Chico Lobo",
+    "bunnyGirl": "Chica Conejo",
+    "demon": "Demonio",
+    "foxGirl": "Chica Zorro",
+    "elf": "Elfo",
+    "kawaii": "Kawaii",
+    "dark": "Oscuro",
+    "cozy": "Acogedor",
+    "pastel": "Pastel",
+    "neon": "Neón",
+    "gothic": "Gótico",
+    "headset": "Auricular Gaming",
+    "hoodie": "Sudadera con capucha",
+    "catEars": "Orejas de gato",
+    "glasses": "Gafas",
+    "horns": "Cuernos",
+    "scarf": "Bufanda"
+  },
+  "styles": {
+    "chibi": "Chibi",
+    "anime": "Anime",
+    "cartoon": "Cartoon",
+    "pixelart": "Pixel Art",
+    "none": "Ninguno",
+    "noneHint": "Describe tu estilo en el prompt"
+  }
+}

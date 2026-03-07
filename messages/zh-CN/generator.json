@@ -1,0 +1,48 @@
+{
+  "quickStart": "快速开始",
+  "quickStartHint": "— 点击标签来构建你的提示词",
+  "hide": "隐藏",
+  "style": "风格",
+  "generate": "生成",
+  "generating": "生成中...",
+  "noCredits": "积分不足",
+  "buyCredits": "购买积分",
+  "promptPlaceholder": "A cute anime girl with long silver hair, wearing a hoodie, gaming headset, cozy background...",
+  "minChars": "至少10个字符",
+  "reference": "人物参考",
+  "referenceHint": "上传你的照片或角色图片",
+  "quickTemplates": "快捷模板",
+  "categories": {
+    "character": "角色",
+    "vibe": "氛围",
+    "gear": "装备"
+  },
+  "tags": {
+    "catGirl": "猫娘",
+    "wolfBoy": "狼少年",
+    "bunnyGirl": "兔娘",
+    "demon": "恶魔",
+    "foxGirl": "狐娘",
+    "elf": "精灵",
+    "kawaii": "可爱",
+    "dark": "暗黑",
+    "cozy": "温馨",
+    "pastel": "粉彩",
+    "neon": "霓虹",
+    "gothic": "哥特",
+    "headset": "游戏耳机",
+    "hoodie": "连帽衫",
+    "catEars": "猫耳",
+    "glasses": "眼镜",
+    "horns": "角",
+    "scarf": "围巾"
+  },
+  "styles": {
+    "chibi": "Q版",
+    "anime": "动漫",
+    "cartoon": "卡通",
+    "pixelart": "像素画",
+    "none": "无",
+    "noneHint": "在提示词中描述你的风格"
+  }
+}

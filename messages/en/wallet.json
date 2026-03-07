@@ -1,0 +1,10 @@
+{
+  "availableCredits": "Available Credits",
+  "freeCredits": "Free Credits",
+  "subscriptionCredits": "Subscription Credits",
+  "topupCredits": "Top-up Credits",
+  "neverExpires": "never expires",
+  "expired": "expired",
+  "buyCredits": "Buy Credits",
+  "creditsLeft": "{count} credits left"
+}

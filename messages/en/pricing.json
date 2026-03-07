@@ -1,0 +1,62 @@
+{
+  "heading": "Simple, transparent pricing",
+  "subtitle": "Start free. Buy credits or subscribe when you're ready.",
+  "creditsNote": "Credits purchased via packs never expire. Subscription credits refresh monthly and expire at billing cycle end.",
+  "or": "or",
+  "freeTrial": {
+    "title": "Free Trial",
+    "subtitle": "Try it before you buy",
+    "price": "$0",
+    "note": "No credit card",
+    "features": [
+      "1 avatar generation",
+      "4 candidate images",
+      "512px PNG export",
+      "Transparent background",
+      "No credit card required"
+    ],
+    "ctaLoggedIn": "Create Avatar",
+    "ctaLoggedOut": "Start Free"
+  },
+  "creatorPass": {
+    "badge": "Subscribe & Save",
+    "subtitle": "For creators who want the best value on credits and HD export",
+    "features": [
+      "6,000 credits/month (~30% savings vs top-up)",
+      "HD export (1080p)",
+      "All expression packs",
+      "Manage subscription anytime",
+      "Priority email support"
+    ]
+  },
+  "toggle": {
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "save": "Save {percent}%"
+  },
+  "perMonth": "/mo",
+  "savings": "Save {percent}%",
+  "annualNote": "/mo when billed annually",
+  "savingsNote": "~30% savings vs buying credits",
+  "currentPlan": "Current Plan",
+  "subscribeYearly": "Subscribe Yearly",
+  "subscribeMonthly": "Subscribe Monthly",
+  "paymentSuccess": "Payment successful! Credits have been added.",
+  "paymentCanceled": "Payment canceled. You can try again anytime.",
+  "creditPacks": {
+    "title": "Buy Credits",
+    "subtitle": "Pay as you go. Credits never expire.",
+    "credits": "credits",
+    "buyCredits": "Buy Credits",
+    "mostPopular": "Most Popular",
+    "packStarter": "Starter",
+    "packPopular": "Popular",
+    "packBestValue": "Best Value"
+  },
+  "buyCreditsModal": {
+    "title": "You need more credits",
+    "requiresCredits": "This action requires {count} credits",
+    "best": "BEST",
+    "footer": "Credits never expire. Secure checkout via Stripe."
+  }
+}

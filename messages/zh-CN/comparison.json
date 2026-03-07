@@ -1,0 +1,47 @@
+{
+  "title": "如何将你的想法变成专业的PNGTuber",
+  "subtitle": "使用AI在几分钟内生成完美的直播头像，省去150美元以上的费用和数周的等待",
+  "with": "使用",
+  "brand": "PNGTuberMaker",
+  "steps": [
+    {
+      "title": "1. 描述你的虚拟形象想法",
+      "time": "1分钟",
+      "desc": "输入你的风格或上传草图。AI会完美理解你的愿景。"
+    },
+    {
+      "title": "2. AI生成表情",
+      "time": "1-2分钟",
+      "desc": "微笑、愤怒、惊讶、悲伤 — 自动生成10+个风格一致的表情。"
+    },
+    {
+      "title": "3. 一键OBS设置",
+      "time": "即时",
+      "desc": "在OBS中粘贴一个浏览器源链接。你的虚拟形象会实时对口型。"
+    },
+    {
+      "title": "4. 下载并开始直播",
+      "time": "即时",
+      "desc": "导出PNG或ZIP包用于OBS、Twitch、Discord — 几秒钟内即可准备直播。"
+    }
+  ],
+  "traditional": {
+    "title": "传统委托",
+    "items": [
+      "在Fiverr/DeviantArt上找到并雇佣画师",
+      "等待回复并协商价格",
+      "为一套PNG支付50–200美元以上",
+      "等待1–3周交付",
+      "面临质量不一致或修改的风险",
+      "新表情或新风格需要重复上述流程"
+    ],
+    "badge": "昂贵且缓慢"
+  },
+  "cta": {
+    "loggedIn": "立即创建你的PNGTuber",
+    "loggedOut": "创建免费PNGTuber — 无需信用卡",
+    "loggedInMobile": "立即创建",
+    "loggedOutMobile": "创建免费PNGTuber"
+  },
+  "values": ["无需绘画技能", "5分钟内即可完成", "直接在OBS中运行"]
+}

@@ -1,0 +1,237 @@
+{
+  "slug": "for/discord",
+  "metadata": {
+    "title": "Discord 头像制作器 — 免费 AI Discord 头像和服务器图标生成器",
+    "description": "使用 AI 创建免费 Discord 头像 — 自定义头像、服务器图标、表情包和 PNGTuber 角色。无需美术技能。支持 Nitro 动态头像。免费开始。",
+    "keywords": [
+      "discord 头像制作器",
+      "discord 头像生成器",
+      "discord pfp 制作器",
+      "自定义 discord 头像",
+      "discord 头像生成器",
+      "discord pngtuber",
+      "免费 discord 头像",
+      "discord 服务器图标制作器",
+      "discord 表情包制作器",
+      "discord nitro 头像",
+      "动态 discord 头像",
+      "discord pfp 创作器"
+    ],
+    "canonical": "/for/discord"
+  },
+  "hero": {
+    "badge": "🎮 免费 Discord 头像制作器",
+    "title": "Discord 头像制作器：头像、服务器图标和表情包",
+    "subtitle": "用 AI 创建完美的 Discord 头像 — 亮眼的头像、品牌的服务器图标、表达情绪的自定义表情包。一个角色，无限 Discord 可能。免费开始。",
+    "ctaText": "创建免费 Discord 头像",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "Discord 所需的一切",
+    "items": [
+      {
+        "icon": "User",
+        "title": "吸睛的头像",
+        "description": "创建独特的头像，在服务器列表和私信中脱颖而出。AI 生成的设计在 128px（服务器列表）和 1024px（个人资料视图）都很清晰。不再有千篇一律的头像。"
+      },
+      {
+        "icon": "Users",
+        "title": "专业服务器图标",
+        "description": "设计简洁居中的服务器图标，代表你的社区。完美的 512×512 导出，在 Discord 的圆形裁剪中也很出色。为你的服务器建立即时品牌认知。"
+      },
+      {
+        "icon": "Smile",
+        "title": "自定义表情包和贴纸套装",
+        "description": "生成匹配的表情包套装，非常适合 Discord 表情包（128×128）和贴纸（320×320）。开心、悲伤、愤怒、惊讶 — 全部与你的角色风格一致。"
+      },
+      {
+        "icon": "Zap",
+        "title": "Nitro 动态头像潜力",
+        "description": "创建可作为 Nitro 动态头像使用的表情序列。导出多个姿势，使用 EZGIG 等工具创建流畅的 GIF 转换。静态基础，无限动态可能。"
+      }
+    ]
+  },
+  "platformSpecs": {
+    "title": "Discord 图片规格 (2026)",
+    "items": [
+      {
+        "label": "头像 (PFP)",
+        "value": "最小 128×128，推荐 1024×1024"
+      },
+      {
+        "label": "服务器图标",
+        "value": "512×512 像素，居中设计"
+      },
+      {
+        "label": "自定义表情包",
+        "value": "128×128 像素，256 KB 以下"
+      },
+      {
+        "label": "贴纸",
+        "value": "320×320 像素，PNG 或 APNG"
+      },
+      {
+        "label": "服务器横幅",
+        "value": "960×540 或 1920×1080"
+      },
+      {
+        "label": "头像形状",
+        "value": "圆形裁剪（重要元素居中）"
+      }
+    ]
+  },
+  "steps": {
+    "title": "如何创建和设置你的 Discord 头像",
+    "items": [
+      {
+        "title": "第一步：设计你的 Discord 角色",
+        "description": "打开 PNGTuberMaker，描述你理想的 Discord 角色。想想它在小型尺寸下的效果 — 醒目的颜色、清晰的轮廓和居中的面孔效果最好。生成多个设计，选择你最喜欢的。"
+      },
+      {
+        "title": "第二步：生成表情包套装",
+        "description": "创建完整的表情包套装 — 中性、开心、悲伤、愤怒、惊讶。这些可以作为头像变体、反应表情包和服务器表情使用。所有表情与你的角色风格完美匹配。"
+      },
+      {
+        "title": "第三步：导出用于 Discord",
+        "description": "将你的头像导出为透明 PNG — 免费计划 512px，或通过 Creator Pass 最高 1080p。PNGTuberMaker 导出的 Discord 可以完美处理。AI 会自动将你的角色居中，以获得最佳圆形裁剪。"
+      },
+      {
+        "title": "第四步：设置为 Discord 头像",
+        "description": "进入 Discord → 用户设置 → 个人资料 → 更换头像 → 上传图片。选择你导出的 PNG。Discord 会自动裁剪为圆形 — 你居中的 AI 设计看起来完美。"
+      },
+      {
+        "title": "第五步：用作服务器图标和表情包",
+        "description": "对于服务器图标：服务器设置 → 概览 → 服务器图标。对于表情包：服务器设置 → 表情包 → 上传表情包。使用套装中的不同表情来增加多样性。"
+      }
+    ]
+  },
+  "comparison": {
+    "title": "Discord 头像方案对比",
+    "description": "PNGTuberMaker 与其他获取 Discord 头像方式的对比。",
+    "columns": [
+      {
+        "label": "选项"
+      },
+      {
+        "label": "PNGTuberMaker AI",
+        "highlight": true
+      },
+      {
+        "label": "聘请画师"
+      },
+      {
+        "label": "免费生成器"
+      },
+      {
+        "label": "自己绘制"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "费用",
+        "values": ["免费开始", "30-150 美元以上", "免费", "免费（时间）"]
+      },
+      {
+        "feature": "获得头像时间",
+        "values": ["2 分钟", "3-14 天", "即时", "数小时至数天"]
+      },
+      {
+        "feature": "独特设计",
+        "values": [true, true, false, true]
+      },
+      {
+        "feature": "包含表情包套装",
+        "values": [true, "额外 10-30 美元", false, "自己绘制"]
+      },
+      {
+        "feature": "可随时修改",
+        "values": [true, "再次付费", false, true]
+      },
+      {
+        "feature": "质量一致性",
+        "values": ["AI 保证", "取决于画师", "千篇一律", "取决于技能"]
+      },
+      {
+        "feature": "可用于服务器图标",
+        "values": [true, true, true, true]
+      },
+      {
+        "feature": "无需美术技能",
+        "values": [true, true, true, false]
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "dc-1",
+      "question": "Discord 头像的最佳尺寸是多少？",
+      "answer": "Discord 在服务器列表中以 128×128 像素显示头像，但在个人资料视图中最高存储 1024×1024 像素。我们建议以 1024×1024 导出以获得最高质量。PNGTuberMaker 导出的高清 PNG 在任何 Discord 尺寸下都很清晰，从微小的服务器图标到完整的个人资料视图。"
+    },
+    {
+      "id": "dc-2",
+      "question": "我可以用这个制作 Discord Nitro 动态头像吗？",
+      "answer": "可以！虽然 PNGTuberMaker 创建静态 PNG，但你可以使用表情包套装制作动态 Discord 头像。导出多个表情（中性、开心、惊讶），使用 EZGIF 等免费工具创建 GIF 序列。Discord Nitro 支持最大 10MB 的 GIF 头像。你的 AI 生成角色确保帧与帧之间的一致性。"
+    },
+    {
+      "id": "dc-3",
+      "question": "如何制作好的 Discord 服务器图标？",
+      "answer": "优秀的 Discord 服务器图标特点是：(1) 居中 — Discord 裁剪为圆形，所以把重要元素放在中间。(2) 简洁 — 复杂设计在小型尺寸下会丢失。(3) 易识别 — 醒目的颜色和清晰的轮廓效果最好。(4) 一致 — 配合你服务器的主题。PNGTuberMaker 的 AI 自动将角色居中，并导出完美的 512×512 尺寸用于服务器图标。"
+    },
+    {
+      "id": "dc-4",
+      "question": "我可以用这个创建自定义 Discord 表情包吗？",
+      "answer": "当然可以！以 128×128 像素（Discord 表情包尺寸）导出你角色的表情。每个表情都变成独特的表情包 — 开心、悲伤、愤怒、惊讶。上传到你的服务器：服务器设置 → 表情包 → 上传表情包。高级 Discord 服务器最多可以有 250 个自定义表情包。你一致的 AI 生成角色制作出专业的表情包套装。"
+    },
+    {
+      "id": "dc-5",
+      "question": "这比使用免费 Discord 头像生成器更好吗？",
+      "answer": "免费 Discord 头像生成器通常提供有限的模板，大家都在用 — 最终得到千篇一律的外观。PNGTuberMaker 根据你的描述创建真正独特的头像。此外，你还可以获得表情包套装、更高分辨率的导出和商业版权。对于想要品牌化、可识别的社区头像的服务器所有者来说，AI 生成是更好的投资。"
+    },
+    {
+      "id": "dc-6",
+      "question": "我是否拥有在各处使用我的 Discord 头像的权利？",
+      "answer": "是的！你的 AI 生成头像可以在 Discord、Twitch、YouTube、Twitter 和任何其他地方使用。无需署名。这与一些限制使用或需要不同平台许可证的头像制作器不同。无论是你的个人头像还是服务器的品牌，你都拥有完全权利。"
+    }
+  ],
+  "cta": {
+    "title": "立即提升你的 Discord 形象",
+    "subtitle": "加入成千上万的 Discord 用户，提升他们的头像、服务器和表情包水平 — 免费。",
+    "ctaText": "免费创建我的 Discord 头像",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "Twitch 头像制作器",
+      "description": "也可以将你的 Discord 头像用于 Twitch 直播。",
+      "href": "/for/twitch"
+    },
+    {
+      "title": "YouTube 头像制作器",
+      "description": "为你的 YouTube 频道创建匹配的头像。",
+      "href": "/for/youtube"
+    },
+    {
+      "title": "动漫头像制作器",
+      "description": "非常适合 Discord 社区的动漫风格头像。",
+      "href": "/style/anime"
+    },
+    {
+      "title": "免费 PNGTuber 制作器",
+      "description": "尝试 1 次免费头像生成 — 无需信用卡。",
+      "href": "/free-pngtuber-maker"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "首页",
+      "href": "/"
+    },
+    {
+      "label": "平台",
+      "href": "/for"
+    },
+    {
+      "label": "Discord 头像制作器"
+    }
+  ]
+}

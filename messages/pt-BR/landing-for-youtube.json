@@ -1,0 +1,250 @@
+{
+  "slug": "for/youtube",
+  "metadata": {
+    "title": "Criador de Avatar para YouTube — Criador Grátis de PFP e Miniaturas para Canal",
+    "description": "Crie avatares gratuitos para YouTube com IA — fotos de perfil do canal, miniaturas, sobreposições para lives e personagens PNGTuber. Exportações em 4K, pacotes de expressões e integração com OBS. Comece grátis.",
+    "keywords": [
+      "criador de avatar youtube",
+      "avatar youtube",
+      "criador de foto de perfil youtube",
+      "pngtuber youtube",
+      "avatar de canal youtube",
+      "avatar para stream youtube",
+      "avatar youtube gratis",
+      "avatar para miniatura youtube",
+      "criador de pfp youtube",
+      "avatar ai youtube",
+      "canal sem rosto youtube",
+      "criador de avatar youtube"
+    ],
+    "canonical": "/for/youtube"
+  },
+  "hero": {
+    "badge": "🎬 Avatares Gratuitos para Criadores do YouTube",
+    "title": "Criador de Avatar para YouTube: PFP, Miniaturas e Lives",
+    "subtitle": "Crie uma marca consistente no YouTube com IA — avatares profissionais para o canal, miniaturas clicáveis e personagens para lives. Um personagem, infinitas possibilidades de conteúdo. Comece grátis.",
+    "ctaText": "Criar Avatar para YouTube Grátis",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "Feito para Criadores de Conteúdo do YouTube",
+    "items": [
+      {
+        "icon": "Image",
+        "title": "Marca do Canal Facilitada",
+        "description": "Crie um avatar reconhecível que se torna o rosto do seu canal. Use como foto de perfil, em miniaturas de vídeos, telas finais e posts da comunidade. Marca consistente constrói reconhecimento e lealdade da audiência."
+      },
+      {
+        "icon": "Layers",
+        "title": "Pacotes de Expressões para Miniaturas",
+        "description": "Gere expressões perfeitas para miniaturas — rosto chocado para conteúdos-surpresa, irritado para reclamações, feliz para vitórias, confuso para tutoriais. Personagem consistente + variedade emocional = CTR mais alto."
+      },
+      {
+        "icon": "Video",
+        "title": "YouTube Live e Streams",
+        "description": "Transmita no YouTube com um avatar PNGTuber reativo ao microfone. Funciona perfeitamente no OBS Studio — fundo transparente, sincronização labial automática, zero impacto de performance. Streaming sem mostrar o rosto sem sacrificar personalidade."
+      },
+      {
+        "icon": "Download",
+        "title": "Exportação HD para Todos os Usos",
+        "description": "Exporte em resolução HD de até 1080p — nítido no mobile, incrível no desktop. PNGs transparentes funcionam no Photoshop, Canva, Premiere Pro e qualquer editor de miniaturas. Um avatar, aplicações ilimitadas de conteúdo."
+      }
+    ]
+  },
+  "platformSpecs": {
+    "title": "Especificações de Imagem do YouTube (2026)",
+    "items": [
+      {
+        "label": "Foto de Perfil do Canal (PFP)",
+        "value": "800×800 pixels (exibido em 98×98)"
+      },
+      {
+        "label": "Miniatura de Vídeo",
+        "value": "1280×720 pixels (proporção 16:9)"
+      },
+      {
+        "label": "Banner/Arte do Canal",
+        "value": "2560×1440 pixels (área segura: 1546×423)"
+      },
+      {
+        "label": "Marca d'água do Vídeo",
+        "value": "150×150 pixels"
+      },
+      {
+        "label": "Sobreposição de Live Stream",
+        "value": "PNG transparente, tamanho flexível"
+      },
+      {
+        "label": "Posts da Aba Comunidade",
+        "value": "1080×1080 ou 1280×720"
+      }
+    ]
+  },
+  "steps": {
+    "title": "Como Usar Seu Avatar para Conteúdo do YouTube",
+    "items": [
+      {
+        "title": "Passo 1: Crie Seu Personagem para YouTube",
+        "description": "Desenhe um avatar que represente a personalidade do seu canal — gaming, educacional, entretenimento ou lifestyle. Pense em marca de longo prazo: escolha cores e um estilo que não vai enjoar. Gere múltiplas opções com IA."
+      },
+      {
+        "title": "Passo 2: Gere Pacote de Expressões para Miniaturas",
+        "description": "Crie 5+ expressões: neutro (para PFP), chocado (conteúdo-surpresa), feliz (vitórias/conquistas), irritado (reclamações/frustração), confuso (tutoriais/perguntas). Estas se tornam suas faces de reação para miniaturas."
+      },
+      {
+        "title": "Passo 3: Configure a Foto de Perfil do Canal",
+        "description": "Exporte em 800×800 e faça upload no YouTube Studio → Personalização → Marca → Foto de Perfil. Seu avatar aparece no seu canal, comentários e posts da comunidade. Centralize elementos importantes — o YouTube corta para um círculo."
+      },
+      {
+        "title": "Passo 4: Crie Miniaturas com Seu Avatar",
+        "description": "Exporte expressões como PNGs transparentes. Arraste para o Photoshop, Canva ou seu editor de miniaturas. Posicione a face de reação do seu avatar de forma destacada — miniaturas com rostos recebem mais cliques. Use posicionamento consistente para reconhecimento de marca."
+      },
+      {
+        "title": "Passo 5: Configure YouTube Live Streaming",
+        "description": "No OBS Studio, adicione a URL do Browser Source do PNGTuberMaker como Browser Source. Configure a chave de stream do YouTube nas Configurações do OBS → Stream. Seu avatar aparece nas lives reagindo à sua voz — perfeito para streaming no YouTube sem mostrar o rosto."
+      },
+      {
+        "title": "Passo 6: Use em Todo o Conteúdo",
+        "description": "Adicione seu avatar em telas finais, posts da comunidade, miniaturas de Shorts e banners do canal. Uso consistente do personagem constrói reconhecimento instantâneo. Espectadores devem saber que é seu vídeo antes de ler o título."
+      }
+    ]
+  },
+  "comparison": {
+    "title": "Opções de Criação de Avatar para YouTube Comparadas",
+    "description": "Encontre a melhor forma de criar o avatar do seu canal do YouTube.",
+    "columns": [
+      {
+        "label": "Opção"
+      },
+      {
+        "label": "IA do PNGTuberMaker",
+        "highlight": true
+      },
+      {
+        "label": "Contratar Artista"
+      },
+      {
+        "label": "DesenharDIY"
+      },
+      {
+        "label": "Imagens de Banco"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "Custo",
+        "values": [
+          "Grátis para começar",
+          "$50-$300+",
+          "Grátis (tempo)",
+          "Gratis-$20"
+        ]
+      },
+      {
+        "feature": "Investimento de tempo",
+        "values": ["5 minutos", "1-3 semanas", "Dias-semanas", "Minutos"]
+      },
+      {
+        "feature": "Exclusivo do seu canal",
+        "values": [true, true, true, false]
+      },
+      {
+        "feature": "Variações de expressão",
+        "values": [
+          "Ilimitadas geradas por IA",
+          "$10-$30 cada",
+          "Desenhe você mesmo",
+          "Nenhuma"
+        ]
+      },
+      {
+        "feature": "Pronto para miniaturas",
+        "values": [true, true, true, false]
+      },
+      {
+        "feature": "Compatível com live streaming",
+        "values": [true, "Limitado", false, false]
+      },
+      {
+        "feature": "Pode modificar/atualizar",
+        "values": [true, "Pagar novamente", true, false]
+      },
+      {
+        "feature": "Consistência de qualidade",
+        "values": [
+          "Garantido por IA",
+          "Dependente do artista",
+          "Dependente de habilidade",
+          "Genérico"
+        ]
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "yt-1",
+      "question": "Qual deve ser o tamanho do avatar do meu canal do YouTube?",
+      "answer": "O YouTube recomenda 800×800 pixels para fotos de perfil do canal. Embora seja exibido em 98×98 no desktop e ainda menor no mobile, a fonte 800×800 garante qualidade nítida em telas de alta DPI e TVs. O PNGTuberMaker exporta até 1080p HD com o Creator Pass, dando flexibilidade para todos os usos no YouTube — de ícones de perfil minúsculos a gráficos de miniaturas."
+    },
+    {
+      "id": "yt-2",
+      "question": "Como usar meu avatar nas miniaturas do YouTube?",
+      "answer": "Exporte as expressões do seu avatar como PNGs transparentes do PNGTuberMaker. Importe no Photoshop, Canva, GIMP ou qualquer editor de miniaturas. Posicione a face de reação de forma destacada — miniaturas com rostos expressivos superam significativamente miniaturas apenas com texto. Use posicionamento consistente (ex: avatar sempre à direita) para construir reconhecimento visual de marca. Sua expressão de choque/surpresa funciona ótimo para conteúdo estilo clickbait, enquanto expressões positivas servem para conteúdo de vitórias/positivo."
+    },
+    {
+      "id": "yt-3",
+      "question": "Posso fazer vídeos no YouTube sem mostrar o rosto com um avatar PNGTuber?",
+      "answer": "Com certeza! Muitos canais bem-sucedidos do YouTube usam avatares PNGTuber exclusivamente. Seu avatar aparece no canto de vídeos de gameplay, tutoriais ou commentary. Para live streaming, a animação reativa ao microfone torna seu stream envolvente sem mostrar seu rosto. Isso é perfeito para canais de gaming, conteúdo educacional, vídeos de storytime ou qualquer criador que prefira privacidade. O avatar dá personalidade ao seu canal enquanto mantém o anonimato."
+    },
+    {
+      "id": "yt-4",
+      "question": "Como faço para transmitir no YouTube Live com um PNGTuber?",
+      "answer": "Configure o OBS Studio com sua chave de stream do YouTube (YouTube Studio → Ir ao Vivo → Stream). Adicione a URL do Browser Source do PNGTuberMaker como Browser Source no OBS — configure largura/altura para 600×600. Posicione seu avatar no canto preferido. Quando for ao vivo, seu avatar reage ao microfone automaticamente, a boca abrindo quando você fala. Espectadores veem seu avatar em vez do seu rosto, perfeito para streaming no YouTube sem mostrar o rosto."
+    },
+    {
+      "id": "yt-5",
+      "question": "Devo usar o mesmo avatar no YouTube e em outras plataformas?",
+      "answer": "Sim, consistência entre plataformas constrói reconhecimento de marca mais forte. Use o mesmo avatar para seu canal do YouTube, streams na Twitch, servidor do Discord, perfil no Twitter/X e Instagram. Quando espectadores encontrarem seu avatar em qualquer lugar, eles sabem instantaneamente que é você. As exportações do PNGTuberMaker funcionam em todos os lugares — Browser Source para streaming, exportações em PNG para redes sociais. Consistência entre plataformas é um hack de crescimento importante para criadores de conteúdo."
+    },
+    {
+      "id": "yt-6",
+      "question": "Posso mudar meu avatar do YouTube depois?",
+      "answer": "Com o PNGTuberMaker, sim — regenere ou crie novos avatares a qualquer momento usando seus créditos. Isso é uma vantagem enorme sobre arte commissionada onde mudanças custam mais dinheiro e levam semanas. No entanto, recomendamos manter seu avatar core consistente para reconhecimento de marca. Atualizações pequenas (mudanças de roupa, temas sazonais) funcionam bem, mas mudanças drásticas podem confundir sua audiência. Muitos criadores bem-sucedidos mantêm o mesmo personagem base por anos."
+    }
+  ],
+  "cta": {
+    "title": "Comece Seu Canal de Avatar para YouTube",
+    "subtitle": "Crie um avatar profissional que torna seu conteúdo instantaneamente reconhecível.",
+    "ctaText": "Criar Avatar para YouTube Grátis",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "Criador de Avatar para Twitch",
+      "description": "Crie avatares compatíveis para streaming na Twitch.",
+      "href": "/for/twitch"
+    },
+    {
+      "title": "Criador de Avatar para Discord",
+      "description": "Desenhe avatares para sua comunidade no Discord.",
+      "href": "/for/discord"
+    },
+    {
+      "title": "Criador de VTuber",
+      "description": "Explore todos os estilos de avatar VTuber e PNGTuber.",
+      "href": "/vtuber-maker"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "Início",
+      "href": "/"
+    },
+    {
+      "label": "Plataformas"
+    },
+    {
+      "label": "Criador de Avatar para YouTube"
+    }
+  ]
+}

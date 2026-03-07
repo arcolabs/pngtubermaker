@@ -1,0 +1,10 @@
+{
+  "availableCredits": "Crediti Disponibili",
+  "freeCredits": "Crediti Gratuiti",
+  "subscriptionCredits": "Crediti di Abbonamento",
+  "topupCredits": "Crediti Ricaricabili",
+  "neverExpires": "non scade mai",
+  "expired": "scaduto",
+  "buyCredits": "Acquista Crediti",
+  "creditsLeft": "{count} crediti rimasti"
+}

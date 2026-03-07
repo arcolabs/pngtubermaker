@@ -1,24 +1,24 @@
 "use client";
 
 import { Coins, Sparkles, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect } from "react";
 import { useBuyCreditsModal } from "@/hooks/use-buy-credits-modal";
 import { useTopup } from "@/hooks/use-stripe";
 import { CREDIT_PACKS, type CreditPackId } from "@/lib/stripe";
 import { cn } from "@/lib/utils";
 
-const PACK_DISPLAY: Record<
-  CreditPackId,
-  { name: string; highlighted: boolean }
-> = {
-  starter: { name: "Starter", highlighted: false },
-  popular: { name: "Popular", highlighted: true },
-  best_value: { name: "Best Value", highlighted: false },
+const PACK_HIGHLIGHTED: Record<CreditPackId, boolean> = {
+  starter: false,
+  popular: true,
+  best_value: false,
 };
 
 export default function BuyCreditsModal() {
   const { isOpen, requiredCredits, close } = useBuyCreditsModal();
   const { topup, isLoading } = useTopup();
+  const t = useTranslations("pricing.buyCreditsModal");
+  const tPacks = useTranslations("pricing.creditPacks");
 
   const handlePurchase = async (packageId: string, priceInCents: number) => {
     await topup(priceInCents, packageId);
@@ -78,16 +78,12 @@ export default function BuyCreditsModal() {
               <Coins className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-900">
-                You need more credits
-              </h3>
+              <h3 className="text-lg font-bold text-gray-900">{t("title")}</h3>
               {requiredCredits && (
                 <p className="text-sm text-gray-500">
-                  This action requires{" "}
-                  <span className="font-semibold text-gray-700">
-                    {requiredCredits.toLocaleString()}
-                  </span>{" "}
-                  credits
+                  {t("requiresCredits", {
+                    count: requiredCredits.toLocaleString(),
+                  })}
                 </p>
               )}
             </div>
@@ -97,7 +93,7 @@ export default function BuyCreditsModal() {
         {/* Credit Packs */}
         <div className="px-6 pb-6 space-y-3">
           {packEntries.map(([id, pack]) => {
-            const display = PACK_DISPLAY[id];
+            const highlighted = PACK_HIGHLIGHTED[id];
             const priceInDollars = pack.priceInCents / 100;
 
             return (
@@ -108,7 +104,7 @@ export default function BuyCreditsModal() {
                 onClick={() => handlePurchase(id, pack.priceInCents)}
                 className={cn(
                   "w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-200 text-left",
-                  display.highlighted
+                  highlighted
                     ? "border-primary bg-primary/5 hover:bg-primary/10 ring-1 ring-primary/20"
                     : "border-gray-200 hover:border-gray-300 hover:bg-gray-50",
                   isLoading && "opacity-50 cursor-not-allowed",
@@ -120,12 +116,14 @@ export default function BuyCreditsModal() {
                     <span className="font-bold text-gray-900">
                       {pack.credits.toLocaleString()}
                     </span>
-                    <span className="text-xs text-gray-500">credits</span>
+                    <span className="text-xs text-gray-500">
+                      {tPacks("credits")}
+                    </span>
                   </div>
-                  {display.highlighted && (
+                  {highlighted && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-primary text-white">
                       <Sparkles className="w-2.5 h-2.5" />
-                      BEST
+                      {t("best")}
                     </span>
                   )}
                 </div>
@@ -137,7 +135,7 @@ export default function BuyCreditsModal() {
           })}
 
           <p className="text-center text-xs text-gray-400 pt-1">
-            Credits never expire. Secure checkout via Stripe.
+            {t("footer")}
           </p>
         </div>
       </div>

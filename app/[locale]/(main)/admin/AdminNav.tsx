@@ -3,6 +3,7 @@
 import { Award, BarChart3, Handshake, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { stripLocalePrefix } from "@/lib/i18n/pathname";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: BarChart3, exact: true },
@@ -13,6 +14,7 @@ const NAV_ITEMS = [
 
 export function AdminNav() {
   const pathname = usePathname();
+  const normalizedPathname = stripLocalePrefix(pathname);
 
   return (
     <div className="border-b border-base-200 bg-base-200/30">
@@ -23,8 +25,8 @@ export function AdminNav() {
           </span>
           {NAV_ITEMS.map((item) => {
             const isActive = item.exact
-              ? pathname === item.href
-              : pathname.startsWith(item.href);
+              ? normalizedPathname === item.href
+              : normalizedPathname.startsWith(item.href);
             const Icon = item.icon;
             return (
               <Link

@@ -1,0 +1,53 @@
+{
+  "badge": "Como Funciona",
+  "title": "Da Ideia ao Live Stream em 4 Passos",
+  "subtitle": "Gere seu avatar, crie expressões, configure o OBS com sincronização labial do microfone e vá ao ar. Sem comissões. Sem esperar.",
+  "tabGenerate": "Gerar",
+  "tabExpressions": "Expressões",
+  "tabGoLive": "Ao Vivo",
+  "tabExport": "Exportar",
+  "step1": {
+    "title": "Geração de Avatar com IA",
+    "description": "Transforme texto ou esboços em um avatar profissional. Carregue uma descrição ou referência, receba 4 personagens únicos com fundo transparente, prontos para OBS/Discord.",
+    "features": [
+      "Descrições em texto",
+      "Imagens de referência",
+      "4 candidatos gerados",
+      "Fundo transparente"
+    ],
+    "benefit": "Sem necessidade de artista, minutos para seu personagem único"
+  },
+  "step2": {
+    "title": "Pacote de Expressões",
+    "description": "Todas as emoções, um clique. Feliz, bravo, triste, surpreso e mais de 10 — a IA gera expressões consistentes para seu avatar sem contratar um artista.",
+    "features": [
+      "Mais de 10 tipos de expressão",
+      "Consistência do personagem",
+      "Seleção manual",
+      "Opções de variação"
+    ],
+    "benefit": "Pule a encomenda de múltiplas expressões, economize tempo e dinheiro"
+  },
+  "step3": {
+    "title": "Vá ao Vivo com o OBS",
+    "description": "Adicione seu avatar ao OBS como uma Fonte de Navegador e comece a transmitir instantaneamente. A boca do seu avatar se move em tempo real com seu microfone — sem plugins, sem configuração complexa.",
+    "features": [
+      "Sincronização labial em tempo real com microfone",
+      "Fonte de Navegador do OBS",
+      "Troca de expressões",
+      "Configuração zero"
+    ],
+    "benefit": "Um link, cole no OBS e você está ao vivo"
+  },
+  "step4": {
+    "title": "Download e Exportação",
+    "description": "Baixe seu avatar e o pacote completo de expressões como PNGs transparentes ou um ZIP compactado. Usuários gratuitos exportam em 512px, o Creator Pass desbloqueia HD (1080p).",
+    "features": [
+      "Exportação de PNG transparente",
+      "Download do pacote ZIP",
+      "Exportação HD até 1080p",
+      "Sem marca d'água"
+    ],
+    "benefit": "Arquivos prontos para stream no OBS, Discord e Twitch"
+  }
+}

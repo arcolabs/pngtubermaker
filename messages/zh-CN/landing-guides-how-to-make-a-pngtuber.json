@@ -1,0 +1,226 @@
+{
+  "slug": "guides/how-to-make-a-pngtuber",
+  "metadata": {
+    "title": "如何制作PNGTuber（2026）——完全新手入门指南",
+    "description": "学习如何在5分钟内免费制作PNGTuber头像。2026完整指南：创建角色、生成表情、设置OBS，并在Twitch/YouTube上开始直播。无需绘画技能。",
+    "keywords": [
+      "如何制作pngtuber",
+      "如何成为pngtuber",
+      "如何成为pngtuber",
+      "pngtuber教程",
+      "pngtuber指南",
+      "创建pngtuber",
+      "什么是pngtuber",
+      "pngtuber设置",
+      "pngtuber obs设置",
+      "制作pngtuber头像",
+      "pngtuber新手",
+      "pngtuber直播设置",
+      "免费pngtuber教程",
+      "pngtuber与vtuber的区别"
+    ],
+    "canonical": "/guides/how-to-make-a-pngtuber"
+  },
+  "hero": {
+    "badge": "2026完全新手入门指南",
+    "title": "如何制作PNGTuber：从零开始5分钟直播",
+    "subtitle": "创建你自己的PNGTuber头像的终极分步指南——完全免费。无需绘画技能，无需昂贵软件，无需复杂设置。只需跟着做，今天就能开播！",
+    "ctaText": "免费开始创建你的PNGTuber",
+    "ctaHref": "/create"
+  },
+  "steps": {
+    "title": "如何制作PNGTuber：4个简单步骤",
+    "items": [
+      {
+        "title": "第一步：描述你的角色",
+        "description": "打开PNGTuberMaker，描述你理想中的头像。要具体一些：\"可爱的粉色头发猫耳动漫少女\"或\"带有发光蓝眼睛的赛博朋克机器人\"。AI能够理解详细描述，甚至可以匹配你上传的参考图。这是你的PNGTuber身份的基础。"
+      },
+      {
+        "title": "第二步：选择你的设计",
+        "description": "我们的AI会根据你的描述生成4个独特设计。浏览这些选项，选择最符合你直播风格的那个。不喜欢？点击重新生成获取新变体。你可以随时优化提示词，让它更接近你的想法。"
+      },
+      {
+        "title": "第三步：生成表情包",
+        "description": "获得基础头像后，生成一套匹配的表情包。从必备表情开始：说话（中性）、开心、悲伤、生气、惊讶。这些表情会根据你的声音让头像动起来。所有表情都会保持你角色独特的艺术风格和配色方案。"
+      },
+      {
+        "title": "第四步：连接到OBS并开播",
+        "description": "从PNGTuberMaker复制你独特的浏览器源URL。打开OBS Studio → 添加源 → 浏览器 → 粘贴URL。你的头像会立即出现，带有透明背景，并能实时响应麦克风。放到你想要的位置，点击开始直播，你就上线了！"
+      }
+    ]
+  },
+  "prose": {
+    "title": "关于PNGTuber你需要知道的一切",
+    "blocks": [
+      {
+        "subtitle": "什么是PNGTuber？",
+        "text": "PNGTuber是使用静态2D头像而不是在镜头前露脸的主播。头像通常有多种表情（开心、悲伤、说话、惊讶），会根据麦克风输入自动切换。当你说话时，会显示\"说话\"表情。当你安静时，它会切换到中性或待机姿势。与需要昂贵Live2D模型、面部追踪软件和强大电脑的VTuber不同，PNGTuber使用简单的PNG图片。这使得它们成为想要隐私、个性和专业性但不想面对技术复杂性或高成本的新主播的理想入门选择。"
+      },
+      {
+        "subtitle": "PNGTuber与VTuber：有什么区别？",
+        "text": "PNGTuber和VTuber都使用虚拟头像，但运作方式非常不同。VTuber使用动作捕捉技术实时追踪面部表情和身体动作，需要摄像头、专业软件（如Live2D或VRoid），以及通常价格不菲的定制模型（200-2000美元以上）。PNGTuber使用基于音频电平的简单图片切换——当你说话时，嘴巴就会张开。这意味着不需要摄像头，不需要面部追踪设置，不需要复杂的绑定，成本也低得多（通常免费）。PNGTuber非常适合新手、注重隐私的主播，或任何想要在屏幕上展示一个角色但不想处理技术问题的人。许多成功的主播都是从PNGTuber开始，后来才升级到VTuber的。"
+      },
+      {
+        "subtitle": "你需要什么软件？",
+        "text": "你只需要两个免费工具：PNGTuberMaker（基于浏览器，无需下载）和OBS Studio（免费直播软件）。PNGTuberMaker负责所有与头像相关的工作——AI生成、表情包，以及提供浏览器源URL。OBS Studio是数百万主播使用的行业标准直播软件，支持Windows、Mac和Linux。就这么简单——不需要插件，不需要额外购买，开始使用不需要订阅。两个工具的免费版本对新手来说已经完全够用了。"
+      },
+      {
+        "subtitle": "成为PNGTuber需要多少钱？",
+        "text": "作为PNGTuber开始完全可以免费。PNGTuberMaker为新用户提供1次免费头像生成——无需信用卡。OBS Studio是100%免费的开源软件。你可以在Twitch、YouTube或Kick上直播，一分钱都不花。传统的PNGTuber定制通常需要50-200美元一个静态头像，另外每个表情还要额外收费。使用AI生成，你可以获得无限变体、即时结果，以及随时调整设计的能力。高清导出、表情包和更多生成次数等高级功能虽然有，但不是直播所必需的。"
+      },
+      {
+        "subtitle": "创建优质PNGTuber头像的技巧",
+        "text": "在角色描述中要具体——包括头发颜色、眼睛颜色、服装细节、配饰和个性特征。你提供的细节越多，AI就越能匹配你的想法。如果你有特定的风格偏好，可以上传参考图。生成表情时，优先处理说话/中性姿势，因为这是观众最常看到的。把头像放在直播画面的角落，与边缘保持一些间距。在OBS中测试你的音频电平，确保你的头像对声音的反应自然——不要太敏感，也不要太呆板。最后，保持一致性！在Twitch、YouTube、Discord和社交媒体上使用相同的头像来建立识别度。"
+      },
+      {
+        "subtitle": "为PNGTuber设置OBS",
+        "text": "从PNGTuberMaker获取浏览器源URL后，打开OBS Studio。点击源面板中的\"+\"按钮，选择\"浏览器\"，命名为\"PNGTuber头像\"。在URL字段中粘贴你的独特URL。将宽度设置为800，高度设置为800，以获得最佳质量。勾选\"不可见时关闭源\"以节省资源。你的头像将显示为透明覆盖层。右键点击源 → 变换 → 编辑变换以精确定位它。使用音频监控设置测试你的头像对麦克风的反应。如果头像反应过于灵敏或反应迟钝，请在Windows/OBS中调整麦克风灵敏度。就这些——你准备好直播了！"
+      }
+    ]
+  },
+  "comparison": {
+    "title": "PNGTuber与VTuber与真人摄像头：完整对比",
+    "description": "比较三种主要直播形式，找到适合你的方式。",
+    "columns": [
+      {
+        "label": "功能"
+      },
+      {
+        "label": "PNGTuber",
+        "highlight": true
+      },
+      {
+        "label": "VTuber"
+      },
+      {
+        "label": "真人摄像头"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "启动成本",
+        "values": ["免费 - 20美元", "200 - 2000美元以上", "免费"]
+      },
+      {
+        "feature": "设置时间",
+        "values": ["5分钟", "2-8周", "即时"]
+      },
+      {
+        "feature": "所需硬件",
+        "values": ["仅需麦克风", "摄像头 + 好的PC + 显卡", "摄像头"]
+      },
+      {
+        "feature": "软件复杂性",
+        "values": ["非常简单", "复杂", "简单"]
+      },
+      {
+        "feature": "隐私程度",
+        "values": ["完全匿名", "完全匿名", "露脸"]
+      },
+      {
+        "feature": "角色自定义",
+        "values": ["无限AI选项", "受限于画师/绑定", "不适用"]
+      },
+      {
+        "feature": "动画质量",
+        "values": ["简单表情", "全身/面部追踪", "真实画面"]
+      },
+      {
+        "feature": "适合新手",
+        "values": [true, false, true]
+      },
+      {
+        "feature": "任何电脑都能用",
+        "values": [true, false, true]
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "htmp-1",
+      "question": "我可以制作自己的PNGTuber吗？",
+      "answer": "当然可以！任何人都可以使用PNGTuberMaker制作自己的PNGTuber。你不需要绘画技能、昂贵的软件或技术知识。只需用文字描述你的角色，我们的人工智能就会为你生成一个专业的头像。整个过程不到5分钟，你就可以立即开始直播了。"
+    },
+    {
+      "id": "htmp-2",
+      "question": "PNGTuber制作工具免费吗？",
+      "answer": "是的，PNGTuberMaker可以免费开始使用。新用户可以免费生成1个头像——无需信用卡。你可以创建、定制并开始直播，完全免费。免费导出的分辨率为512px，非常适合直播。可选的升级版解锁高清/4K导出、表情包和更多生成次数。"
+    },
+    {
+      "id": "htmp-3",
+      "question": "可以在手机上制作PNGTuber吗？",
+      "answer": "可以！PNGTuberMaker可以在任何现代网络浏览器中运行，包括iPhone上的Safari和Android上的Chrome。你可以在手机或平板上设计你的头像。不过，直播需要使用电脑上的OBS Studio。许多创作者在通勤时用手机设计头像，回家后再设置OBS。"
+    },
+    {
+      "id": "htmp-4",
+      "question": "做PNGTuber需要什么软件？",
+      "answer": "你需要两个免费工具：PNGTuberMaker（创建头像）和OBS Studio（直播）。PNGTuberMaker完全在浏览器中运行——无需下载。OBS Studio是免费的开源直播软件，支持Windows、Mac和Linux。这两个工具都是数百万内容创作者使用的行业标准工具。"
+    },
+    {
+      "id": "htmp-5",
+      "question": "设置PNGTuber需要多长时间？",
+      "answer": "大多数用户从零到可以直播只需不到5分钟。头像生成需要30-60秒，表情包需要1-2分钟，OBS设置（粘贴URL）只需不到30秒。相比之下，传统的VTuber设置需要数周时间且花费数百美元。PNGTuber专为即时满足而设计。"
+    },
+    {
+      "id": "htmp-6",
+      "question": "PNGTuber比VTuber更好吗？",
+      "answer": "PNGTuber和VTuber满足不同需求。PNGTuber更适合新手、预算有限的创作者和追求简洁的人。它免费、5分钟即可设置完成、无需技术技能。VTuber提供更高级的动画和表情，但费用为200-2000美元以上，需要面部追踪硬件，且学习曲线陡峭。许多成功的主播从PNGTuber起步，在成长后升级为VTuber。PNGTuber是进入虚拟形象直播的完美入口。"
+    },
+    {
+      "id": "htmp-7",
+      "question": "做PNGTuber需要好电脑吗？",
+      "answer": "不需要！任何可以运行OBS Studio的电脑都可以使用PNGTuber。由于无需面部追踪或复杂动画渲染，即使是较旧的笔记本电脑也能完美运行PNGTuber。头像在一个轻量级的浏览器源中运行。如果你的电脑能正常直播，就能处理PNGTuber。这是相比VTuber的最大优势之一，VTuber需要强大的显卡进行实时渲染。"
+    },
+    {
+      "id": "htmp-8",
+      "question": "我的PNGTuber可以在Twitch、YouTube和Discord上使用吗？",
+      "answer": "可以！你的PNGTuber头像在任何地方都能使用。直播时，在OBS Studio中使用浏览器源URL——这适用于Twitch、YouTube、Kick、Facebook Gaming及任何其他平台。对于Discord，将你的头像导出为PNG并用作头像。透明背景使其也非常适合服务器图标和表情包。你的头像属于你，可以在所有平台上使用。"
+    },
+    {
+      "id": "htmp-9",
+      "question": "什么样的PNGTuber头像是好头像？",
+      "answer": "一个好的PNGTuber头像应该醒目、有表现力且符合你的直播风格。选择与游戏背景形成鲜明对比的颜色。确保你的头像即使在较小尺寸下也能清晰看到面部。使用与你的能量匹配的表情——如果你是一个充满活力的主播，选择一个大眼睛、表情丰富的头像。保持一致性：在所有平台上使用相同的头像，让观众能立即认出你。最重要的是，选择你喜欢的——你将会看着它好几个小时！"
+    }
+  ],
+  "cta": {
+    "title": "准备好开始你的PNGTuber之旅了吗？",
+    "subtitle": "加入数千名从PNGTuberMaker开始的主播。不到5分钟免费创建你的头像。",
+    "ctaText": "立即创建我的免费PNGTuber",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "免费PNGTuber制作工具",
+      "description": "尝试1次免费头像生成——无需信用卡。",
+      "href": "/free-pngtuber-maker"
+    },
+    {
+      "title": "VTuber制作工具",
+      "description": "如果你以后想升级，可以探索AI VTuber头像。",
+      "href": "/vtuber-maker"
+    },
+    {
+      "title": "Twitch头像制作工具",
+      "description": "创建专为Twitch直播优化的头像。",
+      "href": "/for/twitch"
+    },
+    {
+      "title": "YouTube头像制作工具",
+      "description": "适合YouTube直播和Shorts的完美头像。",
+      "href": "/for/youtube"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "首页",
+      "href": "/"
+    },
+    {
+      "label": "指南",
+      "href": "/guides"
+    },
+    {
+      "label": "如何制作PNGTuber"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "title": "Häufig gestellte Fragen",
+  "supportText": "Haben Sie noch Fragen?",
+  "contactUs": "Kontaktieren Sie uns",
+  "items": [
+    {
+      "question": "Was ist PNGTuberMaker und wie funktioniert es?",
+      "answer": "PNGTuberMaker ist ein KI-gestütztes Tool, mit dem Sie benutzerdefinierte PNG-Avatare für Streaming erstellen können. Beschreiben Sie einfach Ihren Charakter oder laden Sie ein Referenzbild hoch, und unsere KI generiert mehrere Avatar-Optionen — komplett mit Ausdruckspaketen für verschiedene Emotionen. Keine künstlerischen Fähigkeiten erforderlich."
+    },
+    {
+      "question": "Muss ich zeichnen können, um PNGTuberMaker zu verwenden?",
+      "answer": "Überhaupt nicht! PNGTuberMaker ist für jeden konzipiert — von kompletten Anfängern bis hin zu erfahrenen Creators. Sie können einfach eine kurze Beschreibung schreiben (z.B. \"Anime-Mädchen mit blauen Haaren\") oder ein Referenzbild hochladen, und die KI erledigt den Rest."
+    },
+    {
+      "question": "Kann ich meine eigenen Skizzen oder Referenzbilder hochladen?",
+      "answer": "Ja. Sie können Skizzen, Charakterreferenzen oder Screenshots hochladen. Die KI verwendet diese, um Ihren Stil zu treffen und Ihren Charakter bei allen Ausdrücken konsistent zu halten."
+    },
+    {
+      "question": "Welche Dateiformate exportieren Sie?",
+      "answer": "Wir exportieren transparente PNG-Dateien für einzelne Avatare und Ausdrücke, sowie ein ZIP-Paket mit Ihrem vollständigen Ausdruckspaket. Perfekt für OBS, Discord oder Twitch-Overlays."
+    },
+    {
+      "question": "Sind die Avatare, die ich generiere, einzigartig und sicher zu verwenden?",
+      "answer": "Ja. Alle Avatare werden aus Ihren eigenen Eingaben generiert und sind einzigartig. Kostenlose Nutzer können sie für Streaming, soziale Medien und persönliche Inhalte verwenden. Creator Pass-Abonnenten erhalten vollständige kommerzielle Rechte, einschließlich Merchandise und bezahlte Inhalte."
+    },
+    {
+      "question": "Kann ich die Avatare kommerziell nutzen?",
+      "answer": "Kostenlose Avatare können für Streaming, YouTube-Videos, Discord und soziale Medien verwendet werden. Für vollständige kommerzielle Rechte (Merchandise, Markendeals, bezahlte Inhalte) upgraden Sie auf den Creator Pass für 7,99 $/Monat."
+    },
+    {
+      "question": "Was ist im kostenlosen Plan enthalten?",
+      "answer": "Jeder neue Nutzer erhält 1 kostenlose Avatar-Generierung — keine Kreditkarte erforderlich. Sie erhalten 4 Kandidatenbilder zur Auswahl, exportiert als 512px PNG mit transparentem Hintergrund. Um Ausdrücke, HD-Export und mehr Generierungen freizuschalten, kaufen Sie Credits oder abonnieren Sie den Creator Pass."
+    },
+    {
+      "question": "Wie lange dauert es, einen Avatar zu generieren?",
+      "answer": "Die meisten Avatare werden in unter 1 Minute generiert. Ausdruckspakete dauern je nach Komplexität 1–3 Minuten. Sie können eine Vorschau sehen, Ihr Favorit auswählen und sofort verfeinern."
+    },
+    {
+      "question": "Wie funktioniert die OBS-Integration?",
+      "answer": "Nach dem Erstellen Ihres Avatars und Ihrer Ausdrücke erhalten Sie eine eindeutige Browser-Source-URL. Fügen Sie diese in OBS Studio als Browser-Source ein — Ihr Avatar erscheint im Stream mit transparentem Hintergrund, bereit auf Ihre Mikrofoneingabe zu reagieren. Keine Plugins oder zusätzliche Software erforderlich."
+    },
+    {
+      "question": "Synchronisiert es sich mit meinem Mikrofon?",
+      "answer": "Ja! Der OBS-Player nutzt den Mikrofonzugriff Ihres Browsers, um zu erkennen, wann Sie sprechen. Der Mund Ihres Avatars öffnet und schließt sich in Echtzeit und verleiht Ihrem Stream ein natürliches, reaktionsfreudiges PNGTuber-Erlebnis — alles läuft direkt in der Browser-Source."
+    },
+    {
+      "question": "Was kommt als Nächstes?",
+      "answer": "Wir arbeiten an Agent Avatars — geben Sie Ihrem KI-Agent ein virtuelles Gesicht, das im Stream, in Discord oder überall dort erscheinen kann, wo Sie eine visuelle Präsenz benötigen. Treten Sie unserem Discord bei, um frühen Zugang zu erhalten und die Zukunft mitzugestalten."
+    }
+  ]
+}

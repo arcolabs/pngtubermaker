@@ -10,9 +10,9 @@
  *   node exa-api.js search --file ./payload.json
  */
 
-const https = require("https");
-const fs = require("fs");
-const path = require("path");
+const https = require("node:https");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const API_BASE = "https://api.exa.ai";
 
@@ -63,7 +63,7 @@ function readStdin() {
 }
 
 async function readPayload(args) {
-  const fileFlagIndex = args.findIndex((arg) => arg === "--file");
+  const fileFlagIndex = args.indexOf("--file");
   if (fileFlagIndex !== -1) {
     const filePath = args[fileFlagIndex + 1];
     if (!filePath) {
@@ -73,7 +73,7 @@ async function readPayload(args) {
     return JSON.parse(content);
   }
 
-  const dataFlagIndex = args.findIndex((arg) => arg === "--data");
+  const dataFlagIndex = args.indexOf("--data");
   if (dataFlagIndex !== -1) {
     const json = args[dataFlagIndex + 1];
     if (!json) {

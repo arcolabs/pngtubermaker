@@ -111,9 +111,8 @@ export default function ShowcasePage() {
   // ── Generation animation ──────────────────────────────────────────
   const runGeneration = useCallback(
     () =>
-      new Promise<void>(async (resolve) => {
-        await new Promise((r) => setTimeout(r, 1500));
-        resolve();
+      new Promise<void>((resolve) => {
+        setTimeout(() => resolve(), 1500);
       }),
     [],
   );
@@ -201,9 +200,9 @@ export default function ShowcasePage() {
         {/* Round indicator */}
         <div className="flex justify-center mb-4">
           <div className="flex gap-2">
-            {ROUNDS.map((_, index) => (
+            {ROUNDS.map((round, index) => (
               <div
-                key={index}
+                key={round.id}
                 className={cn(
                   "w-2 h-2 rounded-full transition-colors duration-300",
                   index === currentRound % ROUNDS.length

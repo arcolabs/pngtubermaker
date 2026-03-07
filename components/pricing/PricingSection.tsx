@@ -130,7 +130,7 @@ export function PricingSection({
         <div className="flex items-center gap-4 mb-12">
           <div className="flex-1 h-px bg-base-content/10" />
           <span className="text-sm text-base-content/40 uppercase tracking-wider font-medium">
-            or
+            {t("or")}
           </span>
           <div className="flex-1 h-px bg-base-content/10" />
         </div>

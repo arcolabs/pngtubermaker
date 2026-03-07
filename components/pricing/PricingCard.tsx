@@ -19,6 +19,8 @@ interface CreatorPassCardProps {
   onSubscribe: (tier: Tier, cycle: BillingCycle) => void;
 }
 
+const FEATURE_COUNT = CREATOR_PASS.features.length;
+
 export function CreatorPassCard({
   isLoading = false,
   isCurrentPlan = false,
@@ -38,7 +40,7 @@ export function CreatorPassCard({
     <div className="relative rounded-2xl border border-base-content/10 bg-base-200/50 p-8 max-w-lg mx-auto">
       <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-primary to-cyan-400 px-4 py-1 text-xs font-semibold text-white flex items-center gap-1">
         <Crown className="w-3 h-3" />
-        Subscribe & Save
+        {t("creatorPass.badge")}
       </div>
 
       <div className="mb-6 text-center">
@@ -46,7 +48,7 @@ export function CreatorPassCard({
           {CREATOR_PASS.name}
         </h3>
         <p className="text-sm text-base-content/60">
-          For creators who want the best value on credits and HD export
+          {t("creatorPass.subtitle")}
         </p>
       </div>
 
@@ -82,10 +84,13 @@ export function CreatorPassCard({
       </div>
 
       <ul className="mb-8 space-y-3">
-        {CREATOR_PASS.features.map((feature) => (
-          <li key={feature} className="flex items-start gap-3">
+        {Array.from({ length: FEATURE_COUNT }, (_, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: static feature list
+          <li key={i} className="flex items-start gap-3">
             <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-            <span className="text-sm text-base-content/70">{feature}</span>
+            <span className="text-sm text-base-content/70">
+              {t(`creatorPass.features.${i}`)}
+            </span>
           </li>
         ))}
       </ul>

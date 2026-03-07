@@ -1,0 +1,62 @@
+{
+  "heading": "简单透明的定价",
+  "subtitle": "免费开始。准备好后购买积分或订阅。",
+  "creditsNote": "通过积分包购买的积分永不过期。订阅积分每月刷新，在计费周期结束时过期。",
+  "or": "或",
+  "freeTrial": {
+    "title": "免费试用",
+    "subtitle": "购买前先试用",
+    "price": "$0",
+    "note": "无需信用卡",
+    "features": [
+      "1次头像生成",
+      "4张候选图片",
+      "512px PNG导出",
+      "透明背景",
+      "无需信用卡"
+    ],
+    "ctaLoggedIn": "创建头像",
+    "ctaLoggedOut": "免费开始"
+  },
+  "creatorPass": {
+    "badge": "订阅享优惠",
+    "subtitle": "为想要积分和高清导出最优惠的创作者设计",
+    "features": [
+      "每月6,000积分（相比充值约省30%）",
+      "高清导出（1080p）",
+      "全部表情包",
+      "随时管理订阅",
+      "优先邮件支持"
+    ]
+  },
+  "toggle": {
+    "monthly": "月付",
+    "yearly": "年付",
+    "save": "省{percent}%"
+  },
+  "perMonth": "/月",
+  "savings": "省{percent}%",
+  "annualNote": "/月（按年计费）",
+  "savingsNote": "约30% savings vs buying credits",
+  "currentPlan": "当前套餐",
+  "subscribeYearly": "订阅年付",
+  "subscribeMonthly": "订阅月付",
+  "paymentSuccess": "支付成功！积分已添加。",
+  "paymentCanceled": "支付取消。您可以随时重试。",
+  "creditPacks": {
+    "title": "购买积分",
+    "subtitle": "按需付费。积分永不过期。",
+    "credits": "积分",
+    "buyCredits": "购买积分",
+    "mostPopular": "最受欢迎",
+    "packStarter": "入门",
+    "packPopular": "热门",
+    "packBestValue": "超值"
+  },
+  "buyCreditsModal": {
+    "title": "您需要更多积分",
+    "requiresCredits": "此操作需要{count}积分",
+    "best": "超值",
+    "footer": "积分永不过期。通过Stripe安全结账。"
+  }
+}

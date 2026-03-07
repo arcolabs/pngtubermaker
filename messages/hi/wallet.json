@@ -1,0 +1,10 @@
+{
+  "availableCredits": "उपलब्ध क्रेडिट",
+  "freeCredits": "फ्री क्रेडिट",
+  "subscriptionCredits": "सब्सक्रिप्शन क्रेडिट",
+  "topupCredits": "टॉप-अप क्रेडिट",
+  "neverExpires": "कभी समाप्त नहीं होता",
+  "expired": "समाप्त हो गया",
+  "buyCredits": "क्रेडिट खरीदें",
+  "creditsLeft": "{count} क्रेडिट शेष"
+}

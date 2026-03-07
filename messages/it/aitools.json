@@ -1,0 +1,53 @@
+{
+  "badge": "Come Funziona",
+  "title": "Dall'Idea allo Streaming in 4 Passi",
+  "subtitle": "Genera il tuo avatar, crea espressioni, configura OBS con sincronizzazione labiale e vai in onda. Nessuna commissione. Nessuna attesa.",
+  "tabGenerate": "Genera",
+  "tabExpressions": "Espressioni",
+  "tabGoLive": "Vai in Onda",
+  "tabExport": "Esporta",
+  "step1": {
+    "title": "Generazione Avatar AI",
+    "description": "Trasforma testo o schizzi in un avatar professionale. Carica una descrizione o un riferimento, ottieni 4 personaggi unici con sfondo trasparente, pronti per OBS/Discord.",
+    "features": [
+      "Descrizioni testuali",
+      "Immagini di riferimento",
+      "4 candidati generati",
+      "Sfondo trasparente"
+    ],
+    "benefit": "Nessun artista necessario, minuti per il tuo personaggio unico"
+  },
+  "step2": {
+    "title": "Pacchetto Espressioni",
+    "description": "Tutte le emozioni, un click. Felice, arrabbiato, triste, sorpreso e altre 10+ — l'IA genera espressioni coerenti per il tuo avatar senza assumere un artista.",
+    "features": [
+      "10+ tipi di espressione",
+      "Coerenza del personaggio",
+      "Selezione manuale",
+      "Opzioni di variazione"
+    ],
+    "benefit": "Salta la commissione di più espressioni, risparmia tempo e costi"
+  },
+  "step3": {
+    "title": "Vai in Onda con OBS",
+    "description": "Aggiungi il tuo avatar a OBS come Browser Source e inizia a trasmettere immediatamente. La bocca del tuo avatar si muove in tempo reale con il tuo microfono — nessun plugin, nessuna configurazione complessa.",
+    "features": [
+      "Sincronizzazione labiale in tempo reale",
+      "Sorgente Browser OBS",
+      "Cambio espressioni",
+      "Configurazione zero"
+    ],
+    "benefit": "Un link, incolla in OBS, e sei in onda"
+  },
+  "step4": {
+    "title": "Scarica & Esporta",
+    "description": "Scarica il tuo avatar e il pacchetto espressioni completo come PNG trasparenti o ZIP. Gli utenti gratuiti esportano a 512px, Creator Pass sblocca HD (1080p).",
+    "features": [
+      "Esportazione PNG trasparente",
+      "Download bundle ZIP",
+      "Esportazione HD fino a 1080p",
+      "Senza filigrana"
+    ],
+    "benefit": "File pronti per streaming su OBS, Discord e Twitch"
+  }
+}

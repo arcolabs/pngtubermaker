@@ -1,0 +1,199 @@
+{
+  "slug": "free-pngtuber-maker",
+  "metadata": {
+    "title": "無料PNGTuberメーカー — 完全無料でアバターを作成 (2026)",
+    "description": "100%無料のPNGTuberメーカー — AIでカスタムアバターを作成可能、クレジットカード不要。免费的表情パック、OBS連携、配信設定付属。PNGTuber Plusの最高の無料替代案。",
+    "keywords": [
+      "無料 pngtuber メーカー",
+      "無料 pngtuber",
+      "pngtuber メーカー 無料",
+      "無料 pngtuber",
+      "pngtuber ソフトウェア 無料",
+      "無料 アバター メーカー",
+      "pngtuber plus 替代",
+      "無料 pngtuber ソフトウェア",
+      "クレジットカード不要 pngtuber",
+      "無料 配信 アバター",
+      "無料 twitch アバター メーカー",
+      "無料 vtuber メーカー"
+    ],
+    "canonical": "/free-pngtuber-maker"
+  },
+  "hero": {
+    "badge": "🎁 100%無料 — クレジットカード不要",
+    "title": "無料PNGTuberメーカー：ゼロコストでアバターを作成",
+    "subtitle": "1回の無料生成でPNGTuberアバターを作成 — クレジットカード不要。透かしなし、追加料金なし。今日から配信を始めましょう。",
+    "ctaText": "無料アバターを作成 — クレジットカード不要",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "無料版で得られるすべて（隠れた条件なし）",
+    "items": [
+      {
+        "icon": "Gift",
+        "title": "無料アバター + 表情パック",
+        "description": "最初のPNGTuberキャラクターを作成するための1回の無料アバター生成を獲得。クレジットカード不要、制限なし、透かしなし — 完全無料。クレジットを購入して表情パックや更多のキャラクターを解放できます。"
+      },
+      {
+        "icon": "Wand2",
+        "title": "完全なAI生成品質",
+        "description": "無料ユーザーは有料ユーザーと同じAIを使用可能。あらゆるキャラクターを描述 — アニメ、ピクセルアート、ファンタジー — 專業的な результатを実現。創造性に機能制限なし。"
+      },
+      {
+        "icon": "Monitor",
+        "title": "完全な配信設定",
+        "description": "OBS Studio用の.uniqueなBrowser Source URLを取得。マイク連動アニメーション、透明的背景、Twitch、YouTube、Kick、Discordへの即座の配信 — すべて無料。"
+      },
+      {
+        "icon": "Shield",
+        "title": "配信先のどこでも使用可能",
+        "description": "配信、ソーシャルメディア、Discord、コンテンツ创作に無料アバターを使用可能。Creator Passにアップグレードして完全な商用ライセンスとHDエクスポートを取得。"
+      }
+    ]
+  },
+  "comparison": {
+    "title": "無料PNGTuberツール比較 (2026)",
+    "description": "PNGTuberMakerがPNGTuber Plus、veadotube、その他の替代として最適な理由をチェック。",
+    "columns": [
+      {
+        "label": "機能"
+      },
+      {
+        "label": "PNGTuberMaker",
+        "highlight": true
+      },
+      {
+        "label": "PNGTuber Plus"
+      },
+      {
+        "label": "veadotube"
+      },
+      {
+        "label": "Fiverr依頼"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "価格",
+        "values": ["無料開始可能", "無料", "無料", "$50-$200+"]
+      },
+      {
+        "feature": "AIアバター生成",
+        "values": [true, false, false, false]
+      },
+      {
+        "feature": "表情パック",
+        "values": [
+          "AI生成無料",
+          "手動アップロード",
+          "手動アップロード",
+          "$10-$50/個"
+        ]
+      },
+      {
+        "feature": "セットアップ時間",
+        "values": ["5分", "30分以上", "30分以上", "1-4週間"]
+      },
+      {
+        "feature": "絵を描くスキルが必要",
+        "values": ["不要", "必要", "必要", "N/A（作家が担当）"]
+      },
+      {
+        "feature": "OBS連携",
+        "values": [
+          "Browser Source（即座）",
+          "ウィンドウキャプチャ",
+          "NDI/ウィンドウキャプチャ",
+          "手動インポート"
+        ]
+      },
+      {
+        "feature": "いつでもカスタマイズ可能",
+        "values": [true, false, false, "再払い込み"]
+      },
+      {
+        "feature": "全デバイス対応",
+        "values": [
+          "Web（任何デバイス）",
+          "Windows/Mac/Linux",
+          "Windows/Mac",
+          "N/A"
+        ]
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "fp-1",
+      "question": "PNGTuber Makerは本当に100%無料ですか？",
+      "answer": "はい、PNGTuberMakerは真的に無料で開始できます。サインアップ時に1回の無料アバター生成を獲得 — クレジットカード不要、試用期間なし、隠れた料金なし。これで最初の阿部らを作成して 즉시配信を開始でき、支払う必要一切ありません。追加生成，表情パック、HD/4Kエクスポートをご希望の場合のみお支払いをお願いします。"
+    },
+    {
+      "id": "fp-2",
+      "question": "これはPNGTuber Plusより優れているしますか？",
+      "answer": "PNGTuberMakerはPNGTuber Plusにないものを提供します：AI生成アバター。PNGTuber Plusでは、ご自身で作られたり依頼したアートをアップロードする必要があります。PNGTuberMakerでは、キャラクターを描述するだけでAIが为您作成 — 免费です。两者都是免费ですが、PNGTuberMakerは芸術作业数百時間を節約できます。さらに、アバターを随时再生成微調整可能です。"
+    },
+    {
+      "id": "fp-3",
+      "question": "無料アバターには透かしや制限がありますか？",
+      "answer": "完全に透かしなし。無料アバターは品質と使用権において有料版と同じです。唯一の違いは：(1) エクスポート解像度が512px（配信に最適、4Kではない）、以及(2) 开始時に1回の無料アバター生成が付与されること。其他すべて — OBS連携、商用権利、全機能 — 完全含まれています。"
+    },
+    {
+      "id": "fp-4",
+      "question": "本当にTwitchやYouTubeで無料で配信できますか？",
+      "answer": "そうです！何千人もの配信者がTwitch、YouTube、Kick、Facebook Gamingで我们的免费プランを使用しています。有料ユーザーと同じBrowser Source URL、マイク連動アニメーション、透明的背景を取得できます。PNGTuberMaker外に 필요한ものはOBS Studioのみで、それも100%無料。カスタムアバターで配信を開始するためにゼロ円で始められます。"
+    },
+    {
+      "id": "fp-5",
+      "question": "無料の生成之後怎么办？",
+      "answer": "2つの選択肢があります：(1) $2.99からのワンタイムクレジットパックを購入して更多の生成を得る、または(2) 月額クレジットとHDエクスポートのために$7.99/月でCreator Passを订阅。しかし、既存のアバターは永久に使用可能 — 有効期限はありません。更多のキャラクターを作成したい場合、または表情パックを解放したい場合のみお支払いください。"
+    },
+    {
+      "id": "fp-6",
+      "question": "芸術スキルや作家を雇佣する必要がありますか？",
+      "answer": "全く不要。これがPNGTuberMakerの主旨です。従来のPNGTuberは、ご自身が阿部を描いたり、作家に$50-$200+を支払う必要がありました。我们的AIでは、想要的ものを入力するだけ — 「サイバーガン。アーマーを着た青髪のアニメ戦士」— 您のために作成されます。作画用タブレット、Photoshop、作家依頼は不要です。"
+    },
+    {
+      "id": "fp-7",
+      "question": "私の無料アバターは真的に商用に利用できるしますか？",
+      "answer": "無料アバターは配信、YouTube動画、ソーシャルメディア、Discordに使用可能 — 帰属表示不要です。（商品、的有料コンテンツ、ブランドコラボレーション用の）完全な商用権利には、$7.99/月でCreator Passにアップグレードしてください。いずれにせよ的阿部是你的ものであり、我再販売また再利用されることはありません。"
+    },
+    {
+      "id": "fp-8",
+      "question": "PNGTuberを依頼相比有什么优势？",
+      "answer": "作家にPNGTuberを依頼する場合、通常は单一の静的アバターに$50-$200+、追加的表情ごとに$10-$50かかります。受け取るまでに1-4週間が必要です。PNGTuberMakerの無料プランでは、5分以内にアバター + 5表情が零コストで得られますPlus、好みでなければ再生成するだけ — 追加料金なし。作家は美しい作品を作成しますが、AIは速度、成本、反復において向かうところ敌なしです。"
+    }
+  ],
+  "cta": {
+    "title": "今日から無料で配信を始めよう",
+    "subtitle": "1回の免费生成で最初の阿部らを作成。クレジットカード不要、リスクなし、試してみるしかない理由がない。",
+    "ctaText": "今すぐ無料のPNGTuberを作成",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "PNGTuberの作り方",
+      "description": "PNGTuber作成のための完全初心者ガイド。",
+      "href": "/guides/how-to-make-a-pngtuber"
+    },
+    {
+      "title": "VTuberメーカー",
+      "description": "PNGTuber以外のすべてのアバタースタイルを探索。",
+      "href": "/vtuber-maker"
+    },
+    {
+      "title": "アニメアバター制造商",
+      "description": "AIでアニメスタイルのキャラクターを作成。",
+      "href": "/style/anime"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "ホーム",
+      "href": "/"
+    },
+    {
+      "label": "無料PNGTuberメーカー"
+    }
+  ]
+}

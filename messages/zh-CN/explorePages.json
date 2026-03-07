@@ -1,0 +1,18 @@
+{
+  "title": "为各平台创建虚拟形象",
+  "subtitle": "无论您在 Twitch 上直播、在 YouTube 上创作，还是在 Discord 上交流 —— 我们都能满足您的需求。",
+  "vtuberMaker": "VTuber 制作工具",
+  "vtuberMakerDesc": "创建带表情包的 AI VTuber 虚拟形象 —— 无需绘画技能。",
+  "animeAvatarMaker": "动漫形象制作工具",
+  "animeAvatarMakerDesc": "根据文字描述生成动漫风格角色。",
+  "howToMakePngtuber": "如何制作 PNGTuber",
+  "howToMakePngtuberDesc": "完整的初学者指南 —— 零基础 5 分钟开始直播。",
+  "freePngtuberMaker": "免费 PNGTuber 制作工具",
+  "freePngtuberMakerDesc": "免费生成 1 个虚拟形象 —— 无需信用卡。",
+  "twitchAvatarMaker": "Twitch 虚拟形象制作工具",
+  "twitchAvatarMakerDesc": "OBS 就绪的直播虚拟形象，支持麦克风互动动画。",
+  "youtubeAvatarMaker": "YouTube 虚拟形象制作工具",
+  "youtubeAvatarMakerDesc": "频道头像、缩略图表情和直播叠加层。",
+  "discordAvatarMaker": "Discord 虚拟形象制作工具",
+  "discordAvatarMakerDesc": "个人头像、服务器图标和自定义表情包。"
+}

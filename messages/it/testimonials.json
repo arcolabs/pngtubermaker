@@ -1,0 +1,23 @@
+{
+  "title": "Amato da Streamer in Tutto il Mondo",
+  "subtitle": "Scopri cosa dicono i creatori su PNGTuberMaker.",
+  "items": [
+    {
+      "name": "kira_ttv",
+      "role": "Streamer",
+      "platform": "Twitch",
+      "content": "Ho incollato il link OBS, e il mio avatar ha iniziato a muoversi con il mio microfono. Ci avrà messo in tutto 2 minuti. La chat se n'è accorta prima ancora che dicessi qualcosa ahah."
+    },
+    {
+      "name": "jakedraws",
+      "role": "Creatore di Contenuti",
+      "platform": "YouTube",
+      "content": "Non riesco letteralmente a disegnare un omino stilizzato. Ho scritto una descrizione, ho scelto tra 4 opzioni, ho generato le espressioni — e fatto. Il fatto che siano tutti coerenti tra loro è quello che mi ha convinto."
+    },
+    {
+      "name": "noa_plays",
+      "role": "Streamer Indipendente",
+      "content": "Usavo un modello Live2D che continuava a far crashare OBS. È solo una fonte del browser — molto più leggera, senza plugin, e onestamente va meglio in stream di quello che avevo prima."
+    }
+  ]
+}

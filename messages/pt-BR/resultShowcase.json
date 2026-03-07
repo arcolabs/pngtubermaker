@@ -1,0 +1,17 @@
+{
+  "badge": "Como Funciona",
+  "title": "Do Ideia ao Live Stream em 3 Passos",
+  "subtitle": "Sem comissões. Sem espera. Basta descrever, gerar e transmitir.",
+  "step1": {
+    "title": "Descreva seu personagem",
+    "description": "Digite uma breve descrição ou envie uma imagem de referência. A IA gera 4 opções únicas para você escolher."
+  },
+  "step2": {
+    "title": "Obtenha expressões automaticamente",
+    "description": "Um clique gera um pacote completo de expressões — feliz, bravo, triste, surpreso — tudo no estilo do seu personagem."
+  },
+  "step3": {
+    "title": "Entre no ar",
+    "description": "Cole um único link de Browser Source no OBS. Seu avatar faz sincronização labial com seu microfone em tempo real."
+  }
+}

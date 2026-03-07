@@ -1,0 +1,160 @@
+{
+  "slug": "style/anime",
+  "metadata": {
+    "title": "Creador de Avatares Anime — Creador de Personajes Anime con IA Gratis | PNGTuberMaker",
+    "description": "Creador de Avatares Anime Gratis — Crea personajes y avatares anime personalizados con IA. No necesitas habilidades de dibujo. Genera PNGTubers estilo anime para Twitch, Discord, YouTube y redes sociales. Comienza gratis.",
+    "keywords": [
+      "creador de avatares anime",
+      "creador de personajes anime",
+      "generador de avatares anime",
+      "anime pngtuber",
+      "creador de vtuber anime",
+      "avatar anime personalizado",
+      "creador gratuito de avatares anime",
+      "creador de personajes anime",
+      "avatar anime con IA",
+      "creador de foto de perfil anime",
+      "creador de imágenes de perfil anime",
+      "crear personaje anime",
+      "creador de avatares anime"
+    ],
+    "canonical": "/style/anime"
+  },
+  "hero": {
+    "badge": "Generador de Estilo Anime",
+    "title": "Creador de Avatares Anime Gratis — Crea Personajes Anime con IA",
+    "subtitle": "Diseña personajes anime increíbles en minutos. Describe tu personaje — color de cabello, outfit, personalidad — y la IA genera un avatar anime profesional con expresiones協調.",
+    "ctaText": "Crear Avatar Anime",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "Avatares Anime Profesionales en Minutos",
+    "items": [
+      {
+        "icon": "Palette",
+        "title": "Estilos Anime Auténticos",
+        "description": "Genera avatares en estilos artísticos anime clásicos — desde el suave shojo hasta las estética shonen afilada. Cada diseño captura la apariencia y sensación del arte profesional de personajes anime."
+      },
+      {
+        "icon": "Sparkles",
+        "title": "Diseño de Personajes con IA",
+        "description": "Describe tu personaje anime ideal en inglés simple. La IA entiende tropos anime, peinados, outfits y accesorios para dar vida a tu visión."
+      },
+      {
+        "icon": "Layers",
+        "title": "Pack de Expresiones Coordinadas",
+        "description": "Obtén un conjunto completo de expresiones anime — rubor tsundere, mirada de batalla, sonrisa alegre — todas consistentes con el diseño y paleta de colores de tu personaje."
+      },
+      {
+        "icon": "Download",
+        "title": "PNG Transparente de Alta Resolución",
+        "description": "Exporta tu avatar anime como archivos PNG transparentes hasta 1080p HD. Perfecto para superposiciones de OBS, perfiles de Discord, miniaturas de YouTube y redes sociales."
+      }
+    ]
+  },
+  "showcase": {
+    "title": "Avatares Anime Generados con IA",
+    "description": "Explora personajes anime creados por nuestra IA — desde chibi hasta estilos de ilustración detallados.",
+    "images": [
+      {
+        "src": "/images/showcase/pinkbunny_pngtuber.png",
+        "alt": "Creador gratuito de avatares anime con IA — personaje cute de conejo creado con PNGTuberMaker",
+        "prompt": "orejas de conejo rosadas, diadema floral, cabello bob suave color durazno, ojos verde esmeralda, sudadera crema extragrande, sosteniendo una canasta de fresas"
+      },
+      {
+        "src": "/images/showcase/fox_pngtuber.png",
+        "alt": "Creador de personajes anime — avatar de zorro generado por creador de avatares anime con IA",
+        "prompt": "orejas de zorro naranja, cabello largo azul ondulado con horquillas de estrellas, ojos琥珀 brillante, vestido azul marino con constelaciones, sosteniendo una bola de cristal flotante"
+      },
+      {
+        "src": "/images/showcase/sunflower_pngtuber.png",
+        "alt": "Creador de avatares anime cute — adorable diseño de personaje girasol para streaming",
+        "prompt": "corona gigante de girasol, cabello rizado verde menta, ojos amarillos brillantes, vestido blanco de verano, sosteniendo una regadera, pequeñas alas amarillas"
+      },
+      {
+        "src": "/images/showcase/round1_idle.png",
+        "alt": "Arte detallado de magical girl anime — avatar anime creado por PNGTuberMaker",
+        "prompt": "Una magical girl clásica con largas y fluidas coletas gemelas doradas atadas con grandes lazos de seda roja. Tiene ojos azules brillantes y expresivos y un rostro con forma de corazón."
+      },
+      {
+        "src": "/images/showcase/round2_sad.png",
+        "alt": "Avatar expressivo de bruja anime — personaje anime personalizado con emociones para PNGTuber",
+        "prompt": "bruja pequeña, sombrero de mago enorme, cabello estrellado, ojos de galaxia, vestido azul marino, magical girl"
+      },
+      {
+        "src": "/images/showcase/round3_angry.png",
+        "alt": "Avatar de estilo anime único — creador de personajes anime generado con IA en línea",
+        "prompt": "Una joven con cabello marrón oscuro voluminoso y ondulado y ojos grandes marrones. Gafas redondas con colgantes plateados en forma de sol, corsé de estilo gótico negro con volantes."
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "aa-1",
+      "question": "¿Puedo crear cualquier estilo anime?",
+      "answer": "Sí. La IA de PNGTuberMaker puede generar una amplia gama de estilos anime — desde personajes cute chibi hasta arte anime realista detallado. Solo describe el estilo que quieres en tu prompt, o sube una imagen de referencia."
+    },
+    {
+      "id": "aa-2",
+      "question": "¿Cómo hago que mi avatar anime parezca un estilo específico?",
+      "answer": "Sé específico en tu descripción. Incluye detalles como \"colores pastel, sombreado suave, ojos grandes expresivos\" para un estilo shojo, o \"líneas afiladas, colores bold, pose dinámica\" para un look shonen. También puedes subir arte de referencia."
+    },
+    {
+      "id": "aa-3",
+      "question": "¿Puedo usar mi avatar anime como foto de perfil de Discord?",
+      "answer": "Absolutamente. Exporta tu avatar anime como PNG transparente y úsalo en cualquier lugar — Discord, Twitch, YouTube, Twitter, o cualquier plataforma que acepte cargas de imágenes."
+    },
+    {
+      "id": "aa-4",
+      "question": "¿Los avatares anime son únicos?",
+      "answer": "Sí. Cada avatar se genera de manera única basándose en tu descripción. No hay dos personajes iguales, y obtienes todos los derechos comerciales para usar tu creación."
+    },
+    {
+      "id": "aa-5",
+      "question": "¿Puedo crear personajes anime sin habilidades de dibujo?",
+      "answer": "Exactamente para eso está construido PNGTuberMaker. Solo escribe una descripción de tu personaje y la IA se encarga de todo el arte. No necesitas tablet de dibujo, ni habilidades de software — solo tu imaginación."
+    },
+    {
+      "id": "aa-6",
+      "question": "¿Es gratis este creador de avatares anime?",
+      "answer": "¡Sí! PNGTuberMaker te da 1 generación de avatar gratis — suficiente para crear tu primer avatar anime. No se requiere tarjeta de crédito. Puedes crear, previsualizar y descargar tu personaje anime completamente gratis. Los planes premium desbloquean exportaciones de mayor resolución, packs de expresiones y más generaciones."
+    },
+    {
+      "id": "aa-7",
+      "question": "¿Puedo usar estos avatares anime para mi transmisión de Twitch/YouTube?",
+      "answer": "¡Absolutamente! Nuestros avatares anime son perfectos para streaming. Vienen con fondos transparentes y packs de expresiones que reaccionan a tu voz en OBS Studio. Muchos streamers usan nuestros personajes anime como PNGTubers en Twitch, YouTube, Kick y otras plataformas."
+    }
+  ],
+  "cta": {
+    "title": "Diseña Tu Personaje Anime Ahora",
+    "subtitle": "De la descripción a un avatar anime profesional en menos de un minuto.",
+    "ctaText": "Comenzar a Crear Gratis",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "Creador de VTuber",
+      "description": "Crea avatares VTuber de cualquier estilo con IA.",
+      "href": "/vtuber-maker"
+    },
+    {
+      "title": "Creador de Avatares para Discord",
+      "description": "Diseña avatares anime optimizados para Discord.",
+      "href": "/for/discord"
+    },
+    {
+      "title": "Creador de PNGTuber Gratis",
+      "description": "Comienza con la generación gratuita de avatares anime.",
+      "href": "/free-pngtuber-maker"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "Inicio",
+      "href": "/"
+    },
+    {
+      "label": "Creador de Avatares Anime"
+    }
+  ]
+}

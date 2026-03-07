@@ -1,0 +1,51 @@
+{
+  "title": "Preguntas Frecuentes",
+  "supportText": "¿Tienes más preguntas?",
+  "contactUs": "Contáctanos",
+  "items": [
+    {
+      "question": "¿Qué es PNGTuberMaker y cómo funciona?",
+      "answer": "PNGTuberMaker es una herramienta con inteligencia artificial que te permite crear avatares PNG personalizados para streaming. Solo describe tu personaje o sube una imagen de referencia, y nuestra IA generará múltiples opciones de avatar, completas con paquetes de expresiones para diferentes emociones. No necesitas habilidades artísticas."
+    },
+    {
+      "question": "¿Necesito saber dibujar para usar PNGTuberMaker?",
+      "answer": "¡Para nada! PNGTuberMaker está diseñado para todos, desde principiantes completos hasta creadores experimentados. Puedes escribir una descripción corta (por ejemplo, \"chica gato anime con cabello azul\") o subir una imagen de referencia, y la IA se encarga del resto."
+    },
+    {
+      "question": "¿Puedo subir mis propios bocetos o imágenes de referencia?",
+      "answer": "Sí. Puedes subir bocetos, referencias de personajes o capturas de pantalla. La IA los utilizará para igualar tu estilo y mantener a tu personaje consistente en todas las expresiones."
+    },
+    {
+      "question": "¿En qué formatos de archivo exportan?",
+      "answer": "Exportamos archivos PNG transparentes para avatares individuales y expresiones, además de un paquete ZIP con tu expresión completa. Perfecto para superposiciones de OBS, Discord o Twitch."
+    },
+    {
+      "question": "¿Los avatares que genero son únicos y seguros de usar?",
+      "answer": "Sí. Todos los avatares se generan a partir de tus propias entradas y son únicos. Los usuarios gratuitos pueden usarlos para transmisiones, redes sociales y contenido personal. Los suscriptores de Creator Pass obtienen todos los derechos comerciales, incluyendo mercancía y contenido pago."
+    },
+    {
+      "question": "¿Puedo usar los avatares comercialmente?",
+      "answer": "Los avatares gratuitos pueden usarse para transmisiones, videos de YouTube, Discord y redes sociales. Para obtener derechos comerciales completos (mercancía, acuerdos de marca, contenido pago), actualiza al Creator Pass por $7.99/mes."
+    },
+    {
+      "question": "¿Qué incluye el plan gratuito?",
+      "answer": "Cada nuevo usuario obtiene 1 generación de avatar gratuita, sin tarjeta de crédito. Recibirás 4 imágenes candidatas para elegir, exportadas en PNG de 512px con fondo transparente. Para desbloquear expresiones, exportación HD y más generaciones, compra créditos o suscríbete al Creator Pass."
+    },
+    {
+      "question": "¿Cuánto tiempo toma generar un avatar?",
+      "answer": "La mayoría de los avatares se generan en menos de 1 minuto. Los paquetes de expresiones toman entre 1 y 3 minutos según la complejidad. Puedes previsualizar, elegir tu favorito y refinar al instante."
+    },
+    {
+      "question": "¿Cómo funciona la integración con OBS?",
+      "answer": "Después de crear tu avatar y expresiones, obtienes una URL única de Browser Source. Pégala en OBS Studio como una Fuente de Navegador: tu avatar aparece en la transmisión con fondo transparente, listo para reaccionar a tu entrada de micrófono. No se necesitan complementos ni software adicional."
+    },
+    {
+      "question": "¿Se sincroniza con mi micrófono?",
+      "answer": "¡Sí! El reproductor de OBS utiliza el acceso al micrófono de tu navegador para detectar cuando estás hablando. La boca de tu avatar se abre y cierra en tiempo real, dando a tu transmisión una experiencia natural y responsiva de PNGTuber, todo ejecutándose directamente en la Fuente del Navegador."
+    },
+    {
+      "question": "¿Qué viene después?",
+      "answer": "Estamos trabajando en Avatares de Agente: dale a tu agente de IA una cara virtual que puede aparecer en streaming, Discord, o en cualquier lugar donde necesites una presencia visual. Únete a nuestro Discord para obtener acceso anticipado y dar forma a lo que viene."
+    }
+  ]
+}

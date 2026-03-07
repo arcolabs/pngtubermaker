@@ -1,0 +1,48 @@
+{
+  "quickStart": "クイックスタート",
+  "quickStartHint": "— タグをクリックしてプロンプトを作成",
+  "hide": "隠す",
+  "style": "スタイル",
+  "generate": "生成",
+  "generating": "生成中...",
+  "noCredits": "クレジットが足りません。",
+  "buyCredits": "クレジットを購入",
+  "promptPlaceholder": "長い銀髪のかわいいアニメ少女、フード付きパーカー、ゲーミングヘッドセット、コジーな背景...",
+  "minChars": "10文字以上",
+  "reference": "人物参照",
+  "referenceHint": "写真やキャラクターアートをアップロード",
+  "quickTemplates": "クイックテンプレート",
+  "categories": {
+    "character": "キャラクター",
+    "vibe": "バイブ",
+    "gear": "装備"
+  },
+  "tags": {
+    "catGirl": "猫娘",
+    "wolfBoy": "狼少年",
+    "bunnyGirl": "バニーガール",
+    "demon": "恶魔",
+    "foxGirl": "キツネ娘",
+    "elf": "エルフ",
+    "kawaii": "かわいい",
+    "dark": "ダーク",
+    "cozy": "コジー",
+    "pastel": "パステル",
+    "neon": "ネオン",
+    "gothic": "ゴシック",
+    "headset": "ゲーミングヘッドセット",
+    "hoodie": "フード付きパーカー",
+    "catEars": "猫耳",
+    "glasses": "眼鏡",
+    "horns": "角",
+    "scarf": "マフラー"
+  },
+  "styles": {
+    "chibi": "ちび",
+    "anime": "アニメ",
+    "cartoon": "カートゥーン",
+    "pixelart": "ピクセルアート",
+    "none": "なし",
+    "noneHint": "プロンプトでスタイルを描述"
+  }
+}

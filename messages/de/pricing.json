@@ -1,0 +1,62 @@
+{
+  "heading": "Einfache, transparente Preise",
+  "subtitle": "Kostenlos starten. Kaufe Credits oder abonniere, wenn du bereit bist.",
+  "creditsNote": "Gekaufte Credits laufen nie ab. Abonnement-Credits werden monatlich aufgeladen und laufen am Ende des Abrechnungszeitraums ab.",
+  "or": "oder",
+  "freeTrial": {
+    "title": "Kostenlose Testversion",
+    "subtitle": "Probier es aus, bevor du kaufst",
+    "price": "$0",
+    "note": "Keine Kreditkarte",
+    "features": [
+      "1 Avatar-Erstellung",
+      "4 Kandidatenbilder",
+      "512px PNG-Export",
+      "Transparenter Hintergrund",
+      "Keine Kreditkarte erforderlich"
+    ],
+    "ctaLoggedIn": "Avatar erstellen",
+    "ctaLoggedOut": "Kostenlos starten"
+  },
+  "creatorPass": {
+    "badge": "Abonnieren & Sparen",
+    "subtitle": "Für Creator, die das beste Preis-Leistungs-Verhältnis bei Credits und HD-Export wollen",
+    "features": [
+      "6.000 Credits/Monat (~30% Ersparnis im Vergleich zu Nachkauf)",
+      "HD-Export (1080p)",
+      "Alle Ausdrucks-Packs",
+      "Abonnement jederzeit verwalten",
+      "Priorisierten E-Mail-Support"
+    ]
+  },
+  "toggle": {
+    "monthly": "Monatlich",
+    "yearly": "Jährlich",
+    "save": "{percent}% sparen"
+  },
+  "perMonth": "/Mt.",
+  "savings": "{percent}% sparen",
+  "annualNote": "/Mt. bei jährlicher Abrechnung",
+  "savingsNote": "~30% Ersparnis im Vergleich zum Kaufen von Credits",
+  "currentPlan": "Aktueller Plan",
+  "subscribeYearly": "Jährlich abonnieren",
+  "subscribeMonthly": "Monatlich abonnieren",
+  "paymentSuccess": "Zahlung erfolgreich! Credits wurden hinzugefügt.",
+  "paymentCanceled": "Zahlung abgebrochen. Du kannst es jederzeit erneut versuchen.",
+  "creditPacks": {
+    "title": "Credits kaufen",
+    "subtitle": "Pay-as-you-go. Credits laufen nie ab.",
+    "credits": "Credits",
+    "buyCredits": "Credits kaufen",
+    "mostPopular": "Beliebteste",
+    "packStarter": "Starter",
+    "packPopular": "Beliebt",
+    "packBestValue": "Bester Wert"
+  },
+  "buyCreditsModal": {
+    "title": "Du brauchst mehr Credits",
+    "requiresCredits": "Diese Aktion erfordert {count} Credits",
+    "best": "BESTE",
+    "footer": "Credits laufen nie ab. Sicheres Checkout über Stripe."
+  }
+}

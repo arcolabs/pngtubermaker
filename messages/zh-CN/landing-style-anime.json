@@ -1,0 +1,160 @@
+{
+  "slug": "style/anime",
+  "metadata": {
+    "title": "动漫头像制作器 — 免费AI动漫角色生成器 | PNGTuberMaker",
+    "description": "免费动漫头像制作器 — 使用AI创建定制动漫角色和头像。无需绘画技能。为Twitch、Discord、YouTube和社交媒体生成动漫风格的PNGTuber。免费开始使用。",
+    "keywords": [
+      "动漫头像制作器",
+      "动漫角色生成器",
+      "动漫头像生成器",
+      "动漫pngtuber",
+      "动漫vtuber制作器",
+      "定制动漫头像",
+      "免费动漫头像制作器",
+      "动漫角色制作器",
+      "AI动漫头像",
+      "动漫头像制作器",
+      "动漫头像制作",
+      "创建动漫角色",
+      "动漫头像创作者"
+    ],
+    "canonical": "/style/anime"
+  },
+  "hero": {
+    "badge": "动漫风格生成器",
+    "title": "免费动漫头像制作器 — 使用AI创建动漫角色",
+    "subtitle": "几分钟内设计令人惊艳的动漫角色。描述你的角色 — 发色、服装、个性 — AI会生成符合角色气质的专业动漫头像。",
+    "ctaText": "创建动漫头像",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "几分钟内生成专业动漫头像",
+    "items": [
+      {
+        "icon": "Palette",
+        "title": "纯正动漫风格",
+        "description": "以经典动漫艺术风格生成头像 — 从柔和的少女漫画到犀利的少年漫画风格。每款设计都捕捉到专业动漫角色艺术的外观和感觉。"
+      },
+      {
+        "icon": "Sparkles",
+        "title": "AI角色设计",
+        "description": "用简单的英语描述你理想的动漫角色。AI了解动漫套路、发型、服装和配饰，将你的愿景变为现实。"
+      },
+      {
+        "icon": "Layers",
+        "title": "配套表情包",
+        "description": "获得一套完整的动漫表情 — 傲娇脸红、战斗-ready怒视、阳光微笑 — 全部与你的角色设计和配色方案保持一致。"
+      },
+      {
+        "icon": "Download",
+        "title": "高清透明PNG",
+        "description": "将你的动漫头像导出为透明PNG文件，最高可达1080p高清分辨率。非常适合OBS叠加层、Discord头像、YouTube缩略图和社交媒体。"
+      }
+    ]
+  },
+  "showcase": {
+    "title": "AI生成的动漫头像",
+    "description": "浏览我们AI创建的动漫角色 — 从Q版到详细插画风格。",
+    "images": [
+      {
+        "src": "/images/showcase/pinkbunny_pngtuber.png",
+        "alt": "免费AI动漫头像制作器 — 使用PNGTuberMaker制作的可爱兔子角色",
+        "prompt": "pink bunny ears, floral hair band, soft peach bob hair, emerald green eyes, oversized cream hoodie, holding a basket of strawberries"
+      },
+      {
+        "src": "/images/showcase/fox_pngtuber.png",
+        "alt": "动漫角色创作者 — AI动漫头像生成器制作的狐狸头像",
+        "prompt": "orange fox ears, long wavy blue hair with star hairpins, glowing amber eyes, navy blue dress with constellations, holding a floating crystal ball"
+      },
+      {
+        "src": "/images/showcase/sunflower_pngtuber.png",
+        "alt": "可爱动漫头像制作器 — 为直播设计的向日葵角色",
+        "prompt": "giant sunflower crown, mint green curly hair, bright yellow eyes, white sundress, holding a watering can, tiny yellow wings"
+      },
+      {
+        "src": "/images/showcase/round1_idle.png",
+        "alt": "详细动漫魔法少女艺术 — PNGTuberMaker创建的动漫头像",
+        "prompt": "A classic magical girl with long, flowing golden twin-tails tied with large red silk bows. She has bright blue, expressive eyes and a heart-shaped face."
+      },
+      {
+        "src": "/images/showcase/round2_sad.png",
+        "alt": "富有表现力的动漫女巫头像 — 为PNGTuber定制的带情感动漫角色",
+        "prompt": "small witch, huge wizard hat, starry hair, galaxy eyes, navy blue dress, magical girl"
+      },
+      {
+        "src": "/images/showcase/round3_angry.png",
+        "alt": "独特动漫风格头像 — 在线AI生成动漫角色创作者",
+        "prompt": "A young woman with voluminous, wavy dark brown hair and large brown eyes. Round glasses with silver sun-shaped pendants, black Gothic-style ruffled corset top."
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "aa-1",
+      "question": "我可以创建任何动漫风格吗？",
+      "answer": "可以。PNGTuberMaker的AI可以生成多种动漫风格 — 从可爱的Q版角色到详细的写实动漫艺术。只需在提示中描述你想要的风格，或上传参考图片。"
+    },
+    {
+      "id": "aa-2",
+      "question": "如何让我的动漫头像看起来像特定风格？",
+      "answer": "在描述中具体说明。包含细节，如「粉彩色、柔和阴影、大眼睛」用于少女漫画风格，或「锐利线条、大胆色彩、动态姿势」用于少年漫画风格。你也可以上传参考图。"
+    },
+    {
+      "id": "aa-3",
+      "question": "我可以把动漫头像用作Discord头像吗？",
+      "answer": "当然可以。将你的动漫头像导出为透明PNG，可以在任何地方使用 — Discord、Twitch、YouTube、Twitter或任何接受图片上传的平台。"
+    },
+    {
+      "id": "aa-4",
+      "question": "动漫头像是独一无二的吗？",
+      "answer": "是的。每个头像都是根据你的描述独特生成的。没有两个角色是一样的，你拥有完全的商业权利来使用你的创作。"
+    },
+    {
+      "id": "aa-5",
+      "question": "我没有绘画技能可以创建动漫角色吗？",
+      "answer": "这正是PNGTuberMaker的设计目的。只需输入你角色的描述，AI会处理所有绘画工作。无需数位板，无需软件技能 — 只需发挥你的想象力。"
+    },
+    {
+      "id": "aa-6",
+      "question": "这个动漫头像制作器是免费的吗？",
+      "answer": "是的！PNGTuberMaker为你提供1次免费头像生成 — 足以创建你的第一个动漫头像。无需信用卡。你可以完全免费地创建、预览和下载你的动漫角色。高级计划可解锁更高分辨率导出、表情包和更多生成次数。"
+    },
+    {
+      "id": "aa-7",
+      "question": "我可以在Twitch/YouTube直播中使用这些动漫头像吗？",
+      "answer": "当然可以！我们的动漫头像非常适合直播。它们带有透明背景和表情包，可以在OBS Studio中根据你的声音做出反应。许多主播在Twitch、YouTube、Kick和其他平台上将我们的动漫角色用作PNGTuber。"
+    }
+  ],
+  "cta": {
+    "title": "立即设计你的动漫角色",
+    "subtitle": "从描述到专业动漫头像，一分钟内完成。",
+    "ctaText": "免费开始创作",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "VTuber制作器",
+      "description": "使用AI创建任何风格的VTuber头像。",
+      "href": "/vtuber-maker"
+    },
+    {
+      "title": "Discord头像制作器",
+      "description": "设计适用于Discord的动漫头像。",
+      "href": "/for/discord"
+    },
+    {
+      "title": "免费PNGTuber制作器",
+      "description": "开始免费生成动漫头像。",
+      "href": "/free-pngtuber-maker"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "首页",
+      "href": "/"
+    },
+    {
+      "label": "动漫头像制作器"
+    }
+  ]
+}

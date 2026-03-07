@@ -1,0 +1,62 @@
+{
+  "heading": "Prezzo semplice e trasparente",
+  "subtitle": "Inizia gratis. Acquista crediti o abbonati quando sei pronto.",
+  "creditsNote": "I crediti acquistati tramite pacchetti non scadono mai. I crediti dell'abbonamento si rinnovano mensilmente e scadono alla fine del ciclo di fatturazione.",
+  "or": "oppure",
+  "freeTrial": {
+    "title": "Prova Gratuita",
+    "subtitle": "Provalo prima di acquistare",
+    "price": "$0",
+    "note": "Nessuna carta di credito",
+    "features": [
+      "1 generazione avatar",
+      "4 immagini candidate",
+      "Export PNG 512px",
+      "Sfondo trasparente",
+      "Nessuna carta di credito richiesta"
+    ],
+    "ctaLoggedIn": "Crea Avatar",
+    "ctaLoggedOut": "Inizia Gratis"
+  },
+  "creatorPass": {
+    "badge": "Abbonati e Risparmia",
+    "subtitle": "Per i creator che vogliono il miglior rapporto qualità-prezzo su crediti ed export HD",
+    "features": [
+      "6.000 crediti/mese (~30% di risparmio rispetto al ricarico)",
+      "Export HD (1080p)",
+      "Tutti i pacchetti di espressioni",
+      "Gestisci l'abbonamento quando vuoi",
+      "Supporto prioritario via email"
+    ]
+  },
+  "toggle": {
+    "monthly": "Mensile",
+    "yearly": "Annuale",
+    "save": "Risparmia {percent}%"
+  },
+  "perMonth": "/mese",
+  "savings": "Risparmia {percent}%",
+  "annualNote": "/mese se fatturato annualmente",
+  "savingsNote": "~30% di risparmio rispetto all'acquisto di crediti",
+  "currentPlan": "Piano Attuale",
+  "subscribeYearly": "Abbonati Annuale",
+  "subscribeMonthly": "Abbonati Mensile",
+  "paymentSuccess": "Pagamento riuscito! I crediti sono stati aggiunti.",
+  "paymentCanceled": "Pagamento annullato. Puoi riprovare in qualsiasi momento.",
+  "creditPacks": {
+    "title": "Acquista Crediti",
+    "subtitle": "Pay as you go. I crediti non scadono mai.",
+    "credits": "crediti",
+    "buyCredits": "Acquista Crediti",
+    "mostPopular": "Più Popolare",
+    "packStarter": "Base",
+    "packPopular": "Popolare",
+    "packBestValue": "Migliore Offerta"
+  },
+  "buyCreditsModal": {
+    "title": "Ti servono più crediti",
+    "requiresCredits": "Questa azione richiede {count} crediti",
+    "best": "MIGLIORE",
+    "footer": "I crediti non scadono mai. Pagamento sicuro tramite Stripe."
+  }
+}

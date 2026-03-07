@@ -1,0 +1,48 @@
+{
+  "quickStart": "بداية سريعة",
+  "quickStartHint": "— انقر على العلامات لبناء طلبك",
+  "hide": "إخفاء",
+  "style": "أسلوب",
+  "generate": "إنشاء",
+  "generating": "جاري الإنشاء...",
+  "noCredits": "رصيد غير كافٍ.",
+  "buyCredits": "شراء رصيد",
+  "promptPlaceholder": "فتاة أنمي لطيفة ذات شعر فضي طويل، ترتدي هودي، سماعات ألعاب، خلفية مريحة...",
+  "minChars": "10 أحرف على الأقل",
+  "reference": "مرجع الشخصية",
+  "referenceHint": "ارفع صورتك أو رسم شخصيتك",
+  "quickTemplates": "قوالب سريعة",
+  "categories": {
+    "character": "شخصية",
+    "vibe": "أجواء",
+    "gear": "معدات"
+  },
+  "tags": {
+    "catGirl": "فتاة قطة",
+    "wolfBoy": "فتى ذئب",
+    "bunnyGirl": "فتاة أرنب",
+    "demon": "شيطان",
+    "foxGirl": "فتاة ثعلب",
+    "elf": "جني",
+    "kawaii": "كواي",
+    "dark": "داكن",
+    "cozy": "مريح",
+    "pastel": "باستيل",
+    "neon": "نيون",
+    "gothic": "قوطي",
+    "headset": "سماعات ألعاب",
+    "hoodie": "هودي",
+    "catEars": "آذان قطة",
+    "glasses": "نظارات",
+    "horns": "قرون",
+    "scarf": "وشاح"
+  },
+  "styles": {
+    "chibi": "تشيبي",
+    "anime": "أنمي",
+    "cartoon": "كارتون",
+    "pixelart": "فن البكسل",
+    "none": "بدون",
+    "noneHint": "صف أسلوبك في الطلب"
+  }
+}

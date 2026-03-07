@@ -1,0 +1,189 @@
+{
+  "slug": "free-pngtuber-maker",
+  "metadata": {
+    "title": "免费 PNGTuber 制作工具 — 免费创建你的虚拟形象 (2026)",
+    "description": "100% 免费 PNGTuber 制作工具 — 使用 AI 创建自定义虚拟形象，无需信用卡。获取免费表情包、OBS 集成和直播设置。最佳免费替代 PNGTuber Plus 的选择。",
+    "keywords": [
+      "免费 pngtuber 制作工具",
+      "免费 pngtuber",
+      "免费 pngtuber 制作工具",
+      "免费 pngtuber",
+      "免费 pngtuber 软件",
+      "免费虚拟形象制作工具",
+      "pngtuber plus 替代方案",
+      "免费 pngtuber 软件",
+      "无需信用卡的 pngtuber",
+      "免费直播虚拟形象",
+      "免费 twitch 虚拟形象制作工具",
+      "免费 vtuber 制作工具"
+    ],
+    "canonical": "/free-pngtuber-maker"
+  },
+  "hero": {
+    "badge": "🎁 100% 免费 — 无需信用卡",
+    "title": "免费 PNGTuber 制作工具：零成本创建你的虚拟形象",
+    "subtitle": "使用 1 次免费生成创建你的 PNGTuber 虚拟形象 — 无需信用卡。无水印，无隐藏费用。今天就开始直播吧。",
+    "ctaText": "免费创建虚拟形象 — 无需信用卡",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "免费获取全部功能（无套路）",
+    "items": [
+      {
+        "icon": "Gift",
+        "title": "免费虚拟形象 + 表情包",
+        "description": "获取 1 次免费虚拟形象生成，创建你的第一个 PNGTuber 角色。无需信用卡，无时间限制，无水印 — 完全免费。随时购买积分解锁表情包和更多角色。"
+      },
+      {
+        "icon": "Wand2",
+        "title": "完整 AI 生成质量",
+        "description": "免费用户与付费用户使用相同的 AI。描述任何角色 — 动漫、像素画、写实、奇幻 — 都能获得专业级结果。创作功能无任何限制。"
+      },
+      {
+        "icon": "Monitor",
+        "title": "完整直播设置",
+        "description": "获取你的专属浏览器来源 URL 用于 OBS Studio。完整的麦克风响应动画、透明背景，可即时直播到 Twitch、YouTube、Kick 和 Discord — 全部免费。"
+      },
+      {
+        "icon": "Shield",
+        "title": "可在任何直播平台使用",
+        "description": "将你的免费虚拟形象用于直播、社交媒体、Discord 和个人内容创作。升级到 Creator Pass 获得完整商业授权和 HD 导出。"
+      }
+    ]
+  },
+  "comparison": {
+    "title": "免费 PNGTuber 工具对比 (2026)",
+    "description": "了解为什么 PNGTuberMaker 是 PNGTuber Plus、veadotube 和其他选项的最佳免费替代方案。",
+    "columns": [
+      {
+        "label": "功能"
+      },
+      {
+        "label": "PNGTuberMaker",
+        "highlight": true
+      },
+      {
+        "label": "PNGTuber Plus"
+      },
+      {
+        "label": "veadotube"
+      },
+      {
+        "label": "Fiverr 委托"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "价格",
+        "values": ["免费开始", "免费", "免费", "$50-$200+"]
+      },
+      {
+        "feature": "AI 虚拟形象生成",
+        "values": [true, false, false, false]
+      },
+      {
+        "feature": "表情包",
+        "values": ["AI 生成免费", "手动上传", "手动上传", "每个 $10-$50"]
+      },
+      {
+        "feature": "设置时间",
+        "values": ["5 分钟", "30+ 分钟", "30+ 分钟", "1-4 周"]
+      },
+      {
+        "feature": "需要绘画技能",
+        "values": ["无需", "需要", "需要", "N/A（由画师完成）"]
+      },
+      {
+        "feature": "OBS 集成",
+        "values": ["浏览器来源（简单）", "窗口捕获", "NDI/窗口捕获", "手动导入"]
+      },
+      {
+        "feature": "可随时自定义",
+        "values": [true, false, false, "需重新付费"]
+      },
+      {
+        "feature": "支持所有设备",
+        "values": [
+          "网页（任何设备）",
+          "Windows/Mac/Linux",
+          "Windows/Mac",
+          "N/A"
+        ]
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "fp-1",
+      "question": "PNGTuber 制作工具真的 100% 免费吗？",
+      "answer": "是的，PNGTuberMaker 确实免费开始使用。注册时你将获得 1 次免费虚拟形象生成 — 无需信用卡，无试用期，无隐藏费用。这足以创建你的第一个虚拟形象并立即开始直播，无需支付任何费用。只有当你想要额外的生成次数、表情包或 HD/4K 导出时才需要付款。"
+    },
+    {
+      "id": "fp-2",
+      "question": "这比 PNGTuber Plus 更好吗？",
+      "answer": "PNGTuberMaker 提供 PNGTuber Plus 没有的功能：AI 生成的虚拟形象。使用 PNGTuber Plus，你需要自己创建或委托制作图片，然后上传。使用 PNGTuberMaker，只需描述你的角色，AI 就会为你创建 — 免费。两者都是免费的，但 PNGTuberMaker 可以节省你数小时的绘画工作或数百美元的委托费用。而且，你可以随时重新生成和调整你的虚拟形象。"
+    },
+    {
+      "id": "fp-3",
+      "question": "免费虚拟形象有水印或限制吗？",
+      "answer": "完全没有水印。免费虚拟形象在质量和使用权限上与付费虚拟形象完全相同。唯一区别是：(1) 导出分辨率为 512px（非常适合直播，只是不是 4K），以及 (2) 你获得 1 次免费虚拟形象生成作为开始。其他一切 — OBS 集成、商业权利、所有功能 — 都完全包含在内。"
+    },
+    {
+      "id": "fp-4",
+      "question": "我真的可以免费在 Twitch 和 YouTube 上直播吗？",
+      "answer": "当然可以！数以千计的直播者使用我们的免费方案在 Twitch、YouTube、Kick 和 Facebook Gaming 上直播。你将获得与付费用户相同的浏览器来源 URL、麦克风响应动画和透明背景。除了 PNGTuberMaker，你只需要 OBS Studio，它也是 100% 免费。零成本开始使用自定义虚拟形象直播。"
+    },
+    {
+      "id": "fp-5",
+      "question": "我的免费生成次数用完后会怎样？",
+      "answer": "你有两个选择：(1) 购买一次性积分包，起价 $2.99 获取更多生成次数，或 (2) 订阅 Creator Pass，价格 $7.99/月，获取月度积分和 HD 导出。但你的现有虚拟形象将永远有效 — 不会过期。只有当你想要创建更多角色或解锁表情包时才需要付费。"
+    },
+    {
+      "id": "fp-6",
+      "question": "我需要绘画技能或聘请画师吗？",
+      "answer": "完全不需要。这就是 PNGTuberMaker 的意义所在。传统的 PNGTuber 需要你自己绘制虚拟形象或支付 $50-$200+ 委托画师。使用我们的 AI，你只需输入你想要的内容 — '蓝色头发的动漫战士，带有赛博朋克盔甲' — 它就会为你创建。无需数位板，无需 Photoshop，无需委托画师。"
+    },
+    {
+      "id": "fp-7",
+      "question": "我的免费虚拟形象真的可以用于商业用途吗？",
+      "answer": "免费虚拟形象可用于直播、YouTube 视频、社交媒体和 Discord — 无需署名。获得完整商业权利（周边商品、付费内容、品牌合作），请升级到 Creator Pass，价格 $7.99/月。无论哪种方式，你的虚拟形象都属于你，我们永远不会转售或重复使用。"
+    },
+    {
+      "id": "fp-8",
+      "question": "这与委托制作 PNGTuber 相比如何？",
+      "answer": "委托画师通常需要 $50-$200 才能获得一个静态虚拟形象，加上每个额外表情 $10-$50。需要 1-4 周才能收到。使用 PNGTuberMaker 的免费方案，你将在不到 5 分钟内获得一个虚拟形象 + 5 个表情包，零成本。而且，如果你不喜欢，只需重新生成 — 不额外收费。画师创作出美丽的作品，但 AI 在速度、成本和迭代方面是无与伦比的。"
+    }
+  ],
+  "cta": {
+    "title": "今天开始免费直播",
+    "subtitle": "使用 1 次免费生成创建你的第一个虚拟形象。无信用卡，无风险，没有理由不尝试。",
+    "ctaText": "立即创建我的免费 PNGTuber",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "如何制作 PNGTuber",
+      "description": "创建 PNGTuber 的完整初学者指南。",
+      "href": "/guides/how-to-make-a-pngtuber"
+    },
+    {
+      "title": "VTuber 制作工具",
+      "description": "探索 PNGTuber 之外的所有虚拟形象风格。",
+      "href": "/vtuber-maker"
+    },
+    {
+      "title": "动漫虚拟形象制作工具",
+      "description": "使用 AI 创建动漫风格角色。",
+      "href": "/style/anime"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "首页",
+      "href": "/"
+    },
+    {
+      "label": "免费 PNGTuber 制作工具"
+    }
+  ]
+}

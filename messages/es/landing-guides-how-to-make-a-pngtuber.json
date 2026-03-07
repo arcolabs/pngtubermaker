@@ -1,0 +1,238 @@
+{
+  "slug": "guides/how-to-make-a-pngtuber",
+  "metadata": {
+    "title": "Cómo hacer un PNGTuber (2026) — Guía completa para principiantes",
+    "description": "Aprende a crear un avatar de PNGTuber gratis en 5 minutos. Guía completa 2026: crea tu personaje, genera expresiones, configura OBS y comienza a hacer streaming en Twitch/YouTube. No necesitas habilidades de dibujo.",
+    "keywords": [
+      "cómo hacer un pngtuber",
+      "cómo ser un pngtuber",
+      "cómo convertirse en pngtuber",
+      "tutorial de pngtuber",
+      "guía de pngtuber",
+      "crear pngtuber",
+      "qué es un pngtuber",
+      "configuración de pngtuber",
+      "configuración de pngtuber en obs",
+      "crear avatar de pngtuber",
+      "pngtuber para principiantes",
+      "configuración de streaming con pngtuber",
+      "tutorial de pngtuber gratis",
+      "pngtuber vs vtuber"
+    ],
+    "canonical": "/guides/how-to-make-a-pngtuber"
+  },
+  "hero": {
+    "badge": "Guía completa para principiantes 2026",
+    "title": "Cómo hacer un PNGTuber: De cero a hacer streaming en 5 minutos",
+    "subtitle": "La guía definitiva paso a paso para crear tu propio avatar de PNGTuber — completamente gratis. Sin habilidades de dibujo, sin software caro, sin configuración complicada. Solo sigue los pasos y transmite en vivo hoy mismo.",
+    "ctaText": "Comienza a crear tu PNGTuber gratis",
+    "ctaHref": "/create"
+  },
+  "steps": {
+    "title": "Cómo hacer un PNGTuber: 4 pasos simples",
+    "items": [
+      {
+        "title": "Paso 1: Describe tu personaje",
+        "description": "Abre PNGTuberMaker y describe tu avatar ideal. Sé específico: \"chica anime linda con cabello rosa y orejas de gato\" o \"robot ciberpunk con ojos azules brillantes.\" La IA entiende descripciones detalladas e incluso puede hacer coincidir imágenes de referencia que subas. Esta es la base de tu identidad como PNGTuber."
+      },
+      {
+        "title": "Paso 2: Elige tu diseño",
+        "description": "Nuestra IA genera 4 diseños únicos basándose en tu descripción. Navega por las opciones y elige la que coincida con tu personalidad de streaming. ¿No te gustan? Haz clic en regenerar para nuevas variaciones. Puedes refinar tu descripción en cualquier momento para acercarte más a tu visión."
+      },
+      {
+        "title": "Paso 3: Genera el paquete de expresiones",
+        "description": "Una vez que tengas tu avatar base, genera un paquete de expresiones que coincida. Comienza con lo esencial: hablando (neutral), feliz, triste, enojado y sorprendido. Estas expresiones animarán tu avatar basándose en tu voz. Todas las expresiones mantienen el estilo artístico único y la paleta de colores de tu personaje."
+      },
+      {
+        "title": "Paso 4: Conéctate a OBS y transmite en vivo",
+        "description": "Copia tu URL única de Fuente de Navegador de PNGTuberMaker. Abre OBS Studio → Añadir Fuente → Navegador → Pega la URL. Tu avatar aparece instantáneamente con fondo transparente y reacciona a tu micrófono en tiempo real. Colócalo donde quieras, presiona Comenzar Streaming y ¡estás en vivo!"
+      }
+    ]
+  },
+  "prose": {
+    "title": "Todo lo que necesitas saber sobre PNGTubers",
+    "blocks": [
+      {
+        "subtitle": "¿Qué es un PNGTuber?",
+        "text": "Un PNGTuber es un streamer que usa un avatar 2D estático en lugar de mostrar su rostro real en cámara. El avatar típicamente tiene múltiples expresiones (feliz, triste, hablando, sorprendido) que cambian automáticamente según la entrada del micrófono. Cuando hablas, aparece la expresión 'hablando'. Cuando estás en silencio, cambia a una pose neutral o inactiva. A diferencia de los VTubers que requieren costosos rigs de Live2D, software de rastreo facial y computadoras potentes, los PNGTubers usan simples imágenes PNG. Esto los convierte en el punto de entrada perfecto para nuevos streamers que quieren privacidad, personalidad y profesionalismo sin complejidad técnica ni altos costos."
+      },
+      {
+        "subtitle": "PNGTuber vs VTuber: ¿Cuál es la diferencia?",
+        "text": "Los PNGTubers y VTubers ambos usan avatares virtuales, pero funcionan de manera muy diferente. Los VTubers usan tecnología de captura de movimiento para rastrear expresiones faciales y movimientos corporales en tiempo real, requiriendo una cámara web, software especializado (como Live2D o VRoid), y a menudo modelos encargados costosos ($200-$2,000+). Los PNGTubers usan simple cambio de imágenes basado en niveles de audio — cuando hablas, la boca se abre. Esto significa que no necesitas cámara web, no hay configuración de rastreo facial, no hay rigging complejo, y costos significativamente menores (a menudo gratis). Los PNGTubers son perfectos para principiantes, streamers conscientes de la privacidad, o cualquiera que quiera un personaje en pantalla sin sobrecarga técnica. Muchos streamers exitosos comienzan como PNGTubers y luego mejoran a VTubing."
+      },
+      {
+        "subtitle": "¿Qué software necesitas?",
+        "text": "Solo necesitas dos herramientas gratuitas: PNGTuberMaker (basado en navegador, sin descarga) y OBS Studio (software de streaming gratuito). PNGTuberMaker maneja todo relacionado con avatares — generación de IA, paquetes de expresiones y proporcionar una URL de Fuente de Navegador. OBS Studio es el software de transmisión estándar de la industria usado por millones de streamers. Funciona en Windows, Mac y Linux. Eso es todo — no hay complementos, no hay compras adicionales, no se requiere suscripción para comenzar. Ambas herramientas tienen niveles gratuitos que son más que suficientes para principiantes."
+      },
+      {
+        "subtitle": "¿Cuánto cuesta convertirse en PNGTuber?",
+        "text": "Comenzar como PNGTuber puede ser completamente gratis. PNGTuberMaker da a nuevos usuarios 1 generación de avatar gratis — no se requiere tarjeta de crédito. OBS Studio es 100% gratuito y de código abierto. Puedes comenzar a hacer streaming en Twitch, YouTube o Kick sin gastar un dólar. Los encargos tradicionales de PNGTuber de artistas típicamente cuestan $50-$200 por un avatar estático, más extra por cada expresión. Con la generación de IA, obtienes variaciones ilimitadas, resultados instantáneos y la capacidad de modificar tu diseño en cualquier momento. Funciones premium como exportaciones HD, paquetes de expresiones y más generaciones están disponibles pero no son necesarias para comenzar a hacer streaming."
+      },
+      {
+        "subtitle": "Consejos para crear un gran avatar de PNGTuber",
+        "text": "Sé específico en tus descripciones de personaje — incluye color de cabello, color de ojos, detalles de outfit, accesorios y rasgos de personalidad. Cuantos más detalles proporciones, mejor la IA puede coincidir con tu visión. Sube imágenes de referencia si tienes un estilo específico en mente. Al generar expresiones, prioriza la pose hablando/neutral ya que es lo que los viewers verán más. Coloca tu avatar en la esquina de tu diseño de stream con algo de relleno de los bordes. Prueba tus niveles de audio en OBS para asegurar que tu avatar reaccione naturalmente a tu voz — no muy sensible, no muy rígido. ¡Finalmente sé consistente! Usa el mismo avatar en Twitch, YouTube, Discord y redes sociales para construir reconocimiento."
+      },
+      {
+        "subtitle": "Configurar OBS para tu PNGTuber",
+        "text": "Después de obtener tu URL de Fuente de Navegador de PNGTuberMaker, abre OBS Studio. Haz clic en el botón '+' en el panel de Fuentes, selecciona 'Navegador' y nombra 'Avatar PNGTuber'. Pega tu URL única en el campo de URL. Establece Ancho a 800 y Alto a 800 para mejor calidad. Marca 'Cerrar fuente cuando no sea visible' para ahorrar recursos. Tu avatar aparecerá como una superposición transparente. Haz clic derecho en la fuente → Transformar → Editar Transformación para posicionarlo con precisión. Usa la configuración de Monitoreo de Audio para probar cómo tu avatar reacciona a tu micrófono. Ajusta la sensibilidad de tu micrófono en Windows/OBS si el avatar es muy saltarina o no responde. Eso es todo — ¡estás listo para hacer streaming!"
+      }
+    ]
+  },
+  "comparison": {
+    "title": "PNGTuber vs VTuber vs Cámara web: Comparación completa",
+    "description": "Compara los tres formatos principales de streaming para encontrar lo que es correcto para ti.",
+    "columns": [
+      {
+        "label": "Característica"
+      },
+      {
+        "label": "PNGTuber",
+        "highlight": true
+      },
+      {
+        "label": "VTuber"
+      },
+      {
+        "label": "Cámara web"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "Costo inicial",
+        "values": ["Gratis - $20", "$200 - $2,000+", "Gratis"]
+      },
+      {
+        "feature": "Tiempo de configuración",
+        "values": ["5 minutos", "2-8 semanas", "Instantáneo"]
+      },
+      {
+        "feature": "Hardware necesario",
+        "values": [
+          "Solo micrófono",
+          "Cámara web + buena PC + GPU",
+          "Cámara web"
+        ]
+      },
+      {
+        "feature": "Complejidad del software",
+        "values": ["Muy fácil", "Complex", "Fácil"]
+      },
+      {
+        "feature": "Nivel de privacidad",
+        "values": ["Anonimato completo", "Anonimato completo", "Rostro visible"]
+      },
+      {
+        "feature": "Personalización del personaje",
+        "values": [
+          "Opciones ilimitadas de IA",
+          "Limitado por artista/rig",
+          "N/A"
+        ]
+      },
+      {
+        "feature": "Calidad de animación",
+        "values": [
+          "Expresiones simples",
+          "Rastreo completo de cuerpo/rostro",
+          "Vida real"
+        ]
+      },
+      {
+        "feature": "Mejor para principiantes",
+        "values": [true, false, true]
+      },
+      {
+        "feature": "Funciona en cualquier PC",
+        "values": [true, false, true]
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "htmp-1",
+      "question": "¿Puedo crear mi propio PNGTuber?",
+      "answer": "¡Por supuesto! Cualquiera puede crear su propio PNGTuber usando PNGTuberMaker. No necesitas habilidades artísticas, software costoso ni conocimientos técnicos. Solo describe tu personaje con palabras, y nuestra IA genera un avatar profesional para ti. Todo el proceso toma menos de 5 minutos y puedes comenzar a transmitir de inmediato."
+    },
+    {
+      "id": "htmp-2",
+      "question": "¿PNGTuber maker es gratis?",
+      "answer": "Sí, PNGTuberMaker es gratis para comenzar. Los nuevos usuarios reciben 1 generación de avatar gratis — sin tarjeta de crédito requerida. Puedes crear, personalizar y comenzar a transmitir sin gastar nada. Las exportaciones gratuitas tienen una resolución de 512px, perfecta para transmitir. Las actualizaciones opcionales desbloquean exportaciones en HD/4K, paquetes de expresiones y generaciones adicionales."
+    },
+    {
+      "id": "htmp-3",
+      "question": "¿Puedes hacer un PNGTuber en el móvil?",
+      "answer": "¡Sí! PNGTuberMaker funciona en cualquier navegador moderno, incluyendo Safari en iPhone y Chrome en Android. Puedes diseñar tu avatar en tu teléfono o tablet. Sin embargo, para transmitir, necesitarás usar OBS Studio en una computadora de escritorio. Muchos creadores diseñan sus avatars en el móvil durante sus desplazamientos y luego configuran OBS cuando llegan a casa."
+    },
+    {
+      "id": "htmp-4",
+      "question": "¿Qué software necesito para ser un PNGTuber?",
+      "answer": "Necesitas dos herramientas gratuitas: PNGTuberMaker (para crear tu avatar) y OBS Studio (para transmitir). PNGTuberMaker funciona completamente en tu navegador — no requiere descarga. OBS Studio es un software de transmisión gratuito y de código abierto disponible para Windows, Mac y Linux. Ambas son herramientas estándar de la industria usadas por millones de creadores de contenido."
+    },
+    {
+      "id": "htmp-5",
+      "question": "¿Cuánto tiempo toma configurar un PNGTuber?",
+      "answer": "La mayoría de los usuarios pasan de cero a listos para transmitir en menos de 5 minutos. La generación del avatar toma 30-60 segundos, los paquetes de expresiones toman 1-2 minutos, y la configuración de OBS (pegar una URL) toma menos de 30 segundos. Compara esto con las configuraciones tradicionales de VTuber que toman semanas y cuestan cientos de dólares. Los PNGTuber están diseñados para la satisfacción instantánea."
+    },
+    {
+      "id": "htmp-6",
+      "question": "¿Es mejor PNGTubing que VTubing?",
+      "answer": "PNGTubing y VTubing sirven diferentes necesidades. PNGTubing es mejor para principiantes, creadores con presupuesto limitado y quienes quieren simplicidad. Es gratis, toma 5 minutos para configurar y no requiere habilidades técnicas. VTubing ofrece animación y expresiones más avanzadas pero cuesta $200-$2,000+, requiere hardware de seguimiento facial y tiene una curva de aprendizaje pronunciada. Muchos transmisores exitosos comienzan como PNGTubers y actualizan a VTubing una vez que crecen. PNGTubing es el punto de entrada perfecto para la transmisión con avatar."
+    },
+    {
+      "id": "htmp-7",
+      "question": "¿Necesito una buena computadora para ser un PNGTuber?",
+      "answer": "¡No! Los PNGTuber funcionan en cualquier computadora que pueda ejecutar OBS Studio. Como no hay seguimiento facial ni renderizado de animación complejo, incluso laptops más antiguas manejan PNGTuber perfectamente. El avatar funciona en una fuente de navegador ligera. Si tu computadora puede transmitir normalmente, puede manejar un PNGTuber. Esta es una de las mayores ventajas sobre VTubing, que requiere GPUs potentes para renderizado en tiempo real."
+    },
+    {
+      "id": "htmp-8",
+      "question": "¿Puedo usar mi PNGTuber en Twitch, YouTube y Discord?",
+      "answer": "¡Sí! Tu avatar de PNGTuber funciona en todas partes. Para transmitir, usa la URL del Browser Source en OBS Studio — esto funciona con Twitch, YouTube, Kick, Facebook Gaming y cualquier otra plataforma. Para Discord, exporta tu avatar como PNG y úsalo como tu foto de perfil. El fondo transparente lo hace perfecto para iconos de servidor y emotes también. Tu avatar es tuyo para usar en todas las plataformas."
+    },
+    {
+      "id": "htmp-9",
+      "question": "¿Qué hace que un buen avatar de PNGTuber?",
+      "answer": "Un buen avatar de PNGTuber es reconocible, expresivo y se adapta a tu personalidad de transmisión. Elige colores que destaquen contra los fondos de tus juegos. Asegúrate de que la cara de tu avatar sea claramente visible incluso en tamaños pequeños. Usa expresiones que coincidan con tu energía — si eres un transmisor enérgico, elige un avatar con ojos grandes y expresivos. La consistencia es clave: usa el mismo avatar en todas las plataformas para que los espectadores te reconozcan instantáneamente. Lo más importante, elige algo que TE guste — ¡lo verás durante horas!"
+    }
+  ],
+  "cta": {
+    "title": "¿Listo para Comenzar tu Viaje como PNGTuber?",
+    "subtitle": "Únete a miles de transmisores que comenzaron con PNGTuberMaker. Crea tu avatar gratis en menos de 5 minutos.",
+    "ctaText": "Crear Mi PNGTuber Gratis Ahora",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "Creador de PNGTuber Gratis",
+      "description": "Prueba 1 generación de avatar gratis — sin tarjeta de crédito requerida.",
+      "href": "/free-pngtuber-maker"
+    },
+    {
+      "title": "Creador de VTuber",
+      "description": "Explora avatares de VTuber con IA si quieres mejorar después.",
+      "href": "/vtuber-maker"
+    },
+    {
+      "title": "Creador de Avatar para Twitch",
+      "description": "Crea avatares optimizados específicamente para transmisiones en Twitch.",
+      "href": "/for/twitch"
+    },
+    {
+      "title": "Creador de Avatar para YouTube",
+      "description": "Avatares perfectos para transmisiones y shorts en YouTube.",
+      "href": "/for/youtube"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "Inicio",
+      "href": "/"
+    },
+    {
+      "label": "Guías",
+      "href": "/guides"
+    },
+    {
+      "label": "Cómo Hacer un PNGTuber"
+    }
+  ]
+}

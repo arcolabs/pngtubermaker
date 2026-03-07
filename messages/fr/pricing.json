@@ -1,0 +1,62 @@
+{
+  "heading": "Tarification simple et transparente",
+  "subtitle": "Commencez gratuitement. Achetez des crédits ou abonnez-vous quand vous êtes prêt.",
+  "creditsNote": "Les crédits achetés par packs n'expirent jamais. Les crédits d'abonnement se renouvellent mensuellement et expirent à la fin du cycle de facturation.",
+  "or": "ou",
+  "freeTrial": {
+    "title": "Essai gratuit",
+    "subtitle": "Essayez avant d'acheter",
+    "price": "$0",
+    "note": "Sans carte de crédit",
+    "features": [
+      "1 génération d'avatar",
+      "4 images candidates",
+      "Export PNG 512px",
+      "Arrière-plan transparent",
+      "Aucune carte de crédit requise"
+    ],
+    "ctaLoggedIn": "Créer un avatar",
+    "ctaLoggedOut": "Commencer gratuitement"
+  },
+  "creatorPass": {
+    "badge": "Abonnez-vous et économisez",
+    "subtitle": "Pour les créateurs qui veulent le meilleur rapport qualité-prix sur les crédits et l'export HD",
+    "features": [
+      "6 000 crédits/mois (~30% d'économies vs recharge)",
+      "Export HD (1080p)",
+      "Tous les packs d'expressions",
+      "Gérez votre abonnement à tout moment",
+      "Support par email prioritaire"
+    ]
+  },
+  "toggle": {
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "save": "Économisez {percent}%"
+  },
+  "perMonth": "/mois",
+  "savings": "Économisez {percent}%",
+  "annualNote": "/mois facturé annuellement",
+  "savingsNote": "~30% d'économies vs achat de crédits",
+  "currentPlan": "Plan actuel",
+  "subscribeYearly": "S'abonner annuellement",
+  "subscribeMonthly": "S'abonner mensuellement",
+  "paymentSuccess": "Paiement réussi ! Les crédits ont été ajoutés.",
+  "paymentCanceled": "Paiement annulé. Vous pouvez réessayer à tout moment.",
+  "creditPacks": {
+    "title": "Acheter des crédits",
+    "subtitle": "Payez au fur et à mesure. Les crédits n'expirent jamais.",
+    "credits": "crédits",
+    "buyCredits": "Acheter des crédits",
+    "mostPopular": "Le plus populaire",
+    "packStarter": "Débutant",
+    "packPopular": "Populaire",
+    "packBestValue": "Meilleur rapport qualité-prix"
+  },
+  "buyCreditsModal": {
+    "title": "Vous avez besoin de plus de crédits",
+    "requiresCredits": "Cette action nécessite {count} crédits",
+    "best": "MEILLEUR",
+    "footer": "Les crédits n'expirent jamais. Paiement sécurisé via Stripe."
+  }
+}

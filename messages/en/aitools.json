@@ -1,0 +1,53 @@
+{
+  "badge": "How It Works",
+  "title": "From Idea to Live Stream in 4 Steps",
+  "subtitle": "Generate your avatar, create expressions, set up OBS with mic lip sync, and go live. No commissions. No waiting.",
+  "tabGenerate": "Generate",
+  "tabExpressions": "Expressions",
+  "tabGoLive": "Go Live",
+  "tabExport": "Export",
+  "step1": {
+    "title": "AI Avatar Generation",
+    "description": "Turn text or sketches into a professional avatar. Upload a description or reference, get 4 unique characters with transparent backgrounds, ready for OBS/Discord.",
+    "features": [
+      "Text descriptions",
+      "Reference images",
+      "4 candidates generated",
+      "Transparent background"
+    ],
+    "benefit": "No artist needed, minutes to your unique character"
+  },
+  "step2": {
+    "title": "Expression Pack",
+    "description": "All emotions, one click. Happy, angry, sad, surprised, and 10+ more — AI generates consistent expressions for your avatar without hiring an artist.",
+    "features": [
+      "10+ expression types",
+      "Character consistency",
+      "Manual selection",
+      "Variation options"
+    ],
+    "benefit": "Skip commissioning multiple expressions, save time & cost"
+  },
+  "step3": {
+    "title": "Go Live with OBS",
+    "description": "Add your avatar to OBS as a Browser Source and start streaming instantly. Your avatar's mouth moves in real time with your microphone — no plugins, no complex setup.",
+    "features": [
+      "Real-time mic lip sync",
+      "OBS Browser Source",
+      "Expression switching",
+      "Zero-config setup"
+    ],
+    "benefit": "One link, paste into OBS, and you're live"
+  },
+  "step4": {
+    "title": "Download & Export",
+    "description": "Download your avatar and full expression pack as transparent PNGs or a bundled ZIP. Free users export at 512px, Creator Pass unlocks HD (1080p).",
+    "features": [
+      "Transparent PNG export",
+      "ZIP bundle download",
+      "Up to 1080p HD export",
+      "Watermark-free"
+    ],
+    "benefit": "Stream-ready files for OBS, Discord, and Twitch"
+  }
+}

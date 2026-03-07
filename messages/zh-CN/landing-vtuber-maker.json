@@ -1,0 +1,199 @@
+{
+  "slug": "vtuber-maker",
+  "metadata": {
+    "title": "VTuber制作工具 — 免费AI VTuber虚拟形象生成器 | PNGTuberMaker",
+    "description": "免费AI VTuber制作工具 — 几分钟内创建自定义VTuber形象、模型和表情包。无需绘画技能。支持OBS用于Twitch、YouTube和Discord直播。免费开始使用。",
+    "keywords": [
+      "vtuber制作工具",
+      "vtuber模型制作",
+      "ai vtuber制作",
+      "vtuber形象制作",
+      "vtuber形象生成",
+      "vtuber模型",
+      "免费vtuber制作",
+      "在线vtuber制作",
+      "ai vtuber形象",
+      "vtuber创建",
+      "vtuber生成器"
+    ],
+    "canonical": "/vtuber-maker"
+  },
+  "hero": {
+    "badge": "AI驱动的VTuber创建工具",
+    "title": "免费AI VTuber制作工具 — 在线创建你的VTuber形象",
+    "subtitle": "几分钟内设计独特的VTuber模型 — 无需绘画技能。生成带有表情包的自定义角色，并在任何直播平台上开播。",
+    "ctaText": "创建你的VTuber",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "成为VTuber所需的一切",
+    "items": [
+      {
+        "icon": "Wand2",
+        "title": "AI驱动生成",
+        "description": "描述你的角色或上传参考图片。我们的AI会生成多个独特的VTuber设计供你选择。"
+      },
+      {
+        "icon": "Layers",
+        "title": "表情包合集",
+        "description": "生成完整的表情包合集 — 开心、生气、悲伤、惊讶 — 全部与你的角色风格一致。"
+      },
+      {
+        "icon": "Monitor",
+        "title": "几分钟内即可开播",
+        "description": "获取OBS Studio的浏览器源地址。你的VTuber形象以透明背景出现在直播中，实时根据你的声音做出反应。"
+      },
+      {
+        "icon": "Shield",
+        "title": "你的形象，你的品牌",
+        "description": "在Twitch、YouTube、Discord和社交媒体上使用你的形象。创作者通行证订阅用户获得完整商业权利，包括周边商品使用权。"
+      }
+    ]
+  },
+  "comparison": {
+    "title": "PNGTuber与传统VTuber",
+    "description": "了解为什么数千名主播选择PNGTuber而不是完整的VTuber设备。",
+    "columns": [
+      {
+        "label": "功能"
+      },
+      {
+        "label": "PNGTuberMaker",
+        "highlight": true
+      },
+      {
+        "label": "传统VTuber"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "成本",
+        "values": ["免费 – $7.99/月", "$200 – $2,000+"]
+      },
+      {
+        "feature": "设置时间",
+        "values": ["5分钟以内", "2–8周"]
+      },
+      {
+        "feature": "面部追踪",
+        "values": ["不需要", "需要摄像头+软件"]
+      },
+      {
+        "feature": "硬件",
+        "values": ["只需麦克风", "摄像头+GPU"]
+      },
+      {
+        "feature": "OBS设置",
+        "values": ["粘贴一个网址", "复杂的NDI/采集配置"]
+      },
+      {
+        "feature": "AI生成",
+        "values": [true, false]
+      },
+      {
+        "feature": "表情包合集",
+        "values": ["AI生成", "每个表情包需额外付费"]
+      }
+    ]
+  },
+  "showcase": {
+    "title": "AI创建的VTuber形象",
+    "description": "下面的每个形象都是在几秒钟内生成的 — 无需绘画技能。",
+    "images": [
+      {
+        "src": "/images/showcase/fox_pngtuber.png",
+        "alt": "使用PNGTuberMaker免费VTuber制作工具创建的AI生成的狐狸VTuber形象",
+        "prompt": "橙色狐狸耳朵，蓝色波浪长发带星星发卡，琥珀色发光眼睛，深蓝色连衣裙带星座图案，手持漂浮水晶球"
+      },
+      {
+        "src": "/images/showcase/pinkbunny_pngtuber.png",
+        "alt": "使用PNGTuberMaker创建的AI生成的粉色兔子VTuber形象",
+        "prompt": "粉色兔子耳朵，花朵发带，柔和的桃子色波波头，翡翠绿眼睛，超大奶油色连帽衫，手持草莓篮"
+      },
+      {
+        "src": "/images/showcase/sunflower_pngtuber.png",
+        "alt": "PNGTuberMaker在线VTuber制作工具生成的可爱向日葵VTuber角色形象",
+        "prompt": "巨大的向日葵花冠，薄荷绿色卷发，亮黄色眼睛，白色太阳裙，手持浇水壶，小黄色翅膀"
+      },
+      {
+        "src": "/images/showcase/round1_idle.png",
+        "alt": "使用免费AI VTuber制作工具PNGTuberMaker创建的AI VTuber魔法少女形象",
+        "prompt": "经典的魔法少女，飘逸的金色双马尾扎着大红色丝绸蝴蝶结。她有着明亮的蓝色大眼睛和心形脸庞。"
+      },
+      {
+        "src": "/images/showcase/round2_sad.png",
+        "alt": "使用PNGTuberMaker VTuber形象制作工具创建的VTuber形象女巫表情",
+        "prompt": "小女巫，巨大的巫师帽，星河般的长发，星河眼睛，深蓝色连衣裙，魔法少女"
+      },
+      {
+        "src": "/images/showcase/round3_angry.png",
+        "alt": "使用AI VTuber创建工具PNGTuberMaker生成的VTuber形象愤怒表情",
+        "prompt": "一位年轻女子，浓密的波浪深棕色头发和棕色大眼睛。圆形眼镜配银色太阳形吊坠，黑色哥特风格褶边紧身胸衣上衣。"
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "vm-1",
+      "question": "什么是VTuber制作工具？",
+      "answer": "VTuber制作工具是帮助你创建直播虚拟形象的工具。PNGTuberMaker使用AI根据文字描述或参考图片生成自定义VTuber角色，并配备用于直播的表情包。"
+    },
+    {
+      "id": "vm-2",
+      "question": "PNGTubing比VTubing更好吗？",
+      "answer": "PNGTuber比完整的VTuber设备更简单、更轻量。它们不需要面部追踪、摄像头或昂贵软件 — 只需OBS中的浏览器源。PNGTuberMaker让你零设置成本即可获得专业外观。"
+    },
+    {
+      "id": "vm-3",
+      "question": "我需要摄像头或面部追踪吗？",
+      "answer": "不需要。PNGTuber形象对你的麦克风输入做出反应，而不是面部追踪。当你说话时，你的形象会自动动画化。不需要摄像头，不需要插件，不需要额外硬件。"
+    },
+    {
+      "id": "vm-4",
+      "question": "我可以在Twitch和YouTube上使用我的VTuber形象吗？",
+      "answer": "可以。你的形象在任何支持OBS浏览器源的平台上都能使用 — 包括Twitch、YouTube、Kick等。你会获得一个独特的网址，粘贴到OBS中作为浏览器源即可。"
+    },
+    {
+      "id": "vm-5",
+      "question": "创建VTuber形象需要多少钱？",
+      "answer": "新用户可获得1次免费形象生成来试用 — 无需信用卡。传统VTuber委托需要$200-$2,000+且需要数周时间 — PNGTuberMaker几分钟内即可完成，只需一小部分费用。"
+    },
+    {
+      "id": "vm-6",
+      "question": "可以在手机上制作VTuber形象吗？",
+      "answer": "可以。PNGTuberMaker可在任何现代网页浏览器中使用，包括手机和平板电脑。你可以在手机或平板上设计VTuber形象，然后在电脑上用OBS Studio进行直播。"
+    }
+  ],
+  "cta": {
+    "title": "准备好成为VTuber了吗？",
+    "subtitle": "几分钟内创建你的形象。无绘画技能，无昂贵委托。",
+    "ctaText": "免费开始创建",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "动漫形象制作工具",
+      "description": "使用AI创建动漫风格的VTuber形象。",
+      "href": "/style/anime"
+    },
+    {
+      "title": "免费PNGTuber制作工具",
+      "description": "开始使用免费形象生成积分。",
+      "href": "/free-pngtuber-maker"
+    },
+    {
+      "title": "如何制作PNGTuber",
+      "description": "创建第一个形象的逐步指南。",
+      "href": "/guides/how-to-make-a-pngtuber"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "首页",
+      "href": "/"
+    },
+    {
+      "label": "VTuber制作工具"
+    }
+  ]
+}

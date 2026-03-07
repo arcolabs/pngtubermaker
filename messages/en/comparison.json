@@ -1,0 +1,51 @@
+{
+  "title": "How Your Ideas Become Professional PNGTubers",
+  "subtitle": "Save $150+ and weeks of waiting by using AI to generate your perfect streaming avatar in minutes.",
+  "with": "With",
+  "brand": "PNGTuberMaker",
+  "steps": [
+    {
+      "title": "1. Describe your avatar idea",
+      "time": "1 minute",
+      "desc": "Type your style or upload a sketch. AI understands your vision perfectly."
+    },
+    {
+      "title": "2. AI generates expressions",
+      "time": "1-2 minutes",
+      "desc": "Smiling, angry, surprised, sad — 10+ expressions auto-generated with consistent style."
+    },
+    {
+      "title": "3. One-click OBS setup",
+      "time": "instant",
+      "desc": "Paste a single Browser Source link into OBS. Your avatar lip-syncs to your mic in real time."
+    },
+    {
+      "title": "4. Download and go live",
+      "time": "instant",
+      "desc": "Export PNGs or ZIP bundles for OBS, Twitch, Discord — stream-ready in seconds."
+    }
+  ],
+  "traditional": {
+    "title": "Traditional Commission",
+    "items": [
+      "Find and hire an artist on Fiverr/DeviantArt",
+      "Wait for their response and negotiate price",
+      "Pay $50–$200+ for one set of PNGs",
+      "Wait 1–3 weeks for delivery",
+      "Risk inconsistent quality or revisions",
+      "Repeat for new expressions or styles"
+    ],
+    "badge": "Expensive & Slow"
+  },
+  "cta": {
+    "loggedIn": "Create Your PNGTuber Now",
+    "loggedOut": "Create Your Free PNGTuber — No Credit Card",
+    "loggedInMobile": "Create Now",
+    "loggedOutMobile": "Create Free PNGTuber"
+  },
+  "values": [
+    "No drawing skills needed",
+    "Ready in under 5 minutes",
+    "Works directly in OBS"
+  ]
+}

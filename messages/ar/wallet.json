@@ -1,0 +1,10 @@
+{
+  "availableCredits": "الرصيد المتاح",
+  "freeCredits": "رصيد مجاني",
+  "subscriptionCredits": "رصيد الاشتراك",
+  "topupCredits": "رصيد إضافي",
+  "neverExpires": "لا تنتهي صلاحيته",
+  "expired": "منتهي الصلاحية",
+  "buyCredits": "شراء رصيد",
+  "creditsLeft": "{count} رصيد متبقي"
+}

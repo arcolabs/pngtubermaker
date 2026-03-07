@@ -1,0 +1,18 @@
+{
+  "title": "すべてのプラットフォームのアバターを作成",
+  "subtitle": "Twitchで配信、YouTubeで創作、Discordで交流 — すべてカバーしています。",
+  "vtuberMaker": "VTuber Maker",
+  "vtuberMakerDesc": "表情パック付きのAI VTuberアバターを作成 — 芸術的スキルは不要です。",
+  "animeAvatarMaker": "Anime Avatar Maker",
+  "animeAvatarMakerDesc": "テキスト説明からアニメスタイルのキャラクターを生成します。",
+  "howToMakePngtuber": "PNGTuberの作り方",
+  "howToMakePngtuberDesc": "完全初心者向けガイド — ゼロから5分で配信デビュー。",
+  "freePngtuberMaker": "Free PNGTuber Maker",
+  "freePngtuberMakerDesc": "アバター1回無料生成 — クレジットカード不要。",
+  "twitchAvatarMaker": "Twitch Avatar Maker",
+  "twitchAvatarMakerDesc": "OBS対応配信アバターでマイク連動アニメーション対応。",
+  "youtubeAvatarMaker": "YouTube Avatar Maker",
+  "youtubeAvatarMakerDesc": "チャンネルアバター、サムネイル表情、ライブ配信オーバーレイ。",
+  "discordAvatarMaker": "Discord Avatar Maker",
+  "discordAvatarMakerDesc": "プロフィール画像、サーバーアイコン、カスタム絵文字パック。"
+}

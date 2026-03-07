@@ -7,24 +7,33 @@ import PlatformSpecs from "@/components/landing/PlatformSpecs";
 import DiscordCTA from "@/components/sections/DiscordCTA";
 import FAQ from "@/components/sections/FAQ";
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import { generateLandingJsonLd, landingPages } from "@/lib/landing-pages";
+import { generateLandingJsonLd, getLandingPage } from "@/lib/landing-pages";
 
-const page = landingPages["for-discord"];
-const jsonLd = generateLandingJsonLd(page);
+interface Props {
+  params: Promise<{ locale: string }>;
+}
 
-export const metadata: Metadata = {
-  title: page.metadata.title,
-  description: page.metadata.description,
-  keywords: page.metadata.keywords,
-  alternates: { canonical: page.metadata.canonical },
-  openGraph: {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const page = getLandingPage(locale, "for-discord");
+  return {
     title: page.metadata.title,
     description: page.metadata.description,
-    url: `https://pngtubermaker.com${page.metadata.canonical}`,
-  },
-};
+    keywords: page.metadata.keywords,
+    alternates: { canonical: page.metadata.canonical },
+    openGraph: {
+      title: page.metadata.title,
+      description: page.metadata.description,
+      url: `https://pngtubermaker.com${page.metadata.canonical}`,
+    },
+  };
+}
 
-export default function DiscordAvatarMakerPage() {
+export default async function DiscordAvatarMakerPage({ params }: Props) {
+  const { locale } = await params;
+  const page = getLandingPage(locale, "for-discord");
+  const jsonLd = generateLandingJsonLd(page);
+
   return (
     <>
       <script

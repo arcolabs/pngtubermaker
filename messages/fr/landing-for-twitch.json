@@ -1,0 +1,260 @@
+{
+  "slug": "for/twitch",
+  "metadata": {
+    "title": "Créateur d'avatar Twitch — Créateur gratuit de PNGTuber et avatar de stream",
+    "description": "Créez des avatars Twitch et PNGTubers gratuits avec l'IA. Personnages réactifs au micro prêts pour OBS, packs d'expressions et configuration de streaming. Pas besoin de webcam. Commencez à streamer en 5 minutes.",
+    "keywords": [
+      "créateur d'avatar twitch",
+      "avatar twitch",
+      "créateur de photo de profil twitch",
+      "pngtuber twitch",
+      "avatar de streaming twitch",
+      "créateur d'emote twitch",
+      "avatar twitch gratuit",
+      "avatar twitch obs",
+      "configuration pngtuber twitch",
+      "streaming twitch sans visage",
+      "avatar twitch sans webcam",
+      "avatar twitch ia"
+    ],
+    "canonical": "/for/twitch"
+  },
+  "hero": {
+    "badge": "🎮 Avatars de streaming Twitch gratuits",
+    "title": "Créateur d'avatar Twitch : Configuration de streaming PNGTuber",
+    "subtitle": "Lancez-vous sur Twitch avec un avatar IA professionnel — pas de webcam, pas de suivi facial, pas de commissions chères. PNGTuber réactif au micro qui fonctionne instantanément dans OBS. Gratuit pour commencer, streaming en 5 minutes.",
+    "ctaText": "Créer un avatar Twitch gratuit",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "Conçu pour les streamers Twitch",
+    "items": [
+      {
+        "icon": "Monitor",
+        "title": "Intégration OBS instantanée",
+        "description": "Obtenez une URL de source navigateur unique — collez-la simplement dans OBS Studio. Votre avatar apparaît avec un fond transparent, réagit à votre micro et se met à jour automatiquement. Pas de plugins, pas de téléchargements, pas de configuration complexe."
+      },
+      {
+        "icon": "Mic",
+        "title": "Animation réactive au micro",
+        "description": "La bouche de votre avatar s'ouvre quand vous parlez, se ferme quand vous êtes silencieux. Alimenté par l'accès au microphone du navigateur — pas de logiciel de suivi facial, pas de webcam nécessaire. Parfait pour le streaming sans visage ou les créateurs qui n'aiment pas être filmés."
+      },
+      {
+        "icon": "Zap",
+        "title": "Impact performance nul",
+        "description": "Contrairement aux logiciels VTuber qui monopolisent le GPU, les PNGTuber fonctionnent comme des sources navigateur légères. Streamez en qualité maximale sans aucune perte d'image. Fonctionne sur tout PC capable de faire tourner OBS — même les ordinateurs portables入门."
+      },
+      {
+        "icon": "Layers",
+        "title": "Pack d'expressions prêt pour Twitch",
+        "description": "Générez des expressions qui correspondent à la culture Twitch — hype pour les grosses plays, salt pour les défaites, pog pour les surprises, chill pour le just chatting. Toutes les expressions restent parfaitement cohérentes avec le style artistique de votre personnage."
+      }
+    ]
+  },
+  "platformSpecs": {
+    "title": "Spécifications de streaming Twitch",
+    "items": [
+      {
+        "label": "Photo de profil",
+        "value": "256×256 à 1000×1000 pixels"
+      },
+      {
+        "label": "Bannière hors ligne",
+        "value": "1920×1080 pixels"
+      },
+      {
+        "label": "Images de panneau",
+        "value": "320×160 à 640×320 pixels"
+      },
+      {
+        "label": "Tailles des emotes",
+        "value": "112×112, 56×56, 28×28 pixels"
+      },
+      {
+        "label": "Source navigateur OBS",
+        "value": "Recommandé 400×400 à 800×800"
+      },
+      {
+        "label": "Format de fichier",
+        "value": "PNG avec transparence"
+      }
+    ]
+  },
+  "steps": {
+    "title": "Comment configurer votre PNGTuber Twitch dans OBS",
+    "items": [
+      {
+        "title": "Étape 1 : Créez votre avatar Twitch",
+        "description": "Ouvrez PNGTuberMaker et décrivez votre persona de streaming. Pensez à la visibilité — les couleurs vives et les silhouettes lisibles passent mieux en stream. Générez plusieurs designs et choisissez celui qui représente votre marque."
+      },
+      {
+        "title": "Étape 2 : Générez un pack d'expressions",
+        "description": "Créez 5+ expressions : neutre (parle), heureux, triste, en colère, surpris. Celles-ci animent votre avatar en fonction de l'activité vocale. L'IA garantit une cohérence parfaite du style entre toutes les expressions."
+      },
+      {
+        "title": "Étape 3 : Copiez votre URL de source navigateur",
+        "description": "Dans PNGTuberMaker, cliquez sur 'Obtenir l'URL OBS' après avoir sélectionné votre avatar. Copiez l'URL unique de la source navigateur — c'est ce qui relie votre avatar à OBS et le fait réagir à votre microphone."
+      },
+      {
+        "title": "Étape 4 : Ajoutez à OBS Studio",
+        "description": "Dans OBS : Sources → + → Browser → Nommez-le 'PNGTuber'. Collez votre URL. Définissez Largeur : 600, Hauteur : 600. Cochez 'Arrêter la source quand non visible'. Votre avatar apparaît instantanément avec un fond transparent."
+      },
+      {
+        "title": "Étape 5 : Positionnez et configurez l'audio",
+        "description": "Faites glisser votre avatar dans le coin de votre choix. Clic droit → Transformer → Modifier la transformation pour un positionnement précis. Testez votre micro — l'avatar doit réagir quand vous parlez. Ajustez la sensibilité du micro dans OBS si nécessaire."
+      },
+      {
+        "title": "Étape 6 : Lancez-vous sur Twitch",
+        "description": "Configurez votre clé de stream Twitch dans OBS Paramètres → Stream. Organisez votre scène — capture de jeu, avatar PNGTuber, alertes. Appuyez sur 'Démarrer le streaming'. Votre avatar réagit à votre voix automatiquement pendant que vous streamez !"
+      }
+    ]
+  },
+  "comparison": {
+    "title": "Options d'avatar Twitch : Comparaison complète",
+    "description": "Comparez toutes les méthodes pour obtenir un avatar de streaming pour Twitch.",
+    "columns": [
+      {
+        "label": "Méthode"
+      },
+      {
+        "label": "PNGTuberMaker",
+        "highlight": true
+      },
+      {
+        "label": "Commission Fiverr"
+      },
+      {
+        "label": "VTuber Live2D"
+      },
+      {
+        "label": "Caméra"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "Coût total",
+        "values": [
+          "Gratuit – 7,99$/mois",
+          "100$ – 500$+",
+          "500$ – 3 000$+",
+          "Gratuit"
+        ]
+      },
+      {
+        "feature": "Temps de configuration",
+        "values": ["5 minutes", "2-4 semaines", "4-8 semaines", "Instantané"]
+      },
+      {
+        "feature": "Webcam requise",
+        "values": [false, false, true, true]
+      },
+      {
+        "feature": "Suivi facial nécessaire",
+        "values": [false, false, true, "N/A (vrai visage)"]
+      },
+      {
+        "feature": "Impact sur les performances PC",
+        "values": ["Aucun", "Aucun", "Élevé (GPU)", "Faible"]
+      },
+      {
+        "feature": "Type d'animation",
+        "values": [
+          "Réactif au micro",
+          "Statique/limité",
+          "Capture de mouvement complète",
+          "Vie réelle"
+        ]
+      },
+      {
+        "feature": "Peut changer d'avatar à tout moment",
+        "values": [true, "Payer à nouveau", "Riguer à nouveau", "N/A"]
+      },
+      {
+        "feature": "Idéal pour les débutants",
+        "values": [true, true, false, true]
+      },
+      {
+        "feature": "Confidentialité/anonymat",
+        "values": ["Complet", "Complet", "Complet", "Aucun"]
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "tw-1",
+      "question": "Comment ajouter un avatar PNGTuber à mon stream Twitch ?",
+      "answer": "Après avoir créé votre avatar sur PNGTuberMaker, copiez l'URL de la source navigateur. Dans OBS Studio, ajoutez une nouvelle source navigateur, collez l'URL, définissez les dimensions sur 600×600, et votre PNGTuber apparaît en stream. Il réagit automatiquement à votre microphone — la bouche s'ouvre quand vous parlez, se ferme quand vous êtes silencieux. Positionnez-le où vous voulez dans votre布局 de stream en utilisant l'interface glisser-déposer d'OBS."
+    },
+    {
+      "id": "tw-2",
+      "question": "Puis-je streamer sur Twitch sans webcam en utilisant un PNGTuber ?",
+      "answer": "Absolument ! C'est l'un des plus grands avantages des PNGTubers. Vous n'avez besoin que d'un microphone — pas de webcam, pas de logiciel de suivi facial, pas de configuration de caméra. Votre avatar réagit à votre voix, pas à votre visage. C'est parfait pour le streaming sans visage, les créateurs soucieux de leur vie privée, ou anyone qui préfère ne pas être filmé. Des milliers de streamers Twitch успешных utilisent exclusivement des PNGTubers."
+    },
+    {
+      "id": "tw-3",
+      "question": "Un PNGTuber va-t-il ralentir mon stream Twitch ou mon jeu ?",
+      "answer": "Pas du tout. Les PNGTuber fonctionnent comme des sources navigateur légères dans OBS — ils utilisent un minimum de CPU et pratiquement pas de GPU. Contrairement aux VTubers Live2D qui nécessitent un rendu en temps réel et peuvent causer des pertes d'images, les PNGTuber sont essentiellement juste des images qui changent selon l'audio. Vous pouvez streamer des jeux compétitifs à IPS complet avec un avatar PNGTuber actif. Même les PC入门 gèrent les PNGTuber sans effort."
+    },
+    {
+      "id": "tw-4",
+      "question": "Un PNGTuber est-il meilleur qu'un VTuber pour les débutants sur Twitch ?",
+      "answer": "Pour la plupart des débutants, oui. Les PNGTuber sont gratuits (contre 500$+ pour les rigs VTuber), prennent 5 minutes à configurer (contre des semaines de rigging), ne nécessitent pas de webcam, et fonctionnent sur n'importe quel PC. Les VTuber offrent une animation plus avancée mais comportent un coût et une complexité significatifs. De nombreux streamers incontournés commencent avec des PNGTuber et passent au VTuber une fois qu'ils ont grandi. Les PNGTuber sont le point d'entrée parfait pour le streaming avec avatar."
+    },
+    {
+      "id": "tw-5",
+      "question": "Combien coûte généralement une commission d'avatar Twitch ?",
+      "answer": "Les commissions traditionnelles d'avatar Twitch varient largement : les avatars PNG statiques coûtent 50$-200$, les modèles simplements riggés 200$-500$, et les rigs VTuber Live2D complets 500$-3 000$+. Chaque expression coûte souvent extra (10$-50$). Le délai est de 2-8 semaines. Avec PNGTuberMaker, vous obtenez un avatar professionnel avec plusieurs expressions en moins de 5 minutes, gratuitement pour commencer. Les économies de coût et de temps sont massives."
+    },
+    {
+      "id": "tw-6",
+      "question": "Puis-je utiliser le même avatar sur Twitch, YouTube et Discord ?",
+      "answer": "Oui ! Votre avatar PNGTuber fonctionne partout. Utilisez la même URL de source navigateur dans OBS pour Twitch, YouTube et Kick streaming. Exportez des versions statiques pour les photos de profil Discord et les réseaux sociaux. Cette cohérence aide à construire votre marque sur toutes les plateformes. Les spectateurs vous reconnaîtront instantanément qu'ils regardent sur Twitch ou qu'ils voient vos messages Discord."
+    },
+    {
+      "id": "tw-7",
+      "question": "Ai-je besoin d'un logiciel spécial besides OBS ?",
+      "answer": "Non ! Vous avez besoin de deux outils gratuits : PNGTuberMaker (fonctionne dans votre navigateur, crée votre avatar) et OBS Studio (logiciel de streaming gratuit). C'est tout. Pas de plugins, pas d'achats supplémentaires, pas d'abonnement requis pour commencer. Les deux outils sont des standards de l'industrie et sont utilisés par des millions de créateurs. L'intégration de la source navigateur est intégrée dans OBS — collez simplement votre URL et c'est parti."
+    }
+  ],
+  "cta": {
+    "title": "Commencez votre parcours de streaming Twitch",
+    "subtitle": "Rejoignez des milliers de streamers sans visage qui se sont lancés avec PNGTuberMaker. Gratuit, rapide et prêt à streamer en 5 minutes.",
+    "ctaText": "Créer mon avatar Twitch gratuit",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "Comment créer un PNGTuber",
+      "description": "Guide complet pour configurer votre premier stream PNGTuber.",
+      "href": "/guides/how-to-make-a-pngtuber"
+    },
+    {
+      "title": "Créateur d'avatar Discord",
+      "description": "Créez des avatars assortis pour votre communauté Discord.",
+      "href": "/for/discord"
+    },
+    {
+      "title": "Créateur d'avatar YouTube",
+      "description": "Multi-streamez sur YouTube avec le même avatar.",
+      "href": "/for/youtube"
+    },
+    {
+      "title": "Créateur de PNGTuber gratuit",
+      "description": "Essayez 1 génération d'avatar gratuite — aucune carte de crédit requise.",
+      "href": "/free-pngtuber-maker"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "Accueil",
+      "href": "/"
+    },
+    {
+      "label": "Plateformes",
+      "href": "/for"
+    },
+    {
+      "label": "Créateur d'avatar Twitch"
+    }
+  ]
+}

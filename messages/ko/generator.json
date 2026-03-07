@@ -1,0 +1,48 @@
+{
+  "quickStart": "빠른 시작",
+  "quickStartHint": "— 태그를 클릭하여 프롬프트 작성",
+  "hide": "숨기기",
+  "style": "스타일",
+  "generate": "생성",
+  "generating": "생성 중...",
+  "noCredits": "크레딧이 부족합니다.",
+  "buyCredits": "크레딧 구매",
+  "promptPlaceholder": "긴 은발을 가진 귀여운 애니 소녀, 후드티 착용, 게이밍 헤드셋, 아늑한 배경...",
+  "minChars": "최소 10자 이상",
+  "reference": "인물 레퍼런스",
+  "referenceHint": "사진 또는 캐릭터 아트를 업로드하세요",
+  "quickTemplates": "빠른 템플릿",
+  "categories": {
+    "character": "캐릭터",
+    "vibe": "분위기",
+    "gear": "장비"
+  },
+  "tags": {
+    "catGirl": "고양이 소녀",
+    "wolfBoy": "남자 늑대",
+    "bunnyGirl": "토끼 소녀",
+    "demon": "악마",
+    "foxGirl": "여우 소녀",
+    "elf": "엘프",
+    "kawaii": "카와이",
+    "dark": "어두운",
+    "cozy": "아늑한",
+    "pastel": "파스텔",
+    "neon": "네온",
+    "gothic": "고딕",
+    "headset": "게이밍 헤드셋",
+    "hoodie": "후드티",
+    "catEars": "고양이 귀",
+    "glasses": "안경",
+    "horns": "뿔",
+    "scarf": "스카프"
+  },
+  "styles": {
+    "chibi": "치비",
+    "anime": "애니",
+    "cartoon": "카툰",
+    "pixelart": "픽셀 아트",
+    "none": "없음",
+    "noneHint": "프롬프트에 원하는 스타일을 설명하세요"
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "slug": "for/youtube",
+  "metadata": {
+    "title": "YouTube 头像制作器 — 免费频道头像和缩略图创作工具",
+    "description": "使用 AI 创建免费 YouTube 头像 — 频道头像图片、缩略图、直播叠加层和 PNGTuber 角色。4K 导出、表情包和 OBS 集成。免费开始使用。",
+    "keywords": [
+      "youtube 头像制作器",
+      "youtube 头像",
+      "youtube 头像图片制作器",
+      "youtube pngtuber",
+      "youtube 频道头像",
+      "youtube 直播头像",
+      "免费 youtube 头像",
+      "youtube 缩略图头像",
+      "youtube pfp 制作器",
+      "ai youtube 头像",
+      "youtube 不露脸频道",
+      "youtube 头像创作器"
+    ],
+    "canonical": "/for/youtube"
+  },
+  "hero": {
+    "badge": "🎬 免费 YouTube 创作者头像",
+    "title": "YouTube 头像制作器：头像、缩略图和直播",
+    "subtitle": "使用 AI 创建统一的 YouTube 品牌 — 专业频道头像、可点击缩略图和直播角色。一个角色，无限内容可能。免费开始使用。",
+    "ctaText": "免费创建 YouTube 头像",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "专为 YouTube 内容创作者打造",
+    "items": [
+      {
+        "icon": "Image",
+        "title": "轻松打造频道品牌",
+        "description": "创建一个令人难忘的头像，成为你频道的面孔。将其用作个人资料图片、视频缩略图、结束画面和社区帖子。一致的品牌建设能增强观众认知度和忠诚度。"
+      },
+      {
+        "icon": "Layers",
+        "title": "缩略图表情包",
+        "description": "生成适合缩略图的表情 — 惊讶表情适合令人惊讶的内容，愤怒适合吐槽，开心适合获胜，困惑适合教程。一致的角色 + 丰富的情绪变化 = 更高的点击率。"
+      },
+      {
+        "icon": "Video",
+        "title": "YouTube 直播与推流",
+        "description": "使用麦克风响应的 PNGTuber 头像在 YouTube 上直播。完美兼容 OBS Studio — 透明背景、自动唇同步、零性能影响。不露脸直播也能展现个性。"
+      },
+      {
+        "icon": "Download",
+        "title": "高清导出适合各种用途",
+        "description": "导出高达 1080p 高清分辨率 — 手机上清晰，桌面上惊艳。透明 PNG 适用于 Photoshop、Canva、Premiere Pro 和任何缩略图编辑器。一个头像，无限内容应用可能。"
+      }
+    ]
+  },
+  "platformSpecs": {
+    "title": "YouTube 图片规格 (2026)",
+    "items": [
+      {
+        "label": "频道头像 (PFP)",
+        "value": "800×800 像素（显示为 98×98）"
+      },
+      {
+        "label": "视频缩略图",
+        "value": "1280×720 像素（16:9 比例）"
+      },
+      {
+        "label": "频道横幅/封面",
+        "value": "2560×1440 像素（安全区域：1546×423）"
+      },
+      {
+        "label": "视频水印",
+        "value": "150×150 像素"
+      },
+      {
+        "label": "直播叠加层",
+        "value": "透明 PNG，尺寸灵活"
+      },
+      {
+        "label": "社区帖子",
+        "value": "1080×1080 或 1280×720"
+      }
+    ]
+  },
+  "steps": {
+    "title": "如何将头像用于 YouTube 内容",
+    "items": [
+      {
+        "title": "第一步：创建你的 YouTube 角色",
+        "description": "设计一个代表你频道个性的头像 — 游戏、教育、娱乐或生活方式。考虑长期品牌：选择你不会厌倦的颜色和风格。使用 AI 生成多个选项。"
+      },
+      {
+        "title": "第二步：生成缩略图表情包",
+        "description": "创建 5+ 种表情：中立（用于头像）、惊讶（令人惊讶的内容）、开心（胜利/成就）、愤怒（吐槽/挫折）、困惑（教程/问题）。这些将成为你的缩略图反应表情。"
+      },
+      {
+        "title": "第三步：设置频道头像",
+        "description": "导出 800×800 并上传到 YouTube Studio → 自定义 → 品牌 → 头像。你的头像会出现在你的频道、评论和社区帖子中。将重要元素居中 — YouTube 会裁剪成圆形。"
+      },
+      {
+        "title": "第四步：使用头像创建缩略图",
+        "description": "将表情导出为透明 PNG。将其放入 Photoshop、Canva 或你的缩略图编辑器中。将头像的反应表情放在显眼位置 — 带有人脸的缩略图获得更多点击。使用一致的定位来建立品牌认知。"
+      },
+      {
+        "title": "第五步：设置 YouTube 直播推流",
+        "description": "在 OBS Studio 中，将你的 PNGTuberMaker 浏览器源 URL 添加为浏览器源。在 OBS 设置 → 推流中配置 YouTube 推流密钥。你的头像会出现在直播中，对你的声音做出反应 — 非常适合不露脸的 YouTube 直播。"
+      },
+      {
+        "title": "第六步：用于所有内容",
+        "description": "将你的头像添加到结束画面、社区帖子、Shorts 缩略图和频道横幅。一致的角色使用能建立即时认知。观众应该在阅读标题之前就知道这是你的视频。"
+      }
+    ]
+  },
+  "comparison": {
+    "title": "YouTube 头像创建选项对比",
+    "description": "找到创建 YouTube 频道头像的最佳方式。",
+    "columns": [
+      {
+        "label": "选项"
+      },
+      {
+        "label": "PNGTuberMaker AI",
+        "highlight": true
+      },
+      {
+        "label": "聘请艺术家"
+      },
+      {
+        "label": "自己绘制"
+      },
+      {
+        "label": "库存图片"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "成本",
+        "values": ["免费开始", "$50-$300+", "免费（时间）", "免费-$20"]
+      },
+      {
+        "feature": "时间投入",
+        "values": ["5 分钟", "1-3 周", "数天到数周", "几分钟"]
+      },
+      {
+        "feature": "专属于你的频道",
+        "values": [true, true, true, false]
+      },
+      {
+        "feature": "表情变化",
+        "values": ["无限 AI 生成", "每个 $10-$30", "自己绘制", "无"]
+      },
+      {
+        "feature": "适合缩略图",
+        "values": [true, true, true, false]
+      },
+      {
+        "feature": "兼容直播推流",
+        "values": [true, "有限", false, false]
+      },
+      {
+        "feature": "可修改/更新",
+        "values": [true, "需再次付费", true, false]
+      },
+      {
+        "feature": "质量一致性",
+        "values": ["AI 保证", "取决于艺术家", "取决于技能", "通用"]
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "yt-1",
+      "question": "YouTube 频道头像应该是什么尺寸？",
+      "answer": "YouTube 推荐使用 800×800 像素的频道头像。虽然在桌面上显示为 98×98，在手机上更小，但 800×800 的源文件可以确保在高 DPI 显示器和电视屏幕上的清晰质量。PNGTuberMaker 可导出高达 1080p 高清画质（需创作者通行证），让你可以灵活用于各种 YouTube 用途 — 从微小的头像图标到缩略图图形。"
+    },
+    {
+      "id": "yt-2",
+      "question": "如何将头像用于 YouTube 缩略图？",
+      "answer": "将头像的表情从 PNGTuberMaker 导出为透明 PNG。将其导入 Photoshop、Canva、GIMP 或任何缩略图编辑器。将反应表情放在显眼位置 — 带表情的面孔的缩略图明显优于纯文字缩略图。使用一致的定位（例如，头像始终在右侧）来建立视觉品牌认知。你的惊讶/意外表情非常适合标题党风格的内容，而开心表情适合正面/获胜内容。"
+    },
+    {
+      "id": "yt-3",
+      "question": "我可以使用 PNGTuber 头像做不露脸的 YouTube 视频吗？",
+      "answer": "当然可以！许多成功的 YouTube 频道专门使用 PNGTuber 头像。你的头像出现在游戏、教程或评论视频的角落。对于直播，麦克风响应的动画让你的直播具有吸引力，而不展示你的脸。这非常适合游戏频道、教育内容、故事视频或任何喜欢隐私的创作者。头像为你的频道赋予个性，同时保持匿名。"
+    },
+    {
+      "id": "yt-4",
+      "question": "如何使用 PNGTuber 在 YouTube 直播？",
+      "answer": "使用你的 YouTube 推流密钥设置 OBS Studio（YouTube Studio → 开始直播 → 推流）。在 OBS 中将你的 PNGTuberMaker 浏览器源 URL 添加为浏览器源 — 将宽度/高度设置为 600×600。将头像放在你喜欢的角落。当你开始直播时，你的头像会自动对你的麦克风做出反应，说话时嘴巴会张开。观众看到的是你的头像而不是你的脸，非常适合不露脸的 YouTube 直播。"
+    },
+    {
+      "id": "yt-5",
+      "question": "我应该在 YouTube 和其他平台上使用相同的头像吗？",
+      "answer": "是的，跨平台的一致性可以建立更强的品牌认知。将相同的头像用于你的 YouTube 频道、Twitch 直播、Discord 服务器、Twitter/X 个人资料和 Instagram。当观众在任何地方看到你的头像时，他们立刻知道那是你。PNGTuberMaker 导出文件在任何地方都适用 — 直播的浏览器源，社交媒体的 PNG 导出。跨平台一致性是内容创作者的重要增长技巧。"
+    },
+    {
+      "id": "yt-6",
+      "question": "我可以以后更改 YouTube 头像吗？",
+      "answer": "使用 PNGTuberMaker 可以 — 随时使用积分重新生成或创建新头像。这相比委托艺术是巨大优势，因为更改需要更多金钱和时间。然而，我们建议保持核心头像一致以建立品牌认知。小更新（服装更换、季节主题）效果很好，但重大更改可能会让观众困惑。许多成功的创作者多年来保持相同的基础角色。"
+    }
+  ],
+  "cta": {
+    "title": "开始创建你的 YouTube 头像频道",
+    "subtitle": "创建一个让你的内容立即可识别的专业头像。",
+    "ctaText": "免费创建 YouTube 头像",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "Twitch 头像制作器",
+      "description": "为 Twitch 直播创建配套头像。",
+      "href": "/for/twitch"
+    },
+    {
+      "title": "Discord 头像制作器",
+      "description": "为你的 Discord 社区设计头像。",
+      "href": "/for/discord"
+    },
+    {
+      "title": "VTuber 制作器",
+      "description": "探索所有 VTuber 和 PNGTuber 头像风格。",
+      "href": "/vtuber-maker"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "首页",
+      "href": "/"
+    },
+    {
+      "label": "平台"
+    },
+    {
+      "label": "YouTube 头像制作器"
+    }
+  ]
+}

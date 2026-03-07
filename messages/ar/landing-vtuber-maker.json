@@ -1,0 +1,199 @@
+{
+  "slug": "vtuber-maker",
+  "metadata": {
+    "title": "صانع VTuber — مولد شخصيات VTuber المدعوم بالذكاء الاصطناعي مجاناً | PNGTuberMaker",
+    "description": "صانع VTuber بالذكاء الاصطناعي مجاناً — أنشئ شخصيات VTuber وتعبيرات مخصصة في دقائق. لا حاجة لمهارات فنية. متوافق مع OBS للبث على Twitch وYouTube وDiscord. ابدأ مجاناً الآن.",
+    "keywords": [
+      "صانع vtuber",
+      "صانع نماذج vtuber",
+      "صانع vtuber بالذكاء الاصطناعي",
+      "صانع شخصيات vtuber",
+      "مولد شخصيات vtuber",
+      "نموذج vtuber",
+      "صانع vtuber مجاناً",
+      "صانع vtuber اون لاين",
+      "شخصية vtuber بالذكاء الاصطناعي",
+      "منشئ vtuber",
+      "مولد vtuber"
+    ],
+    "canonical": "/vtuber-maker"
+  },
+  "hero": {
+    "badge": "منشئ VTuber المدعوم بالذكاء الاصطناعي",
+    "title": "صانع VTuber بالذكاء الاصطناعي مجاناً — أنشئ شخصية VTuber اون لاين",
+    "subtitle": "صمم نموذج VTuber فريد في دقائق — لا حاجة لمهارات فنية. أنشئ شخصيات مخصصة مع مجموعات تعبيرية وابدأ البث على أي منصة.",
+    "ctaText": "أنشئ VTuber الخاص بك",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "كل ما تحتاجه للبدء كبث VTuber",
+    "items": [
+      {
+        "icon": "Wand2",
+        "title": "إنشاء بالذكاء الاصطناعي",
+        "description": "صف شخصيتك أو ارفع صورة مرجعية. سيقوم الذكاء الاصطناعي لدينا بإنشاء تصاميم VTuber متعددة للاختيار من بينها."
+      },
+      {
+        "icon": "Layers",
+        "title": "مجموعات التعبيرات",
+        "description": "أنشئ مجموعة كاملة من التعبيرات — سعيد، غاضب، حزين، مندهش — جميعها متسقة مع أسلوب شخصيتك."
+      },
+      {
+        "icon": "Monitor",
+        "title": "جاهز للبث في دقائق",
+        "description": "احصل على رابط Browser Source لـ OBS Studio. ستظهر شخصية VTuber على البث بخلفية شفافة وتتفاعل مع صوتك في الوقت الفعلي."
+      },
+      {
+        "icon": "Shield",
+        "title": "شخصيتك، علامتك التجارية",
+        "description": "استخدم شخصيتك على Twitch وYouTube وDiscord والتواصل الاجتماعي. يحصل مشتركو Creator Pass على حقوق تجارية كاملة تشمل الاستخدام التجاري."
+      }
+    ]
+  },
+  "comparison": {
+    "title": "PNGTuber مقابل VTuber التقليدي",
+    "description": "اكتشف لماذا يختار آلاف البثitioners PNGTubers بدلاً من أنظمة VTuber الكاملة.",
+    "columns": [
+      {
+        "label": "الميزة"
+      },
+      {
+        "label": "PNGTuberMaker",
+        "highlight": true
+      },
+      {
+        "label": "VTuber التقليدي"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "التكلفة",
+        "values": ["مجاني – 7.99$/شهر", "200$ – 2000$+"]
+      },
+      {
+        "feature": "وقت الإعداد",
+        "values": ["أقل من 5 دقائق", "2–8 أسابيع"]
+      },
+      {
+        "feature": "تتبع الوجه",
+        "values": ["غير مطلوب", "مطلوب كاميرا + برنامج"]
+      },
+      {
+        "feature": "الأجهزة",
+        "values": ["ميكروفون فقط", "كاميرا + معالج رسوميات"]
+      },
+      {
+        "feature": "إعداد OBS",
+        "values": ["الصق رابطاً واحداً", "إعداد معقد لـ NDI/Capture"]
+      },
+      {
+        "feature": "إنشاء بالذكاء الاصطناعي",
+        "values": [true, false]
+      },
+      {
+        "feature": "مجموعة التعبيرات",
+        "values": ["مُنشأة بالذكاء الاصطناعي", "كل تعبير يكلف额外"]
+      }
+    ]
+  },
+  "showcase": {
+    "title": "شخصيات VTuber أُنشئت بالذكاء الاصطناعي",
+    "description": "كل شخصية أدناه أُنشئت في ثوانٍ — لا حاجة لمهارات فنية.",
+    "images": [
+      {
+        "src": "/images/showcase/fox_pngtuber.png",
+        "alt": "شخصية VTuber ثعلب أُنشئت بالذكاء الاصطناعي باستخدام صانع VTuber المجاني PNGTuberMaker",
+        "prompt": "orange fox ears, long wavy blue hair with star hairpins, glowing amber eyes, navy blue dress with constellations, holding a floating crystal ball"
+      },
+      {
+        "src": "/images/showcase/pinkbunny_pngtuber.png",
+        "alt": "شخصية VTuber أرنب وردي أُنشئت بـ PNGTuberMaker",
+        "prompt": "pink bunny ears, floral hair band, soft peach bob hair, emerald green eyes, oversized cream hoodie, holding a basket of strawberries"
+      },
+      {
+        "src": "/images/showcase/sunflower_pngtuber.png",
+        "alt": "شخصية VTuber زهرة الشمس اللطيفة أُنشئت بواسطة صانع VTuber اون لاين PNGTuberMaker",
+        "prompt": "giant sunflower crown, mint green curly hair, bright yellow eyes, white sundress, holding a watering can, tiny yellow wings"
+      },
+      {
+        "src": "/images/showcase/round1_idle.png",
+        "alt": "شخصية VTuber فتاة سحرية أُنشئت بصانع VTuber بالذكاء الاصطناعي PNGTuberMaker",
+        "prompt": "A classic magical girl with long, flowing golden twin-tails tied with large red silk bows. She has bright blue, expressive eyes and a heart-shaped face."
+      },
+      {
+        "src": "/images/showcase/round2_sad.png",
+        "alt": "شخصية VTuber تعبير ساحرة أُنشئت باستخدام صانع الشخصيات PNGTuberMaker",
+        "prompt": "small witch, huge wizard hat, starry hair, galaxy eyes, navy blue dress, magical girl"
+      },
+      {
+        "src": "/images/showcase/round3_angry.png",
+        "alt": "شخصية VTuber تعبير غاضب أُنشئت بمنشئ VTuber بالذكاء الاصطناعي PNGTuberMaker",
+        "prompt": "A young woman with voluminous, wavy dark brown hair and large brown eyes. Round glasses with silver sun-shaped pendants, black Gothic-style ruffled corset top."
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "vm-1",
+      "question": "ما هو صانع VTuber؟",
+      "answer": "صانع VTuber هو أداة تساعدك على إنشاء شخصية افتراضية للبث. يستخدم PNGTuberMaker الذكاء الاصطناعي لإنشاء شخصيات VTuber مخصصة من أوصاف نصية أو صور مرجعية، مع مجموعات تعبيرية كاملة للبث المباشر."
+    },
+    {
+      "id": "vm-2",
+      "question": "هل PNGTubing أفضل من VTubing؟",
+      "answer": "PNGTubers أبسط وأخف من أنظمة VTuber الكاملة. لا تتطلب تتبع الوجه أو كاميرا أو برامج باهظة — فقط مصدر متصفح في OBS. يمنحك PNGTuberMaker مظهراً احترافياً دون أي تعقيد في الإعداد."
+    },
+    {
+      "id": "vm-3",
+      "question": "هل أحتاج كاميرا أو تتبع وجه؟",
+      "answer": "لا. شخصيات PNGTuber تتفاعل مع إدخال الميكروفون، وليس تتبع الوجه. عندما تتحدث، تتحرك شخصيتك تلقائياً. لا كاميرا، لا إضافات، لا أجهزة إضافية."
+    },
+    {
+      "id": "vm-4",
+      "question": "هل يمكنني استخدام شخصية VTuber على Twitch وYouTube؟",
+      "answer": "نعم. شخصيتك تعمل على أي منصة تدعم مصادر متصفح OBS — بما في ذلك Twitch وYouTube وKick والمزيد. تحصل على رابط فريد تضعه في OBS كمصدر متصفح."
+    },
+    {
+      "id": "vm-5",
+      "question": "كم تكلفة إنشاء شخصية VTuber؟",
+      "answer": "يحصل المستخدمون الجدد على إنشاء شخصية واحدة مجاناً للتجربة — لا حاجة لبطاقة ائتمانية. تكلفة طلبات VTuber التقليدية تتراوح بين 200$-2000$+ وتستغرق أسابيع — PNGTuberMaker delivers في دقائق بتكلفة جزء صغير."
+    },
+    {
+      "id": "vm-6",
+      "question": "هل يمكن إنشاء شخصية VTuber على الهاتف؟",
+      "answer": "نعم. يعمل PNGTuberMaker في أي متصفح حديث، بما في ذلك الهواتف والأجهزة اللوحية. يمكنك تصميم شخصية VTuber على هاتفك أو جهازك اللوحي، ثم استخدامها للبث على جهاز الكمبيوتر الخاص بك مع OBS Studio."
+    }
+  ],
+  "cta": {
+    "title": "مستعد لتصبح VTuber؟",
+    "subtitle": "أنشئ شخصيتك في دقائق. لا مهارات فنية، لا طلبات باهظة.",
+    "ctaText": "ابدأ الإنشاء مجاناً",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "صانع شخصيات أنمي",
+      "description": "أنشئ شخصيات VTuber بالأسلوب الياباني بالذكاء الاصطناعي.",
+      "href": "/style/anime"
+    },
+    {
+      "title": "صانع PNGTuber مجاني",
+      "description": "ابدأ بمجاني لإنشاء الشخصيات.",
+      "href": "/free-pngtuber-maker"
+    },
+    {
+      "title": "كيفية صنع PNGTuber",
+      "description": "دليل خطوة بخطوة لإنشاء أول شخصية لك.",
+      "href": "/guides/how-to-make-a-pngtuber"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "الرئيسية",
+      "href": "/"
+    },
+    {
+      "label": "صانع VTuber"
+    }
+  ]
+}

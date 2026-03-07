@@ -1,0 +1,62 @@
+{
+  "heading": "シンプルで透明性のある料金設定",
+  "subtitle": "無料で始められます。準備ができたらクレジットを購入するか、サブスクリプションに登録してください。",
+  "creditsNote": "パックで購入したクレジットは有効期限がありません。サブスクリプションのクレジットは毎月補充され、請求期間末に期限切れになります。",
+  "or": "または",
+  "freeTrial": {
+    "title": "無料試用版",
+    "subtitle": "購入前に試す",
+    "price": "$0",
+    "note": "クレジットカード不要",
+    "features": [
+      "アバター生成1回",
+      "候補画像4枚",
+      "512px PNGエクスポート",
+      "透明背景",
+      "クレジットカード不要"
+    ],
+    "ctaLoggedIn": "アバターを作成",
+    "ctaLoggedOut": "無料で開始"
+  },
+  "creatorPass": {
+    "badge": "登録して節約",
+    "subtitle": "クレジットとHDエクスポートで最もお求めになりたいクリエイター向け",
+    "features": [
+      "月額6,000クレジット（トップアップ比約30%節約）",
+      "HDエクスポート（1080p）",
+      "全表情パック",
+      "いつでもサブスクリプション管理可能",
+      "優先メールサポート"
+    ]
+  },
+  "toggle": {
+    "monthly": "月額",
+    "yearly": "年額",
+    "save": "{percent}%節約"
+  },
+  "perMonth": "/月",
+  "savings": "{percent}%節約",
+  "annualNote": "年額請求時",
+  "savingsNote": "クレジット購入比約30%節約",
+  "currentPlan": "現在のプラン",
+  "subscribeYearly": "年額に登録",
+  "subscribeMonthly": "月額に登録",
+  "paymentSuccess": "支払い完了！クレジットが追加されました。",
+  "paymentCanceled": "支払いがキャンセルされました。いつでも再試行できます。",
+  "creditPacks": {
+    "title": "クレジットを購入",
+    "subtitle": "従量制。クレジットは有効期限がありません。",
+    "credits": "クレジット",
+    "buyCredits": "クレジットを購入",
+    "mostPopular": "最も人気",
+    "packStarter": "スターター",
+    "packPopular": "人気",
+    "packBestValue": "最もお徳"
+  },
+  "buyCreditsModal": {
+    "title": "クレジットが足りません",
+    "requiresCredits": "このアクションには{count}クレジットが必要です",
+    "best": "BEST",
+    "footer": "クレジットは有効期限がありません。Stripeによる安全な決済。"
+  }
+}

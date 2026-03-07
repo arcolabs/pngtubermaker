@@ -7,24 +7,33 @@ import DiscordCTA from "@/components/sections/DiscordCTA";
 import FAQ from "@/components/sections/FAQ";
 import Testimonials from "@/components/sections/Testimonials";
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import { generateLandingJsonLd, landingPages } from "@/lib/landing-pages";
+import { generateLandingJsonLd, getLandingPage } from "@/lib/landing-pages";
 
-const page = landingPages["free-pngtuber-maker"];
-const jsonLd = generateLandingJsonLd(page);
+interface Props {
+  params: Promise<{ locale: string }>;
+}
 
-export const metadata: Metadata = {
-  title: page.metadata.title,
-  description: page.metadata.description,
-  keywords: page.metadata.keywords,
-  alternates: { canonical: page.metadata.canonical },
-  openGraph: {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const page = getLandingPage(locale, "free-pngtuber-maker");
+  return {
     title: page.metadata.title,
     description: page.metadata.description,
-    url: `https://pngtubermaker.com${page.metadata.canonical}`,
-  },
-};
+    keywords: page.metadata.keywords,
+    alternates: { canonical: page.metadata.canonical },
+    openGraph: {
+      title: page.metadata.title,
+      description: page.metadata.description,
+      url: `https://pngtubermaker.com${page.metadata.canonical}`,
+    },
+  };
+}
 
-export default function FreePNGTuberMakerPage() {
+export default async function FreePNGTuberMakerPage({ params }: Props) {
+  const { locale } = await params;
+  const page = getLandingPage(locale, "free-pngtuber-maker");
+  const jsonLd = generateLandingJsonLd(page);
+
   return (
     <>
       <script

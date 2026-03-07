@@ -1,0 +1,62 @@
+{
+  "heading": "Preços simples e transparentes",
+  "subtitle": "Comece de graça. Compre créditos ou assine quando estiver pronto.",
+  "creditsNote": "Créditos comprados via pacotes nunca expiram. Créditos de assinatura renovam mensalmente e expiram no final do ciclo de cobrança.",
+  "or": "ou",
+  "freeTrial": {
+    "title": "Teste Grátis",
+    "subtitle": "Experimente antes de comprar",
+    "price": "$0",
+    "note": "Sem cartão de crédito",
+    "features": [
+      "1 geração de avatar",
+      "4 imagens candidatas",
+      "512px PNG export",
+      "Fundo transparente",
+      "Não requer cartão de crédito"
+    ],
+    "ctaLoggedIn": "Criar Avatar",
+    "ctaLoggedOut": "Começar Grátis"
+  },
+  "creatorPass": {
+    "badge": "Assine e Economize",
+    "subtitle": "Para criadores que querem o melhor custo-benefício em créditos e exportação HD",
+    "features": [
+      "6.000 créditos/mês (~30% de economia vs recarga)",
+      "HD export (1080p)",
+      "Todos os packs de expressões",
+      "Gerencie a assinatura a qualquer momento",
+      "Suporte prioritário por e-mail"
+    ]
+  },
+  "toggle": {
+    "monthly": "Mensal",
+    "yearly": "Anual",
+    "save": "Economize {percent}%"
+  },
+  "perMonth": "/mês",
+  "savings": "Economize {percent}%",
+  "annualNote": "/mês quando cobrado anualmente",
+  "savingsNote": "~30% de economia vs comprar créditos",
+  "currentPlan": "Plano Atual",
+  "subscribeYearly": "Assinar Anual",
+  "subscribeMonthly": "Assinar Mensal",
+  "paymentSuccess": "Pagamento bem-sucedido! Os créditos foram adicionados.",
+  "paymentCanceled": "Pagamento cancelado. Você pode tentar novamente a qualquer momento.",
+  "creditPacks": {
+    "title": "Comprar Créditos",
+    "subtitle": "Pague conforme usa. Créditos nunca expiram.",
+    "credits": "créditos",
+    "buyCredits": "Comprar Créditos",
+    "mostPopular": "Mais Popular",
+    "packStarter": "Iniciante",
+    "packPopular": "Popular",
+    "packBestValue": "Melhor Custo-Benefício"
+  },
+  "buyCreditsModal": {
+    "title": "Você precisa de mais créditos",
+    "requiresCredits": "Esta ação requer {count} créditos",
+    "best": "MELHOR",
+    "footer": "Créditos nunca expiram. Checkout seguro via Stripe."
+  }
+}

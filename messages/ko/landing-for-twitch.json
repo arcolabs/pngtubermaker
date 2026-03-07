@@ -1,0 +1,250 @@
+{
+  "slug": "for/twitch",
+  "metadata": {
+    "title": "Twitch 아바타 메이커 — 무료 PNGTuber 및 스트리밍 아바타 제작기",
+    "description": "AI로 무료 Twitch 아바타 및 PNGTuber를 제작하세요. OBS 사용 가능한 마이크 반응형 캐릭터, 표현 팩 및 스트리밍 설정 포함. 웹캠 필요 없음. 5분 만에 스트리밍 시작.",
+    "keywords": [
+      "트위치 아바타 메이커",
+      "트위치 아바타",
+      "트위치 프로필 사진 메이커",
+      "트위치 pngtuber",
+      "트위치 스트리밍 아바타",
+      "트위치 이모트 메이커",
+      "무료 트위치 아바타",
+      "트위치 obs 아바타",
+      "트위치 pngtuber 설정",
+      "페이스리스 트위치 스트리밍",
+      "트위치 웹캠 없이 아바타",
+      "ai 트위치 아바타"
+    ],
+    "canonical": "/for/twitch"
+  },
+  "hero": {
+    "badge": "🎮 무료 Twitch 스트리밍 아바타",
+    "title": "Twitch 아바타 메이커: PNGTuber 스트리밍 설정",
+    "subtitle": "전문적인 AI 아바타로 Twitch에서 라이브配信하세요 — 웹캠 필요 없음, 얼굴 추적 필요 없음, 비싼 의뢰 필요 없음. OBS에서 즉시 작동하는 마이크 반응형 PNGTuber. 무료로 시작하고 5분 만에 스트리밍.",
+    "ctaText": "무료 Twitch 아바타 만들기",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "Twitch 스트리머를 위해 제작됨",
+    "items": [
+      {
+        "icon": "Monitor",
+        "title": "INSTANT OBS 통합",
+        "description": "고유한 브라우저 소스 URL을 받으세요 — 그냥 OBS 스튜디오에 붙여넣기만 하면 됩니다. 투명 배경으로 아바타가 나타나며 마이크에 반응하고 자동으로 업데이트됩니다. 플러그인 필요 없음, 다운로드 필요 없음, 복잡한 설정 필요 없음."
+      },
+      {
+        "icon": "Mic",
+        "title": "마이크 반응형 애니메이션",
+        "description": "말할 때 아바타의 입이 열리고 조용할 때 닫힙니다. 브라우저 마이크 접근으로 작동 — 얼굴 추적 소프트웨어 필요 없음, 웹캠 필요 없음. 페이스리스 스트리밍이나 카메라를 싫어하는 크리에이터에게 완벽합니다."
+      },
+      {
+        "icon": "Zap",
+        "title": "성능 영향 ZERO",
+        "description": "GPU를 잡아먹는 VTuber 소프트웨어와 달리, PNGTuber는 가벼운 브라우저 소스로 실행됩니다. 프레임 드롭 없이 고품질로 스트리밍. OBS를 실행할 수 있는 모든 PC에서 작동 — 저렴한 노트북도 가능."
+      },
+      {
+        "icon": "Layers",
+        "title": "Twitch 준비 완료 표현 팩",
+        "description": "Twitch 문화에 맞는 표현을 생성하세요 — 큰 플레이에는 열광, 패배에는 짜증, 놀랐을 때는 pog, 그냥 채팅에는 chill. 모든 표현이 캐릭터의 아트 스타일과 완벽하게 일치합니다."
+      }
+    ]
+  },
+  "platformSpecs": {
+    "title": "Twitch 스트리밍 사양",
+    "items": [
+      {
+        "label": "프로필 사진",
+        "value": "256×256 ~ 1000×1000 픽셀"
+      },
+      {
+        "label": "오프라인 배너",
+        "value": "1920×1080 픽셀"
+      },
+      {
+        "label": "패널 이미지",
+        "value": "320×160 ~ 640×320 픽셀"
+      },
+      {
+        "label": "이모트 크기",
+        "value": "112×112, 56×56, 28×28 픽셀"
+      },
+      {
+        "label": "OBS 브라우저 소스",
+        "value": "권장 400×400 ~ 800×800"
+      },
+      {
+        "label": "파일 형식",
+        "value": "투명 배경이 포함된 PNG"
+      }
+    ]
+  },
+  "steps": {
+    "title": "OBS에서 Twitch PNGTuber를 설정하는 방법",
+    "items": [
+      {
+        "title": "1단계: Twitch 아바타 만들기",
+        "description": "PNGTuberMaker를 열고 스트리밍 페르소나를 설명하세요. 시인성을 생각해 보세요 — 선명한 색상과 명확한 실루엣이 스트리밍에서 더 잘 보입니다. 여러 디자인을 생성하고 브랜드를 대표하는 하나를 선택하세요."
+      },
+      {
+        "title": "2단계: 표현 팩 생성",
+        "description": "5개 이상의 표현을 만드세요: neutral(말하는 중), happy, sad, angry, surprised. 이것들이 음성 활동에 따라 아바타를 애니메이션화합니다. AI가 모든 표현에서 완벽한 스타일 일관성을 보장합니다."
+      },
+      {
+        "title": "3단계: 브라우저 소스 URL 복사",
+        "description": "PNGTuberMaker에서 아바타를 선택한 후 'OBS URL 가져오기'를 클릭하세요. 고유한 브라우저 소스 URL을 복사하세요 — 이것이 아바타를 OBS에 연결하고 마이크에 반응하게 합니다."
+      },
+      {
+        "title": "4단계: OBS 스튜디오에 추가",
+        "description": "OBS에서: 소스 → + → 브라우저 → 이름을 'PNGTuber'로 지정하세요. URL을 붙여넣으세요. 너비: 600, 높이: 600. '표시되지 않을 때 소스 종료'를 체크하세요. 투명 배경의 아바타가 즉시 나타납니다."
+      },
+      {
+        "title": "5단계: 위치 및 오디오 설정",
+        "description": "아바타를 원하는 모서리로 드래그하세요. 우클릭 → 변형 → 변형 편집으로 정확한 위치 지정. 마이크를 테스트하세요 — 말할 때 아바타가 반응해야 합니다. 필요하면 OBS에서 마이크 민감도를 조정하세요."
+      },
+      {
+        "title": "6단계: Twitch에서 라이브配信",
+        "description": "OBS 설정 → 스트림에서 Twitch 스트림 키를 설정하세요. 장면 구성 — 게임 캡처, PNGTuber 아바타, 알림. '스트리밍 시작'을 누르세요. 스트리밍 중 아바타가 자동으로 음성에 반응합니다!"
+      }
+    ]
+  },
+  "comparison": {
+    "title": "Twitch 아바타 옵션: 완전 비교",
+    "description": "Twitch용 스트리밍 아바타를 얻는 모든 방법을 비교하세요.",
+    "columns": [
+      {
+        "label": "방법"
+      },
+      {
+        "label": "PNGTuberMaker",
+        "highlight": true
+      },
+      {
+        "label": "Fiverr 의뢰"
+      },
+      {
+        "label": "Live2D VTuber"
+      },
+      {
+        "label": "페이스캠"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "총 비용",
+        "values": ["무료 – $7.99/월", "$100 – $500+", "$500 – $3,000+", "무료"]
+      },
+      {
+        "feature": "설정 시간",
+        "values": ["5분", "2-4주", "4-8주", "즉시"]
+      },
+      {
+        "feature": "웹캠 필요",
+        "values": [false, false, true, true]
+      },
+      {
+        "feature": "얼굴 추적 필요",
+        "values": [false, false, true, "해당없음(실제 얼굴)"]
+      },
+      {
+        "feature": "PC 성능 영향",
+        "values": ["없음", "없음", "높음(GPU)", "낮음"]
+      },
+      {
+        "feature": "애니메이션 유형",
+        "values": ["마이크 반응형", "정적/제한적", "전체 모션 캡처", "실제 삶"]
+      },
+      {
+        "feature": "언제든 아바타 변경 가능",
+        "values": [true, "다시 지불", "다시 리깅", "해당없음"]
+      },
+      {
+        "feature": "초보자에게 적합",
+        "values": [true, true, false, true]
+      },
+      {
+        "feature": "개인정보 보호/익명성",
+        "values": ["완전", "완전", "완전", "없음"]
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "tw-1",
+      "question": "Twitch 스트림에 PNGTuber 아바타를 추가하려면 어떻게 해야 하나요?",
+      "answer": "PNGTuberMaker에서 아바타를 만든 후 브라우저 소스 URL을 복사하세요. OBS 스튜디오에서 새 브라우저 소스를 추가하고, URL을 붙여넣고, 크기를 600×600으로 설정하면 PNGTuber가 스트림에 나타납니다. 자동으로 마이크에 반응합니다 — 말할 때 입이 열리고 조용할 때 닫힙니다. OBS의 드래그 앤 드롭 인터페이스를 사용하여 스트림 레이아웃의 원하는 곳에 배치하세요."
+    },
+    {
+      "id": "tw-2",
+      "question": "PNGTuber를 사용하여 웹캠 없이 Twitch에서 스트리밍할 수 있나요?",
+      "answer": "물론이죠! 그것이 PNGTuber의 가장 큰 장점 중 하나입니다. 마이크만 있으면 됩니다 — 웹캠, 얼굴 추적 소프트웨어, 카메라 설정이 필요 없습니다. 아바타가 얼굴이 아닌 음성에 반응합니다. 이것은 페이스리스 스트리밍, 개인정보 보호를 의식하는 크리에이터, 또는 카메라에 나가는 것을 선호하지 않는 모든 사람에게 완벽합니다. 수천 명의 성공적인 Twitch 스트리머가 PNGTuber를 단독으로 사용합니다."
+    },
+    {
+      "id": "tw-3",
+      "question": "PNGTuber가 Twitch 스트림이나 게임을 느리게 하나요?",
+      "answer": "전혀 아닙니다. PNGTuber는 OBS에서 가벼운 브라우저 소스로 실행됩니다 — 최소한의 CPU를 사용하고 virtually GPU를 사용하지 않습니다. 실시간 렌더링이 필요하고 프레임 드롭을 유발할 수 있는 Live2D VTuber와 달리, PNGTuber는 본질적으로 오디오에 따라 전환되는 이미지를 표시하는 것입니다. PNGTuber 아바타가 활성화된 상태로 경쟁 게임을 전체 FPS로 스트리밍할 수 있습니다. 저렴한 PC도 PNGTuber를轻松处理합니다."
+    },
+    {
+      "id": "tw-4",
+      "question": "Twitch 초보자에게 PNGTuber가 VTuber보다 낫나요?",
+      "answer": "대부분의 초보자에게, 그렇습니다. PNGTuber는 무료입니다(VTuber 리그 $500+ 대비), 설정에 5분이 걸립니다(리깅 주 대비 수주), 웹캠이 필요 없으며 모든 PC에서 작동합니다. VTuber는 더 고급 애니메이션을 제공하지만 상당한 비용과 복잡성이伴随합니다. 많은 성공적인 스트리머가 PNGTuber로 시작하여 나중에 VTuber로 업그레이드합니다. PNGTuber는 아바타 스트리밍을 위한 완벽한 진입점입니다."
+    },
+    {
+      "id": "tw-5",
+      "question": "Twitch 아바타 의뢰는 보통 얼마인가요?",
+      "answer": "전통적인 Twitch 아바타 의뢰 비용은 다양합니다: 정적 PNG 아바타는 $50-$200, 간단한 리깅 모델은 $200-$500, 전체 Live2D VTuber 리그는 $500-$3,000+. 각 표현마다 종종 추가 비용($10-$50)이 들며, 소요 시간은 2-8주입니다. PNGTuberMaker를 사용하면 5분 이내에 전문 아바타와 여러 표현을 무료로 시작할 수 있습니다. 비용과 시간 절감 효과가 정말 큽니다."
+    },
+    {
+      "id": "tw-6",
+      "question": "같은 아바타를 Twitch, YouTube, Discord에서 사용할 수 있나요?",
+      "answer": "네! PNGTuber 아바타가 어디서나 작동합니다. Twitch, YouTube, Kick 스트리밍을 위한 OBS에서 동일한 브라우저 소스 URL을 사용하세요. Discord 프로필 사진 및 소셜 미디어용 정적 버전을 내보내세요. 이 일관성이 플랫폼 전반에서 브랜드 구축에 도움이 됩니다. viewers은 Twitch에서 스트리밍을 보든 Discord 메시지를 보든 당신을 즉시认出합니다."
+    },
+    {
+      "id": "tw-7",
+      "question": "OBS 외에 특별한 소프트웨어가 필요한가요?",
+      "answer": "아니요! 두 가지 무료 도구만 있으면 됩니다: PNGTuberMaker(브라우저에서 실행되어 아바타를 제작) 및 OBS 스튜디오(무료 스트리밍 소프트웨어). 그것だけです. 플러그인 필요 없음, 추가 구매 필요 없음, 시작 구독 필요 없음. 두 도구 모두 산업 표준이며 수백만 명의 크리에이터가 사용합니다. 브라우저 소스 통합은 OBS에 내장되어 있습니다 — URL을 붙여넣고 시작하세요."
+    }
+  ],
+  "cta": {
+    "title": "Twitch 스트리밍 여정을 시작하세요",
+    "subtitle": "PNGTuberMaker로 라이브配信한 수천 명의 페이스리스 스트리머와 함께하세요. 무료로 빠르고 스트리밍 준비 완료, 5분 만에.",
+    "ctaText": "내 무료 Twitch 아바타 만들기",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "PNGTuber 만드는 방법",
+      "description": "첫 번째 PNGTuber 스트림 설정에 대한 완전 가이드.",
+      "href": "/guides/how-to-make-a-pngtuber"
+    },
+    {
+      "title": "Discord 아바타 메이커",
+      "description": "Discord 커뮤니티를 위한|matching 아바타를 만드세요.",
+      "href": "/for/discord"
+    },
+    {
+      "title": "YouTube 아바타 메이커",
+      "description": "같은 아바타로 YouTube로 멀티 스트리밍.",
+      "href": "/for/youtube"
+    },
+    {
+      "title": "무료 PNGTuber 메이커",
+      "description": "1회 무료 아바타 생성 체험 — 신용카드 필요 없음.",
+      "href": "/free-pngtuber-maker"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "홈",
+      "href": "/"
+    },
+    {
+      "label": "플랫폼",
+      "href": "/for"
+    },
+    {
+      "label": "Twitch 아바타 메이커"
+    }
+  ]
+}

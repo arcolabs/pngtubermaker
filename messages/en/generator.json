@@ -1,0 +1,48 @@
+{
+  "quickStart": "Quick Start",
+  "quickStartHint": "— Click tags to build your prompt",
+  "hide": "Hide",
+  "style": "Style",
+  "generate": "Generate",
+  "generating": "Generating...",
+  "noCredits": "Not enough credits.",
+  "buyCredits": "Buy credits",
+  "promptPlaceholder": "A cute anime girl with long silver hair, wearing a hoodie, gaming headset, cozy background...",
+  "minChars": "At least 10 characters",
+  "reference": "Person Reference",
+  "referenceHint": "Upload your photo or character art",
+  "quickTemplates": "Quick Templates",
+  "categories": {
+    "character": "Character",
+    "vibe": "Vibe",
+    "gear": "Gear"
+  },
+  "tags": {
+    "catGirl": "Cat Girl",
+    "wolfBoy": "Wolf Boy",
+    "bunnyGirl": "Bunny Girl",
+    "demon": "Demon",
+    "foxGirl": "Fox Girl",
+    "elf": "Elf",
+    "kawaii": "Kawaii",
+    "dark": "Dark",
+    "cozy": "Cozy",
+    "pastel": "Pastel",
+    "neon": "Neon",
+    "gothic": "Gothic",
+    "headset": "Gaming Headset",
+    "hoodie": "Hoodie",
+    "catEars": "Cat Ears",
+    "glasses": "Glasses",
+    "horns": "Horns",
+    "scarf": "Scarf"
+  },
+  "styles": {
+    "chibi": "Chibi",
+    "anime": "Anime",
+    "cartoon": "Cartoon",
+    "pixelart": "Pixel Art",
+    "none": "None",
+    "noneHint": "Describe your style in the prompt"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "availableCredits": "利用可能なクレジット",
+  "freeCredits": "無料クレジット",
+  "subscriptionCredits": "サブスクリプションクレジット",
+  "topupCredits": "補充クレジット",
+  "neverExpires": "有効期限なし",
+  "expired": "期限切れ",
+  "buyCredits": "クレジットを購入する",
+  "creditsLeft": "残り{count}クレジット"
+}

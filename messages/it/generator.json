@@ -1,0 +1,48 @@
+{
+  "quickStart": "Avvio Rapido",
+  "quickStartHint": "— Clicca sui tag per creare il tuo prompt",
+  "hide": "Nascondi",
+  "style": "Stile",
+  "generate": "Genera",
+  "generating": "Generazione in corso...",
+  "noCredits": "Crediti insufficienti.",
+  "buyCredits": "Acquista crediti",
+  "promptPlaceholder": "Una ragazza anime carina con capelli argentei lunghi, che indossa una felpa con cappuccio, cuffie da gaming, sfondo accogliente...",
+  "minChars": "Almeno 10 caratteri",
+  "reference": "Riferimento Persona",
+  "referenceHint": "Carica la tua foto o artwork del personaggio",
+  "quickTemplates": "Modelli Rapidi",
+  "categories": {
+    "character": "Personaggio",
+    "vibe": "Atmosfera",
+    "gear": "Equipaggiamento"
+  },
+  "tags": {
+    "catGirl": "Ragazza Gatto",
+    "wolfBoy": "Ragazzo Lupo",
+    "bunnyGirl": "Ragazza Coniglio",
+    "demon": "Demone",
+    "foxGirl": "Ragazza Volpe",
+    "elf": "Elfo",
+    "kawaii": "Kawaii",
+    "dark": "Oscuro",
+    "cozy": "Accogliente",
+    "pastel": "Pastello",
+    "neon": "Neon",
+    "gothic": "Gotico",
+    "headset": "Cuffie Gaming",
+    "hoodie": "Felpa con Cappuccio",
+    "catEars": "Orecchie da Gatto",
+    "glasses": "Occhiali",
+    "horns": "Corna",
+    "scarf": "Sciarpa"
+  },
+  "styles": {
+    "chibi": "Chibi",
+    "anime": "Anime",
+    "cartoon": "Cartoon",
+    "pixelart": "Pixel Art",
+    "none": "Nessuno",
+    "noneHint": "Descrivi il tuo stile nel prompt"
+  }
+}

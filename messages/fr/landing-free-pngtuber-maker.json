@@ -1,0 +1,199 @@
+{
+  "slug": "free-pngtuber-maker",
+  "metadata": {
+    "title": "Créateur de PNGTuber Gratuit — Créez Votre Avatar Gratuitement (2026)",
+    "description": "Créateur de PNGTuber 100% gratuit — créez des avatars personnalisés avec l'IA, sans carte de crédit requise. Obtenez des packs d'expressions gratuits, intégration OBS et configuration de streaming. Meilleure alternative gratuite à PNGTuber Plus.",
+    "keywords": [
+      "créateur pngtuber gratuit",
+      "pngtuber gratuit",
+      "créateur pngtuber gratuit",
+      "pngtuber gratuit",
+      "logiciel pngtuber gratuit",
+      "créateur d'avatar gratuit",
+      "alternative pngtuber plus",
+      "logiciel pngtuber gratuit",
+      "pngtuber sans carte de crédit",
+      "avatar de streaming gratuit",
+      "créateur d'avatar twitch gratuit",
+      "créateur vtuber gratuit"
+    ],
+    "canonical": "/free-pngtuber-maker"
+  },
+  "hero": {
+    "badge": "🎁 100% Gratuit — Aucune Carte de Crédit Requise",
+    "title": "Créateur de PNGTuber Gratuit : Créez Votre Avatar Sans Frais",
+    "subtitle": "Créez votre avatar PNGTuber avec 1 génération gratuite — aucune carte de crédit requise. Pas de filigranes, pas de frais cachés. Commencez à streamer aujourd'hui.",
+    "ctaText": "Créer un Avatar Gratuit — Aucune Carte de Crédit Requise",
+    "ctaHref": "/create"
+  },
+  "features": {
+    "title": "Tout Ce Que Vous Obtenez Gratuitement (Sans Attrape)",
+    "items": [
+      {
+        "icon": "Gift",
+        "title": "Avatar + Pack d'Expressions Gratuit",
+        "description": "Obtenez 1 génération d'avatar gratuite pour créer votre premier personnage PNGTuber. Pas de carte de crédit, pas de limites de temps, pas de filigranes — juste gratuit. Achetez des crédits à tout moment pour débloquer des packs d'expressions et plus de personnages."
+      },
+      {
+        "icon": "Wand2",
+        "title": "Qualité de Génération IA Complète",
+        "description": "Les utilisateurs gratuits obtiennent exactement la même IA que les utilisateurs payants. Décrivez n'importe quel personnage — anime, pixel art, réaliste, fantasy — et obtenez des résultats de qualité professionnelle. Aucune restriction de fonctionnalité sur la créativité."
+      },
+      {
+        "icon": "Monitor",
+        "title": "Configuration de Streaming Complète",
+        "description": "Obtenez votre URL unique de Source Navigateur pour OBS Studio. Animation réactive au micro complète, fond transparent et streaming instantané vers Twitch, YouTube, Kick et Discord — le tout gratuitement."
+      },
+      {
+        "icon": "Shield",
+        "title": "Utilisez Partout Où Vous Streamez",
+        "description": "Utilisez votre avatar gratuit pour le streaming, les réseaux sociaux, Discord et la création de contenu personnel. Passez au Creator Pass pour une licence commerciale complète et des exports HD."
+      }
+    ]
+  },
+  "comparison": {
+    "title": "Comparatif des Outils PNGTuber Gratuits (2026)",
+    "description": "Découvrez pourquoi PNGTuberMaker est la meilleure alternative gratuite à PNGTuber Plus, veadotube et autres options.",
+    "columns": [
+      {
+        "label": "Fonctionnalité"
+      },
+      {
+        "label": "PNGTuberMaker",
+        "highlight": true
+      },
+      {
+        "label": "PNGTuber Plus"
+      },
+      {
+        "label": "veadotube"
+      },
+      {
+        "label": "Commission Fiverr"
+      }
+    ],
+    "rows": [
+      {
+        "feature": "Prix",
+        "values": ["Gratuit pour commencer", "Gratuit", "Gratuit", "50$-200$+"]
+      },
+      {
+        "feature": "Génération d'avatar IA",
+        "values": [true, false, false, false]
+      },
+      {
+        "feature": "Packs d'expressions",
+        "values": [
+          "Générés par IA gratuitement",
+          "Téléchargement manuel",
+          "Téléchargement manuel",
+          "10$-50$ chacun"
+        ]
+      },
+      {
+        "feature": "Temps de configuration",
+        "values": ["5 minutes", "30+ minutes", "30+ minutes", "1-4 semaines"]
+      },
+      {
+        "feature": "Compétences artistiques requises",
+        "values": ["Aucune", "Oui", "Oui", "N/A (un artiste le fait)"]
+      },
+      {
+        "feature": "Intégration OBS",
+        "values": [
+          "Source Navigateur (facile)",
+          "Capture de fenêtre",
+          "NDI/Capture de fenêtre",
+          "Importation manuelle"
+        ]
+      },
+      {
+        "feature": "Personnalisable à tout moment",
+        "values": [true, false, false, "Payer à nouveau"]
+      },
+      {
+        "feature": "Fonctionne sur tous les appareils",
+        "values": [
+          "Web (tout appareil)",
+          "Windows/Mac/Linux",
+          "Windows/Mac",
+          "N/A"
+        ]
+      }
+    ]
+  },
+  "faqs": [
+    {
+      "id": "fp-1",
+      "question": "Le créateur de PNGTuber est-il vraiment 100% gratuit ?",
+      "answer": "Oui, PNGTuberMaker est véritablement gratuit pour commencer. Vous得到ez 1 génération d'avatar gratuite lors de votre inscription — aucune carte de crédit requise, aucune période d'essai, aucun frais caché. C'est suffisant pour créer votre premier avatar et commencer à streamer immédiatement sans payer quoi que ce soit. Nous ne Demandons un paiement que si vous souhaitez des générations supplémentaires, des packs d'expressions ou des exports HD/4K."
+    },
+    {
+      "id": "fp-2",
+      "question": "Est-ce mieux que PNGTuber Plus ?",
+      "answer": "PNGTuberMaker offre quelque chose que PNGTuber Plus n'a pas : des avatars générés par l'IA. Avec PNGTuber Plus, vous devez créer ou commander vous-même l'art, puis le télécharger. Avec PNGTuberMaker, décrivez simplement votre personnage et l'IA le crée pour vous — gratuitement. Les deux sont gratuits, mais PNGTuberMaker vous fait gagner des heures de travail artistique ou des centaines de dollars en commissions. De plus, vous pouvez régénérer et ajuster votre avatar à tout moment."
+    },
+    {
+      "id": "fp-3",
+      "question": "Les avatars gratuits ont-ils des filigranes ou des restrictions ?",
+      "answer": "Absolument aucun filigrane. Les avatars gratuits sont identiques aux avatars payants en qualité et en droits d'utilisation. Les seules différences sont : (1) la résolution d'export est de 512px (parfaite pour le streaming, juste pas en 4K), et (2) vous obtenez 1 génération d'avatar gratuite pour commencer. Tout le reste — intégration OBS, droits commerciaux, toutes les fonctionnalités — est inclus."
+    },
+    {
+      "id": "fp-4",
+      "question": "Puis-je vraiment streamer sur Twitch et YouTube gratuitement ?",
+      "answer": "Oui ! Des milliers de streamers utilisent notre plan gratuit sur Twitch, YouTube, Kick et Facebook Gaming. Vous obtenez la même URL de Source Navigateur, les animations réactives au micro et les fonds transparents que les utilisateurs payants. La seule chose dont vous avez besoin en plus de PNGTuberMaker est OBS Studio, qui est également 100% gratuit. Zéro dollar pour commencer à streamer avec un avatar personnalisé."
+    },
+    {
+      "id": "fp-5",
+      "question": "Que se passe-t-il après ma génération gratuite ?",
+      "answer": "Vous avez deux options : (1) Achetez un pack de crédits unique à partir de 2,99$ pour plus de générations, ou (2) Abonnez-vous au Creator Pass à 7,99$/mois pour des crédits mensuels et des exports HD. Mais votre avatar existant continue de fonctionner éternellement — il n'expire. Vous ne payez que si vous voulez créer plus de personnages ou débloquer des packs d'expressions."
+    },
+    {
+      "id": "fp-6",
+      "question": "Ai-je besoin de compétences artistiques ou d'engager un artiste ?",
+      "answer": "Pas du tout. C'est tout l'intérêt de PNGTuberMaker. Les PNGTubers traditionnels vous obligent à dessiner votre propre avatar ou à payer un artiste 50$-200$+. Avec notre IA, vous tapez simplement ce que vous voulez — 'guerrier anime aux cheveux bleus avec armure cyberpunk' — et c'est créé pour vous. Pas de tablette de dessin, pas de Photoshop, pas de commissions d'artistes."
+    },
+    {
+      "id": "fp-7",
+      "question": "Mon avatar gratuit est-il vraiment mien pour une utilisation commerciale ?",
+      "answer": "Les avatars gratuits peuvent être utilisés pour le streaming, les vidéos YouTube, les réseaux sociaux et Discord — sans attribution requise. Pour les droits commerciaux complets (marchandises, contenu payant, partenariats de marque), passez au Creator Pass à 7,99$/mois. De toute façon, votre avatar est à vous et ne sera jamais revendu ou réutilisé par nous."
+    },
+    {
+      "id": "fp-8",
+      "question": "Comment cela se compare-t-il à commander un PNGTuber ?",
+      "answer": "Commander un artiste coûte généralement 50$-200$ pour un avatar statique unique, plus 10$-50$ pour chaque expression supplémentaire. Il faut 1-4 semaines pour recevoir. Avec le plan gratuit de PNGTuberMaker, vous得到ez un avatar + 5 expressions en moins de 5 minutes, à zéro coût. De plus, si vous ne l'aimez pas, régénérez simplement — sans frais supplémentaires. Les artistes créent de beaux travaux, mais l'IA est imbattable en vitesse, coût et itération."
+    }
+  ],
+  "cta": {
+    "title": "Commencez à Streamer Gratuitement Aujourd'hui",
+    "subtitle": "Créez votre premier avatar avec 1 génération gratuite. Pas de carte de crédit, pas de risque, aucune raison de ne pas essayer.",
+    "ctaText": "Créer Mon PNGTuber Gratuit Maintenant",
+    "ctaHref": "/create"
+  },
+  "relatedPages": [
+    {
+      "title": "Comment Créer un PNGTuber",
+      "description": "Guide complet pour débutants pour créer des PNGTubers.",
+      "href": "/guides/how-to-make-a-pngtuber"
+    },
+    {
+      "title": "Créateur de VTuber",
+      "description": "Explorez tous les styles d'avatars au-delà des PNGTubers.",
+      "href": "/vtuber-maker"
+    },
+    {
+      "title": "Créateur d'Avatar Anime",
+      "description": "Créez des personnages de style anime avec l'IA.",
+      "href": "/style/anime"
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "Accueil",
+      "href": "/"
+    },
+    {
+      "label": "Créateur de PNGTuber Gratuit"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "quickStart": "Démarrage rapide",
+  "quickStartHint": "— Cliquez sur les balises pour créer votre prompt",
+  "hide": "Masquer",
+  "style": "Style",
+  "generate": "Générer",
+  "generating": "Génération en cours...",
+  "noCredits": "Crédits insuffisants.",
+  "buyCredits": "Acheter des crédits",
+  "promptPlaceholder": "Une fille anime mignonne aux longs cheveux argentés, portant un sweat à capuche, un casque de jeu, un fond accueillant...",
+  "minChars": "Au moins 10 caractères",
+  "reference": "Référence de personne",
+  "referenceHint": "Téléchargez votre photo ou l'art de votre personnage",
+  "quickTemplates": "Modèles rapides",
+  "categories": {
+    "character": "Personnage",
+    "vibe": "Ambiance",
+    "gear": "Équipement"
+  },
+  "tags": {
+    "catGirl": "Fille chat",
+    "wolfBoy": "Garçon loup",
+    "bunnyGirl": "Fille lapin",
+    "demon": "Démon",
+    "foxGirl": "Fille renard",
+    "elf": "Elfe",
+    "kawaii": "Kawaii",
+    "dark": "Sombre",
+    "cozy": "Accueillant",
+    "pastel": "Pastel",
+    "neon": "Néon",
+    "gothic": "Gothique",
+    "headset": "Casque de jeu",
+    "hoodie": "Sweat à capuche",
+    "catEars": "Oreilles de chat",
+    "glasses": "Lunettes",
+    "horns": "Cornes",
+    "scarf": "Écharpe"
+  },
+  "styles": {
+    "chibi": "Chibi",
+    "anime": "Anime",
+    "cartoon": "Dessin animé",
+    "pixelart": "Pixel Art",
+    "none": "Aucun",
+    "noneHint": "Décrivez votre style dans le prompt"
+  }
+}

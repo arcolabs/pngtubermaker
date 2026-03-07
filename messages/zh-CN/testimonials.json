@@ -1,0 +1,23 @@
+{
+  "title": "全球主播都在用",
+  "subtitle": "来看看创作者们对 PNGTuberMaker 的评价。",
+  "items": [
+    {
+      "name": "kira_ttv",
+      "role": "主播",
+      "platform": "Twitch",
+      "content": "复制了 OBS 链接，我的虚拟形象就直接跟着麦克风动起来了。总共也就用了两分钟。我的直播间观众在我说话之前就注意到了 lol。"
+    },
+    {
+      "name": "jakedraws",
+      "role": "内容创作者",
+      "platform": "YouTube",
+      "content": "我真的是连火柴人都画不好。输入描述，从四个选项中选择，生成表情——就完成了。所有形象风格一致这一点彻底打动了我。"
+    },
+    {
+      "name": "noa_plays",
+      "role": "独立主播",
+      "content": "之前用的 Live2D 模型总是让 OBS 崩溃。这只是一个浏览器信号源——轻量得多，不需要插件，而且实际上在直播中看起来比我之前的更好。"
+    }
+  ]
+}

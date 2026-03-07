@@ -1,0 +1,10 @@
+{
+  "availableCredits": "Доступные кредиты",
+  "freeCredits": "Бесплатные кредиты",
+  "subscriptionCredits": "Кредиты подписки",
+  "topupCredits": "Пополнительные кредиты",
+  "neverExpires": "не истекает",
+  "expired": "истёк",
+  "buyCredits": "Купить кредиты",
+  "creditsLeft": "Осталось кредитов: {count}"
+}

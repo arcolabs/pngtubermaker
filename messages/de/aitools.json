@@ -1,0 +1,53 @@
+{
+  "badge": "So funktioniert's",
+  "title": "Vom Konzept zum Live-Stream in 4 Schritten",
+  "subtitle": "Erstelle deinen Avatar, gestalte Ausdrücke, richte OBS mit Lippen-Synchronisation ein und starte durch. Keine Provisionen. Kein Warten.",
+  "tabGenerate": "Erstellen",
+  "tabExpressions": "Ausdrücke",
+  "tabGoLive": "Live gehen",
+  "tabExport": "Exportieren",
+  "step1": {
+    "title": "KI-Avatar-Erstellung",
+    "description": "Verwandle Text oder Skizzen in einen professionellen Avatar. Lade eine Beschreibung oder Referenz hoch, erhalte 4 einzigartige Charaktere mit transparentem Hintergrund, bereit für OBS/Discord.",
+    "features": [
+      "Textbeschreibungen",
+      "Referenzbilder",
+      "4 Kandidaten generiert",
+      "Transparenter Hintergrund"
+    ],
+    "benefit": "Kein Künstler nötig, Minuten bis zu deinem einzigartigen Charakter"
+  },
+  "step2": {
+    "title": "Ausdruckspaket",
+    "description": "Alle Emotionen, ein Klick. Glücklich, wütend, traurig, überrascht und mehr als 10 weitere — KI generiert konsistente Ausdrücke für deinen Avatar ohne Künstler.",
+    "features": [
+      "Mehr als 10 Ausdruckstypen",
+      "Charakter-Konsistenz",
+      "Manuelle Auswahl",
+      "Variationsoptionen"
+    ],
+    "benefit": "Überspringe das Beauftragen mehrerer Ausdrücke, spare Zeit & Kosten"
+  },
+  "step3": {
+    "title": "Live gehen mit OBS",
+    "description": "Füge deinen Avatar in OBS als Browser-Quelle hinzu und starte sofort mit dem Streaming. Der Mund deines Avatars bewegt sich in Echtzeit mit deinem Mikrofon — keine Plugins, keine komplexe Einrichtung.",
+    "features": [
+      "Echtzeit-Mikrofon-Lippensynchronisation",
+      "OBS Browser-Quelle",
+      "Ausdruckswechsel",
+      "Zero-Config-Einrichtung"
+    ],
+    "benefit": "Ein Link, in OBS einfügen, und du bist live"
+  },
+  "step4": {
+    "title": "Herunterladen & Exportieren",
+    "description": "Lade deinen Avatar und das komplette Ausdruckspaket als transparente PNGs oder als gebündelte ZIP herunter. Kostenlose Nutzer exportieren mit 512px, Creator Pass entsperrt HD (1080p).",
+    "features": [
+      "Transparenter PNG-Export",
+      "ZIP-Paket-Download",
+      "Bis zu 1080p HD-Export",
+      "Wasserzeichenfrei"
+    ],
+    "benefit": "Stream-ready Dateien für OBS, Discord und Twitch"
+  }
+}
