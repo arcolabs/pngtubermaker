@@ -3,7 +3,9 @@
 import {
   ArrowLeft,
   CreditCard,
+  Eraser,
   Image,
+  ImageIcon,
   Plus,
   RefreshCw,
   Sparkles,
@@ -14,6 +16,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import type {
+  AvatarImageGroup,
+  AvatarImageItem,
   CreditHistoryRow,
   CustomerDetail,
   GenerationRow,
@@ -79,7 +83,7 @@ export default function CustomerDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<
-    "credits" | "generations" | "payments"
+    "credits" | "generations" | "payments" | "images"
   >("credits");
 
   // Credit adjustment modal
@@ -303,6 +307,7 @@ export default function CustomerDetailPage() {
           [
             { key: "credits", label: "Credit History", icon: Wallet },
             { key: "generations", label: "Generations", icon: Image },
+            { key: "images", label: "Images", icon: ImageIcon },
             { key: "payments", label: "Payments", icon: CreditCard },
           ] as const
         ).map((tab) => {
@@ -312,7 +317,9 @@ export default function CustomerDetailPage() {
               ? data.creditHistory.length
               : tab.key === "generations"
                 ? data.generations.length
-                : data.payments.length;
+                : tab.key === "images"
+                  ? data.avatarImages.length
+                  : data.payments.length;
           return (
             <button
               key={tab.key}
@@ -339,6 +346,13 @@ export default function CustomerDetailPage() {
         )}
         {activeTab === "generations" && (
           <GenerationsTable rows={data.generations} />
+        )}
+        {activeTab === "images" && (
+          <AvatarImagesPanel
+            groups={data.avatarImages}
+            userId={id}
+            onRefresh={fetchData}
+          />
         )}
         {activeTab === "payments" && <PaymentsTable rows={data.payments} />}
       </div>
@@ -551,6 +565,131 @@ function PaymentsTable({ rows }: { rows: PaymentRow[] }) {
         ))}
       </tbody>
     </table>
+  );
+}
+
+function AvatarImagesPanel({
+  groups,
+  userId,
+  onRefresh,
+}: {
+  groups: AvatarImageGroup[];
+  userId: string;
+  onRefresh: () => void;
+}) {
+  const [removingId, setRemovingId] = useState<string | null>(null);
+
+  async function handleRemoveBg(item: AvatarImageItem) {
+    if (removingId) return;
+    setRemovingId(item.id);
+    try {
+      const res = await fetch(`/api/admin/customers/${userId}/remove-bg`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageId: item.id, kind: item.kind }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed");
+      }
+      onRefresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Background removal failed");
+    } finally {
+      setRemovingId(null);
+    }
+  }
+
+  if (groups.length === 0) return <EmptyState text="No avatars" />;
+
+  return (
+    <div className="p-4 space-y-6">
+      {groups.map((group) => (
+        <div key={group.avatarId} className="space-y-3">
+          <div className="flex items-center gap-2">
+            <span
+              className={`badge badge-xs ${STATUS_BADGE[group.status] ?? "badge-ghost"}`}
+            >
+              {group.status}
+            </span>
+            <span className="text-sm font-medium truncate max-w-md">
+              {group.prompt}
+            </span>
+            <span className="text-xs text-gray-400 ml-auto whitespace-nowrap">
+              {formatDate(group.createdAt)}
+            </span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {group.baseImage && (
+              <ImageCard
+                item={group.baseImage}
+                removing={removingId === group.baseImage.id}
+                onRemoveBg={() => handleRemoveBg(group.baseImage!)}
+              />
+            )}
+            {group.expressions.map((expr) => (
+              <ImageCard
+                key={expr.id}
+                item={expr}
+                removing={removingId === expr.id}
+                onRemoveBg={() => handleRemoveBg(expr)}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ImageCard({
+  item,
+  removing,
+  onRemoveBg,
+}: {
+  item: AvatarImageItem;
+  removing: boolean;
+  onRemoveBg: () => void;
+}) {
+  return (
+    <div className="relative group border border-base-200 rounded-lg overflow-hidden bg-[repeating-conic-gradient(#e5e7eb_0%_25%,transparent_0%_50%)] bg-[length:16px_16px]">
+      {item.imageUrl ? (
+        <a href={item.imageUrl} target="_blank" rel="noopener noreferrer">
+          <Image_
+            src={item.imageUrl}
+            alt={item.label}
+            width={200}
+            height={200}
+            className="w-full aspect-square object-cover"
+            unoptimized
+          />
+        </a>
+      ) : (
+        <div className="w-full aspect-square flex items-center justify-center text-gray-300">
+          <ImageIcon className="w-8 h-8" />
+        </div>
+      )}
+      <div className="absolute bottom-0 left-0 right-0 bg-black/60 px-2 py-1 flex items-center justify-between">
+        <span className="text-xs text-white font-medium truncate">
+          {item.label}
+        </span>
+        {item.imageUrl && (
+          <button
+            type="button"
+            className="btn btn-xs btn-ghost text-white hover:bg-white/20"
+            onClick={onRemoveBg}
+            disabled={removing}
+            title="Remove background"
+          >
+            {removing ? (
+              <span className="loading loading-spinner loading-xs" />
+            ) : (
+              <Eraser className="w-3.5 h-3.5" />
+            )}
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 

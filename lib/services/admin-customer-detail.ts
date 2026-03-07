@@ -37,6 +37,25 @@ export interface CustomerDetail {
   creditHistory: CreditHistoryRow[];
   generations: GenerationRow[];
   payments: PaymentRow[];
+  avatarImages: AvatarImageGroup[];
+}
+
+export interface AvatarImageGroup {
+  avatarId: string;
+  prompt: string;
+  status: string;
+  createdAt: string;
+  baseImage: AvatarImageItem | null;
+  expressions: AvatarImageItem[];
+}
+
+export interface AvatarImageItem {
+  id: string;
+  kind: "base" | "expression";
+  label: string;
+  imageUrl: string | null;
+  imageR2Key: string | null;
+  status: string;
 }
 
 export interface CreditHistoryRow {
@@ -139,6 +158,8 @@ export async function getCustomerDetail(
         status: avatars.status,
         creditsUsed: avatars.creditsUsed,
         baseImageUrl: avatars.baseImageUrl,
+        baseImageR2Key: avatars.baseImageR2Key,
+        thumbnailR2Key: avatars.thumbnailR2Key,
         createdAt: avatars.createdAt,
       })
       .from(avatars)
@@ -150,10 +171,12 @@ export async function getCustomerDetail(
     db
       .select({
         id: avatarExpressions.id,
+        avatarId: avatarExpressions.avatarId,
         type: avatarExpressions.type,
         status: avatarExpressions.status,
         creditsUsed: avatarExpressions.creditsUsed,
         imageUrl: avatarExpressions.imageUrl,
+        imageR2Key: avatarExpressions.imageR2Key,
         createdAt: avatarExpressions.createdAt,
       })
       .from(avatarExpressions)
@@ -249,6 +272,32 @@ export async function getCustomerDetail(
       description: p.description,
       stripeSessionId: p.stripeSessionId,
       createdAt: p.createdAt.toISOString(),
+    })),
+    avatarImages: avatarRows.map((a) => ({
+      avatarId: a.id,
+      prompt: a.prompt.length > 60 ? `${a.prompt.slice(0, 60)}...` : a.prompt,
+      status: a.status,
+      createdAt: a.createdAt.toISOString(),
+      baseImage: a.baseImageUrl
+        ? {
+            id: a.id,
+            kind: "base" as const,
+            label: "Base",
+            imageUrl: a.baseImageUrl,
+            imageR2Key: a.baseImageR2Key,
+            status: a.status,
+          }
+        : null,
+      expressions: expressionRows
+        .filter((e) => e.avatarId === a.id)
+        .map((e) => ({
+          id: e.id,
+          kind: "expression" as const,
+          label: e.type,
+          imageUrl: e.imageUrl,
+          imageR2Key: e.imageR2Key,
+          status: e.status,
+        })),
     })),
   };
 }
