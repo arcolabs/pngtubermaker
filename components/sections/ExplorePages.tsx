@@ -9,67 +9,63 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
-const pages = [
-  {
-    href: "/vtuber-maker",
-    icon: Sparkles,
-    title: "VTuber Maker",
-    description:
-      "Create AI VTuber avatars with expression packs — no art skills needed.",
-  },
-  {
-    href: "/style/anime",
-    icon: Palette,
-    title: "Anime Avatar Maker",
-    description: "Generate anime-style characters from text descriptions.",
-  },
-  {
-    href: "/guides/how-to-make-a-pngtuber",
-    icon: PlayCircle,
-    title: "How to Make a PNGTuber",
-    description:
-      "Complete beginner's guide — from zero to streaming in 5 minutes.",
-  },
-  {
-    href: "/free-pngtuber-maker",
-    icon: Zap,
-    title: "Free PNGTuber Maker",
-    description: "Try 1 free avatar generation — no credit card required.",
-  },
-  {
-    href: "/for/twitch",
-    icon: MonitorPlay,
-    title: "Twitch Avatar Maker",
-    description: "OBS-ready streaming avatars with mic-reactive animation.",
-  },
-  {
-    href: "/for/youtube",
-    icon: Youtube,
-    title: "YouTube Avatar Maker",
-    description:
-      "Channel avatars, thumbnail expressions, and live stream overlays.",
-  },
-  {
-    href: "/for/discord",
-    icon: Gamepad2,
-    title: "Discord Avatar Maker",
-    description: "Profile pictures, server icons, and custom emoji packs.",
-  },
-];
+export default async function ExplorePages() {
+  const t = await getTranslations("explorePages");
 
-export default function ExplorePages() {
+  const pages = [
+    {
+      href: "/vtuber-maker",
+      icon: Sparkles,
+      title: t("vtuberMaker"),
+      description: t("vtuberMakerDesc"),
+    },
+    {
+      href: "/style/anime",
+      icon: Palette,
+      title: t("animeAvatarMaker"),
+      description: t("animeAvatarMakerDesc"),
+    },
+    {
+      href: "/guides/how-to-make-a-pngtuber",
+      icon: PlayCircle,
+      title: t("howToMakePngtuber"),
+      description: t("howToMakePngtuberDesc"),
+    },
+    {
+      href: "/free-pngtuber-maker",
+      icon: Zap,
+      title: t("freePngtuberMaker"),
+      description: t("freePngtuberMakerDesc"),
+    },
+    {
+      href: "/for/twitch",
+      icon: MonitorPlay,
+      title: t("twitchAvatarMaker"),
+      description: t("twitchAvatarMakerDesc"),
+    },
+    {
+      href: "/for/youtube",
+      icon: Youtube,
+      title: t("youtubeAvatarMaker"),
+      description: t("youtubeAvatarMakerDesc"),
+    },
+    {
+      href: "/for/discord",
+      icon: Gamepad2,
+      title: t("discordAvatarMaker"),
+      description: t("discordAvatarMakerDesc"),
+    },
+  ];
   return (
     <section className="py-16 sm:py-20 bg-base-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 sm:mb-12">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            Create Avatars for Every Platform
+            {t("title")}
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Whether you stream on Twitch, create on YouTube, or hang out on
-            Discord — we've got you covered.
-          </p>
+          <p className="text-gray-600 max-w-2xl mx-auto">{t("subtitle")}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">

@@ -1,6 +1,7 @@
 "use client";
 
 import { Wand2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -60,7 +61,16 @@ const DEMO_AVATARS: DemoAvatar[] = [
 
 const STYLE_TABS = ["All", "Chibi", "Anime", "Cartoon", "Pixel Art"] as const;
 
+const STYLE_TAB_KEYS: Record<string, string> = {
+  All: "styleAll",
+  Chibi: "styleChibi",
+  Anime: "styleAnime",
+  Cartoon: "styleCartoon",
+  "Pixel Art": "stylePixelArt",
+};
+
 export default function LiveDemo() {
+  const t = useTranslations("liveDemo");
   const { user, isHydrated, hydrate } = useAuthStore();
   const [activeStyle, setActiveStyle] = useState<string>("All");
 
@@ -77,11 +87,10 @@ export default function LiveDemo() {
     <section className="py-16 sm:py-20 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-4">
-          PNGTuber Avatars Created with AI
+          {t("title")}
         </h2>
         <p className="text-gray-600 text-center max-w-2xl mx-auto mb-8">
-          Every avatar below was generated in seconds — no art skills required.
-          Pick a style to explore.
+          {t("subtitle")}
         </p>
 
         {/* Style Tabs */}
@@ -97,7 +106,7 @@ export default function LiveDemo() {
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              {tab}
+              {t(STYLE_TAB_KEYS[tab])}
             </button>
           ))}
         </div>
@@ -127,7 +136,7 @@ export default function LiveDemo() {
                   className="inline-flex items-center gap-1.5 self-start px-3 py-1.5 rounded-full bg-primary text-white text-xs font-medium hover:bg-primary/80 transition-colors"
                 >
                   <Wand2 className="w-3 h-3" />
-                  Try this prompt
+                  {t("tryPrompt")}
                 </Link>
               </div>
             </div>
@@ -140,7 +149,7 @@ export default function LiveDemo() {
             href={user ? "/create" : "/login"}
             className="btn btn-primary border-0 text-white bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)]"
           >
-            {user ? "Create PNGTuber" : "Create Yours Free"}
+            {user ? t("createPngtuber") : t("createYoursFree")}
           </Link>
         </div>
       </div>

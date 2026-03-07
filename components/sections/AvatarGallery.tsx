@@ -1,6 +1,7 @@
 import { Wand2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 export interface AvatarItem {
   src: string;
@@ -47,24 +48,27 @@ const defaultAvatars: AvatarItem[] = [
   },
 ];
 
-export default function AvatarGallery({
-  title = "PNGTuber Avatars Created with AI",
-  description = "Every avatar below was generated in seconds — no art skills required.",
+export default async function AvatarGallery({
+  title,
+  description,
   avatars = defaultAvatars,
 }: {
   title?: string;
   description?: string;
   avatars?: AvatarItem[];
 }) {
+  const t = await getTranslations("liveDemo");
+  const resolvedTitle = title ?? t("title");
+  const resolvedDescription = description ?? t("subtitle");
   return (
     <section className="py-16 sm:py-20 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-4">
-          {title}
+          {resolvedTitle}
         </h2>
-        {description && (
+        {resolvedDescription && (
           <p className="text-gray-600 text-center max-w-2xl mx-auto mb-10 sm:mb-12">
-            {description}
+            {resolvedDescription}
           </p>
         )}
 
@@ -92,7 +96,7 @@ export default function AvatarGallery({
                   className="inline-flex items-center gap-1.5 self-start px-3 py-1.5 rounded-full bg-primary text-white text-xs font-medium hover:bg-primary/80 transition-colors"
                 >
                   <Wand2 className="w-3 h-3" />
-                  Try this prompt
+                  {t("tryPrompt")}
                 </Link>
               </div>
             </div>

@@ -345,5 +345,58 @@
   },
   "languageSwitcher": {
     "label": "Language"
+  },
+  "liveDemo": {
+    "title": "PNGTuber Avatars Created with AI",
+    "subtitle": "Every avatar below was generated in seconds — no art skills required. Pick a style to explore.",
+    "styleAll": "All",
+    "styleChibi": "Chibi",
+    "styleAnime": "Anime",
+    "styleCartoon": "Cartoon",
+    "stylePixelArt": "Pixel Art",
+    "tryPrompt": "Try this prompt",
+    "createPngtuber": "Create PNGTuber",
+    "createYoursFree": "Create Yours Free"
+  },
+  "resultShowcase": {
+    "badge": "How It Works",
+    "title": "From Idea to Live Stream in 3 Steps",
+    "subtitle": "No commissions. No waiting. Just describe, generate, and stream.",
+    "step1": {
+      "title": "Describe your character",
+      "description": "Type a short description or upload a reference image. The AI generates 4 unique options to choose from."
+    },
+    "step2": {
+      "title": "Get expressions automatically",
+      "description": "One click generates a full expression pack — happy, angry, sad, surprised — all in your character's style."
+    },
+    "step3": {
+      "title": "Go live on stream",
+      "description": "Paste a single Browser Source link into OBS. Your avatar lip-syncs to your mic in real time."
+    }
+  },
+  "explorePages": {
+    "title": "Create Avatars for Every Platform",
+    "subtitle": "Whether you stream on Twitch, create on YouTube, or hang out on Discord — we've got you covered.",
+    "vtuberMaker": "VTuber Maker",
+    "vtuberMakerDesc": "Create AI VTuber avatars with expression packs — no art skills needed.",
+    "animeAvatarMaker": "Anime Avatar Maker",
+    "animeAvatarMakerDesc": "Generate anime-style characters from text descriptions.",
+    "howToMakePngtuber": "How to Make a PNGTuber",
+    "howToMakePngtuberDesc": "Complete beginner's guide — from zero to streaming in 5 minutes.",
+    "freePngtuberMaker": "Free PNGTuber Maker",
+    "freePngtuberMakerDesc": "Try 1 free avatar generation — no credit card required.",
+    "twitchAvatarMaker": "Twitch Avatar Maker",
+    "twitchAvatarMakerDesc": "OBS-ready streaming avatars with mic-reactive animation.",
+    "youtubeAvatarMaker": "YouTube Avatar Maker",
+    "youtubeAvatarMakerDesc": "Channel avatars, thumbnail expressions, and live stream overlays.",
+    "discordAvatarMaker": "Discord Avatar Maker",
+    "discordAvatarMakerDesc": "Profile pictures, server icons, and custom emoji packs."
+  },
+  "agentTeaser": {
+    "badge": "Coming Soon",
+    "title": "Give Your AI Agent a Face",
+    "subtitle": "Create a virtual identity for your AI agent — let it appear on stream, in Discord, or anywhere with its own avatar and expressions. Powered by OpenClaw.",
+    "cta": "Join Discord for Early Access"
   }
 }

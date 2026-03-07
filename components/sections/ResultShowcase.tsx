@@ -1,36 +1,35 @@
 "use client";
 
 import { ArrowRight, FileText, Monitor, Palette } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 const STEPS = [
   {
     step: 1,
-    title: "Describe your character",
-    description:
-      "Type a short description or upload a reference image. The AI generates 4 unique options to choose from.",
+    titleKey: "step1.title" as const,
+    descriptionKey: "step1.description" as const,
     icon: FileText,
     media: { type: "image" as const, src: "/images/AITools/input_1.jpg" },
   },
   {
     step: 2,
-    title: "Get expressions automatically",
-    description:
-      "One click generates a full expression pack — happy, angry, sad, surprised — all in your character's style.",
+    titleKey: "step2.title" as const,
+    descriptionKey: "step2.description" as const,
     icon: Palette,
     media: { type: "image" as const, src: "/images/AITools/input_2.png" },
   },
   {
     step: 3,
-    title: "Go live on stream",
-    description:
-      "Paste a single Browser Source link into OBS. Your avatar lip-syncs to your mic in real time.",
+    titleKey: "step3.title" as const,
+    descriptionKey: "step3.description" as const,
     icon: Monitor,
     media: { type: "video" as const, src: "/images/AITools/input_3.webm" },
   },
 ];
 
 export default function ResultShowcase() {
+  const t = useTranslations("resultShowcase");
   return (
     <section className="py-20 md:py-24" id="how-it-works">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -38,13 +37,13 @@ export default function ResultShowcase() {
           {/* Header */}
           <div className="text-center mb-12 md:mb-16">
             <p className="text-xs md:text-sm font-semibold uppercase text-primary mb-2">
-              How It Works
+              {t("badge")}
             </p>
             <h2 className="text-base-content font-sans text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-4">
-              From Idea to Live Stream in 3 Steps
+              {t("title")}
             </h2>
             <p className="text-base-content/70 text-base md:text-lg max-w-2xl mx-auto">
-              No commissions. No waiting. Just describe, generate, and stream.
+              {t("subtitle")}
             </p>
           </div>
 
@@ -76,7 +75,7 @@ export default function ResultShowcase() {
                       ) : (
                         <Image
                           src={step.media.src}
-                          alt={step.title}
+                          alt={t(step.titleKey)}
                           fill
                           className="object-cover"
                           sizes="(max-width: 768px) 100vw, 33vw"
@@ -93,10 +92,10 @@ export default function ResultShowcase() {
                         <Icon className="w-5 h-5 text-primary" />
                       </div>
                       <h3 className="text-lg font-bold text-base-content mb-2">
-                        {step.title}
+                        {t(step.titleKey)}
                       </h3>
                       <p className="text-sm text-base-content/60 leading-relaxed">
-                        {step.description}
+                        {t(step.descriptionKey)}
                       </p>
                     </div>
                   </div>
