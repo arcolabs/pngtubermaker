@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Crown } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import {
   type BillingCycle,
@@ -23,6 +24,8 @@ export function CreatorPassCard({
   isCurrentPlan = false,
   onSubscribe,
 }: CreatorPassCardProps) {
+  const t = useTranslations("pricing");
+  const tCommon = useTranslations("common");
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
 
   const price =
@@ -60,19 +63,21 @@ export function CreatorPassCard({
           <span className="text-4xl font-bold text-base-content">
             {formatPrice(price)}
           </span>
-          <span className="text-base-content/50">/mo</span>
+          <span className="text-base-content/50">{t("perMonth")}</span>
         </div>
         {cycle === "yearly" ? (
           <p className="mt-1 text-sm text-success">
-            {formatPrice(CREATOR_PASS.yearlyPrice)}/yr — Save {savings}%
+            {formatPrice(CREATOR_PASS.yearlyPrice)}/yr —{" "}
+            {t("savings", { percent: savings })}
           </p>
         ) : (
           <p className="mt-1 text-sm text-base-content/50">
-            {formatPrice(CREATOR_PASS.yearlyPrice / 12)}/mo when billed annually
+            {formatPrice(CREATOR_PASS.yearlyPrice / 12)}
+            {t("annualNote")}
           </p>
         )}
         <p className="mt-2 text-sm font-medium text-primary">
-          ~30% savings vs buying credits
+          {t("savingsNote")}
         </p>
       </div>
 
@@ -87,7 +92,7 @@ export function CreatorPassCard({
 
       {isCurrentPlan ? (
         <div className="w-full rounded-xl py-3 font-semibold text-center bg-success/10 text-success">
-          Current Plan
+          {t("currentPlan")}
         </div>
       ) : (
         <button
@@ -101,10 +106,10 @@ export function CreatorPassCard({
           )}
         >
           {isLoading
-            ? "Loading..."
+            ? tCommon("loading")
             : cycle === "yearly"
-              ? "Subscribe Yearly"
-              : "Subscribe Monthly"}
+              ? t("subscribeYearly")
+              : t("subscribeMonthly")}
         </button>
       )}
     </div>

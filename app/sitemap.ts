@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { defaultLocale, type Locale, locales } from "@/lib/i18n/config";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://pngtubermaker.com";
 
@@ -16,133 +17,52 @@ interface SitemapRoute {
   lastModified?: Date;
 }
 
-/**
- * Static routes configuration
- * Add new static pages here as the site grows
- */
 const staticRoutes: SitemapRoute[] = [
-  {
-    path: "/",
-    priority: 1.0,
-    changeFrequency: "daily",
-  },
-  {
-    path: "/pricing",
-    priority: 0.9,
-    changeFrequency: "weekly",
-  },
-  {
-    path: "/create",
-    priority: 0.8,
-    changeFrequency: "weekly",
-  },
-  {
-    path: "/showcase",
-    priority: 0.7,
-    changeFrequency: "daily",
-  },
-  {
-    path: "/partners",
-    priority: 0.4,
-    changeFrequency: "monthly",
-  },
-  {
-    path: "/legal/terms",
-    priority: 0.3,
-    changeFrequency: "monthly",
-  },
-  {
-    path: "/legal/privacy",
-    priority: 0.3,
-    changeFrequency: "monthly",
-  },
-  // SEO landing pages
-  {
-    path: "/vtuber-maker",
-    priority: 0.8,
-    changeFrequency: "weekly",
-  },
-  {
-    path: "/style/anime",
-    priority: 0.7,
-    changeFrequency: "weekly",
-  },
+  { path: "/", priority: 1.0, changeFrequency: "daily" },
+  { path: "/pricing", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/create", priority: 0.8, changeFrequency: "weekly" },
+  { path: "/showcase", priority: 0.7, changeFrequency: "daily" },
+  { path: "/partners", priority: 0.4, changeFrequency: "monthly" },
+  { path: "/legal/terms", priority: 0.3, changeFrequency: "monthly" },
+  { path: "/legal/privacy", priority: 0.3, changeFrequency: "monthly" },
+  { path: "/vtuber-maker", priority: 0.8, changeFrequency: "weekly" },
+  { path: "/style/anime", priority: 0.7, changeFrequency: "weekly" },
   {
     path: "/guides/how-to-make-a-pngtuber",
     priority: 0.7,
     changeFrequency: "weekly",
   },
-  {
-    path: "/free-pngtuber-maker",
-    priority: 0.8,
-    changeFrequency: "weekly",
-  },
-  {
-    path: "/for/discord",
-    priority: 0.6,
-    changeFrequency: "monthly",
-  },
-  {
-    path: "/for/twitch",
-    priority: 0.6,
-    changeFrequency: "monthly",
-  },
-  {
-    path: "/for/youtube",
-    priority: 0.6,
-    changeFrequency: "monthly",
-  },
+  { path: "/free-pngtuber-maker", priority: 0.8, changeFrequency: "weekly" },
+  { path: "/for/discord", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/for/twitch", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/for/youtube", priority: 0.6, changeFrequency: "monthly" },
 ];
 
-/**
- * Dynamic routes - fetch from database or API
- * Examples for future expansion:
- * - Blog posts: fetch from posts table
- * - User profiles: fetch from users table
- * - Generated thumbnails: fetch public galleries
- */
-async function getDynamicRoutes(): Promise<SitemapRoute[]> {
-  const routes: SitemapRoute[] = [];
-
-  // Example: Blog posts (uncomment when /posts is implemented)
-  // const posts = await db.query.posts.findMany({
-  //   where: eq(posts.published, true),
-  //   columns: { slug: true, updatedAt: true },
-  // });
-  // posts.forEach((post) => {
-  //   routes.push({
-  //     path: `/posts/${post.slug}`,
-  //     priority: 0.7,
-  //     changeFrequency: "weekly",
-  //     lastModified: post.updatedAt,
-  //   });
-  // });
-
-  // Example: Public thumbnail galleries (future feature)
-  // const galleries = await db.query.thumbnailGalleries.findMany({
-  //   where: eq(thumbnailGalleries.isPublic, true),
-  //   columns: { id: true, updatedAt: true },
-  // });
-  // galleries.forEach((gallery) => {
-  //   routes.push({
-  //     path: `/gallery/${gallery.id}`,
-  //     priority: 0.6,
-  //     changeFrequency: "weekly",
-  //     lastModified: gallery.updatedAt,
-  //   });
-  // });
-
-  return routes;
+function getLocalizedUrl(path: string, locale: Locale): string {
+  if (locale === defaultLocale) return `${baseUrl}${path}`;
+  return `${baseUrl}/${locale}${path}`;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const dynamicRoutes = await getDynamicRoutes();
-  const allRoutes = [...staticRoutes, ...dynamicRoutes];
+  const entries: MetadataRoute.Sitemap = [];
 
-  return allRoutes.map((route) => ({
-    url: `${baseUrl}${route.path}`,
-    lastModified: route.lastModified || new Date(),
-    changeFrequency: route.changeFrequency,
-    priority: route.priority,
-  }));
+  for (const route of staticRoutes) {
+    for (const locale of locales) {
+      const alternates: Record<string, string> = {};
+      for (const altLocale of locales) {
+        alternates[altLocale] = getLocalizedUrl(route.path, altLocale);
+      }
+      alternates["x-default"] = getLocalizedUrl(route.path, defaultLocale);
+
+      entries.push({
+        url: getLocalizedUrl(route.path, locale),
+        lastModified: route.lastModified || new Date(),
+        changeFrequency: route.changeFrequency,
+        priority: route.priority,
+        alternates: { languages: alternates },
+      });
+    }
+  }
+
+  return entries;
 }

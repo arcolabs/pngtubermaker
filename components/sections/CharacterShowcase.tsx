@@ -3,6 +3,7 @@
 import { Wand2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 const exampleImages = [
@@ -39,6 +40,7 @@ const exampleImages = [
 ];
 
 export default function CharacterShowcase() {
+  const t = useTranslations("showcase");
   const [inputValue, setInputValue] = useState("");
   const router = useRouter();
 
@@ -55,8 +57,11 @@ export default function CharacterShowcase() {
         {/* Success Statistics - Changed to slogan */}
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
-            Create your unique <span className="text-primary">PNGTuber</span>{" "}
-            avatar in minutes
+            {t.rich("title", {
+              primary: (chunks) => (
+                <span className="text-primary">{chunks}</span>
+              ),
+            })}
           </h2>
         </div>
 
@@ -71,7 +76,7 @@ export default function CharacterShowcase() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleCreate();
                 }}
-                placeholder="Design your character (e.g., magical girl with green hair and elf ears)"
+                placeholder={t("placeholder")}
                 className="w-full bg-transparent text-sm md:text-base font-normal text-gray-900 placeholder:text-gray-500/70 outline-none pr-4"
                 aria-label="Design your character"
               />
@@ -92,7 +97,7 @@ export default function CharacterShowcase() {
                 className="hidden sm:flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-full bg-primary text-white hover:bg-primary/80 transition-colors shadow-lg text-sm md:text-base font-medium whitespace-nowrap flex-shrink-0"
               >
                 <Wand2 className="w-4 h-4 flex-shrink-0" />
-                <span>Create Character</span>
+                <span>{t("createCharacter")}</span>
               </button>
             </div>
           </div>

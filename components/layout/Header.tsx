@@ -13,6 +13,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { useAuthStore } from "@/hooks/use-auth-store";
@@ -39,17 +40,12 @@ function useClickOutside(
   }, [ref, onClose]);
 }
 
-const TIER_DISPLAY: Record<
-  Tier,
-  { label: string; icon: typeof User; className: string }
-> = {
+const TIER_DISPLAY: Record<Tier, { icon: typeof User; className: string }> = {
   free: {
-    label: "Free",
     icon: User,
     className: "bg-base-300 text-base-content/60",
   },
   creator: {
-    label: "Creator",
     icon: Crown,
     className: "bg-primary/10 text-primary border-primary/20",
   },
@@ -65,6 +61,9 @@ function getCreditProgress(
 }
 
 export default function Header() {
+  const t = useTranslations("nav");
+  const tTier = useTranslations("tier");
+  const tCommon = useTranslations("common");
   const pathname = usePathname();
   const { user, isHydrated, hydrate, signOut } = useAuthStore();
   const { credits, subscription, refresh } = useSubscriptionStore();
@@ -141,7 +140,7 @@ export default function Header() {
                       : "text-base-content/70 hover:text-primary hover:bg-primary/10"
                   }
                 >
-                  Dashboard
+                  {t("dashboard")}
                 </Link>
               </li>
             )}
@@ -154,7 +153,7 @@ export default function Header() {
                     : "text-base-content/70 hover:text-primary hover:bg-primary/10"
                 }
               >
-                Pricing
+                {t("pricing")}
               </Link>
             </li>
           </ul>
@@ -171,7 +170,7 @@ export default function Header() {
                   </span>
                 </div>
                 <Link href="/create" className="btn btn-primary btn-sm">
-                  Create
+                  {t("create")}
                 </Link>
               </div>
 
@@ -232,10 +231,10 @@ export default function Header() {
                           className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${tierDisplay.className}`}
                         >
                           <TierIcon className="w-3.5 h-3.5" />
-                          {tierDisplay.label}
+                          {tTier(currentTier)}
                           {subscription?.cancelAtPeriodEnd && (
                             <span className="text-[10px] opacity-70">
-                              (ends soon)
+                              {tTier("endsSoon")}
                             </span>
                           )}
                         </div>
@@ -247,7 +246,7 @@ export default function Header() {
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2 text-sm text-base-content/70">
                           <Coins className="w-4 h-4" />
-                          <span>Credits</span>
+                          <span>{t("credits")}</span>
                         </div>
                         <span className="text-sm font-semibold">
                           {formatCreditsCompact(credits?.total ?? 0)}
@@ -280,7 +279,7 @@ export default function Header() {
                         className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-gradient-to-r from-primary to-cyan-400 text-white rounded-xl font-medium text-sm hover:opacity-90 transition-opacity"
                       >
                         <Sparkles className="w-4 h-4" />
-                        Create New
+                        {tCommon("createNew")}
                       </Link>
                     </div>
 
@@ -294,7 +293,7 @@ export default function Header() {
                         >
                           <ImagePlus className="w-5 h-5 text-base-content/60" />
                           <span className="text-xs text-base-content/70">
-                            Avatars
+                            {t("avatars")}
                           </span>
                         </Link>
                         <Link
@@ -304,7 +303,7 @@ export default function Header() {
                         >
                           <LayoutDashboard className="w-5 h-5 text-base-content/60" />
                           <span className="text-xs text-base-content/70">
-                            Dashboard
+                            {t("dashboard")}
                           </span>
                         </Link>
                         <Link
@@ -314,7 +313,7 @@ export default function Header() {
                         >
                           <Tag className="w-5 h-5 text-base-content/60" />
                           <span className="text-xs text-base-content/70">
-                            Pricing
+                            {t("pricing")}
                           </span>
                         </Link>
                       </div>
@@ -331,7 +330,7 @@ export default function Header() {
                         className="flex items-center gap-2 w-full px-3 py-2 text-sm text-base-content/60 hover:text-base-content hover:bg-base-200 rounded-lg transition-colors"
                       >
                         <LogOut className="w-4 h-4" />
-                        Log Out
+                        {t("logout")}
                       </button>
                     </div>
                   </div>
@@ -340,7 +339,7 @@ export default function Header() {
             </>
           ) : (
             <Link href="/login" className="btn btn-primary btn-sm">
-              Get Started Free
+              {t("getStartedFree")}
             </Link>
           )}
         </div>

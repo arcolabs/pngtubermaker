@@ -2,9 +2,11 @@ import { GeistMono } from "geist/font/mono";
 import { GeistPixelSquare } from "geist/font/pixel";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
+import { getLocale } from "next-intl/server";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import { brand } from "@/lib/brand";
+import { isRtl, type Locale } from "@/lib/i18n/config";
 
 export const metadata: Metadata = {
   title: {
@@ -112,13 +114,15 @@ const jsonLd = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = (await getLocale()) as Locale;
+
   return (
-    <html lang="en" data-theme="light">
+    <html lang={locale} dir={isRtl(locale) ? "rtl" : "ltr"} data-theme="light">
       <head>
         <script
           type="application/ld+json"

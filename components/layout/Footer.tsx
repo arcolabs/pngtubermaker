@@ -3,7 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import { brand } from "@/lib/brand";
 
 interface BadgeData {
@@ -77,6 +79,7 @@ function FooterBadges() {
 }
 
 export default function Footer() {
+  const t = useTranslations("footer");
   const currentYear = new Date().getFullYear();
   const pathname = usePathname();
   const isHomepage = pathname === "/";
@@ -104,98 +107,98 @@ export default function Footer() {
           </div>
 
           <nav className="flex flex-col gap-2">
-            <h6 className="footer-title">Product</h6>
+            <h6 className="footer-title">{t("product")}</h6>
             <Link
               href="/create"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
-              Create Avatar
+              {t("createAvatar")}
             </Link>
             <Link
               href="/pricing"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
-              Pricing
+              {t("pricing")}
             </Link>
             <Link
               href="/free-pngtuber-maker"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
-              Free PNGTuber Maker
+              {t("freePngtuberMaker")}
             </Link>
             <Link
               href="/vtuber-maker"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
-              VTuber Maker
+              {t("vtuberMaker")}
             </Link>
             <Link
               href="/style/anime"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
-              Anime Avatar Maker
+              {t("animeAvatarMaker")}
             </Link>
           </nav>
 
           <nav className="flex flex-col gap-2">
-            <h6 className="footer-title">Resources</h6>
+            <h6 className="footer-title">{t("resources")}</h6>
             <Link
               href="/guides/how-to-make-a-pngtuber"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
-              How to Make a PNGTuber
+              {t("howToMake")}
             </Link>
             <Link
               href="/for/twitch"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
-              Twitch Avatar Maker
+              {t("twitchAvatarMaker")}
             </Link>
             <Link
               href="/for/discord"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
-              Discord Avatar Maker
+              {t("discordAvatarMaker")}
             </Link>
             <Link
               href="/for/youtube"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
-              YouTube Avatar Maker
+              {t("youtubeAvatarMaker")}
             </Link>
           </nav>
 
           <nav className="flex flex-col gap-2">
-            <h6 className="footer-title">Community</h6>
+            <h6 className="footer-title">{t("community")}</h6>
             <Link
               href={brand.social.discord || "https://discord.com"}
               target="_blank"
               rel="noopener noreferrer"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
-              Discord
+              {t("discord")}
             </Link>
             <Link
               href="/partners"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
-              Partners
+              {t("partners")}
             </Link>
           </nav>
 
           <nav className="flex flex-col gap-2">
-            <h6 className="footer-title">Legal</h6>
+            <h6 className="footer-title">{t("legal")}</h6>
             <Link
               href="/legal/terms"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
-              Terms
+              {t("terms")}
             </Link>
             <Link
               href="/legal/privacy"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
-              Privacy
+              {t("privacy")}
             </Link>
           </nav>
         </div>
@@ -221,55 +224,55 @@ export default function Footer() {
               href="/create"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
-              Create Avatar
+              {t("createAvatar")}
             </Link>
             <Link
               href="/pricing"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
-              Pricing
+              {t("pricing")}
             </Link>
             <Link
               href="/free-pngtuber-maker"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
-              Free PNGTuber Maker
+              {t("freePngtuberMaker")}
             </Link>
             <Link
               href="/vtuber-maker"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
-              VTuber Maker
+              {t("vtuberMaker")}
             </Link>
             <Link
               href="/style/anime"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
-              Anime Avatar Maker
+              {t("animeAvatarMaker")}
             </Link>
             <Link
               href="/guides/how-to-make-a-pngtuber"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
-              How to Make a PNGTuber
+              {t("howToMake")}
             </Link>
             <Link
               href="/for/twitch"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
-              Twitch Avatar Maker
+              {t("twitchAvatarMaker")}
             </Link>
             <Link
               href="/for/discord"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
-              Discord Avatar Maker
+              {t("discordAvatarMaker")}
             </Link>
             <Link
               href="/for/youtube"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
-              YouTube Avatar Maker
+              {t("youtubeAvatarMaker")}
             </Link>
             <Link
               href={brand.social.discord || "https://discord.com"}
@@ -277,25 +280,25 @@ export default function Footer() {
               rel="noopener noreferrer"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
-              Discord
+              {t("discord")}
             </Link>
             <Link
               href="/partners"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
-              Partners
+              {t("partners")}
             </Link>
             <Link
               href="/legal/terms"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
-              Terms
+              {t("terms")}
             </Link>
             <Link
               href="/legal/privacy"
               className="text-base-content/70 hover:text-primary transition-colors"
             >
-              Privacy
+              {t("privacy")}
             </Link>
           </nav>
         </div>
@@ -306,6 +309,7 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-4">
             {isHomepage && <FooterBadges />}
+            <LanguageSwitcher />
             <a
               href={`mailto:${brand.contact.email}`}
               className="text-sm text-base-content/40 hover:text-primary transition-colors"

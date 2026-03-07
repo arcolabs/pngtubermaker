@@ -2,11 +2,13 @@
 
 import { ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { UserCountBadge } from "@/components/ui/UserCountBadge";
 import { useAuthStore } from "@/hooks/use-auth-store";
 
 export default function Hero() {
+  const t = useTranslations("hero");
   const { user, isHydrated, hydrate } = useAuthStore();
 
   useEffect(() => {
@@ -20,16 +22,16 @@ export default function Hero() {
 
           {/* Main Heading */}
           <h1 className="mb-3 sm:mb-4 text-gray-900 font-bold text-3xl sm:text-5xl lg:text-7xl leading-tight px-2 sm:px-0">
-            AI <span className="text-primary">PNGTuber Maker</span> — Idea to{" "}
-            <span className="text-primary">Live Stream</span> in Minutes
+            {t.rich("title", {
+              primary: (chunks) => (
+                <span className="text-primary">{chunks}</span>
+              ),
+            })}
           </h1>
 
           {/* Subheading */}
           <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-5xl mx-auto px-4 sm:px-0 mb-6">
-            Create your PNGTuber avatar, generate expressions, and go live with
-            real-time mic lip sync in OBS — all without drawing a single line.
-            The free AI avatar generator for Twitch, YouTube & Discord
-            streamers.
+            {t("subtitle")}
           </p>
 
           {/* Auth-aware CTA */}
@@ -38,10 +40,10 @@ export default function Hero() {
               {user ? (
                 <div className="flex items-center gap-3">
                   <Link href="/create" className="btn btn-primary">
-                    Create PNGTuber
+                    {t("createPngtuber")}
                   </Link>
                   <Link href="/dashboard" className="btn btn-outline">
-                    My Dashboard
+                    {t("myDashboard")}
                   </Link>
                 </div>
               ) : (
@@ -50,11 +52,11 @@ export default function Hero() {
                     href="/login"
                     className="btn btn-primary btn-lg border-0 text-white bg-gradient-to-r from-primary to-cyan-400 shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)]"
                   >
-                    Create Your Free Avatar
+                    {t("createFreeAvatar")}
                   </Link>
                   <span className="flex items-center gap-1.5 text-sm text-gray-500">
                     <ShieldCheck className="w-4 h-4 text-primary" />
-                    No credit card required
+                    {t("noCardRequired")}
                   </span>
                 </>
               )}

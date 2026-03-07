@@ -17,78 +17,80 @@ import {
   Wand2,
 } from "lucide-react";
 import NextImage from "next/image";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
-const tools = [
-  {
-    id: "avatar_generation",
-    step: 1,
-    title: "AI Avatar Generation",
-    description:
-      "Turn text or sketches into a professional avatar. Upload a description or reference, get 4 unique characters with transparent backgrounds, ready for OBS/Discord.",
-    icon: Sparkles,
-    image: "/images/AITools/input_1.jpg",
-    features: [
-      { icon: FileText, text: "Text descriptions" },
-      { icon: Image, text: "Reference images" },
-      { icon: Copy, text: "4 candidates generated" },
-      { icon: Check, text: "Transparent background" },
-    ],
-    benefit: "No artist needed, minutes to your unique character",
-  },
-  {
-    id: "expression_pack",
-    step: 2,
-    title: "Expression Pack",
-    description:
-      "All emotions, one click. Happy, angry, sad, surprised, and 10+ more — AI generates consistent expressions for your avatar without hiring an artist.",
-    icon: Palette,
-    image: "/images/AITools/input_2.png",
-    features: [
-      { icon: Wand2, text: "10+ expression types" },
-      { icon: Copy, text: "Character consistency" },
-      { icon: MousePointer, text: "Manual selection" },
-      { icon: Repeat, text: "Variation options" },
-    ],
-    benefit: "Skip commissioning multiple expressions, save time & cost",
-  },
-  {
-    id: "obs_live",
-    step: 3,
-    title: "Go Live with OBS",
-    description:
-      "Add your avatar to OBS as a Browser Source and start streaming instantly. Your avatar's mouth moves in real time with your microphone — no plugins, no complex setup.",
-    icon: Monitor,
-    image: "/images/AITools/input_3.webm",
-    isVideo: true,
-    features: [
-      { icon: Mic, text: "Real-time mic lip sync" },
-      { icon: Monitor, text: "OBS Browser Source" },
-      { icon: Sparkles, text: "Expression switching" },
-      { icon: Check, text: "Zero-config setup" },
-    ],
-    benefit: "One link, paste into OBS, and you're live",
-  },
-  {
-    id: "download_export",
-    step: 4,
-    title: "Download & Export",
-    description:
-      "Download your avatar and full expression pack as transparent PNGs or a bundled ZIP. Free users export at 512px, Creator Pass unlocks HD (1080p).",
-    icon: Download,
-    image: "/images/AITools/input_4.webm",
-    isVideo: true,
-    features: [
-      { icon: Download, text: "Transparent PNG export" },
-      { icon: FolderArchive, text: "ZIP bundle download" },
-      { icon: ArrowUp, text: "Up to 1080p HD export" },
-      { icon: Check, text: "Watermark-free" },
-    ],
-    benefit: "Stream-ready files for OBS, Discord, and Twitch",
-  },
-];
-
 export default function AITools() {
+  const t = useTranslations("aitools");
+
+  const tools = [
+    {
+      id: "avatar_generation",
+      step: 1,
+      title: t("step1.title"),
+      tabLabel: t("tabGenerate"),
+      description: t("step1.description"),
+      icon: Sparkles,
+      image: "/images/AITools/input_1.jpg",
+      features: [
+        { icon: FileText, text: t("step1.features.0") },
+        { icon: Image, text: t("step1.features.1") },
+        { icon: Copy, text: t("step1.features.2") },
+        { icon: Check, text: t("step1.features.3") },
+      ],
+      benefit: t("step1.benefit"),
+    },
+    {
+      id: "expression_pack",
+      step: 2,
+      title: t("step2.title"),
+      tabLabel: t("tabExpressions"),
+      description: t("step2.description"),
+      icon: Palette,
+      image: "/images/AITools/input_2.png",
+      features: [
+        { icon: Wand2, text: t("step2.features.0") },
+        { icon: Copy, text: t("step2.features.1") },
+        { icon: MousePointer, text: t("step2.features.2") },
+        { icon: Repeat, text: t("step2.features.3") },
+      ],
+      benefit: t("step2.benefit"),
+    },
+    {
+      id: "obs_live",
+      step: 3,
+      title: t("step3.title"),
+      tabLabel: t("tabGoLive"),
+      description: t("step3.description"),
+      icon: Monitor,
+      image: "/images/AITools/input_3.webm",
+      isVideo: true,
+      features: [
+        { icon: Mic, text: t("step3.features.0") },
+        { icon: Monitor, text: t("step3.features.1") },
+        { icon: Sparkles, text: t("step3.features.2") },
+        { icon: Check, text: t("step3.features.3") },
+      ],
+      benefit: t("step3.benefit"),
+    },
+    {
+      id: "download_export",
+      step: 4,
+      title: t("step4.title"),
+      tabLabel: t("tabExport"),
+      description: t("step4.description"),
+      icon: Download,
+      image: "/images/AITools/input_4.webm",
+      isVideo: true,
+      features: [
+        { icon: Download, text: t("step4.features.0") },
+        { icon: FolderArchive, text: t("step4.features.1") },
+        { icon: ArrowUp, text: t("step4.features.2") },
+        { icon: Check, text: t("step4.features.3") },
+      ],
+      benefit: t("step4.benefit"),
+    },
+  ];
   const [activeTab, setActiveTab] = useState("avatar_generation");
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 
@@ -113,7 +115,7 @@ export default function AITools() {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [tools.forEach]);
 
   const scrollToSection = (id: string) => {
     setActiveTab(id);
@@ -130,14 +132,13 @@ export default function AITools() {
           {/* Header */}
           <div className="text-center mb-8 md:mb-12">
             <p className="text-xs md:text-sm font-semibold uppercase text-primary mb-2">
-              How It Works
+              {t("badge")}
             </p>
             <h2 className="text-base-content font-sans mb-4 md:mb-5 text-2xl md:text-3xl lg:text-4xl font-bold leading-tight">
-              From Idea to Live Stream in 4 Steps
+              {t("title")}
             </h2>
             <p className="text-base-content/70 font-medium mb-6 md:mb-8 text-base md:text-xl leading-relaxed max-w-3xl mx-auto">
-              Generate your avatar, create expressions, set up OBS with mic lip
-              sync, and go live. No commissions. No waiting.
+              {t("subtitle")}
             </p>
           </div>
 
@@ -166,12 +167,7 @@ export default function AITools() {
                             {tool.step}
                           </span>
                           <Icon className="w-4 h-4" />
-                          <span>
-                            {tool.id === "avatar_generation" && "Generate"}
-                            {tool.id === "expression_pack" && "Expressions"}
-                            {tool.id === "obs_live" && "Go Live"}
-                            {tool.id === "download_export" && "Export"}
-                          </span>
+                          <span>{tool.tabLabel}</span>
                         </button>
                       );
                     })}

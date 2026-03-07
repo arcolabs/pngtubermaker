@@ -2,6 +2,7 @@
 
 import { Monitor, Tv, Video } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { memo } from "react";
 
 interface Testimonial {
@@ -25,33 +26,10 @@ const PLATFORM_ICONS: Record<string, typeof Tv> = {
   Discord: Monitor,
 };
 
-const DEFAULT_TESTIMONIALS: Testimonial[] = [
-  {
-    id: "1",
-    name: "kira_ttv",
-    role: "Streamer",
-    platform: "Twitch",
-    content:
-      "Pasted the OBS link, and my avatar just started moving with my mic. Took maybe 2 minutes total. My chat noticed before I even said anything lol.",
-    avatar: "/avatar/avatar1.jpg",
-  },
-  {
-    id: "2",
-    name: "jakedraws",
-    role: "Content Creator",
-    platform: "YouTube",
-    content:
-      "I literally cannot draw a stick figure. Typed a description, picked from 4 options, generated the expressions — done. The fact that they all look consistent is what sold me.",
-    avatar: "/avatar/avatar2.jpg",
-  },
-  {
-    id: "3",
-    name: "noa_plays",
-    role: "Indie Streamer",
-    content:
-      "Was using a Live2D model that kept crashing OBS. This is just a browser source — way lighter, no plugins, and honestly looks better on stream than what I had before.",
-    avatar: "/avatar/avatar3.jpg",
-  },
+const TESTIMONIAL_AVATARS = [
+  "/avatar/avatar1.jpg",
+  "/avatar/avatar2.jpg",
+  "/avatar/avatar3.jpg",
 ];
 
 function PlatformBadge({
@@ -141,24 +119,38 @@ const TestimonialCard = memo(function TestimonialCard({
 });
 
 export default function Testimonials({
-  title = "Loved by Streamers Worldwide",
-  description = "See what creators are saying about PNGTuberMaker.",
-  testimonials = DEFAULT_TESTIMONIALS,
+  title,
+  description,
+  testimonials,
 }: TestimonialsProps) {
+  const t = useTranslations("testimonials");
+
+  const resolvedTitle = title ?? t("title");
+  const resolvedDescription = description ?? t("subtitle");
+  const resolvedTestimonials =
+    testimonials ??
+    TESTIMONIAL_AVATARS.map((avatar, i) => ({
+      id: String(i + 1),
+      name: t(`items.${i}.name`),
+      role: t(`items.${i}.role`),
+      platform: t(`items.${i}.platform`) || undefined,
+      content: t(`items.${i}.content`),
+      avatar,
+    }));
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-[1.1] text-base-content mb-6">
-            {title}
+            {resolvedTitle}
           </h2>
           <p className="text-lg sm:text-xl text-base-content/50 max-w-2xl mx-auto">
-            {description}
+            {resolvedDescription}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
+          {resolvedTestimonials.map((testimonial, index) => (
             <TestimonialCard
               key={testimonial.id}
               testimonial={testimonial}

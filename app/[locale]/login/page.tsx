@@ -1,19 +1,25 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 
 interface OAuthButtonProps {
   provider: "google" | "discord" | "twitch";
+  label: string;
   onClick: () => void;
   isLoading: boolean;
 }
 
-function OAuthButton({ provider, onClick, isLoading }: OAuthButtonProps) {
+function OAuthButton({
+  provider,
+  label,
+  onClick,
+  isLoading,
+}: OAuthButtonProps) {
   const configs = {
     google: {
-      label: "Continue with Google",
       icon: (
         <svg
           className="w-5 h-5"
@@ -42,7 +48,6 @@ function OAuthButton({ provider, onClick, isLoading }: OAuthButtonProps) {
       ),
     },
     discord: {
-      label: "Continue with Discord",
       icon: (
         <svg
           className="w-5 h-5"
@@ -57,7 +62,6 @@ function OAuthButton({ provider, onClick, isLoading }: OAuthButtonProps) {
       ),
     },
     twitch: {
-      label: "Continue with Twitch",
       icon: (
         <svg
           className="w-5 h-5"
@@ -88,7 +92,7 @@ function OAuthButton({ provider, onClick, isLoading }: OAuthButtonProps) {
         <>
           {config.icon}
           <span className="text-base font-medium text-base-content">
-            {config.label}
+            {label}
           </span>
         </>
       )}
@@ -97,6 +101,7 @@ function OAuthButton({ provider, onClick, isLoading }: OAuthButtonProps) {
 }
 
 export default function LoginPage() {
+  const t = useTranslations("auth");
   const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
 
   const signIn = async (provider: "google" | "discord" | "twitch") => {
@@ -114,39 +119,40 @@ export default function LoginPage() {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-base-content mb-2">
-            Welcome Back
+            {t("welcomeBack")}
           </h1>
-          <p className="text-base-content/60">
-            Sign in to create your unique PNGTuber avatar
-          </p>
+          <p className="text-base-content/60">{t("signInSubtitle")}</p>
         </div>
 
         <div className="space-y-3">
           <OAuthButton
             provider="google"
+            label={t("continueWithGoogle")}
             onClick={() => signIn("google")}
             isLoading={loadingProvider === "google"}
           />
           <OAuthButton
             provider="discord"
+            label={t("continueWithDiscord")}
             onClick={() => signIn("discord")}
             isLoading={loadingProvider === "discord"}
           />
           <OAuthButton
             provider="twitch"
+            label={t("continueWithTwitch")}
             onClick={() => signIn("twitch")}
             isLoading={loadingProvider === "twitch"}
           />
         </div>
 
         <p className="text-center text-base-content/40 text-sm">
-          By signing in, you agree to our{" "}
+          {t("agreement")}{" "}
           <Link href="/legal/terms" className="link link-primary">
-            Terms of Service
+            {t("termsOfService")}
           </Link>{" "}
-          and{" "}
+          &{" "}
           <Link href="/legal/privacy" className="link link-primary">
-            Privacy Policy
+            {t("privacyPolicy")}
           </Link>
         </p>
       </div>

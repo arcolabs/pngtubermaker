@@ -1,8 +1,9 @@
 "use client";
 
 import { Minus, Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { faqData as defaultFaqData, type FAQItem } from "@/lib/faq-data";
+import type { FAQItem } from "@/lib/faq-data";
 
 interface FAQProps {
   title?: string;
@@ -12,13 +13,27 @@ interface FAQProps {
   faqData?: FAQItem[];
 }
 
+const FAQ_ITEM_COUNT = 11;
+
 export default function FAQ({
-  title = "Frequently Asked Questions",
-  supportText = "Have more questions?",
-  supportLinkText = "Contact us",
-  faqData = defaultFaqData,
+  title,
+  supportText,
+  supportLinkText,
+  faqData,
 }: Omit<FAQProps, "description">) {
+  const t = useTranslations("faq");
   const [openId, setOpenId] = useState<string | null>(null);
+
+  const resolvedTitle = title ?? t("title");
+  const resolvedSupportText = supportText ?? t("supportText");
+  const resolvedSupportLinkText = supportLinkText ?? t("contactUs");
+  const resolvedFaqData =
+    faqData ??
+    Array.from({ length: FAQ_ITEM_COUNT }, (_, i) => ({
+      id: String(i + 1),
+      question: t(`items.${i}.question`),
+      answer: t(`items.${i}.answer`),
+    }));
 
   const toggleFaq = (id: string) => {
     setOpenId(openId === id ? null : id);
@@ -31,11 +46,11 @@ export default function FAQ({
           id="faq-heading"
           className="text-center text-3xl font-bold text-gray-900 mb-16"
         >
-          {title}
+          {resolvedTitle}
         </h2>
 
         <div className="space-y-4">
-          {faqData.map((item) => (
+          {resolvedFaqData.map((item) => (
             <div
               key={item.id}
               className={`border rounded-lg bg-white shadow-sm transition-all duration-200 ${
@@ -81,14 +96,14 @@ export default function FAQ({
         </div>
 
         <div className="mt-12 text-center text-sm text-gray-500">
-          {supportText}{" "}
+          {resolvedSupportText}{" "}
           <a
             href="https://discord.gg/zysPAnvP8f"
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary hover:underline font-medium"
           >
-            {supportLinkText}
+            {resolvedSupportLinkText}
           </a>
         </div>
       </div>

@@ -1,24 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function DiscordCTA() {
+  const t = useTranslations("discord");
   return (
     <section className="py-20 md:py-24 bg-transparent">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Main Heading */}
         <div className="mb-8">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Join Our Discord Community!
+            {t("title")}
           </h2>
         </div>
 
         {/* Subtitle */}
         <div className="mb-12">
-          <p className="text-gray-600 text-lg">
-            Connect with fellow creators, get support, and stay updated on the
-            latest features!
-          </p>
+          <p className="text-gray-600 text-lg">{t("subtitle")}</p>
         </div>
 
         {/* Discord Button */}

@@ -3,11 +3,13 @@
 import { Download, Monitor, Pencil, Star, Users, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useAuthStore } from "@/hooks/use-auth-store";
 
 export default function Comparison() {
   const { user, isHydrated, hydrate } = useAuthStore();
+  const t = useTranslations("comparison");
 
   useEffect(() => {
     if (!isHydrated) hydrate();
@@ -18,12 +20,11 @@ export default function Comparison() {
         {/* Header Section */}
         <div className="text-left md:text-center">
           <h2 className="max-w-2xl mx-auto text-2xl font-bold tracking-tight text-primary sm:text-3xl lg:text-[42px] lg:leading-[48px]">
-            How Your Ideas Become Professional PNGTubers
+            {t("title")}
           </h2>
 
           <p className="mt-3 text-base font-medium text-gray-600 sm:text-lg md:mx-auto md:max-w-2xl lg:text-xl">
-            Save $150+ and weeks of waiting by using AI to generate your perfect
-            streaming avatar in minutes.
+            {t("subtitle")}
           </p>
         </div>
 
@@ -42,41 +43,21 @@ export default function Comparison() {
             </div>
 
             <div className="mt-6 flex items-center gap-2">
-              <p className="text-xl font-bold text-primary">With</p>
+              <p className="text-xl font-bold text-primary">{t("with")}</p>
               <span className="text-xl font-bold text-primary">
-                PNGTuberMaker
+                {t("brand")}
               </span>
             </div>
 
             <ul className="mt-6 space-y-4 md:space-y-6">
               {[
-                {
-                  icon: Pencil,
-                  title: "1. Describe your avatar idea",
-                  time: "1 minute",
-                  desc: "Type your style or upload a sketch. AI understands your vision perfectly.",
-                },
-                {
-                  icon: Users,
-                  title: "2. AI generates expressions",
-                  time: "1-2 minutes",
-                  desc: "Smiling, angry, surprised, sad — 10+ expressions auto-generated with consistent style.",
-                },
-                {
-                  icon: Monitor,
-                  title: "3. One-click OBS setup",
-                  time: "instant",
-                  desc: "Paste a single Browser Source link into OBS. Your avatar lip-syncs to your mic in real time.",
-                },
-                {
-                  icon: Download,
-                  title: "4. Download and go live",
-                  time: "instant",
-                  desc: "Export PNGs or ZIP bundles for OBS, Twitch, Discord — stream-ready in seconds.",
-                },
+                { icon: Pencil, index: 0 },
+                { icon: Users, index: 1 },
+                { icon: Monitor, index: 2 },
+                { icon: Download, index: 3 },
               ].map((step) => (
                 <li
-                  key={step.title}
+                  key={step.index}
                   className="flex items-start gap-2 md:gap-4"
                 >
                   <div className="hidden sm:flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
@@ -84,13 +65,13 @@ export default function Comparison() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-lg font-bold leading-none tracking-tight text-primary">
-                      {step.title}
+                      {t(`steps.${step.index}.title`)}
                       <span className="font-normal text-gray-500 hidden md:inline-flex ml-2">
-                        ({step.time})
+                        ({t(`steps.${step.index}.time`)})
                       </span>
                     </p>
                     <p className="mt-1 text-base font-normal text-gray-600">
-                      {step.desc}
+                      {t(`steps.${step.index}.desc`)}
                     </p>
                   </div>
                 </li>
@@ -118,21 +99,14 @@ export default function Comparison() {
             </div>
 
             <p className="mt-6 text-xl font-bold text-gray-700">
-              Traditional Commission
+              {t("traditional.title")}
             </p>
 
             <ul className="mt-4 space-y-2 md:space-y-3 text-base font-normal text-gray-600">
-              {[
-                "Find and hire an artist on Fiverr/DeviantArt",
-                "Wait for their response and negotiate price",
-                "Pay $50–$200+ for one set of PNGs",
-                "Wait 1–3 weeks for delivery",
-                "Risk inconsistent quality or revisions",
-                "Repeat for new expressions or styles",
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-2.5">
+              {[0, 1, 2, 3, 4, 5].map((index) => (
+                <li key={index} className="flex items-center gap-2.5">
                   <X className="w-5 h-5 shrink-0 text-red-400" />
-                  {item}
+                  {t(`traditional.items.${index}`)}
                 </li>
               ))}
             </ul>
@@ -140,7 +114,7 @@ export default function Comparison() {
             {/* Tags */}
             <div className="mt-6 flex flex-wrap gap-2">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-50 text-red-700 border border-red-200">
-                Expensive & Slow
+                {t("traditional.badge")}
               </span>
             </div>
           </div>
@@ -153,12 +127,10 @@ export default function Comparison() {
             className="inline-flex h-12 w-full items-center justify-center gap-1.5 rounded-lg border border-primary bg-primary px-6 pb-3.5 pt-2.5 text-lg font-bold leading-6 text-white shadow-lg shadow-primary/25 transition-all duration-150 hover:bg-primary/90 sm:w-auto"
           >
             <span className="hidden md:inline-flex">
-              {user
-                ? "Create Your PNGTuber Now"
-                : "Create Your Free PNGTuber — No Credit Card"}
+              {user ? t("cta.loggedIn") : t("cta.loggedOut")}
             </span>
             <span className="md:hidden">
-              {user ? "Create Now" : "Create Free PNGTuber"}
+              {user ? t("cta.loggedInMobile") : t("cta.loggedOutMobile")}
             </span>
           </Link>
 
@@ -166,17 +138,17 @@ export default function Comparison() {
           <div className="flex flex-wrap items-center justify-center gap-4 mt-6 text-sm text-gray-500">
             <span className="flex items-center gap-1.5">
               <Star className="w-4 h-4 text-primary fill-primary" />
-              No drawing skills needed
+              {t("values.0")}
             </span>
             <span className="hidden sm:inline text-gray-300">|</span>
             <span className="flex items-center gap-1.5">
               <Star className="w-4 h-4 text-primary fill-primary" />
-              Ready in under 5 minutes
+              {t("values.1")}
             </span>
             <span className="hidden sm:inline text-gray-300">|</span>
             <span className="flex items-center gap-1.5">
               <Star className="w-4 h-4 text-primary fill-primary" />
-              Works directly in OBS
+              {t("values.2")}
             </span>
           </div>
         </div>

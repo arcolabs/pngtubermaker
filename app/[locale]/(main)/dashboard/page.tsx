@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import AvatarGrid from "@/components/dashboard/AvatarGrid";
 import CreditBar from "@/components/dashboard/CreditBar";
 import QuickActionCard from "@/components/dashboard/QuickActionCard";
@@ -16,14 +17,15 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-function getGreeting() {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
-}
+export default async function DashboardPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
 
-export default async function DashboardPage() {
+  const t = await getTranslations("dashboard");
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
 
@@ -43,11 +45,14 @@ export default async function DashboardPage() {
         <div className="flex items-end gap-3">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              {getGreeting()}, {session.user.name?.split(" ")[0] || "Creator"}!
+              {(() => {
+                const hour = new Date().getHours();
+                if (hour < 12) return t("greetingMorning");
+                if (hour < 18) return t("greetingAfternoon");
+                return t("greetingEvening");
+              })()}, {session.user.name?.split(" ")[0] || "Creator"}!
             </h1>
-            <p className="text-gray-500 mt-1">
-              Here&apos;s your PNGTuber studio overview
-            </p>
+            <p className="text-gray-500 mt-1">{t("subtitle")}</p>
           </div>
         </div>
 
@@ -61,14 +66,14 @@ export default async function DashboardPage() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">
-              Recent Avatars
+              {t("recentAvatars")}
             </h2>
             {recentAvatars.length > 0 && (
               <a
                 href="/avatars"
                 className="text-sm text-primary hover:text-primary/80 font-medium"
               >
-                View All →
+                {t("viewAll")}
               </a>
             )}
           </div>
