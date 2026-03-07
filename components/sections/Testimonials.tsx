@@ -133,7 +133,9 @@ export default function Testimonials({
       id: String(i + 1),
       name: t(`items.${i}.name`),
       role: t(`items.${i}.role`),
-      platform: t(`items.${i}.platform`) || undefined,
+      platform: t.has(`items.${i}.platform`)
+        ? t(`items.${i}.platform`)
+        : undefined,
       content: t(`items.${i}.content`),
       avatar,
     }));

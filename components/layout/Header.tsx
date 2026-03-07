@@ -15,6 +15,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { useAuthStore } from "@/hooks/use-auth-store";
 import {
@@ -160,6 +161,7 @@ export default function Header() {
         </div>
 
         <div className="navbar-end gap-2">
+          <LanguageSwitcher variant="header" />
           {isLoggedIn ? (
             <>
               <div className="hidden lg:flex items-center gap-2">
