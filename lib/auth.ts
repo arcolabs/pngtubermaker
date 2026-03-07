@@ -95,7 +95,7 @@ function createAuth() {
               console.error("[Auth] Failed to send Lark notification:", error);
             }
 
-            // Grant welcome credits (1000) for new users.
+            // Grant welcome credits (300) for new users.
             // Atomic + idempotent: skips if user already received welcome credits
             // (e.g. account linking triggers this hook again for the same user).
             try {
@@ -105,7 +105,7 @@ function createAuth() {
               );
               const granted = await grantWelcomeCredits(
                 accountRecord.userId,
-                1000,
+                300,
               );
               console.log(
                 "[Auth] Welcome credits result:",
