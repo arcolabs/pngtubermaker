@@ -624,7 +624,11 @@ function AvatarImagesPanel({
               <ImageCard
                 item={group.baseImage}
                 removing={removingId === group.baseImage.id}
-                onRemoveBg={() => handleRemoveBg(group.baseImage!)}
+                onRemoveBg={() => {
+                  if (group.baseImage) {
+                    handleRemoveBg(group.baseImage);
+                  }
+                }}
               />
             )}
             {group.expressions.map((expr) => (

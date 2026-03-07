@@ -1,49 +1,49 @@
 {
   "slug": "style/anime",
   "metadata": {
-    "title": "무료 AI 애니메이션 캐릭터 크리에이터 | PNGTuberMaker",
-    "description": "무료 애니메이션 아바타 메이커 — AI로 맞춤형 애니메이션 캐릭터와 아바타를 만드세요. 그림 실력이 필요 없습니다. Twitch, Discord, YouTube 및 소셜 미디어용 애니메이션 스타일의 PNGTuber를 생성하세요. 무료로 시작하세요.",
+    "title": "애니메이션 아바타 메이커 — 무료 AI 애니메이션 캐릭터 제작기 | PNGTuberMaker",
+    "description": "무료 애니메이션 아바타 메이커 — AI로 커스텀 애니메이션 캐릭터와 아바타를 만드세요. 그림 그리기 실력 필요 없습니다. Twitch, Discord, YouTube 및 소셜 미디어용 애니메이션 스타일 PNGTuber를 생성하세요. 무료로 시작하세요.",
     "keywords": [
       "애니메이션 아바타 메이커",
-      "애니메이션 캐릭터 크리에이터",
+      "애니메이션 캐릭터 제작기",
       "애니메이션 아바타 생성기",
       "애니메이션 pngtuber",
       "애니메이션 vtuber 메이커",
-      "맞춤형 애니메이션 아바타",
+      "커스텀 애니메이션 아바타",
       "무료 애니메이션 아바타 메이커",
       "애니메이션 캐릭터 메이커",
       "AI 애니메이션 아바타",
       "애니메이션 프로필 사진 메이커",
-      "애니메이션 프로필 사진 메이커",
+      "애니메이션 프로필 사진 제작기",
       "애니메이션 캐릭터 만들기",
-      "애니메이션 아바타 크리에이터"
+      "애니메이션 아바타 제작기"
     ],
     "canonical": "/style/anime"
   },
   "hero": {
     "badge": "애니메이션 스타일 생성기",
     "title": "무료 애니메이션 아바타 메이커 — AI로 애니메이션 캐릭터 만들기",
-    "subtitle": "几分钟内设计出令人惊艳的动画角色。描述您的角色——发型颜色、服装、个性——AI将生成具有匹配表情的专业动画头像。",
+    "subtitle": "수分钟内에 stunning한 애니메이션 캐릭터를 디자인하세요. 캐릭터의 헤어 색상, 의상, 성격 등을 설명하면 AI가 일관된 표정이 적용된 전문적인 애니메이션 아바타를 생성합니다.",
     "ctaText": "애니메이션 아바타 만들기",
     "ctaHref": "/create"
   },
   "features": {
-    "title": "几分钟内打造专业动画头像",
+    "title": "수分钟内에 전문적인 애니메이션 아바타",
     "items": [
       {
         "icon": "Palette",
-        "title": "정통 애니메이션 스타일",
-        "description": "부드러운 소녀부터 날카로운 소년까지 다양한 고전 애니메이션 아트 스타일로 아바타를 생성하세요. 각 디자인은 전문 애니메이션 캐릭터 아트의 느낌을 그대로 담아냅니다."
+        "title": "진정한 애니메이션 스타일",
+        "description": "부드러운 소녀漫画부터 날카로운 소년漫画까지 전통적인 애니메이션 예술 스타일로 아바타를 생성합니다. 각 디자인은 전문적인 애니메이션 캐릭터 예술의 느낌을 담고 있습니다."
       },
       {
         "icon": "Sparkles",
         "title": "AI 캐릭터 디자인",
-        "description": "평범한 영어로 이상적인 애니메이션 캐릭터를 설명하세요. AI는 애니메이션 트로프, 헤어스타일, 의상, 액세서리를 이해하여 당신의 비전을 실현합니다."
+        "description": "원하는 애니메이션 캐릭터를 평범한 영어로 설명하세요. AI는 애니메이션 트로프, 헤어스타일, 의상, 액세서리를 이해하여 당신의 비전을 현실로 만들어줍니다."
       },
       {
         "icon": "Layers",
-        "title": "일관된 표현 팩",
-        "description": "전체 세트의 애니메이션 표현을 받으세요 — 천연치 blush, 전투 준비 표정, 밝은 미소 — 모두 캐릭터 디자인 및 색상 팔레트와 일치합니다."
+        "title": "일치하는 표현 팩",
+        "description": "전체 세트의 애니메이션 표현을 받으세요 — tsundere 볼페인트, 전투 준비 눈빛, 밝은 미소 — 모두 캐릭터 디자인 및 컬러 팔레트와 일치합니다."
       },
       {
         "icon": "Download",
@@ -54,80 +54,80 @@
   },
   "showcase": {
     "title": "AI가 생성한 애니메이션 아바타",
-    "description": "우리의 AI가 만든 애니메이션 캐릭터들을 탐색하세요 — 치비부터 상세한 일러스트레이션 스타일까지.",
+    "description": "AI가 만든 애니메이션 캐릭터를 탐색하세요 — 치비부터 상세한 일러스트레이션 스타일까지.",
     "images": [
       {
         "src": "/images/showcase/pinkbunny_pngtuber.png",
         "alt": "무료 AI 애니메이션 아바타 메이커 — PNGTuberMaker로 만든 귀여운 토끼 캐릭터",
-        "prompt": "pink bunny ears, floral hair band, soft peach bob hair, emerald green eyes, oversized cream hoodie, holding a basket of strawberries"
+        "prompt": "분홍 토끼 귀, 플로럴 헤어밴드, 부드러운 피치bob 헤어, 에메랄드 그린 눈, 오버사이즈 크림 후디, 딸기 바구니 들고"
       },
       {
         "src": "/images/showcase/fox_pngtuber.png",
-        "alt": "애니메이션 캐릭터 크리에이터 — AI 애니메이션 아바타 메이커가 생성한 여우 아바타",
-        "prompt": "orange fox ears, long wavy blue hair with star hairpins, glowing amber eyes, navy blue dress with constellations, holding a floating crystal ball"
+        "alt": "애니메이션 캐릭터 제작기 — AI 애니메이션 아바타 메이커가 생성한 여우 아바타",
+        "prompt": "주황 여우 귀, 긴 물결치는 블루 헤어와 스타 헤어핀, 빛나는 앰버 눈, 별자리 navy 블루 드레스, 떠다니는 수정 구술 들고"
       },
       {
         "src": "/images/showcase/sunflower_pngtuber.png",
-        "alt": "可爱的动画头像制作器——可爱的向日葵角色设计，用于直播",
-        "prompt": "giant sunflower crown, mint green curly hair, bright yellow eyes, white sundress, holding a watering can, tiny yellow wings"
+        "alt": "可爱的 애니메이션 아바타 메이커 — 스트리밍용 사랑스러운 해바라기 캐릭터 디자인",
+        "prompt": "거대한 해바라기 왕관, 민트 그린 컬리 헤어, 밝은 노란 눈, 화이트 선드레스, 물주전자를 들고, 작노란 날개"
       },
       {
         "src": "/images/showcase/round1_idle.png",
-        "alt": "Detailed anime magical girl art — anime avatar created by PNGTuberMaker",
-        "prompt": "A classic magical girl with long, flowing golden twin-tails tied with large red silk bows. She has bright blue, expressive eyes and a heart-shaped face."
+        "alt": "상세한 애니메이션 마법소녀 아트 — PNGTuberMaker가 만든 애니메이션 아바타",
+        "prompt": "큰 빨간 비단 리본으로 묶은 길고 흐르는 금빛 트윈테일을 가진 전통적인 마법소녀. 그녀는 밝은蓝色的 표현력 있는 눈과 하트 모양의 얼굴을 가지고 있다."
       },
       {
         "src": "/images/showcase/round2_sad.png",
-        "alt": "표현력 있는 애니메이션 마녀 아바ta — PNGTuber를 위한 감정이 담긴 커스텀 애니메이션 캐릭터",
-        "prompt": "small witch, huge wizard hat, starry hair, galaxy eyes, navy blue dress, magical girl"
+        "alt": "표정丰富的 애니메이션 마녀 아바타 — PNGTuber용 감정이 담긴 커스텀 애니메이션 캐릭터",
+        "prompt": "작은 마녀, 거대한 마법사 모자, 별이 있는 헤어, 은하 눈, navy 블루 드레스, 마법소녀"
       },
       {
         "src": "/images/showcase/round3_angry.png",
-        "alt": "独特动画风格头像——在线AI生成动画角色创建器",
-        "prompt": "A young woman with voluminous, wavy dark brown hair and large brown eyes. Round glasses with silver sun-shaped pendants, black Gothic-style ruffled corset top."
+        "alt": "유니크한 애니메이션 스타일 아바타 — 온라인 AI 생성 애니메이션 캐릭터 제작기",
+        "prompt": "부피감 있고 물결치는 어두운棕色 헤어와 큰棕色 눈을 가진 젊은 여성. 은빛 태양 모양 펜던트가 있는 둥근 안경, 검정 고딕 스타일 리플 클로셋 상의."
       }
     ]
   },
   "faqs": [
     {
       "id": "aa-1",
-      "question": "모든 애니메이션 스타일을 만들 수 있나요?",
-      "answer": "네. PNGTuberMaker의 AI는 귀여운 치비 캐릭터부터 사실적인 상세한 애니메이션 아트까지 다양한 애니메이션 스타일을 생성할 수 있습니다. 프롬프트에서 원하는 스타일을 설명하거나 참조 이미지를 업로드하세요."
+      "question": "아니bolo 어떤 애니메이션 스타일도 만들 수 있나요?",
+      "answer": "네. PNGTuberMaker의 AI는 귀여운 치비 캐릭터부터 사실적인 애니메이션 아트까지 다양한 애니메이션 스타일을 생성할 수 있습니다. 프롬프트에 원하는 스타일을 설명하거나 참고 이미지를 업로드하세요."
     },
     {
       "id": "aa-2",
       "question": "특정 스타일처럼 보이도록 애니메이션 아바타를 만들려면 어떻게 해야 하나요?",
-      "answer": "설명에서 구체적으로 명시하세요. 소녀 스타일의 경우 \"파스텔 색상, 부드러운 쉐이딩, 큰 표현력 있는 눈\"과 같은 세부 정보를 포함하거나, 소년 스타일의 경우 \"선명한 선, 굵은 색상, 다이나믹한 포즈\"를 포함하세요. 참조 아트도 업로드할 수 있습니다."
+      "answer": "설명을 구체적으로 작성하세요. 소녀漫畫 스타일에는 \"파스텔 색상, 부드러운 음영, 크고 표현력 있는 눈\"과 같은 세부 사항을 포함하고, 소년漫畫 스타일에는 \"선명한 선, 굵은 색상, 역동적인 자세\"를 추가하세요. 참고 아트도 업로드할 수 있습니다."
     },
     {
       "id": "aa-3",
-      "question": "Discord 프로필 사진으로 애니메이션 아바타를 사용할 수 있나요?",
-      "answer": "물론이죠. 애니메이션 아바타를 투명 PNG로 내보내어 Discord, Twitch, YouTube, Twitter 또는 이미지 업로드를 지원하는 모든 플랫폼에서 사용하세요."
+      "question": "애니메이션 아바타를 디스코드 프로필 사진으로 사용할 수 있나요?",
+      "answer": "물론이죠. 애니메이션 아바타를 투명 PNG로 내보내서 어디서나 사용할 수 있습니다 — 디스코드, 트위치, 유튜브, 트위터 또는 이미지 업로드를 지원하는 모든 플랫폼에서 사용하세요."
     },
     {
       "id": "aa-4",
-      "question": "애니메이션 아바타는 독특한가요?",
-      "answer": "네. 모든 아바타는 사용자의 설명에 따라 고유하게 생성됩니다. 두 개의 캐릭터도 동일하지 않으며 생성물에 대한 전체 상업적 권리를 갖습니다."
+      "question": "애니메이션 아바타가 독특한가요?",
+      "answer": "네. 모든 아바타는 사용자의 설명을 기반으로 고유하게 생성됩니다. 두 개의 캐릭터도 같지 않으며, 창작물에 대한 모든 상업적 권리를 얻습니다."
     },
     {
       "id": "aa-5",
       "question": "그림 실력 없이 애니메이션 캐릭터를 만들 수 있나요?",
-      "answer": "바로 이것이 PNGTuberMaker가 만들어진 이유입니다. 캐릭터에 대한 설명만 입력하면 AI가 모든 아트를 처리합니다. 타블렛, 소프트웨어 기술 필요 없음 — 상상력만 있으면 됩니다."
+      "answer": "바로 그것이 PNGTuberMaker가 만들어진 이유입니다. 캐릭터에 대한 설명만 입력하면 AI가 모든 아트를 처리합니다. 태블릿도, 소프트웨어 기술도 필요 없습니다 — 상상력만 있으면 됩니다."
     },
     {
       "id": "aa-6",
-      "question": "이 애니메이션 아바타 메이커는 무료인가요?",
-      "answer": "네! PNGTuberMaker는 1개의 무료 아바타 생성을 제공합니다 — 첫 번째 애니메이션 아바타를 만들기 충분합니다. 신용카드 필요 없습니다. 완전히 무료로 애니메이션 캐릭터를 만들고, 미리보고, 다운로드할 수 있습니다. 프리미엄 플랜은 더 높은 해상도 내보내기, 표현 팩 등을 제공합니다."
+      "question": "이 애니메이션 아바타 메이커가 무료인가요?",
+      "answer": "네! PNGTuberMaker는 무료 아바타 생성 1회를 제공합니다 — 첫 번째 애니메이션 아바타를 만들기 충분합니다. 신용카드 필요 없으며, 완전히 무료로 애니메이션 캐릭터를 만들고 미리보고 다운로드할 수 있습니다. 프리미엄 플랜은 더 높은 해상도 내보내기, 표현 팩 등을 해제합니다."
     },
     {
       "id": "aa-7",
-      "question": "Twitch/YouTube 스트림에 이 애니메이션 아바타를 사용할 수 있나요?",
-      "answer": "물론이죠! 우리의 애니메이션 아바타는 스트리밍에 완벽합니다. 투명 배경과 OBS Studio에서 음성에 반응하는 표현 팩이 포함되어 있습니다. 많은 스트리머들이 Twitch, YouTube, Kick 및 기타 플랫폼에서 PNGTuber로 애니메이션 캐릭터를 사용합니다."
+      "question": "트위치/유튜브 스트림에 이 애니메이션 아바타를 사용할 수 있나요?",
+      "answer": "물론이죠! 우리의 애니메이션 아바타는 스트리밍에 완벽합니다. 투명 배경과 OBS Studio에서 음성에 반응하는 표현 팩이 함께 제공됩니다. 많은 스트리머들이 트위치, 유튜브, Kick 및 기타 플랫폼에서 PNGTuber로 이 애니메이션 캐릭터를 사용합니다."
     }
   ],
   "cta": {
-    "title": "지금 바로 애니메이션 캐릭터 디자인하기",
-    "subtitle": "설명에서 1분 이내에 전문적인 애니메이션 아바타로.",
+    "title": "지금 바로 애니메이션 캐릭터 디자인하세요",
+    "subtitle": "설명에서 전문적인 애니메이션 아바타까지 1분 이내에.",
     "ctaText": "무료로 만들기 시작",
     "ctaHref": "/create"
   },
@@ -138,13 +138,13 @@
       "href": "/vtuber-maker"
     },
     {
-      "title": "Discord 아바타 메이커",
-      "description": "Discord에 최적화된 애니메이션 아바타를 디자인하세요.",
+      "title": "디스코드 아바타 메이커",
+      "description": "디스코드에 최적화된 애니메이션 아바타를 디자인하세요.",
       "href": "/for/discord"
     },
     {
       "title": "무료 PNGTuber 메이커",
-      "description": "무료 애니메이션 아바타 생성을 시작하세요.",
+      "description": "무료 애니메이션 아바타 생성으로 시작하세요.",
       "href": "/free-pngtuber-maker"
     }
   ],

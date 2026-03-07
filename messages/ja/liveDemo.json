@@ -1,11 +1,11 @@
 {
-  "title": "AIで作成されたPNGTuberアバター",
-  "subtitle": "以下のアバターはすべて数秒で生成されました。アートのスキルは不要です。スタイルを選んでみましょう。",
+  "title": "AIで作成したPNGTuberアバター",
+  "subtitle": "以下のアバターはすべて数秒で生成されました。アートスキルは不要です。スタイルを選んで探索しましょう。",
   "styleAll": "すべて",
   "styleChibi": "ちび",
   "styleAnime": "アニメ",
-  "styleCartoon": "カートゥーン",
-  "stylePixelArt": "ドット絵",
+  "styleCartoon": "カートーン",
+  "stylePixelArt": "ピクセルアート",
   "tryPrompt": "このプロンプトを試す",
   "createPngtuber": "PNGTuberを作成",
   "createYoursFree": "無料で作成"

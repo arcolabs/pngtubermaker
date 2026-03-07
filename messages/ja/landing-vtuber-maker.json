@@ -1,17 +1,17 @@
 {
   "slug": "vtuber-maker",
   "metadata": {
-    "title": "VTuber Maker — 免费 AI VTuber アバター作成ツール | PNGTuberMaker",
-    "description": "無料のAI VTuber作成ツール — 数和分でカスタムVTuberアバター、モデル、表情パックを作成。美術スキル不要。OBS、Twitch、YouTube、Discord配信に対応。無料で今すぐ開始。",
+    "title": "VTuberメーカー — 無料AI VTuberアバター作成ツール | PNGTuberMaker",
+    "description": "無料のAI VTuberメーカー — 数分でカスタムVTuberアバター、モデル、表情パックを作成。アートスキル不要。Twitch、YouTube、Discord配信のOBSに対応。無料で始めましょう。",
     "keywords": [
-      "vtuber maker",
-      "vtuber モデル作成",
-      "ai vtuber maker",
-      "vtuber アバター作成",
-      "vtuber アバター生成",
+      "vtuber メーカー",
+      "vtuber モデル メーカー",
+      "ai vtuber メーカー",
+      "vtuber アバター メーカー",
+      "vtuber アバター 生成",
       "vtuber モデル",
-      "無料 vtuber maker",
-      "オンライン vtuber maker",
+      "無料 vtuber メーカー",
+      "vtuber メーカー オンライン",
       "ai vtuber アバター",
       "vtuber クリエイター",
       "vtuber 生成"
@@ -19,40 +19,40 @@
     "canonical": "/vtuber-maker"
   },
   "hero": {
-    "badge": "AI搭載 VTuber クリエイター",
-    "title": "無料 AI VTuber Maker — オンラインでVTuberアバターを作成",
-    "subtitle": "数分でオリジナルVTuberモデルをデザイン — 美術スキル不要。表情パック付きでカスタムキャラクターを生成し任何配信プラットフォームで配信を始めましょう。",
+    "badge": "AI搭載VTuberクリエイター",
+    "title": "無料のAI VTuberメーカー — オンラインでVTuberアバターを作成",
+    "subtitle": "数分で独自のVTuberモデルをデザイン — アートスキルは不要です。表情パック付きでカスタムキャラクターを生成し、的任何配信プラットフォームでライブ配信を始めましょう。",
     "ctaText": "VTuberを作成",
     "ctaHref": "/create"
   },
   "features": {
-    "title": "VTuberとして配信するために必要なすべてが揃っています",
+    "title": "VTuberとしてライブ配信に必要なすべてが揃う",
     "items": [
       {
         "icon": "Wand2",
         "title": "AI搭載生成機能",
-        "description": "キャラクターの特徴を説明するか、参考画像をアップロード。複数のユニークなVTuberデザインがAIによって生成されるので、あなたは選ぶだけ。"
+        "description": "キャラクターの説明をするか、参考画像をアップロードすると、AIが選択肢として複数のユニークなVTuberデザイン为你生成します。"
       },
       {
         "icon": "Layers",
         "title": "表情パック",
-        "description": "喜怒哀楽惊讶 — キャラクターのスタイルに统一された完全な表情セットを生成。"
+        "description": "喜び、怒り、悲しみ、驚きなどの完全な表情セットを生成 — すべてキャラクターのスタイルに一致しています。"
       },
       {
         "icon": "Monitor",
         "title": "数分で配信準備完了",
-        "description": "OBS Studio用のブラウザソースURLを取得。透明背景付きでVTuberアバターが配信画面に登場し、リアルタイムで音声に反応します。"
+        "description": "OBS Studio用のBrowser Source URLを取得。VTuberアバターが透明背景付きで配信に表示され、リアルタイムで音声に反応します。"
       },
       {
         "icon": "Shield",
-        "title": "あなたのアバター、あなたブランド",
-        "description": "Twitch、YouTube、Discord、SNSでアバターを使用可能。Creator Pass加入者は商品在内的完全な商用権利を取得。"
+        "title": "あなたのアバター、あなたのブランド",
+        "description": "Twitch、YouTube、Discord、ソーシャルメディアでアバターを使用可能。Creator Pass加入者は商品を 포함한完全な商用権利を取得できます。"
       }
     ]
   },
   "comparison": {
-    "title": "PNGTuberと従来のVTuberの比較",
-    "description": "为何多くの配信者が従来のVTuber RigではなくPNGTuberを選んでいるのかをチェック。",
+    "title": "PNGTuber vs 従来のVTuber",
+    "description": "何千もの配信者が従来のVTuber機材よりもPNGTuberを選ぶ理由をチェック。",
     "columns": [
       {
         "label": "機能"
@@ -68,22 +68,22 @@
     "rows": [
       {
         "feature": "費用",
-        "values": ["無料 – 月額7.99ドル", "200ドル – 2,000ドル以上"]
+        "values": ["無料 – 7.99ドル/月", "200ドル – 2,000ドル以上"]
       },
       {
         "feature": "セットアップ時間",
         "values": ["5分以内", "2〜8週間"]
       },
       {
-        "feature": "顔追跡",
-        "values": ["不要", "ウェブカメラ + ソフトウェアが必要"]
+        "feature": "顔トラッキング",
+        "values": ["不要", "ウェブカメラ+ソフトウェアが必要"]
       },
       {
         "feature": "ハードウェア",
-        "values": ["マイクのみ", "ウェブカメラ + GPU"]
+        "values": ["マイクのみ", "ウェブカメラ+GPU"]
       },
       {
-        "feature": "OBS設定",
+        "feature": "OBSセットアップ",
         "values": ["URLを1つ貼り付け", "複雑なNDI/キャプチャ設定"]
       },
       {
@@ -98,37 +98,37 @@
   },
   "showcase": {
     "title": "AIで作成されたVTuberアバター",
-    "description": "以下のアバターはすべて数秒で生成 — 美術スキル不要。",
+    "description": "以下のアバターはすべて数秒で生成されました — アートスキルは不要です。",
     "images": [
       {
         "src": "/images/showcase/fox_pngtuber.png",
-        "alt": "PNGTuberMakerの無料VTuber作成ツールで生成されたAI作成のキツネVTuberアバター",
-        "prompt": "オレンジのキツネ耳、長い波状の青髪に星の発飾り、輝くアンバー目の星空模様のネイビーブルードレス、浮かぶ水晶の玉を持つ"
+        "alt": "PNGTuberMakerの無料VTuberメーカーで作成されたAI生成の狐VTuberアバター",
+        "prompt": "オレンジ色の狐耳、長い波のような青い髪に星のカチューシャ、輝くアンバー色の目、星座が描かれた紺色のドレス、浮かぶ水晶の玉を持っている"
       },
       {
         "src": "/images/showcase/pinkbunny_pngtuber.png",
-        "alt": "PNGTuberMakerで作成されたAI生成のピンクウサギVTuberアバター",
-        "prompt": "ピンクのウサギ耳、花のヘアバンド、柔らかいピーチのボブ Hair、エメラルドグリーンの目、大きいクリームのフーディ、イチゴの籠を持つ"
+        "alt": "PNGTuberMakerで作成されたAI生成のピンクうさちゃんVTuberアバター",
+        "prompt": "ピンクのうさ耳、花々のヘアバンド、柔らかいピーチ色のボブヘア、エメラルドグリーン 큰目、大きくてクリーム色のフーディーを着て、イチゴのバスケットを持っている"
       },
       {
         "src": "/images/showcase/sunflower_pngtuber.png",
-        "alt": "PNGTuberMakerのオンラインVTuber作成ツールで生成された可愛いひまわりVTuberキャラクターアバター",
-        "prompt": "大きなひまわり王冠、ミントグリーンのクルクルHair、明るい黄色の目、白いサンデレス、ジョウロを持つ、小さな黄色い翼"
+        "alt": "PNGTuberMakerのオンラインVTuberメーカーで生成された可愛いひまわりVTuberキャラクターアバター",
+        "prompt": "大きなひまわり和王冠、ミントグリーンのカールした髪、明るい黄色の目、白いサンデレス、水やりcansを持っている、小さな黄色い羽根"
       },
       {
         "src": "/images/showcase/round1_idle.png",
-        "alt": "無料AI VTuber作成ツールPNGTuberMakerで作成されたAI VTuber魔法少女アバター",
-        "prompt": "大きな赤いシルクのリボンで結んだ長く流れる金のツインテールを持つ古典的な魔法少女。彼女は明るく表現力豊かな青瞳とハート型の顔を持っている。"
+        "alt": "無料のAI VTuberメーカーPNGTuberMakerで作成されたAI VTuber魔法少女アバター",
+        "prompt": "大きな赤いシルクのリボンで結ばれた長く流れる金のツインテールを持つ古典的な魔法少女。明るく青い表現力豊かな目とハートの形をした顔。"
       },
       {
         "src": "/images/showcase/round2_sad.png",
-        "alt": "PNGTuberMaker VTuberアバター作成ツールで作成されたVTuberアバター魔女の表情",
-        "prompt": "小さな魔女、巨大なWizardの帽子、星空の髪、ギャラクシーアイ、ネイビーブルーのドレス、魔法少女"
+        "alt": "PNGTuberMaker VTuberアバターメーカーで作成されたVTuberアバターwitch表情",
+        "prompt": "小さな魔女、大きな魔法の帽子、星のような髪、ギャラクシーアイ、紺色のドレス、魔法少女"
       },
       {
         "src": "/images/showcase/round3_angry.png",
-        "alt": "AI VTuber作成ツールPNGTuberMakerで生成されたVTuberアバターの怒った表情",
-        "prompt": "豊かで波状の暗い茶色の髪と大きな茶色の目を持つ若い女性。銀の太陽型ペンダント付きのラウンドメガネ、黒いゴシック風フリルコルセットトップ。"
+        "alt": "AI VTuberクリエイターPNGTuberMakerで生成されたVTuberアバター怒りの表情",
+        "prompt": "豊かで波打つ暗い茶色の髪と大きな茶色の目を持つ若い女性。銀の太陽型ペンダントが付いたラウンドメガネ、黒いゴシックスタイルのリラックストップ。"
       }
     ]
   },
@@ -136,54 +136,54 @@
     {
       "id": "vm-1",
       "question": "VTuber Makerとは何ですか？",
-      "answer": "VTuber Makerは、配信用のバーチャルアバターを作成するためのツールです。PNGTuberMakerはAIを使用して、テキストの説明や参考画像からカスタムVTuberキャラクターを生成し、ライブ配信用の表情パックをセットにして提供します。"
+      "answer": "VTuber Makerは、ストリーミング用のバーチャルアバターを作成できるツールです。PNGTuberMakerは、AIを使用してテキストの説明や参考画像からカスタムVTuberキャラクターを生成し、ライブ配信用の表情パックを備えています。"
     },
     {
       "id": "vm-2",
-      "question": "PNGTubingはVTubingより優れていますか？",
-      "answer": "PNGTuberは従来のVTuber Rigよりシンプルで軽量です。顔追跡、ウェブカメラ、高額なソフトウェアが不要 — OBSのブラウザソースするだけでOK。PNGTuberMakerはセットアップの手間をゼロにしてプロフェッショナルな外観を提供します。"
+      "question": "PNGTubingとVTubing、どちらが良いですか？",
+      "answer": "PNGTuberは、全身VTuberよりシンプルで軽量です。顔認識やウェブカメラ、高額なソフトウェアは不要で、OBSのブラウザソースだけで動作します。PNGTuberMakerは、セットアップ不要でプロフェッショナルな外観を実現します。"
     },
     {
       "id": "vm-3",
-      "question": "ウェブカメラや顔追跡が必要ですか？",
-      "answer": "いいえ。PNGTuberアバターは顔追跡ではなくマイク入力に反応します。話をすると、アバターが自動でアニメーションします。ウェブカメラ、プラグイン、追加ハードウェア一切不要。"
+      "question": "ウェブカメラや顔認識が必要ですか？",
+      "answer": "いいえ。PNGTuberアバターは顔認識ではなく、マイク入力に反応します。話すと、アバターが自動でアニメーションします。ウェブカメラ、プラグイン、追加のハードウェアは不要です。"
     },
     {
       "id": "vm-4",
       "question": "VTuberアバターをTwitchやYouTubeで使用できますか？",
-      "answer": "はい。OBSブラウザソースをサポートする任何プラットフォームでアバターを使用可能 — Twitch、YouTube、Kickなど。OBSのブラウザソースとして貼り付ける一意のURLが提供されます。"
+      "answer": "はい。アバターはOBSブラウザソースをサポートする任意のプラットフォーム（Twitch、YouTube、Kickなど）で動作します。OBSのブラウザソースとして貼り付ける一意のURLが提供されます。"
     },
     {
       "id": "vm-5",
-      "question": "VTuberアバターの作成費用はいくらですか？",
-      "answer": "新規ユーザーは試用に無料で1回アバター生成可能 — クレジットカード不要従来のVTuberコミッションは200〜2,000ドル以上かかリ週間かかる — PNGTuberMakerは数分で費用のごく一部で提供。"
+      "question": "VTuberアバターの作成価格はいくらですか？",
+      "answer": "新規ユーザーはクレジットカード不要で、1回の無料アバター生成を試すことができます。従来のVTuber依頼費用は200〜2,000ドル以上で、数週間かかります。PNGTuberMakerは、数分で Fraction のコストで提供します。"
     },
     {
       "id": "vm-6",
       "question": "モバイルでVTuberアバターを作成できますか？",
-      "answer": "はい。PNGTuberMakerはスマホやタブレットを含む任何モダンブラウザで動作。手机やタブレットでVTuberアバターをデザイン，然后OBS Studioを使ってデスクトップで配信に使用可能。"
+      "answer": "はい。PNGTuberMakerは、手机やタブレットを含む、最新のウェブブラウザで動作します。手机やタブレットでVTuberアバターをデザインし、OBS Studioでデスクトップ配信に使用できます。"
     }
   ],
   "cta": {
     "title": "VTuberになる準備はできましたか？",
-    "subtitle": "数分でアバターを作成。美術スキルも高額なコミッションも不要。",
+    "subtitle": "数分でアバターを作成できます。絵心のスキルや高額な依頼は不要です。",
     "ctaText": "無料で作成を始める",
     "ctaHref": "/create"
   },
   "relatedPages": [
     {
-      "title": "アニメアバター作成ツール",
+      "title": "アニメアバターMaker",
       "description": "AIでアニメスタイルのVTuberアバターを作成。",
       "href": "/style/anime"
     },
     {
-      "title": "無料PNGTuber Maker",
-      "description": "免费アバター生成クレジットでスタート。",
+      "title": "無料のPNGTuber Maker",
+      "description": "無料のアバター生成クレジットで始めましょう。",
       "href": "/free-pngtuber-maker"
     },
     {
       "title": "PNGTuberの作り方",
-      "description": "最初のアバター作成 위한 단계별 가이드。",
+      "description": "最初のアバターを作成するためのステップバイステップガイド。",
       "href": "/guides/how-to-make-a-pngtuber"
     }
   ],

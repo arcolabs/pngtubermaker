@@ -1,9 +1,9 @@
 {
-  "availableCredits": "사용 가능 크레딧",
+  "availableCredits": "사용 가능한 크레딧",
   "freeCredits": "무료 크레딧",
   "subscriptionCredits": "구독 크레딧",
-  "topupCredits": "충전 크레딧",
-  "neverExpires": "만료되지 않음",
+  "topupCredits": "추가 크레딧",
+  "neverExpires": "만료 없음",
   "expired": "만료됨",
   "buyCredits": "크레딧 구매",
   "creditsLeft": "{count}개 크레딧 남음"

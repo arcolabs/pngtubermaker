@@ -1,150 +1,150 @@
 {
   "slug": "style/anime",
   "metadata": {
-    "title": "アニメアバター Maker — 無料AIアニメキャラクター作成 | PNGTuberMaker",
-    "description": "無料のアニメアバター作成ツール — AIでカスタムアニメキャラクターとアバターを作成。絵心の経験は不要。Twitch、Discord、YouTube向けのアナログスタイルPNGTuberを作成可能。今すぐ無料で開始。",
+    "title": "アニメアバター作成 — 無料AIアニメキャラクター作成ツール | PNGTuberMaker",
+    "description": "無料アニメアバター作成ツール — AIでカスタムアニメキャラクターとアバターを作成。作画スキルは不要。Twitch、Discord、YouTube＆SNS向けアニメ風PNGTuberを生成。無料で始めましょう。",
     "keywords": [
-      "アニメアバター メーカー",
-      "アニメキャラクター 作成",
-      "アニメアバター 生成",
-      "アニメ pngtuber",
-      "アニメ vtuber メーカー",
+      "アニメアバター作成",
+      "アニメキャラクター作成",
+      "アニメアバター生成",
+      "アニメpngtuber",
+      "アニメvtuber作成",
       "カスタムアニメアバター",
-      "無料アニメアバター メーカー",
-      "アニメキャラクター メーカー",
+      "無料アニメアバター作成",
+      "アニメキャラクターメーカー",
       "AIアニメアバター",
-      "アニメpfp メーカー",
-      "アニメプロフィール画像 メーカー",
-      "アニメキャラクター 作成",
-      "アニメアバター クリエイター"
+      "アニメpfp作成",
+      "アニメプロフィール画像作成",
+      "アニメキャラクターを作成",
+      "アニメアバター作成ツール"
     ],
     "canonical": "/style/anime"
   },
   "hero": {
     "badge": "アニメスタイル生成",
-    "title": "無料のアニメアバター作成ツール — AIでアニメキャラクターを作成",
-    "subtitle": "数分で素晴らしいアニメキャラクターをデザイン。髪の色、服装、性格などを入力すると、AIが表情までマッチしたプロフェッショナルなアニメアバターを生成します。",
+    "title": "無料アニメアバター作成 — AIでアニメキャラクターを作成",
+    "subtitle": "数分で素晴らしいアニメキャラクターをデザイン。キャラクターの特徴 — 髪の色、服装、性格 — を描述すると、AIが相符しい表情のプロフェッショナルなアニメアバターを生成します。",
     "ctaText": "アニメアバターを作成",
     "ctaHref": "/create"
   },
   "features": {
-    "title": "数分でプロ級のアバターを作成",
+    "title": "数分でプロ級アニメアバター",
     "items": [
       {
         "icon": "Palette",
         "title": "本格的なアニメスタイル",
-        "description": "柔らかい少女漫画から切れ味のある少年漫画まで、クラシックなアニメアートスタイルでアバターを生成。各デザインプロフェッショナルなアニメキャラクターアートの見栄えと質感を実現。"
+        "description": "柔らかい少女漫画から切れ味のある少年漫画まで、经典的なアニメアートスタイルでアバターを生成。各デザインは、プロのアニメキャラクター美術の見映えと雰囲気を再現します。"
       },
       {
         "icon": "Sparkles",
         "title": "AIキャラクター設計",
-        "description": "理想のアバ터를シンプルな英語でも描述。AIはアニメのトレントや hairstyle、服装、小物を理解し、あなたのビジョンを形に。"
+        "description": "普通の英語で理想的なアニメキャラクターを描述してください。AIはアニメのトロープ、 hairstyles、服装、アクセサリーを理解し、あなたのビジョンを実現します。"
       },
       {
         "icon": "Layers",
-        "title": "表情パックをセットで",
-        "description": "ツンデレの赤面、戦う準備ができた眼光、明るい笑顔など、アバターの表情を كاملةセットで入手。すべてキャラクターデザインとカラーパレットに一致的。"
+        "title": "セットになった表情パック",
+        "description": "アニメ表情の الكاملةセットを取得 — ツンデレの照れ顔、戦意زاgungierte睨み、明るく微笑む表情 — すべてキャラクターの設計とカラーパレットに一致しています。"
       },
       {
         "icon": "Download",
         "title": "高解像度透過PNG",
-        "description": "1080p HD解像度までの透過PNGファイルとしてアニメアバターをエクスポート。OBSオーバーレイ、Discordプロフィール、YouTubeサムネイル、SNSに最適。"
+        "description": "1080p HD解像度までの透過PNGファイルとしてアニメアバターをエクスポート。OBSオーバーレイ、Discordプロフィール、YouTubeサムネイル、SNSに最適です。"
       }
     ]
   },
   "showcase": {
-    "title": "AIが生成したアニメアバター",
-    "description": "当AIが作成したアニメキャラクターを参照。チビから詳細なイラストスタイルまで。",
+    "title": "AI生成アニメアバター",
+    "description": "当AIが作成したアニメキャラクターを検索 — ちびキャラクターから细腻なイラストスタイルまで。",
     "images": [
       {
         "src": "/images/showcase/pinkbunny_pngtuber.png",
-        "alt": "無料AIアニメアバター作成 — PNGTuberMakerで作成したかわいいウサギキャラクター",
-        "prompt": "ピンクのウサギ耳、 花のヘアバンド、柔らかいピーチのボブヘア、エメラルドグリーン目、大きいクリームのフーディー、イチゴのバスケットを持っている"
+        "alt": "無料AIアニメアバター作成 — PNGTuberMakerで作成した可愛いうさぎキャラクター",
+        "prompt": "pink bunny ears, floral hair band, soft peach bob hair, emerald green eyes, oversized cream hoodie, holding a basket of strawberries"
       },
       {
         "src": "/images/showcase/fox_pngtuber.png",
-        "alt": "アニメキャラクター作成 — AIアニメアバター作成者が生成したキツネのアバター",
-        "prompt": "オレンジのキツネ耳、 波のような長い青い髪とスターヘアピン、輝くアンバー目、星座柄の Navy Blue ドレス、浮遊する水晶玉を持っている"
+        "alt": "アニメキャラクター作成 — AIアニメアバター作成で生成されたキツネのアバター",
+        "prompt": "orange fox ears, long wavy blue hair with star hairpins, glowing amber eyes, navy blue dress with constellations, holding a floating crystal ball"
       },
       {
         "src": "/images/showcase/sunflower_pngtuber.png",
-        "alt": "かわいいアニメアバター作成 — 配信向けのかわいいひまわりキャラクターデザイン",
-        "prompt": "巨大なひまわり冠、 ミントグリーンのカールヘア、明るい黄色い目、白いサンデレス、水やりを持っている、 작은 노란 날개"
+        "alt": "可愛いアニメアバター作成 — 配信向けのかわいいひまわりキャラクター設計",
+        "prompt": "giant sunflower crown, mint green curly hair, bright yellow eyes, white sundress, holding a watering can, tiny yellow wings"
       },
       {
         "src": "/images/showcase/round1_idle.png",
-        "alt": "詳細なアニメ魔法少女アート — PNGTuberMakerが作成したアニメアバター",
-        "prompt": "大きな赤いシルクのリボンで結んだ長く流れる金のツインテールを持つクラシックな魔法少女。彼女には明るい青く表情豊かな目とハート型の顔。"
+        "alt": "细腻なアニメ魔法少女アート — PNGTuberMakerで作成したアニメアバター",
+        "prompt": "A classic magical girl with long, flowing golden twin-tails tied with large red silk bows. She has bright blue, expressive eyes and a heart-shaped face."
       },
       {
         "src": "/images/showcase/round2_sad.png",
-        "alt": "感情表現のあるアニメ魔女アberta — PNGTuber向け感情を持つカスタムアニメキャラクター",
-        "prompt": "小さな魔女、巨大なウィザード帽、星の髪、銀河のような目、Navy Blue ドレス、魔法少女"
+        "alt": "表情丰富的アニメウィッチアバター — PNGTuber向け感情入りカスタムアニメキャラクター",
+        "prompt": "small witch, huge wizard hat, starry hair, galaxy eyes, navy blue dress, magical girl"
       },
       {
         "src": "/images/showcase/round3_angry.png",
-        "alt": ".unique anime style avatar — AI-generated anime character creator online",
-        "prompt": "_A young woman with voluminous, wavy dark brown hair and large brown eyes. Round glasses with silver sun-shaped pendants, black Gothic-style ruffled corset top."
+        "alt": "独特のアニメスタイルアバター — オンラインAI生成アニメキャラクター作成",
+        "prompt": "A young woman with voluminous, wavy dark brown hair and large brown eyes. Round glasses with silver sun-shaped pendants, black Gothic-style ruffled corset top."
       }
     ]
   },
   "faqs": [
     {
       "id": "aa-1",
-      "question": "有任何动漫风格都可以创建吗？",
-      "answer": "是的。PNGTuberMakerのAIは、かわいいチビキャラクターから詳細な写実的なアニメアートまで、幅広いアニメスタイルを生成できます。プロンプトで 원하는スタイルを描述するか、参考画像をアップロードしてください。"
+      "question": "どのようなアニメスタイルでも作成できますか？",
+      "answer": "はい。PNGTuberMakerのAIは、かわいいちびキャラクターから詳細なリアリスティックなアニメアートまで、幅広いアニメスタイルを生成できます。プロンプトで希望するスタイルを描写するか、参照画像をアップロードしてください。"
     },
     {
       "id": "aa-2",
-      "question": "どのようにしてアニメアバターを特定のスタイルに見せるか？",
-      "answer": "描述に具体性を含めてください。「パステルカラー、柔らかいシェーディング、大きい表現力ある目」など少女漫画スタイル、または「シャープな線、太いカラー、ダイナミックなポーズ」など少年漫画スタイルの詳細を含めるできます。参考アートをアップロード，也可。"
+      "question": "アニメアバターを特定のスタイルように見せるにはどうすればいいですか？",
+      "answer": "描写で具体的に指定してください。少女漫画風なら「ペステルカラー、ソフトなシェーディング、大きく表現力豊かな目」など、少年漫画風なら「シャープなライン、ボールドカラー、ダイナミックなポーズ」などを含めてください。参照アートをアップロードすることもできます。"
     },
     {
       "id": "aa-3",
-      "question": "アニメアバターをDiscordのプロフィール画像として使用できるか？",
-      "answer": "もちろん。アニメアバターを透過PNGでエクスポートし、どこでも使用可能— Discord、Twitch、YouTube、Twitter、または画像アップロードに対応するすべてのプラットフォーム。"
+      "question": "アニメアバターをDiscordのプロフィール画像として使用できますか？",
+      "answer": "もちろんです。アニメアバターを透明なPNGでエクスポートすれば、Discord、Twitch、YouTube、Twitter、または画像アップロードに対応するどのようなプラットフォームでも使用できます。"
     },
     {
       "id": "aa-4",
-      "question": "アニメアバターはユニークか？",
-      "answer": "はい。各アバターはあなたの描述に基づいて独自に生成されます。2つのキャラクターが同一することはなく、創作物の完全な商用権を取得。"
+      "question": "アニメアバターは独特なものになりますか？",
+      "answer": "はい。アバターはすべてあなた描写に基づいて固有に生成されます。2つのキャラクターが同じになることはなく、創作物の完全な商用権が得られます。"
     },
     {
       "id": "aa-5",
-      "question": "絵心の経験がなくてもアニメキャラクターを作成できるか？",
-      "answer": "それがPNGTuberMakerの目的。キャラク descriptをタイプ入力するだけで、AIがすべてのアートを担当。絵 tableta、软件スキルは不要—just your imagination."
+      "question": "絵心のなくてもアニメキャラクターを作成できますか？",
+      "answer": "それこそがPNGTuberMakerの目的です。キャラクターの描写を入力するだけで、AIがすべてのアートを生成します。描きタブレットも必要ありませんし、ソフトウェアの技術も不要です。あなたの想象力だけがあれば問題ありません。"
     },
     {
       "id": "aa-6",
-      "question": "このアニメアバター作成ツールは免费か？",
-      "answer": "はい！PNGTuberMakerは1回の免费アバター生成を提供—最初のアニメアバターを作成するのに十分。クレジットカードは不要。完全に免费でアニメキャラクターを作成、プレビュー、ダウンロードできます。プレミアムプランではより高い解像度エクスポート、表情パック、およびより多くの生成回数が解放。"
+      "question": "このアニメアバターメーカーは無料で使えますか？",
+      "answer": "はい！PNGTuberMakerでは1回の無料アバター生成が可能です。クレジットカードは不要です。最初のアニメアバターを作成、プレビュー、ダウンロード、すべて無料で行えます。プレミアムプランでは、より高解像度でのエクスポート、表情パック、より多くの生成回数が解放されます。"
     },
     {
       "id": "aa-7",
-      "question": "これらのアニメアバターをTwitch/YouTube配信に使用できるか？",
-      "answer": "、もちろん！当方のアニメアバターは配信に最適。透明な背景とOBS Studioで音声に反応する表情パック付属。多くの方がTwitch、YouTube、KickなどのプラットフォームでPNGTuberとしてアニメキャラクターを使用。"
+      "question": "これらのアニメアバターをTwitch/YouTube配信で使用できますか？",
+      "answer": "もちろんな，我们的动漫头像非常适合直播。它们带有透明背景和表情包，可以在OBS Studio中根据你的声音做出反应。许多主播将我们的动漫角色用作Twitch、YouTube、Kick等平台上的PNGTuber。"
     }
   ],
   "cta": {
     "title": "今すぐアニメキャラクターをデザイン",
-    "subtitle": "描述からプロ級アニメアバターまで1分以内。",
-    "ctaText": "免费で作成を開始",
+    "subtitle": "描写からプロレベルのアニメアバターへ、1分以内に完成。",
+    "ctaText": "無料で作成を始める",
     "ctaHref": "/create"
   },
   "relatedPages": [
     {
-      "title": "VTuber Maker",
-      "description": "AIで任何スタイルのVTuberアバターを作成。",
+      "title": "VTuberメーカー",
+      "description": "AIで任意のスタイルのVTuberアバターを作成。",
       "href": "/vtuber-maker"
     },
     {
-      "title": "Discord Avatar Maker",
+      "title": "Discordアバターメーカー",
       "description": "Discordに最適化されたアニメアバターをデザイン。",
       "href": "/for/discord"
     },
     {
-      "title": "Free PNGTuber Maker",
-      "description": "免费アニメアバター生成でスタート。",
+      "title": "無料PNGTuberメーカー",
+      "description": "無料のアニメアバター生成で inúmerを開始。",
       "href": "/free-pngtuber-maker"
     }
   ],
@@ -154,7 +154,7 @@
       "href": "/"
     },
     {
-      "label": "アニメアバター作成ツール"
+      "label": "アニメアバターメーカー"
     }
   ]
 }

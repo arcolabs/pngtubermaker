@@ -1,18 +1,18 @@
 {
   "title": "모든 플랫폼용 아바타 만들기",
-  "subtitle": "트위치에서 스트리밍하든, 유튜브에서 창작하든, 디스코드에서 대화하든 — 모두 지원합니다.",
+  "subtitle": "트위치에서 스트리밍하든, 유튜브에서 창작물을 올리든, 디스코드에서 어울리든 — 당신을 위한 모든 것이 있습니다.",
   "vtuberMaker": "VTuber 메이커",
-  "vtuberMakerDesc": "표정 팩이 포함된 AI VTuber 아바타 만들기 — 미술 실력 필요 없음.",
-  "animeAvatarMaker": "애니메이션 아바타 메이커",
-  "animeAvatarMakerDesc": "텍스트 설명으로 애니 스타일 캐릭터 생성.",
+  "vtuberMakerDesc": "표정 팩이 포함된 AI VTuber 아바타 만들기 — 예술적 재능이 필요 없습니다.",
+  "animeAvatarMaker": "아네메이트 아바타 메이커",
+  "animeAvatarMakerDesc": "텍스트 설명으로 아네메이트 스타일의 캐릭터를 생성합니다.",
   "howToMakePngtuber": "PNGTuber 만드는 방법",
-  "howToMakePngtuberDesc": "완전 초보자를 위한 가이드 — 5분 만에 스트리밍 시작하기.",
+  "howToMakePngtuberDesc": "완전한 초보자 가이드 — 0에서 5분 만에 스트리밍까지.",
   "freePngtuberMaker": "무료 PNGTuber 메이커",
-  "freePngtuberMakerDesc": "아바타 1회 무료 생성 — 신용카드 필요 없음.",
+  "freePngtuberMakerDesc": "1회 무료 아바타 생성 체험 — 신용카드 필요 없음.",
   "twitchAvatarMaker": "트위치 아바타 메이커",
-  "twitchAvatarMakerDesc": "마이크 반응형 애니메이션이 적용된 OBS 지원 스트리밍 아바타.",
+  "twitchAvatarMakerDesc": "마이크 반응 애니메이션이 적용된 OBS 준비 스트리밍 아바타.",
   "youtubeAvatarMaker": "유튜브 아바타 메이커",
   "youtubeAvatarMakerDesc": "채널 아바타, 썸네일 표현, 라이브 스트림 오버레이.",
   "discordAvatarMaker": "디스코드 아바타 메이커",
-  "discordAvatarMakerDesc": "프로필 사진, 서버 아이콘, 커스텀 이모지 팩."
+  "discordAvatarMakerDesc": "프로필 사진, 서버 아이콘, 커스텀 이모티콘 팩."
 }

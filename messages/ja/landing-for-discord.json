@@ -1,29 +1,29 @@
 {
   "slug": "for/discord",
   "metadata": {
-    "title": "Discordアバター作成ツール — 無料のAI Discord PFP・サーバーアイコン作成ツール",
-    "description": "AIで無料のDiscordアバターを作成 — カスタムプロフィール画像、サーバーアイコン、絵文字、PNGTuberキャラクター。芸術的スキルは不要です。Nitroアニメーションアバターにも対応。即座に無料で始めましょう。",
+    "title": "Discordアバター作成ツール — AI搭載の無料Discord PFP・サーバーアイコンメーカー",
+    "description": "AIで無料のDiscordアバターを作成 — カスタムプロフィール画像、サーバーアイコン、絵文字、PNGTuberキャラクターを作成できます。美術スキルは不要。Nitroアニメーションアバターにも対応。無料で始めましょう。",
     "keywords": [
-      "Discordアバター作成",
-      "Discordプロフィール画像作成",
-      "Discord PFP作成",
-      "カスタムDiscordアバター",
-      "Discordアバター生成",
+      "discord アバター メーカ",
+      "discord プロフィール画像 作成",
+      "discord pfp 作成",
+      "カスタム discord アバター",
+      "discord アバター ジェネレーター",
       "discord pngtuber",
-      "無料のDiscordアバター",
-      "Discordサーバーアイコン作成",
-      "Discord絵文字作成",
-      "Discord Nitroアバター",
-      "アニメーションDiscordアバター",
-      "Discord PFP作成"
+      "無料 discord アバター",
+      "discord サーバーアイコン 作成",
+      "discord 絵文字 作成",
+      "discord nitro アバター",
+      "アニメーション discord アバター",
+      "discord pfp 作成"
     ],
     "canonical": "/for/discord"
   },
   "hero": {
     "badge": "🎮 免费Discordアバター作成ツール",
     "title": "Discordアバター作成ツール：PFP、サーバーアイコン、絵文字",
-    "subtitle": "AIで完璧なDiscordアバターを作成 — 目立つプロフィール画像、ブランドのサーバーアイコン表現するカスタム絵文字。1つのキャラクターで無限の可能性。無料で始めましょう。",
-    "ctaText": "無料Discordアバターを作成",
+    "subtitle": "AIで完璧なDiscordアバターを作成 — 目を引くプロフィール画像、ブランド力のあるサーバーアイコン、独自の表現が可能な絵文字。一つのキャラクターで無限のDiscordの可能性。無料で始められます。",
+    "ctaText": "免费Discordアバターを作成",
     "ctaHref": "/create"
   },
   "features": {
@@ -31,28 +31,28 @@
     "items": [
       {
         "icon": "User",
-        "title": "目立つプロフィール画像",
-        "description": "サーバー一覧やDMで目を引くUniqueなPFPを作成。128px（サーバー一覧）で鮮明、1024px（プロフィール表示）で美しい、AI生成デザイン。もう.Genericなアバターとはサヨナラ。"
+        "title": "注目を集めるプロフィール画像",
+        "description": "サーバーリストやDMで目を引く.uniqueなPFPを作成。AIが生成したデザインは、128px（サーバーリスト）ではっきり、1024px（プロフィール表示）では 美しく見えます。もう汎用的なアバターとは限りません。"
       },
       {
         "icon": "Users",
-        "title": "プロフェッショナルサーバーアイコン",
-        "description": "コミュニティを代表するCenteredでクリーンなサーバーアイコンをデザイン。DiscordのCircle cropに最適なPerfectな512×512エクスポート。サーバーのブランド認知を即座に構築。"
+        "title": "プロフェッショナルなサーバーアイコン",
+        "description": "コミュニティをを代表する中央配置でシンプルなサーバーアイコンをデザイン。Discordの円形トリミングにも最適な512×512エクスポート。サーバーのブランド認知度を瞬時に構築。"
       },
       {
         "icon": "Smile",
         "title": "カスタム絵文字＆ステッカーセット",
-        "description": "Discord絵文字（128×128）とステッカー（320×320）に最適なMatching表情パックを作成。喜び、悲しみ、怒り、驚き — すべてキャラクターのスタイルと一致。"
+        "description": "Discord絵文字（128×128）とステッカー（320×320）に最適な統一された表情パックを生成。喜び、悲しみ、怒り、驚き — すべてキャラクターのスタイルに統一。"
       },
       {
         "icon": "Zap",
-        "title": "Nitro対応アニメーションの可能性",
-        "description": "Nitroアニメーションアバターとして使える表情シーケンスを作成。複数のポーズをエクスポートし、EZGIFなどのツールでスムーズなGIFを作成。Staticなベース、无限のアニメーション可能性。"
+        "title": "Nitro対応アニメーションの可能性がある",
+        "description": "Nitroアニメーションアバターとして使える表情シーケンスを作成。複数のポーズをエクスポートし、EZGIFなどのツールでスムーズなGIF変換を作成。静的なベースでアニメーションの可能性無限。"
       }
     ]
   },
   "platformSpecs": {
-    "title": "Discord画像仕様（2026）",
+    "title": "Discord画像仕様（2026年）",
     "items": [
       {
         "label": "プロフィール画像（PFP）",
@@ -60,11 +60,11 @@
       },
       {
         "label": "サーバーアイコン",
-        "value": "512×512ピクセル、Centeredデザイン"
+        "value": "512×512ピクセル、中央配置デザイン"
       },
       {
         "label": "カスタム絵文字",
-        "value": "128×128ピクセル、256KB未満"
+        "value": "128×128ピクセル、256KB以下"
       },
       {
         "label": "ステッカー",
@@ -76,37 +76,37 @@
       },
       {
         "label": "アバター形状",
-        "value": "Circle crop（重要な要素をCenterに）"
+        "value": "円形トリミング（重要な要素を中央に）"
       }
     ]
   },
   "steps": {
-    "title": "Discordアバターの作成＆設定方法",
+    "title": "Discordアベーダーの作成＆設定方法",
     "items": [
       {
-        "title": "Step 1: Discordキャラクターをデザイン",
-        "description": "PNGTuberMakerを開き、理想的なDiscordペルソナを描述。小さいサイズでの見た目を考える — 太い色、明確なSilhouette、CenterにFaceがあるものが最佳。複数のデザインを作成してお気に入りをChoose。"
+        "title": "ステップ1：Discordキャラクターをデザイン",
+        "description": "PNGTuberMakerを開いて、理想とするDiscordの人物像を描述。小さいサイズでの見た目要考虑 — 鮮やかな色彩、明確なシルエット、中央配置の顔が最適。複数のデザインを 生成して最喜欢的を選択。"
       },
       {
-        "title": "Step 2: 表情パックを生成",
-        "description": "完全な表情セットを作成 — Neutral、Happy、Sad、Angry、Surprised。これらはプロフィール画像のバリエーション、Reaction絵文字、サーバーEmotesとして、すべてキャラクターのスタイルと完璧に一致。"
+        "title": "ステップ2：表情パックを生成",
+        "description": "完全な表情セットを作成 — 通常、喜び、悲しみ、怒り、驚き。これらはプロフィール画像のバリエーション、リアクション絵文字、サーバーエモートとして使えます。すべての表情がキャラクターのスタイルに 完全に合致。"
       },
       {
-        "title": "Step 3: Discord用にエクスポート",
-        "description": "Transparent PNGとしてアバターをエクスポート — 免费プランでは512px、Creator Passでは最大1080p。PNGTuberMakerのエクスポートはDiscordが完璧に処理。AIが最適なCircle cropのためにCharacterをCenterに配置。"
+        "title": "ステップ3：Discord用にエクスポート",
+        "description": "アバターを透明PNGでエクスポート — 免费プランでは512px、Creator Passでは1080pまで。PNGTuberMakerのエクスポートはDiscordが完全に 处理。AIが円形トリミング用にキャラクターを 中央に配置。"
       },
       {
-        "title": "Step 4: Discord PFPに設定",
-        "description": "Discord → ユーザー設定 → プロファイル → アバターを変更 → 画像をアップロード。エクスポートしたPNGを選択。Discordは自動的にCircleにCrop — Centerに配置したAIデザインがPerfectに見える。"
+        "title": "ステップ4：Discord PFPに設定",
+        "description": "Discord → ユーザー設定 → プロフィール → アバターを変更 → 画像をアップロードに移動。エクスポートしたPNGを選択。Discordは自動的に円形にトリミング — 中央配置のAIデザインが 완벽に 完成。"
       },
       {
-        "title": "Step 5: サーバーアイコン＆絵文字として使用",
-        "description": "サーバーアイコンの場合：サーバー設定 → 概要 → サーバーアイコン。絵文字の場合：サーバー設定 → 絵文字 → 絵文字をアップロード。パックからの異なる表情を使ってVarietyを。"
+        "title": "ステップ5：サーバーアイコン＆絵文字として使用",
+        "description": "サーバーアイコンの場合：サーバー設定 → 概要 → サーバーアイコン。絵文字の場合：サーバー設定 → 絵文字 → 絵文字をアップロード。パックからの異なる表情を 使ってバリエーションを."
       }
     ]
   },
   "comparison": {
-    "title": "Discordアバターオプションを比較",
+    "title": "Discordアバターオプション比較",
     "description": "PNGTuberMakerと他のDiscordアバター入手方法を比較。",
     "columns": [
       {
@@ -117,10 +117,10 @@
         "highlight": true
       },
       {
-        "label": "Artistを雇用"
+        "label": "アーティストに依頼"
       },
       {
-        "label": "無料Generator"
+        "label": "免费ジェネレーター"
       },
       {
         "label": "自分で描く"
@@ -128,35 +128,35 @@
     ],
     "rows": [
       {
-        "feature": "Cost",
+        "feature": "コスト",
         "values": ["無料で開始", "$30-$150+", "無料", "無料（時間）"]
       },
       {
         "feature": "アバター入手までの時間",
-        "values": ["2分", "3-14日", "即座", "時間-数日"]
+        "values": ["2分", "3-14日", "即時", "時間-数日"]
       },
       {
-        "feature": "Uniqueデザイン",
+        "feature": "ユニークなデザイン",
         "values": [true, true, false, true]
       },
       {
-        "feature": "表情パック付き",
+        "feature": "表情パック込み",
         "values": [true, "$10-$30追加", false, "自分で描く"]
       },
       {
-        "feature": "いつでも変更可能",
-        "values": [true, "再度支払う", false, true]
+        "feature": "いつでも修正可能",
+        "values": [true, "再度お支払い", false, true]
       },
       {
         "feature": "品質の一貫性",
-        "values": ["AI保証", "Artist次第", "Generic", "スキル依存"]
+        "values": ["AI保証", "アーティスト次第", "汎用", "スキル依存"]
       },
       {
         "feature": "サーバーアイコンに対応",
         "values": [true, true, true, true]
       },
       {
-        "feature": "芸術的スキル不要",
+        "feature": "美術スキル不要",
         "values": [true, true, true, false]
       }
     ]
@@ -164,60 +164,60 @@
   "faqs": [
     {
       "id": "dc-1",
-      "question": "DiscordアバターのBestサイズは？",
-      "answer": "Discordはサーバー一覧で128×128ピクセルで表示しますが、プロフィール表示用に最大1024×1024を保存。高品質のため1024×1024でエクスポートをお勧めします。PNGTuberMakerは、小さいサーバーアイコンからFullプロフィール表示まで、すべてのDiscordサイズで鮮明に見える高解像度PNGをエクスポート。"
+      "question": "Discordアバターに最適なサイズは何ですか？",
+      "answer": "Discordはサーバー一覧でアバターを128×128ピクセルで表示しますが、プロフィール表示では最大1024×1024ピクセルで保存します。最高品質のため1024×1024でのエクスポートをお勧めします。PNGTuberMakerは高解像度のPNGをエクスポートするため、小さなサーバーアイコンからフルプロフィール表示まで、あらゆるDiscordのサイズで鮮明に見えます。"
     },
     {
       "id": "dc-2",
-      "question": "Discord Nitroアニメーションアバターに使用できる？",
-      "answer": "はい！PNGTuberMakerはStaticなPNGを作成しますが、表情パックを使ってアニメーションDiscordアバターを作成できます。複数の表情（Neutral、Happy、Surprised）をエクスポートし、EZGIFなどの免费ツールでGIFシーケンスを作成。Discord Nitroは最大10MBのGIFアバターをサポート。AI生成キャラクターがFrame間の整合性を保証。"
+      "question": "Discord Nitroのアニメーションアバターに使用できますか？",
+      "answer": "はい！PNGTuberMakerは静的なPNGを作成しますが表情パックを使用してアニメーションDiscordアバターを作成できます。複数の表情（普通、喜び、驚き）をエクスポートし、EZGIFなどの無料ツールを使用してGIFシーケンスを作成します。Discord Nitroは最大10MBのGIFアバターをサポートしています。AI生成のキャラクターはフレーム間で一貫性を確保します。"
     },
     {
       "id": "dc-3",
-      "question": "良いDiscordサーバーアイコンの作り方は？",
-      "answer": "優れたDiscordサーバーアイコンの特徴：(1) Centered — DiscordはCircleにCrop поэтому重要な要素を中央に。(2) Simple — 詳細なDesignは小さいサイズで見えなくなる。(3) Recognizable — 太い色と明確なSilhouetteがBest。(4) Consistent — サーバーのテーマに合わせて。PNGTuberMakerのAIはCharacterを自動的にCenterに配置し、サーバーアイコンに最適な512×512サイズでエクスポート。"
+      "question": "良いDiscordサーバーアイコンを作る方法は？",
+      "answer": "素晴らしいDiscordサーバーアイコンの条件: (1) 中央配置 — Discordは円形に切り抜くため重要な要素を中央に配置。(2) シンプル — 詳細なデザインは小さいサイズでは看不清くなる。(3) 認識しやすい — 明確な色彩とシルエットが最適。(4) 一貫性 — サーバーのテーマに合わせて。PNGTuberMakerのAIはキャラクターを自動 中央配置し、サーバーアイコンに最適な512×512サイズでエクスポートします。"
     },
     {
       "id": "dc-4",
-      "question": "カスタムDiscord絵文字を作成できる？",
-      "answer": "もちろん！キャラクターの表情を128×128ピクセル（Discordの絵文字サイズ）でエクスポート。各表情がUniqueな絵文字に — Happy、Sad、Angry、Surprised。サーバーにアップロード：サーバー設定 → 絵文字 → 絵文字をアップロード。Premium Discordサーバーは最大250個のカスタム絵文字を持てる。一貫したAI生成キャラクターがProfessionalな見た目の絵文字セットを作成。"
+      "question": "これでカスタムDiscord絵文字を作成できますか？",
+      "answer": "是非！Discordの絵文字サイズである128×128ピクセルでキャラクターの表情をエクスポートします。各表情が固有の絵文字になります — 幸せ、悲しみ、怒り、驚き。サーバーにアップロード: サーバー設定 → 絵文字 → 絵文字をアップロード。Premium Discordサーバーは最大250個のカスタム絵文字を持つことができます。一貫したAI生成キャラクターがプロのような絵文字セットを作成します。"
     },
     {
       "id": "dc-5",
-      "question": "無料のDiscordアバターGeneratorより優れている？",
-      "answer": "無料のDiscordアバターGeneratorは通常、みんなが使うLimitedなTemplateを提供 — Genericな見た目になる。PNGTuberMakerはDescriptionに基づいて本当にUniqueなアバターを作成。さらに、表情パック、高解像度エクスポート、商用権も付属。BrandedでRecognizableなコミュニティアバター нужда server所有者にとって、AI生成はより良い投資。"
+      "question": "無料Discordアバタージェネレーターより優れている나요?",
+      "answer": "無料Discordアバタージェネレーターは一般的に限られたテンプレートを提供しており、みんなが使っているので結果的に画一的な外観になります。PNGTuberMakerはあなたの説明に基づいて真に独特なアバターを作成します。さらに、表情パック、高解像度エクスポート、商用利用権が得られます。ブランド化された認知度の高いコミュニティアバターを求めているサーバーオーナーには、AI生成がより良い投資です。"
     },
     {
       "id": "dc-6",
-      "question": "Discordアバターをどこでも使用する権利は私にある？",
-      "answer": "はい！AI生成アバターはDiscord、Twitch、YouTube、Twitter、どこでも使用可能。Attribution不要。これは使用を制限したり異なるPlatformのLicenseを必要とする一部のAvatar Makerとは異なる。PersonalなPFPでもサーバーのBrandでも、完全な権利を有する。"
+      "question": "Discordアバターはどこでも使用する権利がありますか？",
+      "answer": "はい！AI生成されたアバターはDiscord、Twitch、YouTube、Twitter、そしてどこでも自由に使用できます。クレジット表記は不要です。これは使用を制限したり、異なるプラットフォームでライセンスが必要な一部のアバターメーカーとは異なります。個人的なPFPでもサーバーのブランディングでも、完全な権利を有しています。"
     }
   ],
   "cta": {
-    "title": "今日からDiscordでの存在感をUpgrade",
-    "subtitle": "PFP、サーバー、絵文字ゲームをレベルアップした数千人のDiscordユーザーが参加 — 免费。",
-    "ctaText": "無料Discordアバターを作成",
+    "title": "今日のDiscordの存在感をアップグレード",
+    "subtitle": "PF P、サーバー、絵文字ゲームをレベルアップした数千人のDiscordユーザーが参加中 — 無料。",
+    "ctaText": "無料でDiscordアバターを作成",
     "ctaHref": "/create"
   },
   "relatedPages": [
     {
-      "title": "Twitchアバター作成ツール",
-      "description": "DiscordアバターをTwitch配信にも活用。",
+      "title": "Twitchアバターメーカー",
+      "description": "DiscordアバターをTwitch配信でも活用。",
       "href": "/for/twitch"
     },
     {
-      "title": "YouTubeアバター作成ツール",
-      "description": "YouTubeチャンネル用のMatchingアバターを作成。",
+      "title": "YouTubeアバターメーカー",
+      "description": "YouTubeチャンネル用のマッチするアバターを作成。",
       "href": "/for/youtube"
     },
     {
-      "title": "アニメアバター作成ツール",
-      "description": "Discordコミュニティに最適なアニメスタイルアバター。",
+      "title": "アニメアバターメーカー",
+      "description": "Discordコミュニティに最適なアニメスタイルのアバター。",
       "href": "/style/anime"
     },
     {
-      "title": "免费PNGTuber Maker",
-      "description": "1回の免费アバター生成を試す — クレジットカード不要。",
+      "title": "無料PNGTuber Maker",
+      "description": "1回の無料アバター生成を試す — クレジットカード不要。",
       "href": "/free-pngtuber-maker"
     }
   ],
@@ -231,7 +231,7 @@
       "href": "/for"
     },
     {
-      "label": "Discordアバター作成ツール"
+      "label": "Discordアバターメーカー"
     }
   ]
 }

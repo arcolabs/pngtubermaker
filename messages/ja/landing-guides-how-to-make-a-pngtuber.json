@@ -1,18 +1,18 @@
 {
   "slug": "guides/how-to-make-a-pngtuber",
   "metadata": {
-    "title": "PNGTuberの作り方（2026年） 完全初心者向けガイド",
-    "description": "5分で無料のPNGTuberアバターを作る方法を学びましょう。2026年完全ガイド：キャラクター作成、表情生成、OBS設定、Twitch/YouTubeでの配信スタート。アートスキルは不要です。",
+    "title": "PNGTuberの作り方（2026年）— 完全初心者ガイド",
+    "description": "5分で無料のPNGTuberアバターを作る方法を学びましょう。2026年完全ガイド：キャラクター作成、表情生成、OBS設定、Twitch/YouTubeでの配信開始まで。美術スキルは一切不要です。",
     "keywords": [
-      "pngtuber 作り方",
+      "pngtuber の作り方",
       "pngtuber になる方法",
-      "pngtuber とは",
+      "pngtuber になりたい",
       "pngtuber チュートリアル",
       "pngtuber ガイド",
       "pngtuber 作成",
       "pngtuber とは",
       "pngtuber セットアップ",
-      "pngtuber obs 設定",
+      "pngtuber obs セットアップ",
       "pngtuber アバター 作成",
       "pngtuber 初心者",
       "pngtuber 配信 セットアップ",
@@ -22,65 +22,65 @@
     "canonical": "/guides/how-to-make-a-pngtuber"
   },
   "hero": {
-    "badge": "完全初心者向けガイド 2026",
+    "badge": "完全初心者ガイド 2026",
     "title": "PNGTuberの作り方：ゼロから5分で配信デビュー",
-    "subtitle": "オリジナルのPNGTuberアバターを作成するための究極のステップバイステップガイド — 完全無料。絵を描くスキルも必要ありません。高価なソフトウェア也不要、複雑な設定も不要。そのまま進んで、今日から配信を始めましょう。",
-    "ctaText": "今すぐ無料でPNGTuberを作成",
+    "subtitle": "オリジナルのPNGTuberアバターを作成するための究極のステップバイステップガイド — 完全無料。絵画スキルも、高価なソフトも、複雑な設定も不要です。そのまま従って、今日配信を始めましょう。",
+    "ctaText": "PNGTuberを無料作成する",
     "ctaHref": "/create"
   },
   "steps": {
-    "title": "PNGTuberの作り方：4つの簡単ステップ",
+    "title": "PNGTuberの作り方：4つの簡単なステップ",
     "items": [
       {
         "title": "ステップ1：キャラクターを説明する",
-        "description": "PNGTuberMakerを開いて、理想のアバターを説明してください。具体的に：「ピンクの髪と猫耳のカワイイアニメ少女」や「光る青い目を持つサイバーパンクロボット」など。AIは詳細な説明を理解し、アップロードした参考画像也可以マッチします。これがあなたのPNGTuberアイデンティティの基盤となります。"
+        "description": "PNGTuberMakerを開き理想的なアバターを説明しましょう。具体的に：「ピンクの髪と猫耳がかわいいアニメ少女」や「光る青い目を持つサイバーパンクロボット」など。AIは詳細な説明を理解し、アップロードした参考画像にも対応できます。これはあなたのPNGTuberアイデンティティの基盤となります。"
       },
       {
         "title": "ステップ2：デザインを選ぶ",
-        "description": "説明に基づいて、AIが4つのユニークなデザインを生成します。オプションをBrowseして、配信パーソナリティーに合ったものを選んでください。気に入らない場合は、新しいバリエーションのために Regenerate をクリックしてください。ビジョンに近づけるために、プロンプトをいつでも調整できます。"
+        "description": "説明に基づいてAIが4つの獨uniqueなデザインを生成します。配信キャラクターに 맞는オプションを閲覧して選択しましょう。気に入らない場合は、新しいバリエーションを再生成してください。プロンプトをいつでも修正して、希望の姿に近づけることができます。"
       },
       {
         "title": "ステップ3：表情パックを生成する",
-        "description": "ベースのアバターが手に入ったら、一致する表情パックを生成しましょう。必須のパターンから始めましょう：話している時（ニュートラル）、嬉しい、悲しい、怒っている、驚くいた表情。これらの表情は音声に基づいてアバターをアニメーション化します。すべての表情はキャラクター独自のアートスタイルとカラーパレットを維持しています。"
+        "description": "ベースアバターが決まったら、配套の表情パックを生成しましょう。基本から始めましょう：会話中（普通）、喜び、悲しみ、怒り、驚き。これらの表情は声に基づいてアバターをアニメーション化します。すべての表情はキャラクター独特のアートスタイルとカラーパレットを維持します。"
       },
       {
         "title": "ステップ4：OBSに接続して配信デビュー",
-        "description": "PNGTuberMakerから固有のBrowser Source URLをコピーします。OBS Studioを開く → ソースを追加 → Browser → URLを貼り付け。アバターが即座に透明な背景で表示され、マイクにリアルタイムで反応します。 원하는位置に配置し、Start Streamingをクリックすれば、配信中です！"
+        "description": "PNGTuberMakerから独特のBrowser Source URLをコピーします。OBS Studioを開く → ソースを追加 → ブラウザ → URLを貼り付け。透明な背景を持つアバターがすぐに表示され、マイクにリアルタイムで反応します。 원하는位置に配置し、配信を開始すればデビュー完了です！"
       }
     ]
   },
   "prose": {
-    "title": "PNGTuberについて知りたいすべて",
+    "title": "PNGTuberについて知るべきすべてのこと",
     "blocks": [
       {
         "subtitle": "PNGTuberとは？",
-        "text": "PNGTuberは、実際の顔をカメラに映す代わりに、静的な2Dアバターを使用する配信者です。アバターには通常、複数の表情（嬉しい、悲しい、話している、驚くいた）があり、マイク入力に基づいて自動的に切り替わります。話している時は「話している」表情が表示されます。silent無音の時は、ニュートラルまたはidleポーズに切り替わります。高価なLive2Dリグ、顔追跡ソフトウェア、強力なコンピューターが必要なVTuberとは異なり、PNGTuberはシンプルなPNG画像を使用します。これにより、技術的な複雑さや高コストなしに、プライバシー、パフォーマンス、プロфессионализмを求める新しい配信者に最適なエントリーポイントとなります。"
+        "text": "PNGTuberとは、自分の顔をカメラに映す代わりに、静的な2Dアバターを使用するストリーマーのことです。アバターには通常、複数の表情（喜び、悲しみ、話している、驚きなど）があり、マイクの入力に基づいて自動的に切り替わります。話しているときは「話している」表情が表示され、静かになるとニュートラルまたはアイドルポーズに切り替わります。高価なLive2Dリグ、フェイストラッキングソフトウェア、強力なコンピュータを必要とするVTuberとは異なり、PNGTuberは単純なPNG画像を使用します。これにより、技術的な複雑さや高いコストなしで、プライバシー、パーソナリティ、プロフェッショナリズムを求めたい新しいストリーマーにとって、完璧なエントリーポイントとなります。"
       },
       {
-        "subtitle": "PNGTuberとVTuberの違いは？",
-        "text": "PNGTuberとVTuberの両方が仮想アバターを使用しますが、動作方法は大きく異なります。VTuberはリアルタイムで表情や体の動きをトラッキングするためにモーショキャプチャ技術を使用し、ウェブカメラ、専用ソフトウェア（Live2DやVRoidなど）、often高くつくcommissionモデル（200〜2,000ドル以上）が必要です。PNGTuberは音声レベルに基づいたシンプルな画像切り替えを使用します — 話している時は口が開きます。これは、ウェブカメラが不要、顔追跡設定が不要、複雑なリギングが不要、そして大幅に低いコスト（多くの場合無料）を意味します。PNGTuberは初心者、プライバシー重視の配信者、または技術的なオーバーヘッドなしで画面にキャラクターを表示したい任何人にとって理想的です。多くの成功した配信者はPNGTuberから始めて、後でVTuberにアップグレードします。"
+        "subtitle": "PNGTuberとVTuberの違いとは？",
+        "text": "PNGTuberとVTuberはどちらも仮想アバターを使用しますが、その仕組みは大きく異なります。VTuberはモーションキャプチャ技術を使ってリアルタイムで表情や体の動きをトラッキングし、ウェブカメラ、専用ソフトウェア（Live2DやVRoidなど）、多くがが高額な依頼モデル（200〜2000ドル以上）を必要とします。PNGTuberはオーディオレベルに基づいたシンプルな画像切り替えを使用し、話すと口が開きます。这意味着不需要网络摄像头、面部追踪设置、复杂的绑定，显著降低成本（通常免费）。PNGTuberは初心者、プライバシー意識の高いストリーマー、または技術的なオーバーヘッドなしで画面にキャラクターを表示したい人に最適です。多くの成功したストリーマーはPNGTuberから始め、後でVTuberにアップグレードします。"
       },
       {
         "subtitle": "必要なソフトウェアは？",
-        "text": "必要な免费ツールは2つだけです：PNGTuberMaker（ブラウザベース、ダウンロード不要）とOBS Studio（無料の配信ソフトウェア）。PNGTuberMakerは、AI生成、表情パック、Browser Source URLの提供など、アバター関連的一切を処理します。OBS Studioは、何百万人もの配信者が使用する業界標準のブロードキャスティングソフトウェアです。Windows、Mac、Linuxで動作します。それだけです — プラグイン、追加購入、サブスクリプションは不要です。両方のツールには、初心者には十分すぎる無料ティアがあります。"
+        "text": "必要な無料ツールは2つだけです：PNGTuberMaker（ブラウザベース、ダウンロード不要）とOBS Studio（無料のストリーミングソフトウェア）。PNGTuberMakerはAI生成、表情パック、Browser Source URLの提供など、アバター関連的一切を処理します。OBS Studioは、何百万人ものストリーマーが使用する業界標準のブロードキャスティングソフトウェアで、Windows、Mac、Linuxで動作します。これで終わりです—プラグイン、追加購入、サブスクリプションは一切不要。初心者には十分な無料プランがあります。"
       },
       {
-        "subtitle": "PNGTuberになるコストはいくらですか？",
-        "text": "PNGTuberとして始めるのは完全に無料で行うことができます。PNGTuberMakerは новыеユーザーに1回の無料アバター生成を提供 — クレジットカード不要。OBS Studioは100％無料且つオープンソースです。1ドルも使わずにTwitch、YouTube、Kickで配信を始めることができます。アーティストからの従来のPNGTuberコミッションは Typically、1つの静的なアバターに50〜200ドル PLUS、各表情に追加料金が必要です。AI生成では、無制限のバリエーションインスタント結果、およびデザインをいつでも調整する能力があります。HDエクスポート、表情パック、より多くの生成などのプレミアム機能は利用可能です but、配信を始めるために必須ではありません。"
+        "subtitle": "PNGTuberになる費用はいくら？",
+        "text": "PNGTuberとして始めることは完全に無料で行うことができます。PNGTuberMakerは新しいユーザーにクレジットカードなしで1回の無料アバター生成を提供します。OBS Studioは100％無料でオープンソースです。Twitch、YouTube、Kickで一刀雰囲なくストリーミングを始めることができます。アーティストからの伝統的なPNGTuberの依頼は、通常、1体の静的なアバターで50〜200ドルで、表情ごとに追加料金が発生します。AI生成なら、無限のバリエーション、即座の結果、デザインをいつでも微調整する能力が得られます。HDエクスポート、表情パック、より多くの生成などのプレミアム機能はありますが、ストリーミングを始めるために必須ではありません。"
       },
       {
-        "subtitle": "優れたPNGTuberアバターを作成するためのヒント",
-        "text": "キャラクター説明で具体的に — 髪、目、服装の詳細、アクセサリー、性格 Traits 含めてください。詳細が多いほど、AIはあなたのビジョンにより良くマッチできます。特定のスタイルがある場合は、参考画像をアップロードしてください。表情を生成する場合、視聴者が最も見る Поэтому/話している/ニュートラルポーズを最初に優先してください。ストリームレイアウトの角にパディングを付けてアバターを配置してください。OBSで音声レベルをテストして、アバターが自然に音声に反応することを確認してください — 敏感すぎず，硬すぎず lastly、一貫性を持たせましょう！Twitch、YouTube、Discord、社交メディアで同じアバターを使用して、認知度を高めてください。"
+        "subtitle": "素晴らしいPNGTuberアバターを作成するためのヒント",
+        "text": "キャラクターの説明では具体的に—髪色、瞳の色、服装の詳細、アクセサリー、性格特性を含めてください。詳細が多ければ多いほど、AIはあなたのビジョンにより良く一致させることができます。特定のスタイルしたい場合は、参考画像をアップロードしてください。表情を生成する際は、視聴者が最も見る機会の多い話している/ニュートラルなポーズを優先してください。ストリームレイアウトの角に配置し、エッジから少しパディングを残してください。OBSでオーディオレベルをテストして、アバターがあなたの声に自然に反応することを確認してください—敏感すぎず、硬くなりすぎないようにしましょう。最後に、一貫性を保ってください！Twitch、YouTube、Discord、ソーシャルメディアで同じアバターを使用して、認知度を高めましょう。"
       },
       {
-        "subtitle": "PNGTuberのためのOBS設定",
-        "text": "PNGTuberMakerからBrowser Source URLを取得した後、OBS Studioを開きます。ソースパネルの「+」ボタンをクリックし、「Browser」を選択して「PNGTuber Avatar」と名付けます。URLフィールドに固有のURLを貼り付けます。最高の品質のためにWidthを800、Heightに設定します。「Shutdown source when not visible」にチェックを入れると、リソースを節約できます。アバターは透明なオーバーレイとして表示されます。ソースを右クリック → Transform → Edit Transformを使用して、正確に位置を調整します。Audio Monitoring設定を使用して、アバターがマイクに反応するかをテストします。アバターが動きすぎたり反応しなかったりする場合は、Windows/OBSでマイクの感度Adjust調整してください。これで完了です — 配信の準備ができました！"
+        "subtitle": "PNGTuber用のOBSセットアップ",
+        "text": "PNGTuberMakerからBrowser Source URLを取得したら、OBS Studioを開きます。Sourcesパネルで「+」ボタンをクリックし、「Browser」を選択し、「PNGTuber Avatar」と名前をつけます。一意のURLをURLフィールドに貼り付けます。最高の品質を得るために、Widthを800、Heightに設定します。 「Shutdown source when not visible」をチェックしてリソースを節約します。アバターは透明なオーバーレイとして表示されます。ソースを右クリック→Transform→Edit Transformを選択して、正確に配置します。Audio Monitoring設定を使用して、アバターがマイクにどのように反応するかをテストします。アバターが敏感すぎたり反応しなかったりする場合は、Windows/OBSでマイクの感度Adjustしてください。以上です—ストリーミングの準備ができました！"
       }
     ]
   },
   "comparison": {
-    "title": "PNGTuber vs VTuber vs 顔出し配信：徹底比較",
-    "description": "3つの主要な配信形式を比較して、あなたに適切なものを見つけましょう。",
+    "title": "PNGTuber vs VTuber vs Face Cam：徹底比較",
+    "description": "3つの主な配信形式を比較して、あなたにあったものを見つけましょう。",
     "columns": [
       {
         "label": "機能"
@@ -93,17 +93,17 @@
         "label": "VTuber"
       },
       {
-        "label": "顔出し配信"
+        "label": "Face Cam"
       }
     ],
     "rows": [
       {
         "feature": "初期費用",
-        "values": ["無料〜20ドル", "200〜2,000ドル以上", "無料"]
+        "values": ["無料 - $20", "$200 - $2,000+", "無料"]
       },
       {
-        "feature": "設定時間",
-        "values": ["5分", "2〜8週間", "即座"]
+        "feature": "セットアップ時間",
+        "values": ["5分", "2〜8週間", "即時"]
       },
       {
         "feature": "必要なハードウェア",
@@ -114,8 +114,8 @@
         "values": ["非常に簡単", "複雑", "簡単"]
       },
       {
-        "feature": "プライバシー level",
-        "values": ["完全な匿名性", "完全な匿名性", "顔 visible"]
+        "feature": "プライバシーレベル",
+        "values": ["完全な匿名性", "完全な匿名性", "顔出し"]
       },
       {
         "feature": "キャラクターカスタマイズ",
@@ -123,14 +123,14 @@
       },
       {
         "feature": "アニメーション品質",
-        "values": ["シンプルな表情", "全身/顔追跡", "実生活"]
+        "values": ["シンプルな表情", "全身/顔追跡", "実写"]
       },
       {
         "feature": "初心者に最適",
         "values": [true, false, true]
       },
       {
-        "feature": "どんなPCでも動作",
+        "feature": "すべてのPCで対応",
         "values": [true, false, true]
       }
     ]
@@ -138,85 +138,85 @@
   "faqs": [
     {
       "id": "htmp-1",
-      "question": "自分のPNGTuberを作れますか？",
-      "answer": "全く問題ありません！PNGTuberMakerを使えばAnyone can make their own PNGTuber。高度な絵画スキルや expensive software、technical knowledgeは不要です。言葉でキャラクターを describe すると、AIがプロフェッショナルなアバターを生成します。 Entire process takes under 5 minutesで、すぐに配信を始められます。"
+      "question": "自分のPNGTuberを作成できますか？",
+      "answer": "もちろんです！PNGTuberMakerを使えば誰でも自分のPNGTuberを作成できます。絵心も、高価なソフトウェアも、技術的な知識も必要ありません。言葉でキャラクターを説明するだけで、AIがプロフェッショナルなアバターを生成します。全体の所要時間は5分未満で、ストリーミングをすぐに始めることができます。"
     },
     {
       "id": "htmp-2",
-      "question": "PNGTuberMakerは有料ですか？",
-      "answer": "PNGTuberMakerは無料で始められます。新規ユーザーは credit card required のavatar generation — 1回無料。を作成、カスタマイズ、配信開始，一切かかりません。Free exportsは512px解像度で、配信に perfect です。Optional upgradesでHD/4K exports、expression packsを追加 generationsできます。"
+      "question": "PNGTuber Makerは無料で使えますか？",
+      "answer": "はい、PNGTuberMakerは無料で始められます。新規ユーザーはアバター1回分を無料生成できます — クレジットカードは不要です。お金を一切使わずに作成、カustomize、ストリーミングを始められます。無料エクスポートは512px解像度で、ストリーミングに最適です。オプションのアップグレードでHD/4Kエクスポート、表情パック、追加生成が解除されます。"
     },
     {
       "id": "htmp-3",
-      "question": "モバイルでPNGTuber作は可能ですか？",
-      "answer": "はい！PNGTuberMakerはiPhone SafariやAndroid Chromeを含むmodern web browserで対応。phoneやtabletでアバターをデザインできます。ただし、OBS Studio on a desktop computerが必要です。多くのcreatorは通勤中にmobileでアバターをデザインし、帰宅後にOBSを設定しています。"
+      "question": "モバイルでPNGTuberを作成できますか？",
+      "answer": "はい！PNGTuberMakerは、iPhoneではSafari、AndroidではChromeを含む、最新のすべてのウェブブラウザで動作します。スマートフォンやタブレットでアバターをデザインできます。ただし、ストリーミングにはデスクトップコンピュータでOBS Studioを使用する必要があります。多くのクリエイターは移動中にモバイルでアバターをデザインし帰宅後にOBSを設定しています。"
     },
     {
       "id": "htmp-4",
       "question": "PNGTuberになるにはどんなソフトウェアが必要ですか？",
-      "answer": "2つのfree toolsが必要です：PNGTuberMaker（avatar作成）とOBS Studio（streaming）。PNGTuberMakerはbrowser上で完全に動作—no download required。OBS StudioはWindows、Mac、Linux対応のfree, open-source streaming softwareです。Both are industry-standard tools used by millions of content creators。"
+      "answer": "2つの無料ツールが必要です：アバター作成用のPNGTuberMakerと、ストリーミング用のOBS Studioです。PNGTuberMakerはブラウザで完全に動作します — ダウンロードは不要です。OBS StudioはWindows、Mac、Linux対応の無料オープンソースストリーミングソフトウェアです。両方は数百万のコンテンツクリエイターに使用されている業界標準ツールです。"
     },
     {
       "id": "htmp-5",
-      "question": "PNGTuberのセットアップにはどのくらい時間がかかりますか？",
-      "answer": "Most users go from zero to streaming-ready in under 5 minutes。Avatar generation took 30-60 seconds, expression packs took 1-2 minutes, and OBS setup took under 30 secondsと30秒。Traditional VTuber setups took weeks and cost hundreds of dollarsと比較して。PNGTubersはinstant gratificationのために設計されています。"
+      "question": "PNGTuberのセットアップにはどのくらいの時間がかかりますか？",
+      "answer": "ほとんどのユーザーは5分以内にゼロからストリーミング可能な状態になります。アバター生成には30〜60秒、表情パックには1〜2分、OBSセットアップ（URLの貼り付け）には30秒未満です。従来のVTuberセットアップが何週間もかけて数百ドルかかることを考えると、PNGTuberはインスタントな удовлетворениеのために設計されています。"
     },
     {
       "id": "htmp-6",
-      "question": "PNGTuberはVTuberより優れていますか？",
-      "answer": "PNGTubingとVTubingはdifferent needs。PNGTubingはbeginners、budget-conscious creators、simplicity wantedな人にbetter。It's free、takes 5 minutes to set up、requires no technical skills。VTubing offers more advanced animation and expression but costs $200-$2,000+、requires face-tracking hardware、has a steep learning curve。多くのsuccessful streamers start as PNGTubers and upgrade to VTubing once they grow。PNGTubingはavatar streamingへのperfect entry pointです。"
+      "question": "PNGTubingはVTubingより良いですか？",
+      "answer": "PNGTubingとVTubingは異なるニーズに応えます。PNGTubingは初心者、予算重視のクリエイター、シンプルさを求める人に最適です。無料で、5分でセットアップでき、技術的なスキルは不要です。VTubingはより高度なアニメーションと表情を提供しますが、200〜2,000ドル以上が必要で、表情キャプチャハードウェアが必要で、学習曲線が急です。多くの成功したストリーマーはPNGTuberから始まり、成長するとVTubingにアップグレードします。PNGTuberはアバターストリーミングへの完璧な入口です。"
     },
     {
       "id": "htmp-7",
-      "question": "PNGTuberになるには高性能なパソコンが必要ですか？",
-      "answer": "No! PNGTubers work on any computer that can run OBS Studio。Since there's no face tracking or complex animation rendering、even older laptops handle PNGTubers perfectly。Avatar runs in a lightweight browser source。If your computer can stream normally, it can handle a PNGTuber。This is one of the biggest advantages over VTubing、which requires powerful GPUs for real-time rendering。"
+      "question": "PNGTuberになるには高性能なコンピュータが必要ですか？",
+      "answer": "いいえ！PNGTuberはOBS Studioを実行できる任意のコンピュータで動作します。表情キャプチャや複雑なアニメーションレンダリングがないため、古めのノートパソコンでもPNGTuberは完璧に動作します。アバターは軽量ブラウザソースで動作します。コンピュータが通常通りストリーミングできるなら、PNGTuberも処理できます。これはリアルタイムレンダリングに強力なGPUが必要なVTuber相比べて最大の利点の1つです。"
     },
     {
       "id": "htmp-8",
       "question": "PNGTuberをTwitch、YouTube、Discordで使用できますか？",
-      "answer": "Yes! Your PNGTuber avatar works everywhere。For streaming, use the Browser Source URL in OBS Studio — this works with Twitch, YouTube, Kick, Facebook Gaming、and any other platform。For Discord, export your avatar as a PNG and use it as your profile picture。透明なbackground makes it perfect for server icons and emotes too。Your avatar is yours to use across all platforms."
+      "answer": "はい！PNGTuberアバターはどこでも動作します。ストリーミングにはOBS StudioでBrowser Source URLを使用します — これはTwitch、YouTube、Kick、Facebook Gaming、その他のプラットフォームすべてで動作します。Discordの場合、アバターをPNGとしてエクスポートし、プロフィール画像として使用します。透明背景があるため、サーバーアイコンやエモートにも最適です。アバターはすべてのプラットフォームで使用できます。"
     },
     {
       "id": "htmp-9",
-      "question": "どんなPNGTuberアバターが良いですか？",
-      "answer": "A good PNGTuber avatar is recognizable、expressive、and fits your streaming personality。Choose colors that stand out against your game backgrounds。Ensure your avatar's face is clearly visible even at small sizes。Use expressions that match your energy — if you're an energetic streamer, pick an avatar with big expressive eyes。Consistency is key: use the same avatar across all platforms so viewers instantly recognize you。Most importantly, pick something YOU like — you'll be looking at it for hours!"
+      "question": "良いPNGTuberアバターの特徴は何ですか？",
+      "answer": "良いPNGTuberアバターは認知しやすく、表情豊かで、ストリーミングの性格に合致しています。ゲームの背景に対して際立つ色を選んでください。アバター顔が小さいサイズでも見えることを確認してください。エネルギーに合った表情を使用してください — エネルギッシュなストリーマーなら、大きな表情豊かな目を持つアバターを選んでください。一貫性が重要です。すべてのプラットフォームで同じアバターを使用すると、視聴者が即座にあなたを認識できます。何よりも、自分の好きなものを選んでください — 長時間見るからです！"
     }
   ],
   "cta": {
-    "title": "PNGTuber Journeyを始める準備はできましたか？",
-    "subtitle": "PNGTuberMakerから始めたthousandsのstreamersに参加しましょう。5分以内にfree avatarを作成。",
-    "ctaText": "今すぐ無料のPNGTuberを作成",
+    "title": "PNGTuber旅を始める準備はできましたか？",
+    "subtitle": "PNGTuberMakerから始めた数千人のストリーマーに加わりましょう。5分以内に無料アバターを作成。",
+    "ctaText": "今すぐ無料PNGTuberを作成",
     "ctaHref": "/create"
   },
   "relatedPages": [
     {
-      "title": "Free PNGTuber Maker",
-      "description": "1回免费avatar generationを試す — credit card不要。",
+      "title": "無料PNGTuber Maker",
+      "description": "1回分の無料アバター生成を試す — クレジットカードは不要。",
       "href": "/free-pngtuber-maker"
     },
     {
       "title": "VTuber Maker",
-      "description": "AI VTuber avatarsを検討して、後にupgradeしましょう。",
+      "description": "後でアップグレードしたい場合はAI VTuberアバターを検討。",
       "href": "/vtuber-maker"
     },
     {
       "title": "Twitch Avatar Maker",
-      "description": "Twitch配信に最適化されたavatarsを作成。",
+      "description": "Twitchストリーミングに最適化されたアバターを作成。",
       "href": "/for/twitch"
     },
     {
       "title": "YouTube Avatar Maker",
-      "description": "YouTube配信やshortsに完美なavatars。",
+      "description": "YouTubeストリーミングやショートに 완벽한アバター。",
       "href": "/for/youtube"
     }
   ],
   "breadcrumbs": [
     {
-      "label": "Home",
+      "label": "ホーム",
       "href": "/"
     },
     {
-      "label": "Guides",
+      "label": "ガイド",
       "href": "/guides"
     },
     {

@@ -287,7 +287,9 @@ async function translateOne(task: TranslationTask): Promise<TranslationResult> {
   const { locale, namespace, sourceContent, sourceJson } = task;
   const languageName = LOCALE_NAMES[locale] || locale;
 
-  const systemPrompt = `You are a professional translator. Translate the following JSON from English to ${languageName}.
+  const systemPrompt = `You are a professional translator. Translate the following JSON from English to ${languageName} (locale: ${locale}).
+
+CRITICAL: Every translated string value MUST be written in ${languageName}. Do NOT output Chinese, English, or any other language — ONLY ${languageName}. If you are unsure, still write in ${languageName}.
 
 Rules:
 - Return ONLY valid JSON. No explanation, no commentary, no markdown.
@@ -495,12 +497,18 @@ async function runPool(tasks: TranslationTask[]): Promise<TranslationResult[]> {
 const forceMode = process.argv.includes("--force");
 const dryRun = process.argv.includes("--dry-run");
 
-// --only de/landing-guides-how-to-make-a-pngtuber → filter to specific locale/namespace
+// --only de/landing-guides-how-to-make-a-pngtuber → specific locale + namespace
+// --only ja → all namespaces for a single locale (forces retranslation)
 const onlyArg = process.argv.find((a) => a.startsWith("--only="))?.slice(7);
-const onlyLocale = onlyArg?.includes("/") ? onlyArg.split("/")[0] : undefined;
+const onlyLocale = onlyArg?.includes("/")
+  ? onlyArg.split("/")[0]
+  : onlyArg &&
+      TARGET_LOCALES.includes(onlyArg as (typeof TARGET_LOCALES)[number])
+    ? onlyArg
+    : undefined;
 const onlyNamespace = onlyArg?.includes("/")
   ? onlyArg.split("/").slice(1).join("/")
-  : onlyArg;
+  : undefined;
 
 if (!dryRun && !API_KEY) {
   console.log(red("Error: I18N_API_KEY is required."));
@@ -533,7 +541,7 @@ const changedNamespaces = forceMode
         !manifest?.hashes[ns] || manifest.hashes[ns] !== currentHashes[ns],
     );
 
-if (changedNamespaces.length === 0) {
+if (changedNamespaces.length === 0 && !onlyArg) {
   console.log(green("All translations up to date."));
   process.exit(0);
 }
@@ -564,9 +572,12 @@ console.log();
 const targetLocales = onlyLocale
   ? TARGET_LOCALES.filter((l) => l === onlyLocale)
   : TARGET_LOCALES;
-const targetNamespaces =
-  onlyNamespace && nsContent[onlyNamespace]
+const targetNamespaces = onlyNamespace
+  ? nsContent[onlyNamespace]
     ? [onlyNamespace]
+    : changedNamespaces
+  : onlyLocale
+    ? namespaces // --only=ja → all namespaces for that locale
     : changedNamespaces;
 
 const tasks: TranslationTask[] = [];
