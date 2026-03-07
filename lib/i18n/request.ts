@@ -41,10 +41,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
     };
   } catch (error) {
     const err = error as NodeJS.ErrnoException;
-    if (
-      resolvedLocale !== routing.defaultLocale &&
-      err.code === "ENOENT"
-    ) {
+    if (resolvedLocale !== routing.defaultLocale && err.code === "ENOENT") {
       return {
         locale: routing.defaultLocale,
         messages: loadMessages(routing.defaultLocale),

@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 // ============================================
 
 interface ShowcaseRound {
+  id: string;
   prompt: string;
   folder: string;
   expressions: {
@@ -24,6 +25,7 @@ interface ShowcaseRound {
 
 const ROUNDS: ShowcaseRound[] = [
   {
+    id: "magical-girl",
     prompt: "Classic Magical Girl Long hair with moon staff",
     folder: "round1",
     expressions: {
@@ -34,6 +36,7 @@ const ROUNDS: ShowcaseRound[] = [
     },
   },
   {
+    id: "small-witch",
     prompt: "Small Witch Huge Wizard hat with potion",
     folder: "round2",
     expressions: {
@@ -44,6 +47,7 @@ const ROUNDS: ShowcaseRound[] = [
     },
   },
   {
+    id: "wavy-hair",
     prompt: "Young Woman Voluminous Wavy hair with flowers",
     folder: "round3",
     expressions: {

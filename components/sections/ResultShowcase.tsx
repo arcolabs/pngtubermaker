@@ -1,8 +1,8 @@
 "use client";
 
 import { ArrowRight, FileText, Monitor, Palette } from "lucide-react";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const STEPS = [
   {
