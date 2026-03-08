@@ -182,6 +182,10 @@ export const avatars = pgTable(
     // Selected base image (after user picks one of the 4 candidates)
     baseImageUrl: text("base_image_url"),
     baseImageR2Key: text("base_image_r2_key"),
+    // Original base image (before background removal) — used as AI generation input
+    // because external AI APIs download this URL and _nobg images can be slow/inaccessible
+    originalBaseImageUrl: text("original_base_image_url"),
+    originalBaseImageR2Key: text("original_base_image_r2_key"),
     thumbnailUrl: text("thumbnail_url"),
     thumbnailR2Key: text("thumbnail_r2_key"),
     creditsUsed: integer("credits_used").notNull().default(0),

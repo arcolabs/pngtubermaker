@@ -10,7 +10,7 @@ import {
   expressionPackLimiter,
   getRateLimitIdentifier,
 } from "@/lib/middleware/rate-limit";
-import { processBackgroundRemoval } from "@/lib/services/background-removal";
+import { processBackgroundRemovalBatch } from "@/lib/services/background-removal";
 import {
   consumeWithRecord,
   refundWithUpdate,
@@ -134,7 +134,9 @@ export async function POST(
       );
     }
 
-    const baseImageUrl = a.baseImageUrl;
+    // Use original (pre-bg-removal) image for AI generation — external APIs
+    // may timeout downloading _nobg images from R2 CDN
+    const baseImageUrl = a.originalBaseImageUrl ?? a.baseImageUrl;
 
     // 5. Calculate cost
     const costPerExpression = TASK_COSTS.expression_edit;
@@ -292,11 +294,14 @@ export async function POST(
 
     // 9. Async background removal for all completed expressions (fire-and-forget)
     //    Uploads to new _nobg keys and updates DB to avoid CDN cache issues
+    //    Concurrency limited to 3 to avoid API rate limits
     if (bgRemovalTasks.length > 0) {
       after(async () => {
-        await Promise.all(
-          bgRemovalTasks.map((t) =>
-            processBackgroundRemoval(t.imageUrl, t.r2Key, {
+        await processBackgroundRemovalBatch(
+          bgRemovalTasks.map((t) => ({
+            sourceImageUrl: t.imageUrl,
+            r2Key: t.r2Key,
+            options: {
               onComplete: async (result) => {
                 await db
                   .update(avatarExpressions)
@@ -306,8 +311,9 @@ export async function POST(
                   })
                   .where(eq(avatarExpressions.id, t.expressionId));
               },
-            }),
-          ),
+            },
+          })),
+          3,
         );
       });
     }

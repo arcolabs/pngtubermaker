@@ -127,7 +127,7 @@ export async function POST(
     const avatarName = generateAvatarName(a.prompt);
     const slug = generateSlug(avatarName);
 
-    // 11. Update avatar record
+    // 11. Update avatar record (save original URLs for AI generation input)
     await db
       .update(avatars)
       .set({
@@ -135,6 +135,8 @@ export async function POST(
         slug,
         baseImageUrl,
         baseImageR2Key: baseKey,
+        originalBaseImageUrl: baseImageUrl,
+        originalBaseImageR2Key: baseKey,
         thumbnailUrl,
         thumbnailR2Key: thumbnailKey,
         status: "completed",

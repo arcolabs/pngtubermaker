@@ -22,6 +22,13 @@
       "when": 1771623175924,
       "tag": "0002_curious_steve_rogers",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1772975175471,
+      "tag": "0003_secret_cerise",
+      "breakpoints": true
     }
   ]
 }

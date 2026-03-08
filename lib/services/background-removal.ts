@@ -8,10 +8,13 @@
  * Processed images are uploaded to a NEW R2 key (with `_nobg` suffix)
  * to avoid CDN cache serving stale originals. The caller provides an
  * `onComplete` callback to update DB records with the new URLs/keys.
+ *
+ * Original R2 files are NOT deleted — they are kept as AI generation input
+ * because external AI APIs (e.g. Doubao) may timeout downloading _nobg images.
  */
 
 import { PollFailedError, pollUntilDone } from "./generation/poll";
-import { deleteFromR2, generateThumbnail, uploadImageToR2 } from "./storage";
+import { generateThumbnail, uploadImageToR2 } from "./storage";
 
 const API_BASE =
   process.env.COCOROUTER_URL || "https://router.interastralpeace.online";
@@ -223,15 +226,45 @@ export async function processBackgroundRemoval(
       console.log(`[BackgroundRemoval] DB updated for ${newR2Key}`);
     }
 
-    // Clean up old R2 files (best-effort)
-    await deleteFromR2(r2Key);
-    if (options?.thumbnailR2Key) {
-      await deleteFromR2(options.thumbnailR2Key);
-    }
+    // Original R2 files are intentionally kept — they serve as AI generation
+    // input (external APIs like Doubao may timeout downloading _nobg images)
 
     console.log(`[BackgroundRemoval] Done for ${r2Key} → ${newR2Key}`);
   } catch (error) {
     // Silent failure — original image stays in R2, user sees it with background
     console.warn(`[BackgroundRemoval] Failed for ${r2Key}:`, error);
   }
+}
+
+/**
+ * Process multiple background removals with a concurrency limit.
+ * Prevents overwhelming the API when processing expression packs.
+ */
+export async function processBackgroundRemovalBatch(
+  tasks: {
+    sourceImageUrl: string;
+    r2Key: string;
+    options?: {
+      thumbnailR2Key?: string;
+      onComplete?: (result: BgRemovalResult) => Promise<void>;
+    };
+  }[],
+  concurrency = 3,
+): Promise<void> {
+  const queue = [...tasks];
+  const workers = Array.from(
+    { length: Math.min(concurrency, queue.length) },
+    async () => {
+      while (queue.length > 0) {
+        const task = queue.shift();
+        if (!task) break;
+        await processBackgroundRemoval(
+          task.sourceImageUrl,
+          task.r2Key,
+          task.options,
+        );
+      }
+    },
+  );
+  await Promise.all(workers);
 }

@@ -91,6 +91,10 @@ export async function POST(
       );
     }
 
+    // Use original (pre-bg-removal) image for AI generation — external APIs
+    // may timeout downloading _nobg images from R2 CDN
+    const aiBaseImageUrl = a.originalBaseImageUrl ?? a.baseImageUrl;
+
     // 4. Fetch expression record
     const expression = await db
       .select()
@@ -147,7 +151,7 @@ export async function POST(
     try {
       const adapter = getGenerationAdapter();
       const result = await adapter.generateExpression({
-        baseImageUrl: a.baseImageUrl,
+        baseImageUrl: aiBaseImageUrl,
         expression: expr.type as ExpressionType,
         style: a.style as ArtStyle,
         prompt: a.prompt,
