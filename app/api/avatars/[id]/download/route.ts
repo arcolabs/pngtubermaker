@@ -36,13 +36,12 @@ import { resizeImage } from "@/lib/services/storage";
 const MAX_DIMENSION = 2160;
 
 // Size limits by tier
-const TIER_SIZE_LIMITS = {
+const TIER_SIZE_LIMITS: Record<string, number> = {
   free: 512,
   start: 1080,
+  creator: 2160,
   pro: 2160,
-} as const;
-
-type Tier = keyof typeof TIER_SIZE_LIMITS;
+};
 
 const downloadSchema = z.object({
   format: z.enum(["png", "zip"]).default("png"),
@@ -53,7 +52,7 @@ const downloadSchema = z.object({
  * Get user's current subscription tier
  * Returns 'free' if no active subscription
  */
-async function getUserTier(userId: string): Promise<Tier> {
+async function getUserTier(userId: string): Promise<string> {
   const db = getDatabase();
 
   const sub = await db
@@ -65,7 +64,7 @@ async function getUserTier(userId: string): Promise<Tier> {
     .limit(1);
 
   if (sub.length > 0 && sub[0]?.tier) {
-    return sub[0].tier as Tier;
+    return sub[0].tier;
   }
 
   return "free";
@@ -144,7 +143,7 @@ export async function GET(
 
   // 5. Determine size from tier (auto if not specified, capped to tier max)
   const tier = await getUserTier(session.user.id);
-  const maxSize = TIER_SIZE_LIMITS[tier];
+  const maxSize = TIER_SIZE_LIMITS[tier] ?? 512;
   const size = requestedSize ? Math.min(requestedSize, maxSize) : maxSize;
 
   // 6. Fetch all expressions
