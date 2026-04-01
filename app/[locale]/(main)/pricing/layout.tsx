@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Simple pricing for PNGTuber avatar generation. Free tier, Start at $9/mo, Pro at $30/mo. Create professional streaming avatars with AI.",
+    "Simple pricing for PNGTuber avatar generation. Free credits to start, Creator Pass at $7.99/mo. Create professional streaming avatars with AI.",
   alternates: {
     canonical: "/pricing",
   },

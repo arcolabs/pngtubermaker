@@ -138,7 +138,7 @@ export const subscriptions = pgTable(
     stripeSubscriptionId: text("stripe_subscription_id").notNull().unique(),
     stripePriceId: text("stripe_price_id").notNull(),
     status: text("status").notNull(), // 'active' | 'canceled' | 'past_due' | 'unpaid' | 'trialing'
-    tier: text("tier").notNull(), // 'free' | 'start' | 'pro'
+    tier: text("tier").notNull(), // 'free' | 'creator'
     monthlyCredits: integer("monthly_credits").notNull().default(0),
     currentPeriodStart: timestamp("current_period_start"),
     currentPeriodEnd: timestamp("current_period_end"),

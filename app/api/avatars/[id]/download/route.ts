@@ -25,8 +25,7 @@ import { resizeImage } from "@/lib/services/storage";
  *
  * Tier restrictions:
  *   - Free: max 512
- *   - Start: max 1080
- *   - Pro: max 2160
+ *   - Creator: max 2160
  *
  * Response:
  *   - format=png: single image/png binary (base image only)
@@ -38,9 +37,7 @@ const MAX_DIMENSION = 2160;
 // Size limits by tier
 const TIER_SIZE_LIMITS: Record<string, number> = {
   free: 512,
-  start: 1080,
   creator: 2160,
-  pro: 2160,
 };
 
 const downloadSchema = z.object({
@@ -185,8 +182,10 @@ export async function GET(
 
   for (const file of files) {
     try {
-      // Fetch image from R2
-      const imageResponse = await fetch(file.url);
+      // Fetch image from R2 (30s timeout to avoid hanging)
+      const imageResponse = await fetch(file.url, {
+        signal: AbortSignal.timeout(30_000),
+      });
       if (!imageResponse.ok) {
         console.error(
           `[Download] Failed to fetch ${file.name}: ${imageResponse.status}`,
