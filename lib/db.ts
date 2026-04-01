@@ -2,12 +2,14 @@ import { neonConfig, Pool } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import * as schema from "@/database/schema";
 
-// Required for Node.js runtimes (Zeabur, Docker, etc.)
-// Use globalThis.__import to avoid Turbopack static analysis of require("ws")
-if (typeof globalThis.WebSocket === "undefined") {
-  const load = new Function("m", "return require(m)");
-  neonConfig.webSocketConstructor = load("ws");
-}
+// Neon serverless defaults webSocketConstructor to undefined.
+// On Node.js 22+ use native WebSocket; fall back to ws package.
+neonConfig.webSocketConstructor =
+  globalThis.WebSocket ??
+  (() => {
+    const load = new Function("m", "return require(m)");
+    return load("ws");
+  })();
 
 let pool: Pool | undefined;
 let db: ReturnType<typeof drizzle> | undefined;

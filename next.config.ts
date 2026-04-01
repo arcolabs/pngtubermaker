@@ -5,7 +5,6 @@ const withNextIntl = createNextIntlPlugin("./lib/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  serverExternalPackages: ["ws"],
   images: {
     qualities: [70, 75, 85],
     remotePatterns: [
