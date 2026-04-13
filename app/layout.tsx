@@ -124,6 +124,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={isRtl(locale) ? "rtl" : "ltr"} data-theme="light">
       <head>
+        <script defer src="https://admin.tritonix.cn/t.js" data-site="2" />
         <script
           type="application/ld+json"
           // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data
