@@ -10,6 +10,7 @@ import {
   getPriceId,
   type Tier,
 } from "@/lib/stripe";
+import { getTrafficSourceMetadata } from "@/lib/traffic-source";
 
 export async function POST(req: NextRequest) {
   try {
@@ -85,6 +86,10 @@ export async function POST(req: NextRequest) {
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const trafficSourceMetadata = getTrafficSourceMetadata({
+      _ts_sid: req.cookies.get("_ts_sid")?.value,
+      _ts_vid: req.cookies.get("_ts_vid")?.value,
+    });
     const checkoutSession = await createSubscriptionCheckoutSession({
       customerId: stripeCustomerId,
       priceId,
@@ -94,6 +99,7 @@ export async function POST(req: NextRequest) {
         userId: session.user.id,
         tier,
         cycle,
+        ...trafficSourceMetadata,
       },
     });
 

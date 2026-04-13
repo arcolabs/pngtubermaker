@@ -4,6 +4,7 @@ import { user } from "@/database/schema";
 import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
 import { createStripeCustomer, createTopupCheckoutSession } from "@/lib/stripe";
+import { getTrafficSourceMetadata } from "@/lib/traffic-source";
 
 export async function POST(req: NextRequest) {
   try {
@@ -49,6 +50,10 @@ export async function POST(req: NextRequest) {
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const trafficSourceMetadata = getTrafficSourceMetadata({
+      _ts_sid: req.cookies.get("_ts_sid")?.value,
+      _ts_vid: req.cookies.get("_ts_vid")?.value,
+    });
     const checkoutSession = await createTopupCheckoutSession({
       customerId: stripeCustomerId,
       amountInCents: amount,
@@ -57,6 +62,7 @@ export async function POST(req: NextRequest) {
       metadata: {
         userId: session.user.id,
         ...(packageId ? { packageId } : {}),
+        ...trafficSourceMetadata,
       },
     });
 
