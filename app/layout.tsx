@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
 import "./globals.css";
+import { TrafficSourceIdentify } from "@/components/analytics/TrafficSourceIdentify";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import { brand } from "@/lib/brand";
 import { isRtl, type Locale } from "@/lib/i18n/config";
@@ -135,6 +136,7 @@ export default async function RootLayout({
         className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable} font-sans antialiased flex flex-col min-h-screen`}
       >
         {children}
+        <TrafficSourceIdentify />
         <ToastProvider />
       </body>
     </html>
