@@ -1,12 +1,8 @@
 /**
  * Production generation adapter.
  *
- * Primary model: GPT-Image-2 (via Zeakai). Qwen and Doubao Seedream are
- * retained as fallback to preserve reliability if GPT-Image-2 is flaky.
- *
- * Character generation: 4×GptImage in parallel. Each failed slot is retried
- * once by the adapter itself, then falls back to Qwen, then Doubao, to end
- * up with up to 4 candidate images.
+ * Character generation: 2×GptImage + 2×Doubao in parallel (2×2). Qwen fills
+ * remaining slots if either primary model has empty slots.
  *
  * Expression generation: GptImage first → Qwen fallback → Doubao fallback.
  *
@@ -33,29 +29,46 @@ export class ProductionAdapter implements GenerationAdapter {
     request: GenerateCharacterRequest,
   ): Promise<GenerateCharacterResult> {
     const TARGET = 4;
+    const GPT_COUNT = 2;
+    const DOUBAO_COUNT = 2;
 
-    // Phase 1: 4×GptImage in parallel
+    // Phase 1: 2×GptImage + 2×Doubao in parallel (2×2)
     console.log(
-      `[Production] Phase 1: character generation (${TARGET}×GptImage)`,
+      `[Production] Phase 1: character generation (${GPT_COUNT}×GptImage + ${DOUBAO_COUNT}×Doubao)`,
     );
-    const phase1 = await Promise.allSettled(
-      Array.from({ length: TARGET }, (_, i) =>
-        this.gpt.generateCharacterImage(request).then((url) => {
-          if (url) console.log(`[Production] GptImage-${i + 1}: success`);
-          else console.warn(`[Production] GptImage-${i + 1}: no image`);
-          return url;
-        }),
+
+    const [gptResults, doubaoResults] = await Promise.all([
+      Promise.allSettled(
+        Array.from({ length: GPT_COUNT }, (_, i) =>
+          this.gpt.generateCharacterImage(request).then((url) => {
+            if (url) console.log(`[Production] GptImage-${i + 1}: success`);
+            else console.warn(`[Production] GptImage-${i + 1}: no image`);
+            return url;
+          }),
+        ),
       ),
-    );
+      Promise.allSettled(
+        Array.from({ length: DOUBAO_COUNT }, (_, i) =>
+          this.doubao.generateCharacterImage(request).then((url) => {
+            if (url) console.log(`[Production] Doubao-${i + 1}: success`);
+            else console.warn(`[Production] Doubao-${i + 1}: no image`);
+            return url;
+          }),
+        ),
+      ),
+    ]);
 
     const images: string[] = [];
-    for (const r of phase1) {
+    for (const r of gptResults) {
+      if (r.status === "fulfilled" && r.value) images.push(r.value);
+    }
+    for (const r of doubaoResults) {
       if (r.status === "fulfilled" && r.value) images.push(r.value);
     }
 
     let missing = TARGET - images.length;
 
-    // Phase 2: fallback missing slots to Qwen
+    // Phase 2: Qwen fills remaining slots
     if (missing > 0) {
       console.log(`[Production] Phase 2: filling ${missing} slot(s) with Qwen`);
       const qwenResults = await Promise.allSettled(
@@ -78,35 +91,11 @@ export class ProductionAdapter implements GenerationAdapter {
       missing = TARGET - images.length;
     }
 
-    // Phase 3: remaining slots to Doubao
-    if (missing > 0) {
-      console.log(
-        `[Production] Phase 3: filling ${missing} slot(s) with Doubao`,
-      );
-      const doubaoResults = await Promise.allSettled(
-        Array.from({ length: missing }, () =>
-          this.doubao.generateCharacterImage(request),
-        ),
-      );
-      for (let i = 0; i < doubaoResults.length; i++) {
-        const r = doubaoResults[i];
-        if (r?.status === "fulfilled" && r.value) {
-          images.push(r.value);
-          console.log(`[Production] Doubao-fallback-${i + 1}: success`);
-        } else {
-          console.warn(
-            `[Production] Doubao-fallback-${i + 1}: failed`,
-            r?.status === "rejected" ? r.reason : "no image",
-          );
-        }
-      }
-    }
-
     if (images.length === 0) {
       return {
         status: "failed",
         images: [],
-        error: "All models failed (GptImage + Qwen + Doubao)",
+        error: "All models failed (GptImage + Doubao + Qwen)",
       };
     }
 
