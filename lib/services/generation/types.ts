@@ -3,9 +3,10 @@
  *
  * Implementations:
  * - MockAdapter: Returns placeholder images with simulated delays (dev)
- * - ProductionAdapter: Multi-model parallel character generation (2×Qwen + 2×Doubao)
- *   - QwenAdapter: Character + expression generation via piapi.ai (Qubico/qwen-image)
- *   - DoubaoSeedreamAdapter: Character + expression generation via ByteDance Ark (Seedream 5.0)
+ * - ProductionAdapter: GPT-Image-2 primary, Qwen + Doubao Seedream as fallback
+ *   - GptImageAdapter: Primary; via CocoRouter /v1/zeakai/{generations,edits}
+ *   - QwenAdapter: Fallback; via CocoRouter /v1/piapi/task (Qubico/qwen-image)
+ *   - DoubaoSeedreamAdapter: Fallback; via CocoRouter /v1/ark/images/generations
  */
 
 export type ArtStyle = "anime" | "chibi" | "cartoon" | "pixel-art" | "none";
