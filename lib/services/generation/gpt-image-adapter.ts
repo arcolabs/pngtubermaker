@@ -22,9 +22,11 @@ const API_BASE =
 const GEN_URL = `${API_BASE}/v1/zeakai/images/generations`;
 const EDIT_URL = `${API_BASE}/v1/zeakai/images/edits`;
 const MODEL_ID = "gpt-image-2";
-// Upstream p99 ~130s; give headroom. Cloudflare 100s origin timeout may still
-// cut the first attempt — retry covers that case.
-const REQUEST_TIMEOUT_MS = 180_000;
+// Cloudflare 100s origin timeout triggers 524. GPT edit is slower than
+// generate, so cut timeout to 60s — fail fast so fallback (Qwen/Doubao)
+// triggers within the client's 180s budget instead of burning time on a
+// guaranteed timeout.
+const REQUEST_TIMEOUT_MS = 60_000;
 
 function getApiKey(): string {
   const key = process.env.COCOROUTER_KEY;
@@ -166,14 +168,16 @@ export class GptImageAdapter {
   ): Promise<GenerateExpressionResult> {
     const prompt = buildImageEditExpressionPrompt(request.expression);
     console.log(`[GptImage] expression ${request.expression}:`, prompt);
-    const url = await callWithRetry(`expression-${request.expression}`, () =>
-      postEdit(request.baseImageUrl, prompt),
-    );
+    // Expression generation via edit mode is significantly slower and more likely
+    // to hit Cloudflare timeouts than character generation. Skip retry on
+    // expression endpoints so the production adapter's Qwen/Doubao fallback
+    // chain fires faster. The 60s timeout still gives the call a fair shot.
+    const url = await postEdit(request.baseImageUrl, prompt);
     if (!url) {
       return {
         status: "failed",
         imageUrl: null,
-        error: `GptImage expression ${request.expression} failed after retry`,
+        error: `GptImage expression ${request.expression} failed after single attempt`,
       };
     }
     return { status: "completed", imageUrl: url };

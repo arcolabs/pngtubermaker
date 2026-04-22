@@ -15,8 +15,9 @@ export function TrafficSourceIdentify() {
 
   useEffect(() => {
     if (!email) return;
-    (window as unknown as { ts?: { identify?: (email: string) => void } })
-      .ts?.identify?.(email);
+    (
+      window as unknown as { ts?: { identify?: (email: string) => void } }
+    ).ts?.identify?.(email);
   }, [email]);
 
   return null;

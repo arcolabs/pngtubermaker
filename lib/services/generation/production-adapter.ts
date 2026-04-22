@@ -95,7 +95,7 @@ export class ProductionAdapter implements GenerationAdapter {
       return {
         status: "failed",
         images: [],
-        error: "All models failed (GptImage + Doubao + Qwen)",
+        error: "All primary models failed (GptImage + Doubao)",
       };
     }
 

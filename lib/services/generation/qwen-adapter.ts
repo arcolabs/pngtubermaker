@@ -227,7 +227,33 @@ export class QwenAdapter {
       `[Qwen] Generating ${request.expression} expression (image-edit):`,
       prompt,
     );
-    const taskId = await submitTask(prompt, request.baseImageUrl);
+
+    // Retry submit on transient timeouts (submitTask has no internal retry)
+    let taskId: string;
+    try {
+      taskId = await submitTask(prompt, request.baseImageUrl);
+    } catch (e) {
+      console.warn(
+        `[Qwen] Expression ${request.expression} submit failed, retrying:`,
+        e instanceof Error ? e.message : e,
+      );
+      try {
+        taskId = await submitTask(prompt, request.baseImageUrl);
+      } catch (retryError) {
+        console.error(
+          `[Qwen] Expression ${request.expression} submit retry failed:`,
+          retryError instanceof Error ? retryError.message : retryError,
+        );
+        return {
+          status: "failed",
+          imageUrl: null,
+          error:
+            retryError instanceof Error
+              ? retryError.message
+              : "Qwen expression submit failed after retry",
+        };
+      }
+    }
     console.log("[Qwen] Expression task submitted:", taskId);
 
     try {
