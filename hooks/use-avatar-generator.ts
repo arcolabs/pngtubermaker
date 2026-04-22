@@ -338,7 +338,20 @@ export function useAvatarGenerator() {
           signal: abortController.signal,
         });
 
-        const data = await res.json();
+        let data: {
+          error?: string;
+          avatarId?: string;
+          images?: string[];
+          aspectRatio?: string;
+          required?: number;
+        } = {};
+        try {
+          data = await res.json();
+        } catch {
+          throw new Error(
+            `Generate request failed (${res.status}): ${res.statusText}`,
+          );
+        }
 
         if (!res.ok) {
           if (data.error === "insufficient_credits") {
@@ -551,12 +564,28 @@ export function useAvatarGenerator() {
           );
 
           if (!selectRes.ok) {
-            const selectData = await selectRes.json();
+            const text = await selectRes.text();
+            let selectData: { error?: string; slug?: string; name?: string } =
+              {};
+            try {
+              selectData = JSON.parse(text);
+            } catch {
+              // Response was HTML (e.g., Cloudflare 524) — treat as error
+              throw new Error(
+                `Select failed (${selectRes.status}): ${text.slice(0, 200)}`,
+              );
+            }
             if (selectData.error !== "Avatar not ready for selection") {
               throw new Error(selectData.error || "Failed to select base");
             }
           } else {
-            const selectData = await selectRes.json();
+            const text = await selectRes.text();
+            let selectData: { slug?: string; name?: string } = {};
+            try {
+              selectData = JSON.parse(text);
+            } catch {
+              throw new Error("Select returned invalid JSON");
+            }
             setState((prev) => ({
               ...prev,
               selected: prev.selected
@@ -580,7 +609,19 @@ export function useAvatarGenerator() {
           body: JSON.stringify({ packType, subtype }),
         });
 
-        const data = await res.json();
+        const text = await res.text();
+        let data: {
+          error?: string;
+          required?: number;
+          expressions?: unknown[];
+        } = {};
+        try {
+          data = JSON.parse(text);
+        } catch {
+          throw new Error(
+            `Packs request failed (${res.status}): ${text.slice(0, 200)}`,
+          );
+        }
 
         if (!res.ok) {
           if (data.error === "insufficient_credits") {
