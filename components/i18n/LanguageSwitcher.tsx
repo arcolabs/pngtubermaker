@@ -17,6 +17,7 @@ import {
   localeNames,
   locales,
 } from "@/lib/i18n/config";
+import { stripLocalePrefix } from "@/lib/i18n/pathname";
 import { cn } from "@/lib/utils";
 
 interface LanguageSwitcherProps {
@@ -52,17 +53,7 @@ export default function LanguageSwitcher({
       return;
     }
 
-    let path = pathname;
-    for (const loc of locales) {
-      if (path.startsWith(`/${loc}/`)) {
-        path = path.slice(`/${loc}`.length);
-        break;
-      }
-      if (path === `/${loc}`) {
-        path = "/";
-        break;
-      }
-    }
+    const path = stripLocalePrefix(pathname);
 
     const newPath =
       newLocale === defaultLocale ? path || "/" : `/${newLocale}${path}`;
