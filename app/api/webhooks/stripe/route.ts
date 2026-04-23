@@ -271,18 +271,12 @@ async function handleCheckoutSessionCompleted(
       .limit(1);
 
     if (topupUser[0]) {
-      const packageNames: Record<string, string> = {
-        starter: "Starter",
-        popular: "Popular",
-        best_value: "Best Value",
-        studio: "Studio",
-      };
-
       notifyTopup({
         userId,
         email: topupUser[0].email,
         name: topupUser[0].name,
-        packageName: packageNames[packageId] || packageId,
+        packageName:
+          CREDIT_PACKS[packageId as CreditPackId].displayName ?? packageId,
         creditsGranted: creditsToGrant,
         amountPaid: `$${(amount / 100).toFixed(2)}`,
       }).catch(() => {}); // fire-and-forget
