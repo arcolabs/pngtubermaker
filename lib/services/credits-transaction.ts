@@ -16,6 +16,7 @@ export const TASK_COSTS = {
   avatar_generation: 300,
   expression_edit: 200,
   hd_upscale: 100,
+  reference_sheet: 200,
 } as const;
 
 export interface CreditBalance {
