@@ -42,7 +42,7 @@
       {
         "icon": "Zap",
         "title": "Impact performance nul",
-        "description": "Contrairement aux logiciels VTuber qui monopolisent le GPU, les PNGTuber fonctionnent comme des sources navigateur légères. Streamez en qualité maximale sans aucune perte d'image. Fonctionne sur tout PC capable de faire tourner OBS — même les ordinateurs portables入门."
+        "description": "Contrairement aux logiciels VTuber qui monopolisent le GPU, les PNGTuber fonctionnent comme des sources navigateur légères. Streamez en qualité maximale sans aucune perte d'image. Fonctionne sur tout PC capable de faire tourner OBS — même les ordinateurs portablesdébutant."
       },
       {
         "icon": "Layers",
@@ -183,17 +183,17 @@
     {
       "id": "tw-1",
       "question": "Comment ajouter un avatar PNGTuber à mon stream Twitch ?",
-      "answer": "Après avoir créé votre avatar sur PNGTuberMaker, copiez l'URL de la source navigateur. Dans OBS Studio, ajoutez une nouvelle source navigateur, collez l'URL, définissez les dimensions sur 600×600, et votre PNGTuber apparaît en stream. Il réagit automatiquement à votre microphone — la bouche s'ouvre quand vous parlez, se ferme quand vous êtes silencieux. Positionnez-le où vous voulez dans votre布局 de stream en utilisant l'interface glisser-déposer d'OBS."
+      "answer": "Après avoir créé votre avatar sur PNGTuberMaker, copiez l'URL de la source navigateur. Dans OBS Studio, ajoutez une nouvelle source navigateur, collez l'URL, définissez les dimensions sur 600×600, et votre PNGTuber apparaît en stream. Il réagit automatiquement à votre microphone — la bouche s'ouvre quand vous parlez, se ferme quand vous êtes silencieux. Positionnez-le où vous voulez dans votremise en page de stream en utilisant l'interface glisser-déposer d'OBS."
     },
     {
       "id": "tw-2",
       "question": "Puis-je streamer sur Twitch sans webcam en utilisant un PNGTuber ?",
-      "answer": "Absolument ! C'est l'un des plus grands avantages des PNGTubers. Vous n'avez besoin que d'un microphone — pas de webcam, pas de logiciel de suivi facial, pas de configuration de caméra. Votre avatar réagit à votre voix, pas à votre visage. C'est parfait pour le streaming sans visage, les créateurs soucieux de leur vie privée, ou anyone qui préfère ne pas être filmé. Des milliers de streamers Twitch успешных utilisent exclusivement des PNGTubers."
+      "answer": "Absolument ! C'est l'un des plus grands avantages des PNGTubers. Vous n'avez besoin que d'un microphone — pas de webcam, pas de logiciel de suivi facial, pas de configuration de caméra. Votre avatar réagit à votre voix, pas à votre visage. C'est parfait pour le streaming sans visage, les créateurs soucieux de leur vie privée, ou anyone qui préfère ne pas être filmé. Des milliers de streamers Twitch à succès utilisent exclusivement des PNGTubers."
     },
     {
       "id": "tw-3",
       "question": "Un PNGTuber va-t-il ralentir mon stream Twitch ou mon jeu ?",
-      "answer": "Pas du tout. Les PNGTuber fonctionnent comme des sources navigateur légères dans OBS — ils utilisent un minimum de CPU et pratiquement pas de GPU. Contrairement aux VTubers Live2D qui nécessitent un rendu en temps réel et peuvent causer des pertes d'images, les PNGTuber sont essentiellement juste des images qui changent selon l'audio. Vous pouvez streamer des jeux compétitifs à IPS complet avec un avatar PNGTuber actif. Même les PC入门 gèrent les PNGTuber sans effort."
+      "answer": "Pas du tout. Les PNGTuber fonctionnent comme des sources navigateur légères dans OBS — ils utilisent un minimum de CPU et pratiquement pas de GPU. Contrairement aux VTubers Live2D qui nécessitent un rendu en temps réel et peuvent causer des pertes d'images, les PNGTuber sont essentiellement juste des images qui changent selon l'audio. Vous pouvez streamer des jeux compétitifs à IPS complet avec un avatar PNGTuber actif. Même les PCdébutant gèrent les PNGTuber sans effort."
     },
     {
       "id": "tw-4",
