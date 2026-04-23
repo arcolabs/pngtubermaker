@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Check,
-  Copy,
-  Download,
-  Loader2,
-  RefreshCw,
-  Sparkles,
-} from "lucide-react";
+import { Check, Copy, Loader2, RefreshCw, Sparkles } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import type {
   AspectRatio,
@@ -35,7 +28,6 @@ interface GenerationGroupProps {
     type: "base" | "custom",
     subtype?: ExpressionSubtype,
   ) => void;
-  onDownload: () => void;
   onRegenerate?: (prompt: string, style: string, aspectRatio: string) => void;
 }
 
@@ -58,14 +50,12 @@ export function GenerationGroup({
   creditBalance,
   onSelectCandidate,
   onGenerateExpressionPack,
-  onDownload,
   onRegenerate,
 }: GenerationGroupProps) {
   const isThisGroupSelected = selected?.generationId === generation.id;
   const [previewImageIndex, setPreviewImageIndex] = useState<number | null>(
     null,
   );
-  const [isDownloading, setIsDownloading] = useState(false);
 
   // Check which expression packs already exist for the current avatar
   const avatarId = generation.avatarId;
@@ -183,15 +173,6 @@ export function GenerationGroup({
 
   const handleCopyPrompt = () => {
     navigator.clipboard.writeText(generation.prompt);
-  };
-
-  const handleDownload = async () => {
-    setIsDownloading(true);
-    try {
-      await onDownload();
-    } finally {
-      setIsDownloading(false);
-    }
   };
 
   // Always use 4 columns — custom expressions leave right 2 cells empty
@@ -451,15 +432,6 @@ export function GenerationGroup({
                         )}
                     </>
                   )}
-                  <button
-                    type="button"
-                    onClick={handleDownload}
-                    disabled={isDownloading}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary to-cyan-400 rounded-xl shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all duration-200 disabled:opacity-70"
-                  >
-                    <Download className="w-4 h-4" />
-                    {isDownloading ? "Preparing..." : "Download"}
-                  </button>
                   <button
                     type="button"
                     onClick={() => {

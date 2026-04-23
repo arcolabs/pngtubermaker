@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Maximize2 } from "lucide-react";
+import { ImageActionIcons } from "@/components/ui/ImageActionIcons";
 import { SafeImage } from "@/components/ui/SafeImage";
 
 interface CandidateCardProps {
@@ -88,6 +89,13 @@ export function CandidateCard({
         >
           <Maximize2 className="w-4 h-4 text-gray-700" />
         </button>
+      )}
+
+      {!disabled && (
+        <ImageActionIcons
+          imageUrl={imageUrl}
+          filename={`candidate-${index + 1}`}
+        />
       )}
     </div>
   );

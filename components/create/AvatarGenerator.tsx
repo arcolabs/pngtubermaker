@@ -156,7 +156,6 @@ export function AvatarGenerator() {
                     creditBalance={creditBalance}
                     onSelectCandidate={selectCandidate}
                     onGenerateExpressionPack={generateExpressionPack}
-                    onDownload={download}
                     onRegenerate={handleRegenerate}
                   />
                   {exprGens.length > 0 && (
