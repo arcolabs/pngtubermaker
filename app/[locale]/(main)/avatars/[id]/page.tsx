@@ -84,6 +84,10 @@ async function getAvatar(idOrSlug: string, userId: string) {
       thumbnailUrl: a.thumbnailUrl,
       creditsUsed: a.creditsUsed,
       createdAt: a.createdAt.toISOString(),
+      referenceSheetUrl: a.referenceSheetUrl,
+      referenceSheetR2Key: a.referenceSheetR2Key,
+      referenceSheetGeneratedAt:
+        a.referenceSheetGeneratedAt?.toISOString() ?? null,
     },
     expressions: legacyExpressions,
     packs: packsWithExpressions,
