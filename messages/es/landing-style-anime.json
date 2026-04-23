@@ -23,7 +23,7 @@
   "hero": {
     "badge": "Generador de Estilo Anime",
     "title": "Creador de Avatares Anime Gratis — Crea Personajes Anime con IA",
-    "subtitle": "Diseña personajes anime increíbles en minutos. Describe tu personaje — color de cabello, outfit, personalidad — y la IA genera un avatar anime profesional con expresiones協調.",
+    "subtitle": "Diseña personajes anime increíbles en minutos. Describe tu personaje — color de cabello, outfit, personalidad — y la IA genera un avatar anime profesional con expresionescoordinar.",
     "ctaText": "Crear Avatar Anime",
     "ctaHref": "/create"
   },
@@ -64,7 +64,7 @@
       {
         "src": "/images/showcase/fox_pngtuber.png",
         "alt": "Creador de personajes anime — avatar de zorro generado por creador de avatares anime con IA",
-        "prompt": "orejas de zorro naranja, cabello largo azul ondulado con horquillas de estrellas, ojos琥珀 brillante, vestido azul marino con constelaciones, sosteniendo una bola de cristal flotante"
+        "prompt": "orejas de zorro naranja, cabello largo azul ondulado con horquillas de estrellas, ojosámbar brillante, vestido azul marino con constelaciones, sosteniendo una bola de cristal flotante"
       },
       {
         "src": "/images/showcase/sunflower_pngtuber.png",
