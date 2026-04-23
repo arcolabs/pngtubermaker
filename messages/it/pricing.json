@@ -22,7 +22,7 @@
     "badge": "Abbonati e Risparmia",
     "subtitle": "Per i creator che vogliono il miglior rapporto qualità-prezzo su crediti ed export HD",
     "features": [
-      "6.000 crediti/mese (~30% di risparmio rispetto al ricarico)",
+      "6.000 crediti/mese (miglior prezzo per credito)",
       "Export HD (1080p)",
       "Tutti i pacchetti di espressioni",
       "Gestisci l'abbonamento quando vuoi",
@@ -37,7 +37,7 @@
   "perMonth": "/mese",
   "savings": "Risparmia {percent}%",
   "annualNote": "/mese se fatturato annualmente",
-  "savingsNote": "~30% di risparmio rispetto all'acquisto di crediti",
+  "savingsNote": "Miglior prezzo per credito",
   "currentPlan": "Piano Attuale",
   "subscribeYearly": "Abbonati Annuale",
   "subscribeMonthly": "Abbonati Mensile",
@@ -51,7 +51,8 @@
     "mostPopular": "Più Popolare",
     "packStarter": "Base",
     "packPopular": "Popolare",
-    "packBestValue": "Migliore Offerta"
+    "packBestValue": "Migliore Offerta",
+    "packStudio": "Studio"
   },
   "buyCreditsModal": {
     "title": "Ti servono più crediti",

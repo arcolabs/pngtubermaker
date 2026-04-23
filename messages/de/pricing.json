@@ -22,7 +22,7 @@
     "badge": "Abonnieren & Sparen",
     "subtitle": "Für Creator, die das beste Preis-Leistungs-Verhältnis bei Credits und HD-Export wollen",
     "features": [
-      "6.000 Credits/Monat (~30% Ersparnis im Vergleich zu Nachkauf)",
+      "6.000 Credits/Monat (bester Preis pro Credit)",
       "HD-Export (1080p)",
       "Alle Ausdrucks-Packs",
       "Abonnement jederzeit verwalten",
@@ -37,7 +37,7 @@
   "perMonth": "/Mt.",
   "savings": "{percent}% sparen",
   "annualNote": "/Mt. bei jährlicher Abrechnung",
-  "savingsNote": "~30% Ersparnis im Vergleich zum Kaufen von Credits",
+  "savingsNote": "Bester Preis pro Credit",
   "currentPlan": "Aktueller Plan",
   "subscribeYearly": "Jährlich abonnieren",
   "subscribeMonthly": "Monatlich abonnieren",
@@ -51,7 +51,8 @@
     "mostPopular": "Beliebteste",
     "packStarter": "Starter",
     "packPopular": "Beliebt",
-    "packBestValue": "Bester Wert"
+    "packBestValue": "Bester Wert",
+    "packStudio": "Studio"
   },
   "buyCreditsModal": {
     "title": "Du brauchst mehr Credits",

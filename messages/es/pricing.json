@@ -22,7 +22,7 @@
     "badge": "Suscríbete y Ahorra",
     "subtitle": "Para creadores que buscan el mejor valor en créditos y exportación HD",
     "features": [
-      "6,000 créditos/mes (~30% de ahorro vs recarga)",
+      "6,000 créditos/mes (mejor precio por crédito)",
       "Exportación HD (1080p)",
       "Todos los packs de expresiones",
       "Gestiona tu suscripción en cualquier momento",
@@ -37,7 +37,7 @@
   "perMonth": "/mes",
   "savings": "Ahorra {percent}%",
   "annualNote": "/mes facturado anualmente",
-  "savingsNote": "~30% de ahorro vs comprar créditos",
+  "savingsNote": "Mejor precio por crédito",
   "currentPlan": "Plan Actual",
   "subscribeYearly": "Suscribirse Anual",
   "subscribeMonthly": "Suscribirse Mensual",
@@ -51,7 +51,8 @@
     "mostPopular": "Más Popular",
     "packStarter": "Inicial",
     "packPopular": "Popular",
-    "packBestValue": "Mejor Valor"
+    "packBestValue": "Mejor Valor",
+    "packStudio": "Studio"
   },
   "buyCreditsModal": {
     "title": "Necesitas más créditos",

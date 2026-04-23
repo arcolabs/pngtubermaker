@@ -22,7 +22,7 @@
     "badge": "Assine e Economize",
     "subtitle": "Para criadores que querem o melhor custo-benefício em créditos e exportação HD",
     "features": [
-      "6.000 créditos/mês (~30% de economia vs recarga)",
+      "6.000 créditos/mês (melhor preço por crédito)",
       "HD export (1080p)",
       "Todos os packs de expressões",
       "Gerencie a assinatura a qualquer momento",
@@ -37,7 +37,7 @@
   "perMonth": "/mês",
   "savings": "Economize {percent}%",
   "annualNote": "/mês quando cobrado anualmente",
-  "savingsNote": "~30% de economia vs comprar créditos",
+  "savingsNote": "Melhor preço por crédito",
   "currentPlan": "Plano Atual",
   "subscribeYearly": "Assinar Anual",
   "subscribeMonthly": "Assinar Mensal",
@@ -51,7 +51,8 @@
     "mostPopular": "Mais Popular",
     "packStarter": "Iniciante",
     "packPopular": "Popular",
-    "packBestValue": "Melhor Custo-Benefício"
+    "packBestValue": "Melhor Custo-Benefício",
+    "packStudio": "Studio"
   },
   "buyCreditsModal": {
     "title": "Você precisa de mais créditos",

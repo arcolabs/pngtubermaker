@@ -22,7 +22,7 @@
     "badge": "Subscribe & Save",
     "subtitle": "For creators who want the best value on credits and HD export",
     "features": [
-      "6,000 credits/month (~30% savings vs top-up)",
+      "6,000 credits/month (best per-credit rate)",
       "HD export (1080p)",
       "All expression packs",
       "Manage subscription anytime",
@@ -37,7 +37,7 @@
   "perMonth": "/mo",
   "savings": "Save {percent}%",
   "annualNote": "/mo when billed annually",
-  "savingsNote": "~30% savings vs buying credits",
+  "savingsNote": "Best per-credit rate",
   "currentPlan": "Current Plan",
   "subscribeYearly": "Subscribe Yearly",
   "subscribeMonthly": "Subscribe Monthly",
@@ -51,7 +51,8 @@
     "mostPopular": "Most Popular",
     "packStarter": "Starter",
     "packPopular": "Popular",
-    "packBestValue": "Best Value"
+    "packBestValue": "Best Value",
+    "packStudio": "Studio"
   },
   "buyCreditsModal": {
     "title": "You need more credits",

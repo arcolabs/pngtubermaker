@@ -22,7 +22,7 @@
     "badge": "定期購入でお得に",
     "subtitle": "クレジットとHDエクスポートをお得に多得しく利用したいクリエイター向け",
     "features": [
-      "月6,000クレジット（補充相比約30%OFF）",
+      "月6,000クレジット（クレジット単価最安）",
       "HDエクスポート（1080p）",
       "全表情パック",
       "定期購入はいつでも管理可能",
@@ -37,7 +37,7 @@
   "perMonth": "/月",
   "savings": "{percent}%割引",
   "annualNote": "/月（年額請求時）",
-  "savingsNote": "クレジット購入相比約30%OFF",
+  "savingsNote": "クレジット単価最安",
   "currentPlan": "現在のプラン",
   "subscribeYearly": "年額プランに定期購入",
   "subscribeMonthly": "月額プランに定期購入",
@@ -51,7 +51,8 @@
     "mostPopular": "人気No.1",
     "packStarter": "スターター",
     "packPopular": "人気",
-    "packBestValue": "最佳値"
+    "packBestValue": "最佳値",
+    "packStudio": "Studio"
   },
   "buyCreditsModal": {
     "title": "クレジットがもっと必要です",

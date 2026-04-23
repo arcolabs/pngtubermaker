@@ -22,7 +22,7 @@
     "badge": "订阅享优惠",
     "subtitle": "为想要积分和高清导出最优惠的创作者设计",
     "features": [
-      "每月6,000积分（相比充值约省30%）",
+      "每月6,000积分（单价最优）",
       "高清导出（1080p）",
       "全部表情包",
       "随时管理订阅",
@@ -37,7 +37,7 @@
   "perMonth": "/月",
   "savings": "省{percent}%",
   "annualNote": "/月（按年计费）",
-  "savingsNote": "约30% savings vs buying credits",
+  "savingsNote": "单价最优",
   "currentPlan": "当前套餐",
   "subscribeYearly": "订阅年付",
   "subscribeMonthly": "订阅月付",
@@ -51,7 +51,8 @@
     "mostPopular": "最受欢迎",
     "packStarter": "入门",
     "packPopular": "热门",
-    "packBestValue": "超值"
+    "packBestValue": "超值",
+    "packStudio": "Studio"
   },
   "buyCreditsModal": {
     "title": "您需要更多积分",

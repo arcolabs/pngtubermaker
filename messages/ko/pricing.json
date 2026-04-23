@@ -22,7 +22,7 @@
     "badge": "구독하고 절약하기",
     "subtitle": "크레딧과 HD 내보내기에서 최고의 가치를 원하는 크리에이터를 위한",
     "features": [
-      "월 6,000 크레딧 (추가 구매 대비 약 30% 절약)",
+      "월 6,000 크레딧 (크레딧당 최저가)",
       "HD 내보내기 (1080p)",
       "모든 표현 팩",
       "언제든 구독 관리",
@@ -37,7 +37,7 @@
   "perMonth": "/월",
   "savings": "{percent}% 절약",
   "annualNote": "연간 결제 시 /월",
-  "savingsNote": "크레딧 구매 대비 약 30% 절약",
+  "savingsNote": "크레딧당 최저가",
   "currentPlan": "현재 플랜",
   "subscribeYearly": "연간 구독하기",
   "subscribeMonthly": "월간 구독하기",
@@ -51,7 +51,8 @@
     "mostPopular": "가장 인기 있는",
     "packStarter": "스타터",
     "packPopular": "인기",
-    "packBestValue": "최고의 가치"
+    "packBestValue": "최고의 가치",
+    "packStudio": "Studio"
   },
   "buyCreditsModal": {
     "title": "크레딧이 더 필요합니다",
