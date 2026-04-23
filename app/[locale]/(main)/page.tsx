@@ -78,7 +78,7 @@ export default function Home() {
       router.push("/login");
       return;
     }
-    await topup(price * 100, packageId);
+    await topup(Math.round(price * 100), packageId);
   };
 
   return (

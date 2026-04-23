@@ -71,7 +71,7 @@ function PricingContent() {
       return;
     }
 
-    await topup(price * 100, packageId);
+    await topup(Math.round(price * 100), packageId);
   };
 
   return (
