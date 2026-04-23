@@ -21,7 +21,7 @@
   "hero": {
     "badge": "AI搭載VTuberクリエイター",
     "title": "無料のAI VTuberメーカー — オンラインでVTuberアバターを作成",
-    "subtitle": "数分で独自のVTuberモデルをデザイン — アートスキルは不要です。表情パック付きでカスタムキャラクターを生成し、的任何配信プラットフォームでライブ配信を始めましょう。",
+    "subtitle": "数分で独自のVTuberモデルをデザイン — アートスキルは不要です。表情パック付きでカスタムキャラクターを生成し、あらゆる配信プラットフォームでライブ配信を始めましょう。",
     "ctaText": "VTuberを作成",
     "ctaHref": "/create"
   },
@@ -46,7 +46,7 @@
       {
         "icon": "Shield",
         "title": "あなたのアバター、あなたのブランド",
-        "description": "Twitch、YouTube、Discord、ソーシャルメディアでアバターを使用可能。Creator Pass加入者は商品を 포함한完全な商用権利を取得できます。"
+        "description": "Twitch、YouTube、Discord、ソーシャルメディアでアバターを使用可能。Creator Pass加入者は商品を 完全な商用権利を取得できます。"
       }
     ]
   },
@@ -108,7 +108,7 @@
       {
         "src": "/images/showcase/pinkbunny_pngtuber.png",
         "alt": "PNGTuberMakerで作成されたAI生成のピンクうさちゃんVTuberアバター",
-        "prompt": "ピンクのうさ耳、花々のヘアバンド、柔らかいピーチ色のボブヘア、エメラルドグリーン 큰目、大きくてクリーム色のフーディーを着て、イチゴのバスケットを持っている"
+        "prompt": "ピンクのうさ耳、花々のヘアバンド、柔らかいピーチ色のボブヘア、エメラルドグリーン 目、大きくてクリーム色のフーディーを着て、イチゴのバスケットを持っている"
       },
       {
         "src": "/images/showcase/sunflower_pngtuber.png",
