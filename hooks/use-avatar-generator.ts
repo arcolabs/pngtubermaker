@@ -342,7 +342,7 @@ export function useAvatarGenerator() {
           error?: string;
           avatarId?: string;
           images?: string[];
-          aspectRatio?: string;
+          aspectRatio?: AspectRatio;
           required?: number;
         } = {};
         try {
@@ -374,6 +374,26 @@ export function useAvatarGenerator() {
           return;
         }
 
+        if (!data.avatarId || !data.images) {
+          setState((prev) => ({
+            ...prev,
+            isGenerating: false,
+            generations: prev.generations.map((g) =>
+              g.id === tempId
+                ? {
+                    ...g,
+                    status: "failed" as const,
+                    error: "Invalid server response",
+                  }
+                : g,
+            ),
+          }));
+          await fetchBalance();
+          return;
+        }
+
+        const { avatarId: newAvatarId, images: newImages } = data;
+
         // Replace temp ID with real ID from server
         setState((prev) => ({
           ...prev,
@@ -382,9 +402,9 @@ export function useAvatarGenerator() {
             g.id === tempId
               ? {
                   ...g,
-                  id: data.avatarId,
-                  avatarId: data.avatarId,
-                  candidateImages: data.images,
+                  id: newAvatarId,
+                  avatarId: newAvatarId,
+                  candidateImages: newImages,
                   aspectRatio: data.aspectRatio || g.aspectRatio,
                   status: "completed" as const,
                 }
@@ -613,7 +633,17 @@ export function useAvatarGenerator() {
         let data: {
           error?: string;
           required?: number;
-          expressions?: unknown[];
+          packId?: string;
+          packType?: "base" | "custom";
+          subtype?: string | null;
+          expressions?: {
+            id: string;
+            type: string;
+            status: string;
+            imageUrl: string | null;
+          }[];
+          failedCount?: number;
+          refundedCredits?: number;
         } = {};
         try {
           data = JSON.parse(text);
@@ -643,8 +673,28 @@ export function useAvatarGenerator() {
           return;
         }
 
+        if (!data.packId || !data.expressions) {
+          setState((prev) => ({
+            ...prev,
+            generations: prev.generations.map((g) =>
+              g.id === genId
+                ? {
+                    ...g,
+                    status: "failed" as const,
+                    error: "Invalid server response",
+                  }
+                : g,
+            ),
+          }));
+          await fetchBalance();
+          return;
+        }
+
+        const { packId: newPackId, expressions: newExpressions } = data;
+        const newFailedCount = data.failedCount ?? 0;
+
         // Replace skeleton with real data
-        const imageUrls = (data.expressions as { imageUrl: string | null }[])
+        const imageUrls = newExpressions
           .map((e) => e.imageUrl)
           .filter((url): url is string => url !== null);
 
@@ -654,11 +704,11 @@ export function useAvatarGenerator() {
             g.id === genId
               ? {
                   ...g,
-                  id: data.packId,
+                  id: newPackId,
                   avatarId: selected.avatarId,
                   candidateImages: imageUrls,
                   status:
-                    data.failedCount === (data.expressions?.length ?? 0)
+                    newFailedCount === newExpressions.length
                       ? ("failed" as const)
                       : ("completed" as const),
                 }
