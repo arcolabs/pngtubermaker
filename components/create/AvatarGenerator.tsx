@@ -7,11 +7,17 @@ import {
   type ArtStyle,
   useAvatarGenerator,
 } from "@/hooks/use-avatar-generator";
+import { useBuyCreditsModal } from "@/hooks/use-buy-credits-modal";
 import { useReferencePersistentState } from "@/hooks/use-reference-persistent-state";
+import { TASK_COSTS } from "@/lib/services/credits";
 import type { ReferenceHandlers } from "@/types/reference";
 import { ExpressionResultsCard } from "./ExpressionResultsCard";
 import { GenerationGroup } from "./GenerationGroup";
 import { GeneratorForm } from "./GeneratorForm";
+import {
+  type ReferenceSheetCardState,
+  ReferenceSheetResultCard,
+} from "./ReferenceSheetResultCard";
 import { TrialResultUpsell } from "./TrialResultUpsell";
 
 const WELCOME_CREDITS = 1000;
@@ -66,6 +72,59 @@ export function AvatarGenerator() {
 
   const isWelcome = searchParams.get("welcome") === "1";
   const [showWelcome, setShowWelcome] = useState(isWelcome);
+
+  const [refSheets, setRefSheets] = useState<
+    Record<string, ReferenceSheetCardState>
+  >({});
+
+  const generateReferenceSheet = async (avatarId: string) => {
+    setRefSheets((prev) => ({ ...prev, [avatarId]: { status: "generating" } }));
+    try {
+      const res = await fetch(`/api/avatars/${avatarId}/reference-sheet`, {
+        method: "POST",
+      });
+      if (res.status === 402) {
+        useBuyCreditsModal.getState().open(TASK_COSTS.reference_sheet);
+        setRefSheets((prev) => {
+          const next = { ...prev };
+          delete next[avatarId];
+          return next;
+        });
+        return;
+      }
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setRefSheets((prev) => ({
+          ...prev,
+          [avatarId]: {
+            status: "failed",
+            error:
+              data.error === "generation_failed"
+                ? "Generation failed — credits refunded."
+                : data.error === "upload_failed"
+                  ? "Upload failed — credits refunded."
+                  : "Something went wrong.",
+          },
+        }));
+        return;
+      }
+      const data = await res.json();
+      setRefSheets((prev) => ({
+        ...prev,
+        [avatarId]: {
+          status: "completed",
+          url: data.referenceSheetUrl,
+          generatedAt: data.referenceSheetGeneratedAt,
+        },
+      }));
+    } catch (err) {
+      console.error("[AvatarGenerator] reference sheet failed:", err);
+      setRefSheets((prev) => ({
+        ...prev,
+        [avatarId]: { status: "failed", error: "Network error." },
+      }));
+    }
+  };
 
   // Show upsell when user runs out of welcome credits
   const showUpsell =
@@ -147,6 +206,7 @@ export function AvatarGenerator() {
               const exprGens = state.generations.filter(
                 (eg) => eg.avatarId === gen.avatarId && eg.type !== "avatar",
               );
+              const avatarId = gen.avatarId;
               return (
                 <div key={gen.id} className="space-y-4">
                   <GenerationGroup
@@ -157,15 +217,32 @@ export function AvatarGenerator() {
                     onSelectCandidate={selectCandidate}
                     onGenerateExpressionPack={generateExpressionPack}
                     onRegenerate={handleRegenerate}
+                    onGenerateReferenceSheet={() => {
+                      if (avatarId) generateReferenceSheet(avatarId);
+                    }}
+                    isReferenceSheetGenerating={
+                      !!avatarId && refSheets[avatarId]?.status === "generating"
+                    }
                   />
                   {exprGens.length > 0 && (
                     <ExpressionResultsCard
                       expressions={exprGens}
-                      avatarId={gen.avatarId || gen.id}
+                      avatarId={avatarId || gen.id}
                       avatarSlug={gen.slug}
                       onDownload={download}
                     />
                   )}
+                  {avatarId &&
+                    refSheets[avatarId] &&
+                    refSheets[avatarId].status !== "idle" && (
+                      <ReferenceSheetResultCard
+                        avatarId={avatarId}
+                        avatarSlug={gen.slug}
+                        state={refSheets[avatarId]}
+                        onGenerate={() => generateReferenceSheet(avatarId)}
+                        onRegenerate={() => generateReferenceSheet(avatarId)}
+                      />
+                    )}
                 </div>
               );
             })}
