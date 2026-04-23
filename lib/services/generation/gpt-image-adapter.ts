@@ -182,4 +182,16 @@ export class GptImageAdapter {
     }
     return { status: "completed", imageUrl: url };
   }
+
+  /**
+   * Raw edit: run a custom prompt against a reference image.
+   * Used by reference-sheet generation where no prompt builder applies.
+   */
+  async editWithPrompt(
+    imageUrl: string,
+    prompt: string,
+  ): Promise<string | null> {
+    console.log("[GptImage] editWithPrompt:", prompt.slice(0, 80));
+    return callWithRetry("custom-edit", () => postEdit(imageUrl, prompt));
+  }
 }
