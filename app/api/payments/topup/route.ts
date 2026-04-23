@@ -3,7 +3,12 @@ import { type NextRequest, NextResponse } from "next/server";
 import { user } from "@/database/schema";
 import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
-import { createStripeCustomer, createTopupCheckoutSession } from "@/lib/stripe";
+import {
+  CREDIT_PACKS,
+  type CreditPackId,
+  createStripeCustomer,
+  createTopupCheckoutSession,
+} from "@/lib/stripe";
 import { getTrafficSourceMetadata } from "@/lib/traffic-source";
 
 export async function POST(req: NextRequest) {
@@ -16,14 +21,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { amount, packageId } = await req.json();
+    const { packageId } = await req.json();
 
-    if (!amount || amount < 399 || amount > 100000) {
-      return NextResponse.json(
-        { error: "Invalid amount. Must be between $3.99 and $1000 (in cents)" },
-        { status: 400 },
-      );
+    // Server is the single source of truth for price. Client-supplied
+    // `amount` is intentionally ignored: trusting it would let a caller
+    // pay for a cheap pack but write a high-tier packageId into metadata,
+    // and the webhook (which grants credits based on packageId) would
+    // over-credit the account.
+    if (!packageId || !(packageId in CREDIT_PACKS)) {
+      return NextResponse.json({ error: "Invalid package" }, { status: 400 });
     }
+    const pack = CREDIT_PACKS[packageId as CreditPackId];
 
     const db = getDatabase();
 
@@ -56,12 +64,12 @@ export async function POST(req: NextRequest) {
     });
     const checkoutSession = await createTopupCheckoutSession({
       customerId: stripeCustomerId,
-      amountInCents: amount,
+      amountInCents: pack.priceInCents,
       successUrl: `${appUrl}/dashboard?topup=success`,
       cancelUrl: `${appUrl}/pricing?canceled=true`,
       metadata: {
         userId: session.user.id,
-        ...(packageId ? { packageId } : {}),
+        packageId,
         ...trafficSourceMetadata,
       },
     });

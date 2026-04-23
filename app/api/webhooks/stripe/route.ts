@@ -175,15 +175,56 @@ async function handleCheckoutSessionCompleted(
     const amount = session.amount_total || 0;
     const packageId = session.metadata?.packageId;
 
-    // Calculate credits to grant
-    let creditsToGrant = 0;
-    if (packageId && packageId in CREDIT_PACKS) {
-      const pack = CREDIT_PACKS[packageId as CreditPackId];
-      creditsToGrant = pack.credits;
-    } else {
-      // Fallback: 1000 credits per $1 (amount is in cents)
-      creditsToGrant = Math.floor(amount / 100) * 1000;
+    // Fail closed: the topup endpoint writes packageId authoritatively,
+    // so an unknown/missing packageId here means either tampered metadata
+    // or a legacy session from before the lockdown. Refuse to grant
+    // credits — the payment is recorded as anomaly and a human must
+    // reconcile it via Stripe.
+    if (!packageId || !(packageId in CREDIT_PACKS)) {
+      console.error(
+        "[webhook] Topup with unknown/missing packageId — credits NOT granted",
+        { sessionId: session.id, packageId, amount, userId },
+      );
+
+      await db.insert(transactions).values({
+        id: crypto.randomUUID(),
+        userId,
+        type: "topup",
+        status: "completed",
+        amount: amount.toString(),
+        currency: session.currency || "usd",
+        description: `ANOMALY: unknown packageId=${packageId ?? "none"} — manual resolution required`,
+        stripeSessionId: session.id,
+        stripePaymentIntentId: paymentIntentId,
+        metadata: JSON.stringify({
+          packageId,
+          creditsGranted: 0,
+          anomaly: true,
+        }),
+      });
+
+      const anomalyUser = await db
+        .select({ email: user.email, name: user.name })
+        .from(user)
+        .where(eq(user.id, userId))
+        .limit(1);
+
+      if (anomalyUser[0]) {
+        notifyTopup({
+          userId,
+          email: anomalyUser[0].email,
+          name: anomalyUser[0].name,
+          packageName: `⚠️ ANOMALY (packageId=${packageId ?? "none"})`,
+          creditsGranted: 0,
+          amountPaid: `$${(amount / 100).toFixed(2)}`,
+        }).catch(() => {});
+      }
+
+      return;
     }
+
+    const pack = CREDIT_PACKS[packageId as CreditPackId];
+    const creditsToGrant = pack.credits;
 
     // Log the monetary transaction
     await db.insert(transactions).values({
@@ -226,9 +267,7 @@ async function handleCheckoutSessionCompleted(
         userId,
         email: topupUser[0].email,
         name: topupUser[0].name,
-        packageName: packageId
-          ? packageNames[packageId] || packageId
-          : "Custom",
+        packageName: packageNames[packageId] || packageId,
         creditsGranted: creditsToGrant,
         amountPaid: `$${(amount / 100).toFixed(2)}`,
       }).catch(() => {}); // fire-and-forget
