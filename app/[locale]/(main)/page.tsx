@@ -12,6 +12,7 @@ import DiscordCTA from "@/components/sections/DiscordCTA";
 import FAQ from "@/components/sections/FAQ";
 import Hero from "@/components/sections/Hero";
 import LiveDemo from "@/components/sections/LiveDemo";
+import ReferenceSheetSection from "@/components/sections/ReferenceSheetSection";
 import ResultShowcase from "@/components/sections/ResultShowcase";
 import Testimonials from "@/components/sections/Testimonials";
 import { useSubscription, useTopup } from "@/hooks/use-stripe";
@@ -102,6 +103,7 @@ export default function Home() {
       />
       <Hero />
       <LiveDemo />
+      <ReferenceSheetSection />
       <ResultShowcase />
       <Comparison />
       <PricingSection
