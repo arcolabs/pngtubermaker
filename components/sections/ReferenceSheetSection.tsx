@@ -11,9 +11,11 @@ export default function ReferenceSheetSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-10 sm:mb-14">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight">
-            {t("title.leading")}{" "}
-            <span className="text-primary">{t("title.emphasis")}</span>{" "}
-            {t("title.trailing")}
+            {t.rich("title", {
+              emphasis: (chunks) => (
+                <span className="text-primary">{chunks}</span>
+              ),
+            })}
           </h2>
           <p className="mt-4 text-base sm:text-lg text-gray-600 leading-relaxed">
             {t("subtitle")}
