@@ -24,7 +24,10 @@ export function ImageActionIcons({
     e.preventDefault();
     setIsDownloading(true);
     try {
-      const res = await fetch(imageUrl);
+      // Route through our same-origin proxy so R2 CDN CORS isn't required.
+      const proxied = `/api/proxy-image?url=${encodeURIComponent(imageUrl)}`;
+      const res = await fetch(proxied);
+      if (!res.ok) throw new Error(`proxy returned ${res.status}`);
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");

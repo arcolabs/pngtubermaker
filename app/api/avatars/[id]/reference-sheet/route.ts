@@ -17,7 +17,6 @@ import {
 import { GptImageAdapter } from "@/lib/services/generation/gpt-image-adapter";
 import { REFERENCE_SHEET_PROMPT } from "@/lib/services/generation/reference-sheet-prompt";
 import { uploadImageToR2 } from "@/lib/services/storage";
-import { watermarkImage } from "@/lib/services/watermark";
 
 /**
  * POST /api/avatars/[id]/reference-sheet
@@ -121,7 +120,7 @@ export async function POST(
       return NextResponse.json({ error: "generation_failed" }, { status: 502 });
     }
 
-    // Download, watermark, upload to R2
+    // Download, upload to R2
     let finalUrl: string;
     let r2Key: string;
     try {
@@ -129,12 +128,11 @@ export async function POST(
       if (!imgRes.ok) {
         throw new Error(`fetch ${generatedUrl} -> HTTP ${imgRes.status}`);
       }
-      const inputBuf = Buffer.from(await imgRes.arrayBuffer());
-      const watermarked = await watermarkImage(inputBuf);
+      const buf = Buffer.from(await imgRes.arrayBuffer());
 
       const timestamp = Date.now();
       r2Key = `avatars/${session.user.id}/${avatarId}/reference-sheet/${timestamp}.png`;
-      finalUrl = await uploadImageToR2(watermarked, r2Key, "image/png");
+      finalUrl = await uploadImageToR2(buf, r2Key, "image/png");
     } catch (err) {
       console.error("[ReferenceSheet] post-processing failed:", err);
       await refundWithUpdate(
