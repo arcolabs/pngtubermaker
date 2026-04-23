@@ -62,7 +62,7 @@ export default function BuyCreditsModal() {
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-gray-200/60 overflow-hidden animate-fade-in">
+      <div className="relative w-full max-w-lg max-h-[calc(100vh-2rem)] overflow-y-auto bg-white rounded-2xl shadow-2xl border border-gray-200/60 animate-fade-in">
         {/* Header */}
         <div className="px-6 pt-6 pb-4">
           <button
