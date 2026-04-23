@@ -175,16 +175,30 @@ async function handleCheckoutSessionCompleted(
     const amount = session.amount_total || 0;
     const packageId = session.metadata?.packageId;
 
-    // Fail closed: the topup endpoint writes packageId authoritatively,
-    // so an unknown/missing packageId here means either tampered metadata
-    // or a legacy session from before the lockdown. Refuse to grant
-    // credits — the payment is recorded as anomaly and a human must
-    // reconcile it via Stripe.
+    // Fail closed on two anomaly classes:
+    //   1. Unknown/missing packageId — tampered metadata or legacy session
+    //   2. amount_total doesn't match the pack's current priceInCents —
+    //      either a pre-lockdown exploit session (attacker paid $X for a
+    //      higher-tier pack) or a price-change transition session (legit
+    //      user paid old price). Both need human review.
+    let anomalyReason: string | null = null;
     if (!packageId || !(packageId in CREDIT_PACKS)) {
-      console.error(
-        "[webhook] Topup with unknown/missing packageId — credits NOT granted",
-        { sessionId: session.id, packageId, amount, userId },
-      );
+      anomalyReason = `unknown packageId=${packageId ?? "none"}`;
+    } else {
+      const expected = CREDIT_PACKS[packageId as CreditPackId].priceInCents;
+      if (amount !== expected) {
+        anomalyReason = `amount mismatch: paid=${amount} expected=${expected} packageId=${packageId}`;
+      }
+    }
+
+    if (anomalyReason) {
+      console.error("[webhook] Topup anomaly — credits NOT granted", {
+        sessionId: session.id,
+        userId,
+        amount,
+        packageId,
+        reason: anomalyReason,
+      });
 
       await db.insert(transactions).values({
         id: crypto.randomUUID(),
@@ -193,13 +207,14 @@ async function handleCheckoutSessionCompleted(
         status: "completed",
         amount: amount.toString(),
         currency: session.currency || "usd",
-        description: `ANOMALY: unknown packageId=${packageId ?? "none"} — manual resolution required`,
+        description: `ANOMALY: ${anomalyReason} — manual resolution required`,
         stripeSessionId: session.id,
         stripePaymentIntentId: paymentIntentId,
         metadata: JSON.stringify({
           packageId,
           creditsGranted: 0,
           anomaly: true,
+          reason: anomalyReason,
         }),
       });
 
@@ -214,7 +229,7 @@ async function handleCheckoutSessionCompleted(
           userId,
           email: anomalyUser[0].email,
           name: anomalyUser[0].name,
-          packageName: `⚠️ ANOMALY (packageId=${packageId ?? "none"})`,
+          packageName: `⚠️ ANOMALY: ${anomalyReason}`,
           creditsGranted: 0,
           amountPaid: `$${(amount / 100).toFixed(2)}`,
         }).catch(() => {});

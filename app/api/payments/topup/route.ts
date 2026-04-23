@@ -21,14 +21,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { packageId } = await req.json();
+    const body = await req.json().catch(() => null);
+    const packageId =
+      body && typeof body === "object" && "packageId" in body
+        ? (body as { packageId?: unknown }).packageId
+        : undefined;
 
     // Server is the single source of truth for price. Client-supplied
     // `amount` is intentionally ignored: trusting it would let a caller
     // pay for a cheap pack but write a high-tier packageId into metadata,
     // and the webhook (which grants credits based on packageId) would
     // over-credit the account.
-    if (!packageId || !(packageId in CREDIT_PACKS)) {
+    if (typeof packageId !== "string" || !(packageId in CREDIT_PACKS)) {
       return NextResponse.json({ error: "Invalid package" }, { status: 400 });
     }
     const pack = CREDIT_PACKS[packageId as CreditPackId];
