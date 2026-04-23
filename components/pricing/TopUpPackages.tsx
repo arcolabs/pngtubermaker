@@ -14,12 +14,14 @@ const PACK_KEYS: Record<CreditPackId, string> = {
   starter: "packStarter",
   popular: "packPopular",
   best_value: "packBestValue",
+  studio: "packStudio",
 };
 
 const PACK_HIGHLIGHTED: Record<CreditPackId, boolean> = {
   starter: false,
   popular: true,
   best_value: false,
+  studio: false,
 };
 
 export default function CreditPacks({
@@ -41,7 +43,7 @@ export default function CreditPacks({
         <p className="text-base-content/60">{t("subtitle")}</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {packEntries.map(([id, pack]) => {
           const highlighted = PACK_HIGHLIGHTED[id];
           const priceInDollars = pack.priceInCents / 100;

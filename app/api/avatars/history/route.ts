@@ -32,6 +32,8 @@ export async function GET(req: NextRequest) {
         status: avatars.status,
         candidateImages: avatars.candidateImages,
         baseImageUrl: avatars.baseImageUrl,
+        referenceSheetUrl: avatars.referenceSheetUrl,
+        referenceSheetGeneratedAt: avatars.referenceSheetGeneratedAt,
         createdAt: avatars.createdAt,
       })
       .from(avatars)
@@ -152,6 +154,9 @@ export async function GET(req: NextRequest) {
       status: a.status,
       candidateImages: a.candidateImages ?? [],
       baseImageUrl: a.baseImageUrl,
+      referenceSheetUrl: a.referenceSheetUrl,
+      referenceSheetGeneratedAt:
+        a.referenceSheetGeneratedAt?.toISOString() ?? null,
       // Keep flat expressions for backwards compat (non-pack expressions only)
       expressions: (expressionMap[a.id] ?? [])
         .filter((e) => !e.packId)

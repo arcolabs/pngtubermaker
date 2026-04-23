@@ -78,6 +78,31 @@ export function AvatarGenerator() {
     Record<string, ReferenceSheetCardState>
   >({});
 
+  // Hydrate refSheets from history so previously-generated sheets survive reload.
+  // Only fills avatars we don't already have local state for — preserves in-flight status.
+  useEffect(() => {
+    setRefSheets((prev) => {
+      let changed = false;
+      const next = { ...prev };
+      for (const g of state.generations) {
+        if (
+          g.type === "avatar" &&
+          g.avatarId &&
+          g.referenceSheetUrl &&
+          !next[g.avatarId]
+        ) {
+          next[g.avatarId] = {
+            status: "completed",
+            url: g.referenceSheetUrl,
+            generatedAt: g.referenceSheetGeneratedAt ?? "",
+          };
+          changed = true;
+        }
+      }
+      return changed ? next : prev;
+    });
+  }, [state.generations]);
+
   const generateReferenceSheet = async (avatarId: string) => {
     setRefSheets((prev) => ({ ...prev, [avatarId]: { status: "generating" } }));
     try {

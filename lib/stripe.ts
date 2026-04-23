@@ -36,9 +36,10 @@ export const STRIPE_PRICE_CREATOR_YEARLY =
 
 // Credit Packs (one-time purchase, never expire)
 export const CREDIT_PACKS = {
-  starter: { credits: 2_000, priceInCents: 299 },
-  popular: { credits: 5_500, priceInCents: 699 },
-  best_value: { credits: 13_000, priceInCents: 1499 },
+  starter: { credits: 2_000, priceInCents: 399 },
+  popular: { credits: 5_500, priceInCents: 999 },
+  best_value: { credits: 13_000, priceInCents: 1999 },
+  studio: { credits: 30_000, priceInCents: 3999 },
 } as const;
 
 export type CreditPackId = keyof typeof CREDIT_PACKS;
@@ -52,7 +53,7 @@ export const CREATOR_PASS = {
   monthlyPriceId: STRIPE_PRICE_CREATOR_MONTHLY,
   yearlyPriceId: STRIPE_PRICE_CREATOR_YEARLY,
   features: [
-    "6,000 credits/month (~30% savings vs top-up)",
+    "6,000 credits/month (best per-credit rate)",
     "HD export (1080p)",
     "All expression packs",
     "Manage subscription anytime",

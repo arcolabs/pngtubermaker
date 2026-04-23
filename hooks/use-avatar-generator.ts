@@ -42,6 +42,8 @@ export interface Generation {
   name?: string;
   baseImageUrl?: string | null;
   expressions?: ExpressionState[];
+  referenceSheetUrl?: string | null;
+  referenceSheetGeneratedAt?: string | null;
 }
 
 export interface SelectedAvatar {
@@ -101,6 +103,8 @@ interface HistoryItem {
     imageUrl: string | null;
   }[];
   packs?: HistoryPackItem[];
+  referenceSheetUrl?: string | null;
+  referenceSheetGeneratedAt?: string | null;
   createdAt: string;
 }
 
@@ -129,6 +133,8 @@ function historyItemToGeneration(item: HistoryItem): Generation {
       status: e.status as ExpressionState["status"],
       imageUrl: e.imageUrl,
     })),
+    referenceSheetUrl: item.referenceSheetUrl ?? null,
+    referenceSheetGeneratedAt: item.referenceSheetGeneratedAt ?? null,
   };
 }
 

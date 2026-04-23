@@ -12,6 +12,7 @@ const PACK_HIGHLIGHTED: Record<CreditPackId, boolean> = {
   starter: false,
   popular: true,
   best_value: false,
+  studio: false,
 };
 
 export default function BuyCreditsModal() {

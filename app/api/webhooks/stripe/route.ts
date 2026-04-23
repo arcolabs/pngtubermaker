@@ -219,6 +219,7 @@ async function handleCheckoutSessionCompleted(
         starter: "Starter",
         popular: "Popular",
         best_value: "Best Value",
+        studio: "Studio",
       };
 
       notifyTopup({
