@@ -761,6 +761,61 @@ export default function AvatarDetailClient({
     (opt) => !existingPackSubtypes.has(opt.key),
   );
 
+  // Has this avatar finished (or is generating) its base pack?
+  // Includes a legacy tolerance: older avatars whose 4 base slots exist as
+  // orphaned expressions (no expressionPacks row) are treated as having one.
+  const hasBasePack = useMemo(() => {
+    if (packs.some((p) => p.packType === "base" && p.status !== "failed")) {
+      return true;
+    }
+    const baseSlots = ["idle", "talking", "blink", "blink_talking"];
+    return baseSlots.every((slot) => expressionByType.has(slot));
+  }, [packs, expressionByType]);
+
+  const handleGenerateBasePack = async () => {
+    setGeneratingPack("__base__");
+    const toastId = toast.loading("Generating base expressions...");
+    try {
+      const res = await fetch(`/api/avatars/${avatar.id}/packs`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ packType: "base" }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        if (data.error === "insufficient_credits") {
+          toast.dismiss(toastId);
+          useBuyCreditsModal.getState().open(data.required);
+          return;
+        }
+        throw new Error(data.error || "Failed to generate base pack");
+      }
+
+      const data = await res.json();
+      setPacks((prev) => [
+        ...prev,
+        {
+          id: data.packId,
+          packType: "base",
+          subtype: null,
+          status: "completed",
+          createdAt: new Date().toISOString(),
+          expressions: data.expressions,
+        },
+      ]);
+      toast.success("Base pack generated!", { id: toastId });
+    } catch (error) {
+      console.error("Failed to generate base pack:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to generate base pack",
+        { id: toastId },
+      );
+    } finally {
+      setGeneratingPack(null);
+    }
+  };
+
   const handleGeneratePack = async (subtype: string) => {
     setGeneratingPack(subtype);
     const toastId = toast.loading(`Generating ${subtype} expressions...`);
@@ -897,43 +952,78 @@ export default function AvatarDetailClient({
         </p>
 
         {/* Generate Pack Buttons below the grid */}
-        {canAddMore && (
-          <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-200/60">
-            {packOptions.map((opt) => (
-              <button
-                key={opt.key}
-                type="button"
-                onClick={() => handleGeneratePack(opt.key)}
-                disabled={
-                  generatingPack !== null || existingPackSubtypes.has(opt.key)
-                }
-                className={cn(
-                  "btn gap-2 px-6 py-2.5 h-auto text-base font-medium shadow-sm",
-                  generatingPack === opt.key
-                    ? "btn-primary"
-                    : existingPackSubtypes.has(opt.key)
-                      ? "btn-ghost bg-green-50 text-green-600 hover:bg-green-100 cursor-default"
-                      : "btn-primary hover:shadow-md hover:scale-105 transition-all",
-                )}
-              >
-                {generatingPack === opt.key ? (
-                  <>
-                    <span className="loading loading-spinner loading-sm" />
-                    <span>Generating...</span>
-                  </>
-                ) : existingPackSubtypes.has(opt.key) ? (
-                  <>
-                    <span className="text-lg">✓</span>
-                    <span>{opt.label} Generated</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-5 h-5" />
-                    <span>Generate {opt.label}</span>
-                  </>
-                )}
-              </button>
-            ))}
+        {(!hasBasePack || canAddMore || !referenceSheetUrl) && (
+          <div className="pt-4 border-t border-gray-200/60 space-y-3">
+            {!hasBasePack && (
+              <div>
+                <button
+                  type="button"
+                  onClick={handleGenerateBasePack}
+                  disabled={generatingPack !== null}
+                  className={cn(
+                    "btn btn-primary gap-2 px-6 py-2.5 h-auto text-base font-medium shadow-sm",
+                    generatingPack !== "__base__" &&
+                      "hover:shadow-md hover:scale-105 transition-all",
+                  )}
+                >
+                  {generatingPack === "__base__" ? (
+                    <>
+                      <span className="loading loading-spinner loading-sm" />
+                      <span>Generating Base Pack...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-5 h-5" />
+                      <span>Generate Base Pack</span>
+                      <span className="text-white/70 text-xs">(600)</span>
+                    </>
+                  )}
+                </button>
+                <p className="text-xs text-gray-500 mt-2">
+                  Required to enable Live Preview and OBS setup.
+                </p>
+              </div>
+            )}
+            {hasBasePack && canAddMore && (
+              <div className="flex flex-wrap gap-3">
+                {packOptions.map((opt) => (
+                  <button
+                    key={opt.key}
+                    type="button"
+                    onClick={() => handleGeneratePack(opt.key)}
+                    disabled={
+                      generatingPack !== null ||
+                      existingPackSubtypes.has(opt.key)
+                    }
+                    className={cn(
+                      "btn gap-2 px-6 py-2.5 h-auto text-base font-medium shadow-sm",
+                      generatingPack === opt.key
+                        ? "btn-primary"
+                        : existingPackSubtypes.has(opt.key)
+                          ? "btn-ghost bg-green-50 text-green-600 hover:bg-green-100 cursor-default"
+                          : "btn-primary hover:shadow-md hover:scale-105 transition-all",
+                    )}
+                  >
+                    {generatingPack === opt.key ? (
+                      <>
+                        <span className="loading loading-spinner loading-sm" />
+                        <span>Generating...</span>
+                      </>
+                    ) : existingPackSubtypes.has(opt.key) ? (
+                      <>
+                        <span className="text-lg">✓</span>
+                        <span>{opt.label} Generated</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-5 h-5" />
+                        <span>Generate {opt.label}</span>
+                      </>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
             {!referenceSheetUrl && (
               <button
                 type="button"

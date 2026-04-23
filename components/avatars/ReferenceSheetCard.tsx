@@ -3,7 +3,6 @@
 import { Loader2, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { ImageActionIcons } from "@/components/ui/ImageActionIcons";
-import { ShareButtons } from "@/components/ui/ShareButtons";
 
 interface ReferenceSheetCardProps {
   avatarId: string;
@@ -90,10 +89,6 @@ export function ReferenceSheetCard({
             Three views, expressions, palette & world setting — all in one
             sheet.
           </p>
-          <ShareButtons
-            url={url}
-            tweetText="Made my PNGTuber character with pngtubermaker.com 🎨"
-          />
           <button
             type="button"
             onClick={handleRegenerate}

@@ -1,9 +1,8 @@
 "use client";
 
-import { Loader2, RefreshCw, Sparkles } from "lucide-react";
+import { Eye, Loader2, RefreshCw, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { ImageActionIcons } from "@/components/ui/ImageActionIcons";
-import { ShareButtons } from "@/components/ui/ShareButtons";
 
 export type ReferenceSheetCardState =
   | { status: "idle" }
@@ -128,12 +127,9 @@ export function ReferenceSheetResultCard({
                   href={`/avatars/${avatarSlug || avatarId}`}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary to-cyan-400 rounded-xl shadow-[0_4px_14px_rgba(6,182,212,0.35)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.45)] transition-all duration-200"
                 >
+                  <Eye className="w-4 h-4" />
                   View Avatar
                 </Link>
-                <ShareButtons
-                  url={state.url}
-                  tweetText="Made my PNGTuber character with pngtubermaker.com 🎨"
-                />
                 <button
                   type="button"
                   onClick={() => {

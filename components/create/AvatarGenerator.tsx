@@ -106,9 +106,15 @@ export function AvatarGenerator() {
   const generateReferenceSheet = async (avatarId: string) => {
     setRefSheets((prev) => ({ ...prev, [avatarId]: { status: "generating" } }));
     try {
-      // Ensure the selected candidate has been committed server-side
-      // (flips DB status from 'selecting' to 'completed' + uploads base image).
-      await ensureBaseSelected();
+      // Only commit selection when THIS avatar is the one still pending — the
+      // selected pointer may have drifted to another avatar during regenerate.
+      // Committed avatars already have baseImageUrl in DB and can be hit directly.
+      if (
+        state.selected?.avatarId === avatarId &&
+        !state.selected.baseSelected
+      ) {
+        await ensureBaseSelected();
+      }
 
       const res = await fetch(`/api/avatars/${avatarId}/reference-sheet`, {
         method: "POST",
