@@ -107,6 +107,15 @@ export const expressionPackLimiter = new RateLimiter({
 });
 
 /**
+ * Reference sheet generation: 5 requests per minute
+ */
+export const referenceSheetLimiter = new RateLimiter({
+  windowMs: 60 * 1000, // 5 per minute per user
+  maxRequests: 5,
+  keyPrefix: "ref_sheet",
+});
+
+/**
  * Expression regeneration: 10 requests per minute
  */
 export const expressionRegenerateLimiter = new RateLimiter({
