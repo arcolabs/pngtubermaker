@@ -501,6 +501,66 @@ export function useAvatarGenerator() {
     [],
   );
 
+  // ── Ensure the selected candidate is committed server-side ────────────
+  // POST /api/avatars/[id]/select flips DB status from 'selecting' to
+  // 'completed' and uploads baseImageUrl. Must run before any endpoint
+  // that requires a completed avatar (packs, reference-sheet, etc.).
+
+  const ensureBaseSelected = useCallback(async (): Promise<boolean> => {
+    const selected = state.selected;
+    if (!selected) return false;
+    if (selected.baseSelected) return true;
+
+    const selectRes = await fetch(`/api/avatars/${selected.avatarId}/select`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ selectedIndex: selected.candidateIndex }),
+    });
+
+    const text = await selectRes.text();
+
+    if (!selectRes.ok) {
+      let selectData: { error?: string } = {};
+      try {
+        selectData = JSON.parse(text);
+      } catch {
+        throw new Error(
+          `Select failed (${selectRes.status}): ${text.slice(0, 200)}`,
+        );
+      }
+      // Tolerate races where select has already run for this avatar
+      if (selectData.error !== "Avatar not ready for selection") {
+        throw new Error(selectData.error || "Failed to select base");
+      }
+      // Treat as already selected
+      setState((prev) => ({
+        ...prev,
+        selected: prev.selected
+          ? { ...prev.selected, baseSelected: true }
+          : null,
+      }));
+      return true;
+    }
+
+    let selectData: { slug?: string; name?: string } = {};
+    try {
+      selectData = JSON.parse(text);
+    } catch {
+      throw new Error("Select returned invalid JSON");
+    }
+    setState((prev) => ({
+      ...prev,
+      selected: prev.selected ? { ...prev.selected, baseSelected: true } : null,
+      generations: prev.generations.map((g) =>
+        g.avatarId === selected.avatarId && g.type === "avatar"
+          ? { ...g, slug: selectData.slug, name: selectData.name }
+          : g,
+      ),
+    }));
+    fetchBalance();
+    return true;
+  }, [state.selected, fetchBalance]);
+
   // ── Generate expression pack with concurrency control ─────────────────
 
   const generateExpressionPack = useCallback(
@@ -571,56 +631,7 @@ export function useAvatarGenerator() {
 
       try {
         // Ensure base image is selected before generating expressions
-        if (!selected.baseSelected) {
-          const selectRes = await fetch(
-            `/api/avatars/${selected.avatarId}/select`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                selectedIndex: selected.candidateIndex,
-              }),
-            },
-          );
-
-          if (!selectRes.ok) {
-            const text = await selectRes.text();
-            let selectData: { error?: string; slug?: string; name?: string } =
-              {};
-            try {
-              selectData = JSON.parse(text);
-            } catch {
-              // Response was HTML (e.g., Cloudflare 524) — treat as error
-              throw new Error(
-                `Select failed (${selectRes.status}): ${text.slice(0, 200)}`,
-              );
-            }
-            if (selectData.error !== "Avatar not ready for selection") {
-              throw new Error(selectData.error || "Failed to select base");
-            }
-          } else {
-            const text = await selectRes.text();
-            let selectData: { slug?: string; name?: string } = {};
-            try {
-              selectData = JSON.parse(text);
-            } catch {
-              throw new Error("Select returned invalid JSON");
-            }
-            setState((prev) => ({
-              ...prev,
-              selected: prev.selected
-                ? { ...prev.selected, baseSelected: true }
-                : null,
-              generations: prev.generations.map((g) =>
-                g.avatarId === selected.avatarId && g.type === "avatar"
-                  ? { ...g, slug: selectData.slug, name: selectData.name }
-                  : g,
-              ),
-            }));
-            // Avatar is now completed — refresh balance
-            fetchBalance();
-          }
-        }
+        await ensureBaseSelected();
 
         // Call the packs API
         const res = await fetch(`/api/avatars/${selected.avatarId}/packs`, {
@@ -736,7 +747,13 @@ export function useAvatarGenerator() {
         pendingRequestsRef.current.delete(requestKey);
       }
     },
-    [state.selected, state.generations, fetchBalance, optimisticDeduct],
+    [
+      state.selected,
+      state.generations,
+      fetchBalance,
+      optimisticDeduct,
+      ensureBaseSelected,
+    ],
   );
 
   // ── Download ───────────────────────────────────────────────────────────
@@ -814,6 +831,7 @@ export function useAvatarGenerator() {
     generate,
     regenerate,
     selectCandidate,
+    ensureBaseSelected,
     generateExpressionPack,
     download,
     updateAvatarName,

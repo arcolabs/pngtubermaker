@@ -57,6 +57,7 @@ export function AvatarGenerator() {
     generate,
     regenerate,
     selectCandidate,
+    ensureBaseSelected,
     generateExpressionPack,
     download,
   } = useAvatarGenerator();
@@ -80,6 +81,10 @@ export function AvatarGenerator() {
   const generateReferenceSheet = async (avatarId: string) => {
     setRefSheets((prev) => ({ ...prev, [avatarId]: { status: "generating" } }));
     try {
+      // Ensure the selected candidate has been committed server-side
+      // (flips DB status from 'selecting' to 'completed' + uploads base image).
+      await ensureBaseSelected();
+
       const res = await fetch(`/api/avatars/${avatarId}/reference-sheet`, {
         method: "POST",
       });
