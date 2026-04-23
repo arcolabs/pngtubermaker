@@ -191,6 +191,9 @@ export const avatars = pgTable(
     creditsUsed: integer("credits_used").notNull().default(0),
     transactionId: text("transaction_id"), // Links to credit_transactions for audit trail
     metadata: jsonb("metadata"),
+    referenceSheetUrl: text("reference_sheet_url"),
+    referenceSheetR2Key: text("reference_sheet_r2_key"),
+    referenceSheetGeneratedAt: timestamp("reference_sheet_generated_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
