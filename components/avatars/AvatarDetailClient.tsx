@@ -24,6 +24,7 @@ import type {
 } from "@/lib/pngtuber-engine";
 import { cn } from "@/lib/utils";
 import PNGTuberPreview from "./PNGTuberPreview";
+import { ReferenceSheetCard } from "./ReferenceSheetCard";
 
 interface Expression {
   id: string;
@@ -47,6 +48,9 @@ interface AvatarDetailClientProps {
     id: string;
     name: string;
     baseImageUrl: string | null;
+    referenceSheetUrl?: string | null;
+    referenceSheetR2Key?: string | null;
+    referenceSheetGeneratedAt?: string | null;
   };
   expressions: Expression[];
   packs: Pack[];
@@ -525,6 +529,41 @@ export default function AvatarDetailClient({
   const [micThreshold, setMicThreshold] = useState<number | null>(null);
   const [speakingDelay, setSpeakingDelay] = useState<number | null>(null);
   const [regeneratingId, setRegeneratingId] = useState<string | null>(null);
+  const [referenceSheetUrl, setReferenceSheetUrl] = useState<string | null>(
+    avatar.referenceSheetUrl ?? null,
+  );
+  const [generatingSheet, setGeneratingSheet] = useState(false);
+  const [sheetError, setSheetError] = useState<string | null>(null);
+
+  const handleGenerateReferenceSheet = async () => {
+    setGeneratingSheet(true);
+    setSheetError(null);
+    try {
+      const res = await fetch(`/api/avatars/${avatar.id}/reference-sheet`, {
+        method: "POST",
+      });
+      if (res.status === 402) {
+        useBuyCreditsModal.getState().open(200);
+        return;
+      }
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setSheetError(
+          data.error === "generation_failed"
+            ? "Generation failed — credits refunded."
+            : "Something went wrong.",
+        );
+        return;
+      }
+      const data = await res.json();
+      setReferenceSheetUrl(data.referenceSheetUrl);
+    } catch (err) {
+      console.error("[AvatarDetail] reference sheet failed:", err);
+      setSheetError("Network error.");
+    } finally {
+      setGeneratingSheet(false);
+    }
+  };
 
   async function handleRegenerate(expression: Expression) {
     setRegeneratingId(expression.id);
@@ -784,6 +823,14 @@ export default function AvatarDetailClient({
         </div>
       )}
 
+      {referenceSheetUrl && (
+        <ReferenceSheetCard
+          avatarId={avatar.id}
+          initialUrl={referenceSheetUrl}
+          onRegenerated={(url) => setReferenceSheetUrl(url)}
+        />
+      )}
+
       {/* 2. Expressions - All packs merged into one grid */}
       <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/60 shadow-sm">
         <div className="flex items-center justify-between mb-3">
@@ -887,6 +934,35 @@ export default function AvatarDetailClient({
                 )}
               </button>
             ))}
+            {!referenceSheetUrl && (
+              <button
+                type="button"
+                onClick={handleGenerateReferenceSheet}
+                disabled={generatingSheet}
+                className={cn(
+                  "btn gap-2 px-6 py-2.5 h-auto text-base font-medium shadow-sm",
+                  generatingSheet
+                    ? "btn-primary"
+                    : "btn-primary hover:shadow-md hover:scale-105 transition-all",
+                )}
+              >
+                {generatingSheet ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm" />
+                    <span>Generating Sheet...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5" />
+                    <span>Generate Character Sheet</span>
+                    <span className="text-white/70 text-xs">(200)</span>
+                  </>
+                )}
+              </button>
+            )}
+            {sheetError && (
+              <p className="text-xs text-red-600 mt-2">{sheetError}</p>
+            )}
           </div>
         )}
       </div>
