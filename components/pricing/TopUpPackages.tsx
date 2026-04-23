@@ -43,7 +43,7 @@ export default function CreditPacks({
         <p className="text-base-content/60">{t("subtitle")}</p>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 grid-cols-1 md:grid-cols-4">
         {packEntries.map(([id, pack]) => {
           const highlighted = PACK_HIGHLIGHTED[id];
           const priceInDollars = pack.priceInCents / 100;
