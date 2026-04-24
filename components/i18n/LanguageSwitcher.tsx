@@ -48,13 +48,7 @@ export default function LanguageSwitcher({
   );
 
   function switchLocale(newLocale: Locale) {
-    if (newLocale === locale) {
-      setIsOpen(false);
-      return;
-    }
-
     const path = stripLocalePrefix(pathname);
-
     const newPath =
       newLocale === defaultLocale ? path || "/" : `/${newLocale}${path}`;
 
