@@ -95,6 +95,7 @@ export function GenerationGroup({
     happy: false,
     angry: false,
     sad: false,
+    surprised: false,
   });
   const [isBatchGenerating, setIsBatchGenerating] = useState(false);
 
@@ -104,18 +105,21 @@ export function GenerationGroup({
   const creditBalanceRef = useRef(creditBalance);
   creditBalanceRef.current = creditBalance;
 
-  const togglePack = useCallback((key: "base" | "happy" | "angry" | "sad") => {
-    // Base Pack is required — cannot be unchecked
-    if (key === "base") return;
-    setPackSelections((prev) => ({ ...prev, [key]: !prev[key] }));
-  }, []);
+  const togglePack = useCallback(
+    (key: "base" | "happy" | "angry" | "sad" | "surprised") => {
+      // Base Pack is required — cannot be unchecked
+      if (key === "base") return;
+      setPackSelections((prev) => ({ ...prev, [key]: !prev[key] }));
+    },
+    [],
+  );
 
   // Count how many NEW packs the user selected (excluding already-generated ones)
   const pendingPacks = useMemo(() => {
     const pending: { type: "base" | "custom"; subtype?: ExpressionSubtype }[] =
       [];
     if (packSelections.base && !hasBasePack) pending.push({ type: "base" });
-    for (const sub of ["happy", "angry", "sad"] as const) {
+    for (const sub of ["happy", "angry", "sad", "surprised"] as const) {
       if (packSelections[sub] && !existingCustomSubtypes.has(sub))
         pending.push({ type: "custom", subtype: sub });
     }
@@ -126,8 +130,9 @@ export function GenerationGroup({
   const pendingCost = useMemo(() => {
     let total = 0;
     for (const pack of pendingPacks) {
-      // base: 3 generated (idle copied), custom: 2 generated
-      const count = pack.type === "base" ? 3 : 2;
+      // base: 3 generated (idle copied); custom: 2 generated; surprised: 1 (no _talking)
+      const count =
+        pack.type === "base" ? 3 : pack.subtype === "surprised" ? 1 : 2;
       total += count * TASK_COSTS.expression_edit;
     }
     return total;
@@ -158,7 +163,8 @@ export function GenerationGroup({
     hasBasePack &&
     existingCustomSubtypes.has("happy") &&
     existingCustomSubtypes.has("angry") &&
-    existingCustomSubtypes.has("sad");
+    existingCustomSubtypes.has("sad") &&
+    existingCustomSubtypes.has("surprised");
 
   // Derive selected index from parent state — no local duplication
   const selectedImageIndex = isThisGroupSelected
@@ -291,6 +297,13 @@ export function GenerationGroup({
                           badge: undefined,
                           desc: "sad · sad talk",
                           done: existingCustomSubtypes.has("sad"),
+                        },
+                        {
+                          key: "surprised" as const,
+                          label: "Surprised",
+                          badge: undefined,
+                          desc: "surprised (reaction · single image)",
+                          done: existingCustomSubtypes.has("surprised"),
                         },
                       ] as const
                     ).map((pack) => {

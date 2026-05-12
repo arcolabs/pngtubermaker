@@ -30,10 +30,11 @@ import { staggeredAllSettled } from "@/lib/utils";
  * Create an expression pack for a completed avatar.
  * Uses atomic transactions for credit operations.
  * - base pack: idle (copy from baseImageUrl), talking, blink, blink_talking (3 generated)
- * - custom pack: a single expression of the given subtype (1 generated)
+ * - custom pack: happy/angry/sad → 2 generated (subtype + subtype_talking)
+ *                surprised → 1 generated (reaction expression, no _talking variant)
  *
  * Auth: Required (must own avatar)
- * Body: { packType: 'base' | 'custom', subtype?: 'happy' | 'angry' | 'sad' }
+ * Body: { packType: 'base' | 'custom', subtype?: 'happy' | 'angry' | 'sad' | 'surprised' }
  * Cost: 200 credits per generated expression
  * Rate Limit: 5 requests per minute per user
  * Response: { packId, expressions: [...], failedCount, refundedCredits }
@@ -42,7 +43,7 @@ import { staggeredAllSettled } from "@/lib/utils";
 const packSchema = z
   .object({
     packType: z.enum(["base", "custom"]),
-    subtype: z.enum(["happy", "angry", "sad"]).optional(),
+    subtype: z.enum(["happy", "angry", "sad", "surprised"]).optional(),
   })
   .refine(
     (data) => {
@@ -137,10 +138,14 @@ export async function POST(
     const baseImageUrl = a.originalBaseImageUrl ?? a.baseImageUrl;
 
     // 5. Determine expression types to generate
+    // surprised has no _talking variant (it's a reaction, not a sustained state).
+    // Other custom emotions generate <subtype> + <subtype>_talking pairs.
     const expressionTypes: ExpressionType[] =
       packType === "base"
         ? BASE_EXPRESSIONS
-        : [subtype as ExpressionType, `${subtype}_talking` as ExpressionType];
+        : subtype === "surprised"
+          ? ["surprised"]
+          : [subtype as ExpressionType, `${subtype}_talking` as ExpressionType];
 
     // idle is copied from baseImageUrl, not generated
     const toGenerate = expressionTypes.filter((t) => t !== "idle");

@@ -12,7 +12,7 @@ import { TASK_COSTS } from "@/lib/services/credits";
 export type ArtStyle = "anime" | "chibi" | "cartoon" | "pixel-art" | "none";
 export type AspectRatio = "1:1" | "3:4" | "9:16";
 export type TaskType = "avatar" | "expression_base" | "expression_custom";
-export type ExpressionSubtype = "happy" | "angry" | "sad";
+export type ExpressionSubtype = "happy" | "angry" | "sad" | "surprised";
 
 export interface GenerateReferences {
   referenceUrl?: string | null;
@@ -601,11 +601,14 @@ export function useAvatarGenerator() {
         (g) => g.id === selected.generationId,
       );
 
-      const skeletonCount = isBase ? 4 : 2;
+      // surprised is a reaction expression — single image, no _talking variant
+      const isSurprisedCustom = !isBase && subtype === "surprised";
+      const skeletonCount = isBase ? 4 : isSurprisedCustom ? 1 : 2;
       const prompt = "Expressions";
 
       // Insert generating skeleton card + optimistically deduct credits
-      const expressionCount = isBase ? 3 : 2; // idle is copied, not generated
+      // base: 3 generated (idle copied); custom: 2 generated; surprised: 1
+      const expressionCount = isBase ? 3 : isSurprisedCustom ? 1 : 2;
       const expressionCost = expressionCount * TASK_COSTS.expression_edit;
 
       setState((prev) => {
