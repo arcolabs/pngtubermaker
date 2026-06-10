@@ -1,12 +1,13 @@
 /**
- * GPT-Image adapter via CocoRouter → Zeakai.
+ * GPT-Image adapter via CocoRouter → PiAPI (primary) / Zeakai (fallback).
  *
- * Character (no reference):  POST /v1/zeakai/images/generations
- * Character (with reference): POST /v1/zeakai/images/edits (image_url)
- * Expression:                 POST /v1/zeakai/images/edits (image_url)
+ * Character (no reference):  POST /v1/piapi/images/generations
+ * Character (with reference): POST /v1/piapi/images/edits (image_url)
+ * Expression:                 POST /v1/piapi/images/edits (image_url)
  *
- * Each call retries once on failure. Callers still receive null/failed on
- * double-failure and should fall back to Qwen / Doubao.
+ * Each call tries PiAPI first, then falls back to the same operation on the
+ * legacy Zeakai endpoints. Callers still receive null/failed on double-failure
+ * and should fall back to Qwen / Seedream.
  */
 
 import { buildImageEditExpressionPrompt } from "./prompt-builder";
@@ -19,14 +20,20 @@ import {
 
 const API_BASE =
   process.env.COCOROUTER_URL || "https://router.interastralpeace.online";
-const GEN_URL = `${API_BASE}/v1/zeakai/images/generations`;
-const EDIT_URL = `${API_BASE}/v1/zeakai/images/edits`;
+const PIAPI_GEN_URL = `${API_BASE}/v1/piapi/images/generations`;
+const PIAPI_EDIT_URL = `${API_BASE}/v1/piapi/images/edits`;
+const ZEAKAI_GEN_URL = `${API_BASE}/v1/zeakai/images/generations`;
+const ZEAKAI_EDIT_URL = `${API_BASE}/v1/zeakai/images/edits`;
 const MODEL_ID = "gpt-image-2";
-// Cloudflare 100s origin timeout triggers 524. GPT edit is slower than
-// generate, so cut timeout to 60s — fail fast so fallback (Qwen/Doubao)
-// triggers within the client's 180s budget instead of burning time on a
-// guaranteed timeout.
-const REQUEST_TIMEOUT_MS = 60_000;
+// PiAPI bills at quality=auto (~2× cost) when quality is omitted — always
+// pass it explicitly. Valid values: auto/low/medium/high (NOT standard).
+// low measured ~46s, medium ~81s; low fits the latency budget below.
+const QUALITY = "low";
+// Cloudflare 100s origin timeout triggers 524, so 90s is the ceiling.
+// Abandoned sync calls still get billed upstream, so the timeout must
+// comfortably exceed typical latency (~46s at quality=low) — otherwise we
+// pay for images we throw away.
+const REQUEST_TIMEOUT_MS = 90_000;
 
 function getApiKey(): string {
   const key = process.env.COCOROUTER_KEY;
@@ -34,51 +41,52 @@ function getApiKey(): string {
   return key;
 }
 
-interface ZeakaiResponse {
+interface ImagesResponse {
   created?: number;
   data?: Array<{ url?: string }>;
   error?: unknown;
 }
 
-async function callWithRetry<T>(
+/** Try PiAPI first; on failure or empty result, fall back to Zeakai. */
+async function withFallback(
   label: string,
-  fn: () => Promise<T | null>,
-): Promise<T | null> {
+  piapi: () => Promise<string | null>,
+  zeakai: () => Promise<string | null>,
+): Promise<string | null> {
   try {
-    const result = await fn();
+    const result = await piapi();
     if (result !== null) return result;
-    console.warn(`[GptImage] ${label}: empty result, retrying`);
+    console.warn(`[GptImage] ${label}: PiAPI empty result, trying Zeakai`);
   } catch (e) {
     console.warn(
-      `[GptImage] ${label}: first attempt failed, retrying:`,
+      `[GptImage] ${label}: PiAPI failed, trying Zeakai:`,
       e instanceof Error ? e.message : e,
     );
   }
   try {
-    return await fn();
+    return await zeakai();
   } catch (e) {
     console.error(
-      `[GptImage] ${label}: retry failed:`,
+      `[GptImage] ${label}: Zeakai fallback failed:`,
       e instanceof Error ? e.message : e,
     );
     return null;
   }
 }
 
-async function postGenerate(prompt: string): Promise<string | null> {
+async function postImages(
+  label: string,
+  url: string,
+  body: Record<string, unknown>,
+): Promise<string | null> {
   const startTime = Date.now();
-  const res = await fetch(GEN_URL, {
+  const res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getApiKey()}`,
     },
-    body: JSON.stringify({
-      model: MODEL_ID,
-      prompt,
-      n: 1,
-      size: "1024x1024",
-    }),
+    body: JSON.stringify(body),
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
@@ -86,61 +94,66 @@ async function postGenerate(prompt: string): Promise<string | null> {
   if (!res.ok) {
     const text = await res.text();
     throw new Error(
-      `GptImage generate HTTP ${res.status} (elapsed=${elapsed}s): ${text.slice(0, 300)}`,
+      `GptImage ${label} HTTP ${res.status} (elapsed=${elapsed}s): ${text.slice(0, 300)}`,
     );
   }
-  const data = (await res.json()) as ZeakaiResponse;
-  const url = data.data?.[0]?.url;
-  if (!url) {
+  const data = (await res.json()) as ImagesResponse;
+  const imageUrl = data.data?.[0]?.url;
+  if (!imageUrl) {
     console.warn(
-      `[GptImage] generate: no url in response (elapsed=${elapsed}s)`,
+      `[GptImage] ${label}: no url in response (elapsed=${elapsed}s)`,
       JSON.stringify(data).slice(0, 300),
     );
     return null;
   }
-  console.log(`[GptImage] generate complete: elapsed=${elapsed}s`);
-  return url;
+  console.log(`[GptImage] ${label} complete: elapsed=${elapsed}s`);
+  return imageUrl;
 }
 
-async function postEdit(
+function generateViaPiapi(prompt: string): Promise<string | null> {
+  return postImages("piapi-generate", PIAPI_GEN_URL, {
+    model: MODEL_ID,
+    prompt,
+    n: 1,
+    size: "1024x1024",
+    quality: QUALITY,
+  });
+}
+
+function generateViaZeakai(prompt: string): Promise<string | null> {
+  return postImages("zeakai-generate", ZEAKAI_GEN_URL, {
+    model: MODEL_ID,
+    prompt,
+    n: 1,
+    size: "1024x1024",
+  });
+}
+
+function editViaPiapi(
   imageUrl: string,
   prompt: string,
 ): Promise<string | null> {
-  const startTime = Date.now();
-  const res = await fetch(EDIT_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getApiKey()}`,
-    },
-    body: JSON.stringify({
-      model: MODEL_ID,
-      prompt,
-      image_url: imageUrl,
-      n: 1,
-      size: "1024x1024",
-    }),
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  return postImages("piapi-edit", PIAPI_EDIT_URL, {
+    model: MODEL_ID,
+    prompt,
+    image_url: imageUrl,
+    n: 1,
+    size: "1024x1024",
+    quality: QUALITY,
   });
-  const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+}
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(
-      `GptImage edit HTTP ${res.status} (elapsed=${elapsed}s): ${text.slice(0, 300)}`,
-    );
-  }
-  const data = (await res.json()) as ZeakaiResponse;
-  const url = data.data?.[0]?.url;
-  if (!url) {
-    console.warn(
-      `[GptImage] edit: no url in response (elapsed=${elapsed}s)`,
-      JSON.stringify(data).slice(0, 300),
-    );
-    return null;
-  }
-  console.log(`[GptImage] edit complete: elapsed=${elapsed}s`);
-  return url;
+function editViaZeakai(
+  imageUrl: string,
+  prompt: string,
+): Promise<string | null> {
+  return postImages("zeakai-edit", ZEAKAI_EDIT_URL, {
+    model: MODEL_ID,
+    prompt,
+    image_url: imageUrl,
+    n: 1,
+    size: "1024x1024",
+  });
 }
 
 export class GptImageAdapter {
@@ -155,12 +168,19 @@ export class GptImageAdapter {
 
     if (request.referenceUrl) {
       console.log("[GptImage] character (edit) with reference:", prompt);
-      return callWithRetry("character-edit", () =>
-        postEdit(request.referenceUrl as string, prompt),
+      const ref = request.referenceUrl;
+      return withFallback(
+        "character-edit",
+        () => editViaPiapi(ref, prompt),
+        () => editViaZeakai(ref, prompt),
       );
     }
     console.log("[GptImage] character (generate):", prompt);
-    return callWithRetry("character-generate", () => postGenerate(prompt));
+    return withFallback(
+      "character-generate",
+      () => generateViaPiapi(prompt),
+      () => generateViaZeakai(prompt),
+    );
   }
 
   async generateExpression(
@@ -168,16 +188,16 @@ export class GptImageAdapter {
   ): Promise<GenerateExpressionResult> {
     const prompt = buildImageEditExpressionPrompt(request.expression);
     console.log(`[GptImage] expression ${request.expression}:`, prompt);
-    // Expression generation via edit mode is significantly slower and more likely
-    // to hit Cloudflare timeouts than character generation. Skip retry on
-    // expression endpoints so the production adapter's Qwen/Doubao fallback
-    // chain fires faster. The 60s timeout still gives the call a fair shot.
-    const url = await postEdit(request.baseImageUrl, prompt);
+    const url = await withFallback(
+      `expression-${request.expression}`,
+      () => editViaPiapi(request.baseImageUrl, prompt),
+      () => editViaZeakai(request.baseImageUrl, prompt),
+    );
     if (!url) {
       return {
         status: "failed",
         imageUrl: null,
-        error: `GptImage expression ${request.expression} failed after single attempt`,
+        error: `GptImage expression ${request.expression} failed on PiAPI and Zeakai`,
       };
     }
     return { status: "completed", imageUrl: url };
@@ -192,6 +212,10 @@ export class GptImageAdapter {
     prompt: string,
   ): Promise<string | null> {
     console.log("[GptImage] editWithPrompt:", prompt.slice(0, 80));
-    return callWithRetry("custom-edit", () => postEdit(imageUrl, prompt));
+    return withFallback(
+      "custom-edit",
+      () => editViaPiapi(imageUrl, prompt),
+      () => editViaZeakai(imageUrl, prompt),
+    );
   }
 }

@@ -1,17 +1,17 @@
 /**
  * Production generation adapter.
  *
- * Character generation: 2×GptImage + 2×Doubao in parallel (2×2). Qwen fills
+ * Character generation: 2×GptImage + 2×Seedream in parallel (2×2). Qwen fills
  * remaining slots if either primary model has empty slots.
  *
- * Expression generation: GptImage first → Qwen fallback → Doubao fallback.
+ * Expression generation: GptImage first → Qwen fallback → Seedream fallback.
  *
  * Set GENERATION_ADAPTER=production to use this.
  */
 
-import { DoubaoSeedreamAdapter } from "./doubao-seedream-adapter";
 import { GptImageAdapter } from "./gpt-image-adapter";
 import { QwenAdapter } from "./qwen-adapter";
+import { SeedreamAdapter } from "./seedream-adapter";
 import type {
   GenerateCharacterRequest,
   GenerateCharacterResult,
@@ -23,21 +23,21 @@ import type {
 export class ProductionAdapter implements GenerationAdapter {
   private gpt = new GptImageAdapter();
   private qwen = new QwenAdapter();
-  private doubao = new DoubaoSeedreamAdapter();
+  private seedream = new SeedreamAdapter();
 
   async generateCharacter(
     request: GenerateCharacterRequest,
   ): Promise<GenerateCharacterResult> {
     const TARGET = 4;
     const GPT_COUNT = 2;
-    const DOUBAO_COUNT = 2;
+    const SEEDREAM_COUNT = 2;
 
-    // Phase 1: 2×GptImage + 2×Doubao in parallel (2×2)
+    // Phase 1: 2×GptImage + 2×Seedream in parallel (2×2)
     console.log(
-      `[Production] Phase 1: character generation (${GPT_COUNT}×GptImage + ${DOUBAO_COUNT}×Doubao)`,
+      `[Production] Phase 1: character generation (${GPT_COUNT}×GptImage + ${SEEDREAM_COUNT}×Seedream)`,
     );
 
-    const [gptResults, doubaoResults] = await Promise.all([
+    const [gptResults, seedreamResults] = await Promise.all([
       Promise.allSettled(
         Array.from({ length: GPT_COUNT }, (_, i) =>
           this.gpt.generateCharacterImage(request).then((url) => {
@@ -48,10 +48,10 @@ export class ProductionAdapter implements GenerationAdapter {
         ),
       ),
       Promise.allSettled(
-        Array.from({ length: DOUBAO_COUNT }, (_, i) =>
-          this.doubao.generateCharacterImage(request).then((url) => {
-            if (url) console.log(`[Production] Doubao-${i + 1}: success`);
-            else console.warn(`[Production] Doubao-${i + 1}: no image`);
+        Array.from({ length: SEEDREAM_COUNT }, (_, i) =>
+          this.seedream.generateCharacterImage(request).then((url) => {
+            if (url) console.log(`[Production] Seedream-${i + 1}: success`);
+            else console.warn(`[Production] Seedream-${i + 1}: no image`);
             return url;
           }),
         ),
@@ -62,7 +62,7 @@ export class ProductionAdapter implements GenerationAdapter {
     for (const r of gptResults) {
       if (r.status === "fulfilled" && r.value) images.push(r.value);
     }
-    for (const r of doubaoResults) {
+    for (const r of seedreamResults) {
       if (r.status === "fulfilled" && r.value) images.push(r.value);
     }
 
@@ -95,7 +95,7 @@ export class ProductionAdapter implements GenerationAdapter {
       return {
         status: "failed",
         images: [],
-        error: "All primary models failed (GptImage + Doubao)",
+        error: "All primary models failed (GptImage + Seedream)",
       };
     }
 
@@ -122,18 +122,18 @@ export class ProductionAdapter implements GenerationAdapter {
     }
 
     console.warn(
-      `[Production] Expression ${request.expression} Qwen failed: ${qwenResult.error ?? "unknown"}, falling back to Doubao`,
+      `[Production] Expression ${request.expression} Qwen failed: ${qwenResult.error ?? "unknown"}, falling back to Seedream`,
     );
-    const doubaoResult = await this.doubao.generateExpression(request);
-    if (doubaoResult.status === "completed") {
+    const seedreamResult = await this.seedream.generateExpression(request);
+    if (seedreamResult.status === "completed") {
       console.log(
-        `[Production] Expression ${request.expression} Doubao fallback succeeded`,
+        `[Production] Expression ${request.expression} Seedream fallback succeeded`,
       );
     } else {
       console.error(
         `[Production] Expression ${request.expression} all three models failed`,
       );
     }
-    return doubaoResult;
+    return seedreamResult;
   }
 }

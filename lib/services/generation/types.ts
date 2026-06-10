@@ -3,10 +3,10 @@
  *
  * Implementations:
  * - MockAdapter: Returns placeholder images with simulated delays (dev)
- * - ProductionAdapter: GPT-Image-2 primary, Qwen + Doubao Seedream as fallback
- *   - GptImageAdapter: Primary; via CocoRouter /v1/zeakai/{generations,edits}
+ * - ProductionAdapter: GPT-Image-2 primary, Qwen + Seedream as fallback
+ *   - GptImageAdapter: Primary; via CocoRouter /v1/piapi/images/* (Zeakai fallback)
  *   - QwenAdapter: Fallback; via CocoRouter /v1/piapi/task (Qubico/qwen-image)
- *   - DoubaoSeedreamAdapter: Fallback; via CocoRouter /v1/ark/images/generations
+ *   - SeedreamAdapter: Fallback; via CocoRouter /v1/piapi/task (seedream-5-lite)
  */
 
 export type ArtStyle = "anime" | "chibi" | "cartoon" | "pixel-art" | "none";
