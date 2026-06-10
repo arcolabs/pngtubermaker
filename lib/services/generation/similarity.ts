@@ -16,6 +16,26 @@ import sharp from "sharp";
 
 const HAMMING_THRESHOLD = 14;
 
+// A pack generates 2-3 expressions against the same base image — memoize
+// recent hashes so the base isn't re-downloaded per expression.
+const hashCache = new Map<string, Promise<Uint8Array>>();
+const HASH_CACHE_MAX = 32;
+
+function dhashFromUrlCached(url: string): Promise<Uint8Array> {
+  const cached = hashCache.get(url);
+  if (cached) return cached;
+  const promise = dhashFromUrl(url).catch((e) => {
+    hashCache.delete(url); // don't cache failures
+    throw e;
+  });
+  hashCache.set(url, promise);
+  if (hashCache.size > HASH_CACHE_MAX) {
+    const oldest = hashCache.keys().next().value;
+    if (oldest !== undefined) hashCache.delete(oldest);
+  }
+  return promise;
+}
+
 async function dhashFromUrl(url: string): Promise<Uint8Array> {
   const res = await fetch(url, { signal: AbortSignal.timeout(15_000) });
   if (!res.ok) throw new Error(`fetch ${res.status} for ${url}`);
@@ -59,7 +79,7 @@ export async function resemblesBase(
 ): Promise<boolean> {
   try {
     const [baseHash, resultHash] = await Promise.all([
-      dhashFromUrl(baseImageUrl),
+      dhashFromUrlCached(baseImageUrl),
       dhashFromUrl(resultImageUrl),
     ]);
     const distance = hammingDistance(baseHash, resultHash);
