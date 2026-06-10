@@ -20,7 +20,7 @@ import {
   type ExpressionType,
   getGenerationAdapter,
 } from "@/lib/services/generation";
-import { deleteFromR2, generateAvatarKey } from "@/lib/services/storage";
+import { deleteFromR2, ensureOwnStorage, generateAvatarKey } from "@/lib/services/storage";
 
 /**
  * POST /api/avatars/[id]/expressions/[expressionId]/regenerate
@@ -161,17 +161,18 @@ export async function POST(
         throw new Error(result.error || "Generation failed");
       }
 
-      // 7. CocoRouter already uploaded to R2 — use CDN URL directly
       const newKey = generateAvatarKey(
         session.user.id,
         avatarId,
         "expression",
         expr.type,
       );
-      const newImageUrl = result.imageUrl;
+      // Fallback providers return temporary upstream URLs — persist to our
+      // R2 so the stored URL can't expire if background removal fails.
+      const newImageUrl = await ensureOwnStorage(result.imageUrl, newKey);
 
-      // 8. Delete old image from R2 (only on success)
-      if (oldImageR2Key) {
+      // 8. Delete old image from R2 (only on success; never the key we just wrote)
+      if (oldImageR2Key && oldImageR2Key !== newKey) {
         try {
           await deleteFromR2(oldImageR2Key);
         } catch (error) {
@@ -189,6 +190,7 @@ export async function POST(
           status: "completed",
           imageUrl: newImageUrl,
           imageR2Key: newKey,
+          provider: result.provider ?? null,
         })
         .where(eq(avatarExpressions.id, expressionId));
 

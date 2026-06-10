@@ -5,6 +5,9 @@
  * remaining slots if either primary model has empty slots.
  *
  * Expression generation: GptImage first → Qwen fallback → Seedream fallback.
+ * Every completed expression passes a perceptual-hash similarity gate against
+ * the base image — an upstream that silently degrades to text-to-image
+ * (HTTP 200, unrelated image) is treated as a failure so the chain advances.
  *
  * Set GENERATION_ADAPTER=production to use this.
  */
@@ -12,12 +15,14 @@
 import { GptImageAdapter } from "./gpt-image-adapter";
 import { QwenAdapter } from "./qwen-adapter";
 import { SeedreamAdapter } from "./seedream-adapter";
+import { resemblesBase } from "./similarity";
 import type {
   GenerateCharacterRequest,
   GenerateCharacterResult,
   GenerateExpressionRequest,
   GenerateExpressionResult,
   GenerationAdapter,
+  ProviderImage,
 } from "./types";
 
 export class ProductionAdapter implements GenerationAdapter {
@@ -40,29 +45,26 @@ export class ProductionAdapter implements GenerationAdapter {
     const [gptResults, seedreamResults] = await Promise.all([
       Promise.allSettled(
         Array.from({ length: GPT_COUNT }, (_, i) =>
-          this.gpt.generateCharacterImage(request).then((url) => {
-            if (url) console.log(`[Production] GptImage-${i + 1}: success`);
+          this.gpt.generateCharacterImage(request).then((img) => {
+            if (img) console.log(`[Production] GptImage-${i + 1}: success`);
             else console.warn(`[Production] GptImage-${i + 1}: no image`);
-            return url;
+            return img;
           }),
         ),
       ),
       Promise.allSettled(
         Array.from({ length: SEEDREAM_COUNT }, (_, i) =>
-          this.seedream.generateCharacterImage(request).then((url) => {
-            if (url) console.log(`[Production] Seedream-${i + 1}: success`);
+          this.seedream.generateCharacterImage(request).then((img) => {
+            if (img) console.log(`[Production] Seedream-${i + 1}: success`);
             else console.warn(`[Production] Seedream-${i + 1}: no image`);
-            return url;
+            return img;
           }),
         ),
       ),
     ]);
 
-    const images: string[] = [];
-    for (const r of gptResults) {
-      if (r.status === "fulfilled" && r.value) images.push(r.value);
-    }
-    for (const r of seedreamResults) {
+    const images: ProviderImage[] = [];
+    for (const r of [...gptResults, ...seedreamResults]) {
       if (r.status === "fulfilled" && r.value) images.push(r.value);
     }
 
@@ -100,20 +102,54 @@ export class ProductionAdapter implements GenerationAdapter {
     }
 
     console.log(`[Production] Final: ${images.length}/${TARGET} images`);
-    return { status: "completed", images };
+    return {
+      status: "completed",
+      images: images.map((i) => i.url),
+      providers: images.map((i) => i.provider),
+    };
+  }
+
+  /**
+   * Reject completed results whose image is unrelated to the base —
+   * converts the upstream "HTTP 200 but garbage" failure mode into a
+   * normal failure so the fallback chain advances.
+   */
+  private async gateExpression(
+    result: GenerateExpressionResult,
+    request: GenerateExpressionRequest,
+  ): Promise<GenerateExpressionResult> {
+    if (result.status !== "completed" || !result.imageUrl) return result;
+    const ok = await resemblesBase(
+      request.baseImageUrl,
+      result.imageUrl,
+      `${result.provider ?? "unknown"}:${request.expression}`,
+    );
+    if (ok) return result;
+    return {
+      status: "failed",
+      imageUrl: null,
+      provider: result.provider,
+      error: `Similarity gate rejected ${result.provider ?? "unknown"} result (unrelated to base image)`,
+    };
   }
 
   async generateExpression(
     request: GenerateExpressionRequest,
   ): Promise<GenerateExpressionResult> {
     console.log(`[Production] Expression ${request.expression} → GptImage`);
-    const gptResult = await this.gpt.generateExpression(request);
+    const gptResult = await this.gateExpression(
+      await this.gpt.generateExpression(request),
+      request,
+    );
     if (gptResult.status === "completed") return gptResult;
 
     console.warn(
       `[Production] Expression ${request.expression} GptImage failed: ${gptResult.error ?? "unknown"}, falling back to Qwen`,
     );
-    const qwenResult = await this.qwen.generateExpression(request);
+    const qwenResult = await this.gateExpression(
+      await this.qwen.generateExpression(request),
+      request,
+    );
     if (qwenResult.status === "completed") {
       console.log(
         `[Production] Expression ${request.expression} Qwen fallback succeeded`,
@@ -124,7 +160,10 @@ export class ProductionAdapter implements GenerationAdapter {
     console.warn(
       `[Production] Expression ${request.expression} Qwen failed: ${qwenResult.error ?? "unknown"}, falling back to Seedream`,
     );
-    const seedreamResult = await this.seedream.generateExpression(request);
+    const seedreamResult = await this.gateExpression(
+      await this.seedream.generateExpression(request),
+      request,
+    );
     if (seedreamResult.status === "completed") {
       console.log(
         `[Production] Expression ${request.expression} Seedream fallback succeeded`,

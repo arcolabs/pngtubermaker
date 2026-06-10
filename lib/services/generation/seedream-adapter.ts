@@ -18,6 +18,7 @@ import {
   type GenerateCharacterRequest,
   type GenerateExpressionRequest,
   type GenerateExpressionResult,
+  type ProviderImage,
 } from "./types";
 
 const API_BASE =
@@ -194,7 +195,7 @@ async function generateImage(
 export class SeedreamAdapter {
   async generateCharacterImage(
     request: GenerateCharacterRequest,
-  ): Promise<string | null> {
+  ): Promise<ProviderImage | null> {
     const prompt = buildCharacterPrompt(
       request.prompt,
       request.style,
@@ -205,7 +206,8 @@ export class SeedreamAdapter {
     if (request.referenceUrl)
       console.log("[Seedream] With reference image:", request.referenceUrl);
 
-    return generateImage(prompt, request.referenceUrl, "character");
+    const url = await generateImage(prompt, request.referenceUrl, "character");
+    return url ? { url, provider: "seedream" } : null;
   }
 
   async generateExpression(
@@ -230,7 +232,7 @@ export class SeedreamAdapter {
           error: "No image data in Seedream response",
         };
       }
-      return { status: "completed", imageUrl };
+      return { status: "completed", imageUrl, provider: "seedream" };
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       console.error(

@@ -29,6 +29,10 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+# DB timestamps are naive local time — pin UTC so they align with external
+# systems (CocoRouter logs, R2, Stripe). Rows written before this change are
+# UTC-8 (cutover: 2026-06-10).
+ENV TZ=UTC
 
 # sharp runtime dependency (libvips, not libvips-dev) + curl for healthcheck
 RUN apt-get update && apt-get install -y --no-install-recommends \

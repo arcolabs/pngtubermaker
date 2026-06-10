@@ -17,6 +17,7 @@ import {
   type GenerateCharacterRequest,
   type GenerateExpressionRequest,
   type GenerateExpressionResult,
+  type ProviderImage,
 } from "./types";
 
 const API_BASE =
@@ -48,27 +49,35 @@ interface ImagesResponse {
   error?: unknown;
 }
 
+interface Attempt {
+  provider: string;
+  run: () => Promise<string | null>;
+}
+
 /** Try primary; on failure or empty result, fall back to the other pool. */
 async function withFallback(
   label: string,
-  primary: () => Promise<string | null>,
-  fallback: () => Promise<string | null>,
-): Promise<string | null> {
+  primary: Attempt,
+  fallback: Attempt,
+): Promise<ProviderImage | null> {
   try {
-    const result = await primary();
-    if (result !== null) return result;
-    console.warn(`[GptImage] ${label}: primary empty result, trying fallback`);
+    const url = await primary.run();
+    if (url !== null) return { url, provider: primary.provider };
+    console.warn(
+      `[GptImage] ${label}: ${primary.provider} empty result, trying ${fallback.provider}`,
+    );
   } catch (e) {
     console.warn(
-      `[GptImage] ${label}: primary failed, trying fallback:`,
+      `[GptImage] ${label}: ${primary.provider} failed, trying ${fallback.provider}:`,
       e instanceof Error ? e.message : e,
     );
   }
   try {
-    return await fallback();
+    const url = await fallback.run();
+    return url !== null ? { url, provider: fallback.provider } : null;
   } catch (e) {
     console.error(
-      `[GptImage] ${label}: fallback failed:`,
+      `[GptImage] ${label}: ${fallback.provider} fallback failed:`,
       e instanceof Error ? e.message : e,
     );
     return null;
@@ -111,56 +120,64 @@ async function postImages(
   return imageUrl;
 }
 
-function generateViaPiapi(prompt: string): Promise<string | null> {
-  return postImages("piapi-generate", PIAPI_GEN_URL, {
-    model: MODEL_ID,
-    prompt,
-    n: 1,
-    size: "1024x1024",
-    quality: QUALITY,
-  });
+function generateAttempts(prompt: string): [Attempt, Attempt] {
+  return [
+    {
+      provider: "piapi-gpt",
+      run: () =>
+        postImages("piapi-generate", PIAPI_GEN_URL, {
+          model: MODEL_ID,
+          prompt,
+          n: 1,
+          size: "1024x1024",
+          quality: QUALITY,
+        }),
+    },
+    {
+      provider: "zeakai-gpt",
+      run: () =>
+        postImages("zeakai-generate", ZEAKAI_GEN_URL, {
+          model: MODEL_ID,
+          prompt,
+          n: 1,
+          size: "1024x1024",
+        }),
+    },
+  ];
 }
 
-function generateViaZeakai(prompt: string): Promise<string | null> {
-  return postImages("zeakai-generate", ZEAKAI_GEN_URL, {
-    model: MODEL_ID,
-    prompt,
-    n: 1,
-    size: "1024x1024",
-  });
-}
-
-function editViaPiapi(
-  imageUrl: string,
-  prompt: string,
-): Promise<string | null> {
-  return postImages("piapi-edit", PIAPI_EDIT_URL, {
-    model: MODEL_ID,
-    prompt,
-    image_url: imageUrl,
-    n: 1,
-    size: "1024x1024",
-    quality: QUALITY,
-  });
-}
-
-function editViaZeakai(
-  imageUrl: string,
-  prompt: string,
-): Promise<string | null> {
-  return postImages("zeakai-edit", ZEAKAI_EDIT_URL, {
-    model: MODEL_ID,
-    prompt,
-    image_url: imageUrl,
-    n: 1,
-    size: "1024x1024",
-  });
+function editAttempts(imageUrl: string, prompt: string): [Attempt, Attempt] {
+  return [
+    {
+      provider: "zeakai-gpt",
+      run: () =>
+        postImages("zeakai-edit", ZEAKAI_EDIT_URL, {
+          model: MODEL_ID,
+          prompt,
+          image_url: imageUrl,
+          n: 1,
+          size: "1024x1024",
+        }),
+    },
+    {
+      provider: "piapi-gpt",
+      run: () =>
+        postImages("piapi-edit", PIAPI_EDIT_URL, {
+          model: MODEL_ID,
+          prompt,
+          image_url: imageUrl,
+          n: 1,
+          size: "1024x1024",
+          quality: QUALITY,
+        }),
+    },
+  ];
 }
 
 export class GptImageAdapter {
   async generateCharacterImage(
     request: GenerateCharacterRequest,
-  ): Promise<string | null> {
+  ): Promise<ProviderImage | null> {
     const prompt = buildCharacterPrompt(
       request.prompt,
       request.style,
@@ -169,19 +186,12 @@ export class GptImageAdapter {
 
     if (request.referenceUrl) {
       console.log("[GptImage] character (edit) with reference:", prompt);
-      const ref = request.referenceUrl;
-      return withFallback(
-        "character-edit",
-        () => editViaZeakai(ref, prompt),
-        () => editViaPiapi(ref, prompt),
-      );
+      const [primary, fallback] = editAttempts(request.referenceUrl, prompt);
+      return withFallback("character-edit", primary, fallback);
     }
     console.log("[GptImage] character (generate):", prompt);
-    return withFallback(
-      "character-generate",
-      () => generateViaPiapi(prompt),
-      () => generateViaZeakai(prompt),
-    );
+    const [primary, fallback] = generateAttempts(prompt);
+    return withFallback("character-generate", primary, fallback);
   }
 
   async generateExpression(
@@ -189,19 +199,24 @@ export class GptImageAdapter {
   ): Promise<GenerateExpressionResult> {
     const prompt = buildImageEditExpressionPrompt(request.expression);
     console.log(`[GptImage] expression ${request.expression}:`, prompt);
-    const url = await withFallback(
+    const [primary, fallback] = editAttempts(request.baseImageUrl, prompt);
+    const result = await withFallback(
       `expression-${request.expression}`,
-      () => editViaZeakai(request.baseImageUrl, prompt),
-      () => editViaPiapi(request.baseImageUrl, prompt),
+      primary,
+      fallback,
     );
-    if (!url) {
+    if (!result) {
       return {
         status: "failed",
         imageUrl: null,
         error: `GptImage expression ${request.expression} failed on Zeakai and PiAPI`,
       };
     }
-    return { status: "completed", imageUrl: url };
+    return {
+      status: "completed",
+      imageUrl: result.url,
+      provider: result.provider,
+    };
   }
 
   /**
@@ -213,10 +228,8 @@ export class GptImageAdapter {
     prompt: string,
   ): Promise<string | null> {
     console.log("[GptImage] editWithPrompt:", prompt.slice(0, 80));
-    return withFallback(
-      "custom-edit",
-      () => editViaZeakai(imageUrl, prompt),
-      () => editViaPiapi(imageUrl, prompt),
-    );
+    const [primary, fallback] = editAttempts(imageUrl, prompt);
+    const result = await withFallback("custom-edit", primary, fallback);
+    return result?.url ?? null;
   }
 }

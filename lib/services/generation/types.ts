@@ -92,6 +92,12 @@ export function buildCharacterPrompt(
 
 // ── Request / Response types ─────────────────────────────────────────────────
 
+/** A generated image URL tagged with the upstream that produced it */
+export interface ProviderImage {
+  url: string;
+  provider: string;
+}
+
 export interface GenerateCharacterRequest {
   prompt: string;
   style: ArtStyle;
@@ -103,6 +109,8 @@ export interface GenerateCharacterResult {
   status: "completed" | "failed";
   /** Candidate image URLs (1 per model, from parallel multi-model generation) */
   images: string[];
+  /** Upstream that produced each image, aligned with `images` */
+  providers?: string[];
   error?: string;
 }
 
@@ -121,6 +129,8 @@ export interface GenerateExpressionResult {
   status: "completed" | "failed";
   /** Single expression image URL */
   imageUrl: string | null;
+  /** Upstream that produced the image (e.g. "piapi-gpt", "zeakai-gpt", "qwen", "seedream") */
+  provider?: string;
   error?: string;
 }
 

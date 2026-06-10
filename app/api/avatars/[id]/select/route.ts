@@ -6,6 +6,7 @@ import { avatars } from "@/database/schema";
 import { auth } from "@/lib/auth";
 import { getDatabase } from "@/lib/db";
 import { processBackgroundRemoval } from "@/lib/services/background-removal";
+import { refundCredits } from "@/lib/services/credits";
 import {
   fetchImageBuffer,
   generateAvatarKey,
@@ -97,8 +98,38 @@ export async function POST(
   }
 
   try {
-    // 6. Fetch the selected image (with retry)
-    const imageBuffer = await fetchImageBuffer(selectedImageUrl);
+    // 6. Fetch the selected image (with retry). Candidates are upstream
+    // temporary URLs — if the user returns after they expired, the fetch
+    // fails: refund the generation cost and let them regenerate.
+    let imageBuffer: Buffer;
+    try {
+      imageBuffer = await fetchImageBuffer(selectedImageUrl);
+    } catch (fetchError) {
+      console.warn(
+        `[Select] Candidate fetch failed (likely expired): ${selectedImageUrl}`,
+        fetchError instanceof Error ? fetchError.message : fetchError,
+      );
+      if (a.creditsUsed > 0) {
+        await refundCredits(
+          session.user.id,
+          a.creditsUsed,
+          "Candidate images expired — generation refunded",
+          { avatarId },
+        );
+      }
+      await db
+        .update(avatars)
+        .set({ status: "failed", updatedAt: new Date() })
+        .where(eq(avatars.id, avatarId));
+      return NextResponse.json(
+        {
+          error: "candidates_expired",
+          message:
+            "These candidate images have expired. Your credits have been refunded — please generate your character again.",
+        },
+        { status: 410 },
+      );
+    }
 
     // 7. Upload base image to R2
     const baseKey = generateAvatarKey(session.user.id, avatarId, "base");

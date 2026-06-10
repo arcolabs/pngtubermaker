@@ -215,6 +215,24 @@ export async function persistExternalImage(
   return await uploadImageToR2(buffer, r2Key, contentType);
 }
 
+/** Whether a URL already lives on our own R2 CDN (no persistence needed). */
+export function isOwnStorageUrl(url: string): boolean {
+  return !!R2_PUBLIC_URL && url.startsWith(R2_PUBLIC_URL);
+}
+
+/**
+ * Ensure an image URL survives upstream expiry: upstream temporary URLs
+ * (PiAPI ephemeral, Qwen, Seedream) are copied to our R2 under `r2Key`;
+ * URLs already on our CDN are returned as-is.
+ */
+export async function ensureOwnStorage(
+  url: string,
+  r2Key: string,
+): Promise<string> {
+  if (isOwnStorageUrl(url)) return url;
+  return persistExternalImage(url, r2Key);
+}
+
 /**
  * Resize image using sharp
  * Maintains aspect ratio, fits within maxWidth x maxHeight

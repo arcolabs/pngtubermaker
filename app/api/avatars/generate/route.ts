@@ -178,6 +178,7 @@ export async function POST(req: NextRequest) {
         .update(avatars)
         .set({
           candidateImages: candidateUrls,
+          candidateProviders: result.providers ?? null,
           status: "selecting",
           updatedAt: new Date(),
         })

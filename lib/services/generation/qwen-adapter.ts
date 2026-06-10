@@ -16,6 +16,7 @@ import {
   type GenerateCharacterRequest,
   type GenerateExpressionRequest,
   type GenerateExpressionResult,
+  type ProviderImage,
 } from "./types";
 
 const API_BASE =
@@ -166,7 +167,7 @@ function isFailed(status?: string): boolean {
 export class QwenAdapter {
   async generateCharacterImage(
     request: GenerateCharacterRequest,
-  ): Promise<string | null> {
+  ): Promise<ProviderImage | null> {
     const prompt = buildQwenPrompt(
       request.prompt,
       request.style,
@@ -215,7 +216,7 @@ export class QwenAdapter {
     }
 
     console.log(`[Qwen] Generation complete: taskId=${taskId}`);
-    return imageUrl;
+    return { url: imageUrl, provider: "qwen" };
   }
 
   async generateExpression(
@@ -297,7 +298,7 @@ export class QwenAdapter {
       console.log(
         `[Qwen] Expression ${request.expression} complete: taskId=${taskId}`,
       );
-      return { status: "completed", imageUrl };
+      return { status: "completed", imageUrl, provider: "qwen" };
     } catch (error) {
       console.error(
         `[Qwen] Expression ${request.expression} error: taskId=${taskId}`,

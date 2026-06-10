@@ -21,7 +21,7 @@ import {
   type ExpressionType,
   getGenerationAdapter,
 } from "@/lib/services/generation";
-import { generateAvatarKey } from "@/lib/services/storage";
+import { ensureOwnStorage, generateAvatarKey } from "@/lib/services/storage";
 import { staggeredAllSettled } from "@/lib/utils";
 
 /**
@@ -274,7 +274,6 @@ export async function POST(
           throw new Error(result.error || "Generation failed");
         }
 
-        // CocoRouter already uploaded to R2 — use CDN URL directly
         const key = generateAvatarKey(
           session.user.id,
           avatarId,
@@ -282,7 +281,11 @@ export async function POST(
           record.type,
         );
 
-        return { record, publicUrl: result.imageUrl, key };
+        // Fallback providers return temporary upstream URLs — persist to our
+        // R2 so the stored URL can't expire if background removal fails.
+        const publicUrl = await ensureOwnStorage(result.imageUrl, key);
+
+        return { record, publicUrl, key, provider: result.provider };
       }),
       500,
     );
@@ -298,7 +301,12 @@ export async function POST(
 
     for (const result of results) {
       if (result.status === "fulfilled") {
-        const { record, publicUrl, key } = result.value;
+        const { record, publicUrl, key, provider } = result.value as {
+          record: (typeof expressionRecords)[number];
+          publicUrl: string;
+          key: string;
+          provider?: string;
+        };
 
         await db
           .update(avatarExpressions)
@@ -306,6 +314,7 @@ export async function POST(
             status: "completed",
             imageUrl: publicUrl,
             imageR2Key: key,
+            provider: provider ?? null,
           })
           .where(eq(avatarExpressions.id, record.id));
 

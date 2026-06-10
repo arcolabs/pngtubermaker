@@ -179,6 +179,8 @@ export const avatars = pgTable(
     status: text("status").notNull(), // 'generating' | 'selecting' | 'completed' | 'failed'
     // Candidate images (4 options from parallel generation, stored as JSON array of URLs)
     candidateImages: jsonb("candidate_images").$type<string[]>(),
+    // Upstream that produced each candidate, aligned with candidate_images
+    candidateProviders: jsonb("candidate_providers").$type<string[]>(),
     // Selected base image (after user picks one of the 4 candidates)
     baseImageUrl: text("base_image_url"),
     baseImageR2Key: text("base_image_r2_key"),
@@ -230,6 +232,8 @@ export const avatarExpressions = pgTable(
     status: text("status").notNull(), // 'pending' | 'generating' | 'completed' | 'failed'
     imageUrl: text("image_url"),
     imageR2Key: text("image_r2_key"),
+    // Upstream that produced the image (e.g. "piapi-gpt", "zeakai-gpt", "qwen", "seedream")
+    provider: text("provider"),
     creditsUsed: integer("credits_used").notNull().default(0),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
