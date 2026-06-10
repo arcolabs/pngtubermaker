@@ -1,13 +1,14 @@
 /**
- * GPT-Image adapter via CocoRouter → PiAPI (primary) / Zeakai (fallback).
+ * GPT-Image adapter via CocoRouter. Same model (gpt-image-2) on two pools;
+ * primary/fallback order is chosen per operation by measured latency:
  *
- * Character (no reference):  POST /v1/piapi/images/generations
- * Character (with reference): POST /v1/piapi/images/edits (image_url)
- * Expression:                 POST /v1/piapi/images/edits (image_url)
+ * Generations (PiAPI primary, Zeakai fallback): PiAPI ~46s ≈ Zeakai p50 42s
+ * Edits (Zeakai primary, PiAPI fallback): Zeakai p50 48s vs PiAPI ~96s —
+ *   PiAPI edits routinely blow the 90s timeout / Cloudflare 100s wall, and
+ *   abandoned sync calls are still billed upstream.
  *
- * Each call tries PiAPI first, then falls back to the same operation on the
- * legacy Zeakai endpoints. Callers still receive null/failed on double-failure
- * and should fall back to Qwen / Seedream.
+ * Callers still receive null/failed on double-failure and should fall back
+ * to Qwen / Seedream.
  */
 
 import { buildImageEditExpressionPrompt } from "./prompt-builder";
@@ -47,27 +48,27 @@ interface ImagesResponse {
   error?: unknown;
 }
 
-/** Try PiAPI first; on failure or empty result, fall back to Zeakai. */
+/** Try primary; on failure or empty result, fall back to the other pool. */
 async function withFallback(
   label: string,
-  piapi: () => Promise<string | null>,
-  zeakai: () => Promise<string | null>,
+  primary: () => Promise<string | null>,
+  fallback: () => Promise<string | null>,
 ): Promise<string | null> {
   try {
-    const result = await piapi();
+    const result = await primary();
     if (result !== null) return result;
-    console.warn(`[GptImage] ${label}: PiAPI empty result, trying Zeakai`);
+    console.warn(`[GptImage] ${label}: primary empty result, trying fallback`);
   } catch (e) {
     console.warn(
-      `[GptImage] ${label}: PiAPI failed, trying Zeakai:`,
+      `[GptImage] ${label}: primary failed, trying fallback:`,
       e instanceof Error ? e.message : e,
     );
   }
   try {
-    return await zeakai();
+    return await fallback();
   } catch (e) {
     console.error(
-      `[GptImage] ${label}: Zeakai fallback failed:`,
+      `[GptImage] ${label}: fallback failed:`,
       e instanceof Error ? e.message : e,
     );
     return null;
@@ -171,8 +172,8 @@ export class GptImageAdapter {
       const ref = request.referenceUrl;
       return withFallback(
         "character-edit",
-        () => editViaPiapi(ref, prompt),
         () => editViaZeakai(ref, prompt),
+        () => editViaPiapi(ref, prompt),
       );
     }
     console.log("[GptImage] character (generate):", prompt);
@@ -190,14 +191,14 @@ export class GptImageAdapter {
     console.log(`[GptImage] expression ${request.expression}:`, prompt);
     const url = await withFallback(
       `expression-${request.expression}`,
-      () => editViaPiapi(request.baseImageUrl, prompt),
       () => editViaZeakai(request.baseImageUrl, prompt),
+      () => editViaPiapi(request.baseImageUrl, prompt),
     );
     if (!url) {
       return {
         status: "failed",
         imageUrl: null,
-        error: `GptImage expression ${request.expression} failed on PiAPI and Zeakai`,
+        error: `GptImage expression ${request.expression} failed on Zeakai and PiAPI`,
       };
     }
     return { status: "completed", imageUrl: url };
@@ -214,8 +215,8 @@ export class GptImageAdapter {
     console.log("[GptImage] editWithPrompt:", prompt.slice(0, 80));
     return withFallback(
       "custom-edit",
-      () => editViaPiapi(imageUrl, prompt),
       () => editViaZeakai(imageUrl, prompt),
+      () => editViaPiapi(imageUrl, prompt),
     );
   }
 }

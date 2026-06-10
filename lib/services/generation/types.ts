@@ -4,7 +4,7 @@
  * Implementations:
  * - MockAdapter: Returns placeholder images with simulated delays (dev)
  * - ProductionAdapter: GPT-Image-2 primary, Qwen + Seedream as fallback
- *   - GptImageAdapter: Primary; via CocoRouter /v1/piapi/images/* (Zeakai fallback)
+ *   - GptImageAdapter: Primary; gen via PiAPI (Zeakai fallback), edits via Zeakai (PiAPI fallback)
  *   - QwenAdapter: Fallback; via CocoRouter /v1/piapi/task (Qubico/qwen-image)
  *   - SeedreamAdapter: Fallback; via CocoRouter /v1/piapi/task (seedream-5-lite)
  */
