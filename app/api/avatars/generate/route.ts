@@ -168,14 +168,16 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // 5. CocoRouter already uploaded images to R2 — use CDN URLs directly
-      const r2Urls = result.images;
+      // 5. Candidate URLs are upstream temporary URLs — they only need to
+      // survive the selection window; the select route downloads the chosen
+      // image and re-uploads it to our own R2.
+      const candidateUrls = result.images;
 
       const db = getDatabase();
       await db
         .update(avatars)
         .set({
-          candidateImages: r2Urls,
+          candidateImages: candidateUrls,
           status: "selecting",
           updatedAt: new Date(),
         })
@@ -183,7 +185,7 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({
         avatarId,
-        images: r2Urls,
+        images: candidateUrls,
         aspectRatio: normalizedAspectRatio,
       });
     } catch (error) {
