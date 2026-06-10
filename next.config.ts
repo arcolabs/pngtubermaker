@@ -49,6 +49,16 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "img.theapi.app",
       },
+      // PiAPI gpt-image output hosts (unstable set — SafeImage degrades to
+      // unoptimized <img> for any host missing from this list)
+      {
+        protocol: "https",
+        hostname: "oss.filenest.top",
+      },
+      {
+        protocol: "https",
+        hostname: "imagefil.scdn.app",
+      },
       {
         protocol: "https",
         hostname: "cdn.legnext.ai",
