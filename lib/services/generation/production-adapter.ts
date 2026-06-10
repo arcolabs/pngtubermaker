@@ -4,7 +4,8 @@
  * Character generation: 2×GptImage + 2×Seedream in parallel (2×2). Qwen fills
  * remaining slots if either primary model has empty slots.
  *
- * Expression generation: GptImage first → Qwen fallback → Seedream fallback.
+ * Expression generation: Seedream first (PiAPI, ~33s vs GPT ~48s) → GptImage
+ * fallback → Qwen fallback.
  * Every completed expression passes a perceptual-hash similarity gate against
  * the base image — an upstream that silently degrades to text-to-image
  * (HTTP 200, unrelated image) is treated as a failure so the chain advances.
@@ -136,12 +137,26 @@ export class ProductionAdapter implements GenerationAdapter {
   async generateExpression(
     request: GenerateExpressionRequest,
   ): Promise<GenerateExpressionResult> {
-    console.log(`[Production] Expression ${request.expression} → GptImage`);
+    console.log(`[Production] Expression ${request.expression} → Seedream`);
+    const seedreamResult = await this.gateExpression(
+      await this.seedream.generateExpression(request),
+      request,
+    );
+    if (seedreamResult.status === "completed") return seedreamResult;
+
+    console.warn(
+      `[Production] Expression ${request.expression} Seedream failed: ${seedreamResult.error ?? "unknown"}, falling back to GptImage`,
+    );
     const gptResult = await this.gateExpression(
       await this.gpt.generateExpression(request),
       request,
     );
-    if (gptResult.status === "completed") return gptResult;
+    if (gptResult.status === "completed") {
+      console.log(
+        `[Production] Expression ${request.expression} GptImage fallback succeeded`,
+      );
+      return gptResult;
+    }
 
     console.warn(
       `[Production] Expression ${request.expression} GptImage failed: ${gptResult.error ?? "unknown"}, falling back to Qwen`,
@@ -154,25 +169,11 @@ export class ProductionAdapter implements GenerationAdapter {
       console.log(
         `[Production] Expression ${request.expression} Qwen fallback succeeded`,
       );
-      return qwenResult;
-    }
-
-    console.warn(
-      `[Production] Expression ${request.expression} Qwen failed: ${qwenResult.error ?? "unknown"}, falling back to Seedream`,
-    );
-    const seedreamResult = await this.gateExpression(
-      await this.seedream.generateExpression(request),
-      request,
-    );
-    if (seedreamResult.status === "completed") {
-      console.log(
-        `[Production] Expression ${request.expression} Seedream fallback succeeded`,
-      );
     } else {
       console.error(
         `[Production] Expression ${request.expression} all three models failed`,
       );
     }
-    return seedreamResult;
+    return qwenResult;
   }
 }
