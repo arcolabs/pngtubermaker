@@ -201,6 +201,12 @@ export default function Footer() {
             >
               {t("privacy")}
             </Link>
+            <Link
+              href="/legal/refund"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              {t("refund")}
+            </Link>
           </nav>
         </div>
 
@@ -300,6 +306,12 @@ export default function Footer() {
               className="text-base-content/70 hover:text-primary transition-colors"
             >
               {t("privacy")}
+            </Link>
+            <Link
+              href="/legal/refund"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              {t("refund")}
             </Link>
           </nav>
         </div>
