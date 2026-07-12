@@ -1,0 +1,37 @@
+name: Scheduled jobs
+
+# Runs on GitHub's infrastructure on purpose: an alarm that shares a failure
+# domain with the thing it watches is not an alarm. Both jobs are plain
+# authenticated HTTP calls, so no production database credential ever leaves
+# our own infrastructure — GitHub holds only CRON_SECRET.
+on:
+  schedule:
+    - cron: "0 */6 * * *" # generation health
+    - cron: "17 3 * * *" # expire credits (daily)
+  workflow_dispatch:
+
+env:
+  APP_URL: https://pngtubermaker.com
+
+jobs:
+  generation-health:
+    if: github.event.schedule != '17 3 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      # --fail-with-body: a 503 (generation broken) fails the job, so GitHub
+      # emails on top of the Lark alert the endpoint itself sends.
+      - name: Check generation health
+        run: |
+          curl --fail-with-body --silent --show-error --max-time 60 \
+            -X POST "$APP_URL/api/cron/generation-health" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
+
+  expire-credits:
+    if: github.event.schedule != '0 */6 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Expire subscription credits
+        run: |
+          curl --fail-with-body --silent --show-error --max-time 60 \
+            -X POST "$APP_URL/api/cron/expire-credits" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
