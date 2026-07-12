@@ -3,10 +3,10 @@
  *
  * Implementations:
  * - MockAdapter: Returns placeholder images with simulated delays (dev)
- * - ProductionAdapter: GPT-Image-2 primary, Qwen + Seedream as fallback
- *   - GptImageAdapter: Primary; gen via PiAPI (Zeakai fallback), edits via Zeakai (PiAPI fallback)
- *   - QwenAdapter: Fallback; via CocoRouter /v1/piapi/task (Qubico/qwen-image)
- *   - SeedreamAdapter: Fallback; via CocoRouter /v1/piapi/task (seedream-5-lite)
+ * - ProductionAdapter: multi-upstream with fallback
+ *   - BytePlusAdapter: seedream-5.0-lite via ARK (primary, sync)
+ *   - SeedreamAdapter: seedream-5-lite via direct PiAPI (cross-vendor fallback)
+ *   - QwenAdapter: Qubico/qwen-image via direct PiAPI (last-resort fallback)
  */
 
 export type ArtStyle = "anime" | "chibi" | "cartoon" | "pixel-art" | "none";
@@ -129,7 +129,7 @@ export interface GenerateExpressionResult {
   status: "completed" | "failed";
   /** Single expression image URL */
   imageUrl: string | null;
-  /** Upstream that produced the image (e.g. "piapi-gpt", "zeakai-gpt", "qwen", "seedream") */
+  /** Upstream that produced the image (e.g. "byteplus-lite", "piapi-lite", "qwen") */
   provider?: string;
   error?: string;
 }

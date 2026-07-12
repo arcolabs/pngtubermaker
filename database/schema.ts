@@ -232,7 +232,7 @@ export const avatarExpressions = pgTable(
     status: text("status").notNull(), // 'pending' | 'generating' | 'completed' | 'failed'
     imageUrl: text("image_url"),
     imageR2Key: text("image_r2_key"),
-    // Upstream that produced the image (e.g. "piapi-gpt", "zeakai-gpt", "qwen", "seedream")
+    // Upstream that produced the image (e.g. "byteplus-lite", "piapi-lite", "qwen")
     provider: text("provider"),
     creditsUsed: integer("credits_used").notNull().default(0),
     createdAt: timestamp("created_at").notNull().defaultNow(),

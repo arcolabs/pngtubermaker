@@ -1,7 +1,7 @@
 /**
- * Async background removal via CocoRouter → PiAPI (Qubico/image-toolkit).
+ * Async background removal via direct PiAPI (Qubico/image-toolkit).
  *
- * Uses the same submit→poll pattern as other PiAPI adapters.
+ * Uses the same submit->poll pattern as other PiAPI adapters.
  * Designed to run as a fire-and-forget task via Next.js `after()`,
  * so failures are logged but never thrown to the caller.
  *
@@ -9,59 +9,31 @@
  * to avoid CDN cache serving stale originals. The caller provides an
  * `onComplete` callback to update DB records with the new URLs/keys.
  *
- * Original R2 files are NOT deleted — they are kept as AI generation input
- * because external AI APIs (e.g. Doubao) may timeout downloading _nobg images.
+ * Original R2 files are NOT deleted - they are kept as AI generation input
+ * because external AI APIs may timeout downloading _nobg images.
  */
 
+import {
+  checkTask,
+  isCompleted,
+  isFailed,
+  type PiApiResponse,
+  submitTask,
+} from "./generation/piapi-client";
 import { PollFailedError, pollUntilDone } from "./generation/poll";
 import { generateThumbnail, uploadImageToR2 } from "./storage";
 
-const API_BASE =
-  process.env.COCOROUTER_URL || "https://router.interastralpeace.online";
-
-function getApiKey(): string {
-  const key = process.env.COCOROUTER_KEY;
-  if (!key) throw new Error("COCOROUTER_KEY environment variable not set");
-  return key;
-}
-
-interface TaskResponse {
-  data?: {
-    task_id?: string;
-    status?: string;
-    output?: {
-      image_url?: string;
-    };
-    error?: {
-      message?: string;
-    };
-  };
-}
-
 async function submitRemoveBackground(imageUrl: string): Promise<string> {
-  const res = await fetch(`${API_BASE}/v1/piapi/task`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getApiKey()}`,
+  const data = await submitTask({
+    model: "Qubico/image-toolkit",
+    task_type: "background-remove",
+    input: {
+      rmbg_model: "RMBG-2.0",
+      image: imageUrl,
     },
-    body: JSON.stringify({
-      model: "Qubico/image-toolkit",
-      task_type: "background-remove",
-      input: {
-        rmbg_model: "RMBG-2.0",
-        image: imageUrl,
-      },
-    }),
   });
 
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Remove background submit failed (${res.status}): ${body}`);
-  }
-
-  const data = (await res.json()) as TaskResponse;
-  const taskId = data.data?.task_id;
+  const taskId = data.task_id;
   if (!taskId) {
     throw new Error(
       `Remove background response missing task_id: ${JSON.stringify(data)}`,
@@ -69,26 +41,6 @@ async function submitRemoveBackground(imageUrl: string): Promise<string> {
   }
 
   return taskId;
-}
-
-async function checkTask(taskId: string): Promise<TaskResponse> {
-  const res = await fetch(`${API_BASE}/v1/piapi/task/${taskId}`, {
-    headers: { Authorization: `Bearer ${getApiKey()}` },
-    signal: AbortSignal.timeout(15_000),
-  });
-
-  if (!res.ok) {
-    const body = await res.text();
-    const reqId = res.headers.get("x-request-id") || "n/a";
-    console.error(
-      `[BackgroundRemoval] checkTask failed: taskId=${taskId} status=${res.status} reqId=${reqId} body=${body.slice(0, 500)}`,
-    );
-    throw new Error(
-      `Remove background poll failed (${res.status}): ${body.slice(0, 200)}`,
-    );
-  }
-
-  return (await res.json()) as TaskResponse;
 }
 
 /**
@@ -99,16 +51,16 @@ export async function removeBackground(imageUrl: string): Promise<Buffer> {
   const taskId = await submitRemoveBackground(imageUrl);
   console.log("[BackgroundRemoval] Task submitted:", taskId);
 
-  const result = await pollUntilDone<TaskResponse>(
+  const result = await pollUntilDone<PiApiResponse>(
     {
       check: async () => {
-        const data = await checkTask(taskId);
-        const status = data.data?.status;
+        const resp = await checkTask(taskId);
+        const status = resp.data?.status;
 
-        if (status === "completed") return data;
-        if (status === "failed" || status === "error") {
+        if (isCompleted(status)) return resp;
+        if (isFailed(status)) {
           throw new PollFailedError(
-            data.data?.error?.message || "Background removal failed",
+            resp.data?.error?.message || "Background removal failed",
           );
         }
         return null;
@@ -152,7 +104,7 @@ export interface BgRemovalResult {
  * Using a different key prevents Cloudflare CDN from serving the stale
  * (with-background) cached version.
  *
- * Designed to be called inside `after()` — never throws.
+ * Designed to be called inside `after()` - never throws.
  */
 export async function processBackgroundRemoval(
   sourceImageUrl: string,
@@ -226,12 +178,12 @@ export async function processBackgroundRemoval(
       console.log(`[BackgroundRemoval] DB updated for ${newR2Key}`);
     }
 
-    // Original R2 files are intentionally kept — they serve as AI generation
-    // input (external APIs like Doubao may timeout downloading _nobg images)
+    // Original R2 files are intentionally kept - they serve as AI generation
+    // input (external APIs may timeout downloading _nobg images)
 
-    console.log(`[BackgroundRemoval] Done for ${r2Key} → ${newR2Key}`);
+    console.log(`[BackgroundRemoval] Done for ${r2Key} -> ${newR2Key}`);
   } catch (error) {
-    // Silent failure — original image stays in R2, user sees it with background
+    // Silent failure - original image stays in R2, user sees it with background
     console.warn(`[BackgroundRemoval] Failed for ${r2Key}:`, error);
   }
 }

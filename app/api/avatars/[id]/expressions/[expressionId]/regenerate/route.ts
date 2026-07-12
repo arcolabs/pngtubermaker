@@ -20,7 +20,11 @@ import {
   type ExpressionType,
   getGenerationAdapter,
 } from "@/lib/services/generation";
-import { deleteFromR2, ensureOwnStorage, generateAvatarKey } from "@/lib/services/storage";
+import {
+  deleteFromR2,
+  ensureOwnStorage,
+  generateAvatarKey,
+} from "@/lib/services/storage";
 
 /**
  * POST /api/avatars/[id]/expressions/[expressionId]/regenerate

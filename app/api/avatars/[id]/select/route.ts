@@ -158,6 +158,19 @@ export async function POST(
     const avatarName = generateAvatarName(a.prompt);
     const slug = generateSlug(avatarName);
 
+    // 10.5. Record which candidate/provider the user selected. This is the
+    //       only signal for evaluating the model mix (byteplus-lite vs
+    //       piapi-lite vs qwen), so persist it on metadata (no schema
+    //       change). candidateProviders is aligned with candidateImages.
+    const selectedProvider = a.candidateProviders?.[selectedIndex] ?? null;
+    const existingMetadata =
+      (a.metadata as Record<string, unknown> | null) ?? {};
+    const updatedMetadata = {
+      ...existingMetadata,
+      selectedIndex,
+      ...(selectedProvider ? { selectedProvider } : {}),
+    };
+
     // 11. Update avatar record (save original URLs for AI generation input)
     await db
       .update(avatars)
@@ -171,6 +184,7 @@ export async function POST(
         thumbnailUrl,
         thumbnailR2Key: thumbnailKey,
         status: "completed",
+        metadata: updatedMetadata,
         updatedAt: new Date(),
       })
       .where(eq(avatars.id, avatarId));

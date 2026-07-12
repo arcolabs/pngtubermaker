@@ -3,7 +3,7 @@
  *
  * Defends against the "HTTP 200 but garbage" upstream failure mode where an
  * edit endpoint silently degrades to text-to-image and returns an image
- * unrelated to the reference (incident: 2026-06-09, Zeakai pool produced
+ * unrelated to the reference (incident: 2026-06-09, an upstream pool produced
  * photoreal people for an anime avatar — every response was a success).
  *
  * dHash (64-bit difference hash) distances calibrated on that incident's

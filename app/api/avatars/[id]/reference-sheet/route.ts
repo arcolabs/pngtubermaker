@@ -14,7 +14,7 @@ import {
   refundWithUpdate,
   TASK_COSTS,
 } from "@/lib/services/credits-transaction";
-import { GptImageAdapter } from "@/lib/services/generation/gpt-image-adapter";
+import { BytePlusAdapter } from "@/lib/services/generation/byteplus-adapter";
 import { REFERENCE_SHEET_PROMPT } from "@/lib/services/generation/reference-sheet-prompt";
 import { uploadImageToR2 } from "@/lib/services/storage";
 
@@ -97,8 +97,8 @@ export async function POST(
       );
     }
 
-    // Generate via GPT-Image-2 edit (1024×1024)
-    const adapter = new GptImageAdapter();
+    // Generate via BytePlus Seedream 5 Lite image-edit (sync, primary upstream)
+    const adapter = new BytePlusAdapter();
     let generatedUrl: string | null = null;
     try {
       generatedUrl = await adapter.editWithPrompt(
