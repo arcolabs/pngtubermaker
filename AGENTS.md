@@ -325,9 +325,62 @@ R2_PUBLIC_URL=...
 
 8. **No Watermark**: All tiers get watermark-free exports. Differentiation is via resolution (512/1080/2160) and feature access.
 
-9. **Credit Expiration**: Subscription credits expire at billing cycle end. Cron endpoint at `POST /api/cron/expire-credits` (requires `CRON_SECRET` bearer token). Must be scheduled externally (Vercel Cron, crontab, etc.).
+9. **Credit Expiration**: Subscription credits expire at billing cycle end. `POST /api/cron/expire-credits` (Bearer `CRON_SECRET`), scheduled daily from `.github/workflows/cron.yml`. It is only housekeeping — both `getBalance` and the spend path already treat an expired subscription balance as zero — so a missed run costs nothing.
 
 10. **R2 Lifecycle Policy**: Configure in Cloudflare dashboard (not in code). Recommended: auto-delete objects under `avatars/*/candidates/` prefix after 7 days (unselected candidate images are already cleaned up on select, this is a safety net for failed flows).
+
+---
+
+## Generation Stack (2026-07-13)
+
+Upstreams are called **directly**. The old self-hosted CocoRouter relay is gone — it
+took generation down twice in eleven days and bought nothing (see the postmortems in
+`~/projects/bootscrapping/cocorouter/AGENTS.md`).
+
+| | primary | fallback |
+|---|---|---|
+| character (4 candidates) | 3× seedream-5.0-lite (**BytePlus**) + 1× qwen (**PiAPI**) | PiAPI seedream-5-lite → qwen fills empty slots |
+| expression (image-edit) | seedream-5.0-lite (**BytePlus**) | PiAPI seedream-5-lite → PiAPI qwen |
+| background removal | PiAPI image-toolkit | — |
+
+- **BytePlus**: `POST {ARK_BASE_URL}/api/v3/images/generations`, `Authorization: Bearer ARK_API_KEY`,
+  **synchronous — no polling**. `model` is an endpoint id (`ARK_SEEDREAM_LITE_ENDPOINT`).
+  Adding `image` (URL or URL array) switches the same endpoint to image-edit.
+- **PiAPI**: `POST /api/v1/task` + `GET /api/v1/task/{id}`, header **`X-API-Key`** (not Bearer).
+
+Rules learned the hard way — do not relearn:
+- **Everything must finish inside Cloudflare's 100s origin wall**, because generation is
+  fully synchronous (`await adapter.generateCharacter()` inside the request). Upstream
+  calls are capped at 85s. Measured: lite txt2img ~20–28s, lite image-edit ~30s, qwen ~40–56s.
+- **seedream-5.0-pro is unusable here**: its txt2img measures 108–147s on BytePlus *and*
+  PiAPI, at 1K *and* 2K. No vendor or size makes it fit. (Its image-edit is fast, ~30s.)
+- **gpt-image-2 was dropped**: $0.195/image (3.75× lite), routinely blew the wall, and
+  **abandoned sync calls are still billed upstream** — we paid for images we threw away.
+- **Lite exposes no `seed`.** The three character candidates carry distinct prompt variants;
+  with identical prompts the candidates collapse toward one look (measured: dHash distance
+  10 between two of four, under the 14 threshold `similarity.ts` calls "the same image").
+- The **similarity gate** (`gateExpression`/`resemblesBase`) must wrap *every* expression
+  attempt. It exists because an upstream can return HTTP 200 with an unrelated image
+  (silently degrading image-edit to text-to-image); the gate turns that into a normal
+  failure so the fallback chain advances.
+- `avatars.candidate_providers` records the upstream per candidate, and `avatars.metadata`
+  records `{selectedProvider, selectedIndex}` on select — that pair is the only signal that
+  can tell us whether the model mix is right. Keep the provider labels distinguishable.
+
+## Watch the success rate, not the container
+
+`POST /api/cron/generation-health` (Bearer `CRON_SECRET`) every 6h from GitHub Actions:
+failure rate over the last 6h past 50% (min 10 attempts) → Lark alert + HTTP 503 (which
+also fails the Actions job, so GitHub emails too).
+
+It runs on GitHub on purpose: **an alarm that shares a failure domain with the thing it
+watches is not an alarm**, and both outages so far were host-level. It calls an
+authenticated endpoint rather than reading the DB, so no production database credential
+leaves our infrastructure.
+
+Why it exists: generation was ~100% failing for four days (2026-07-08→12) and the first
+thing that told us was **a customer emailing to ask what he was doing wrong**. The
+`avatars` table knew the whole time. A green container says nothing — ask the data.
 
 ---
 
