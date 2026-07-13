@@ -6,7 +6,7 @@
  *   bun run scripts/test-piapi-generation.ts
  *
  * Verifies:
- *  1. generateCharacter -> 4 accessible image URLs, providers = 3x byteplus-lite
+ *  1. generateCharacter -> 4 accessible image URLs, providers = 4x byteplus-lite
  *     + 1x qwen (Qwen fills extra slots only if a BytePlus slot fails).
  *  2. generateExpression -> an image URL that passes the perceptual-hash
  *     similarity gate against the base, served by byteplus-lite (primary).
@@ -113,9 +113,12 @@ async function main() {
     allAccessible.every(Boolean) && allAccessible.length === 4,
     "all 4 image URLs accessible & non-empty",
   );
+  // PiAPI must not appear on the happy path at all: it is a queue (78-122s
+  // before a task starts), and one PiAPI slot is what pushed a 25s generation
+  // past the 100s origin wall on 2026-07-13.
   const a4 = assert(
-    byteplusCount === 3 && piapiCount === 0 && qwenCount === 1,
-    `provider mix = 3x byteplus-lite + 0 piapi-lite + 1 qwen (got byteplus=${byteplusCount} piapi=${piapiCount} qwen=${qwenCount})`,
+    byteplusCount === 4 && piapiCount === 0 && qwenCount === 0,
+    `provider mix = 4x byteplus-lite, no PiAPI on the hot path (got byteplus=${byteplusCount} piapi=${piapiCount} qwen=${qwenCount})`,
   );
 
   if (qwenCount > 1 || piapiCount > 0) {
