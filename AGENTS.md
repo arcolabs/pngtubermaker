@@ -367,6 +367,30 @@ Rules learned the hard way — do not relearn:
   records `{selectedProvider, selectedIndex}` on select — that pair is the only signal that
   can tell us whether the model mix is right. Keep the provider labels distinguishable.
 
+### Two upstream accounts now have to stay funded
+
+**A drained upstream balance does not fail fast — it hangs.** On 2026-07-13, hours after
+the BytePlus migration shipped, the ARK account ran out of credit and BytePlus simply held
+each request until our own 85s timeout fired. Symptom in the data: `candidate_providers`
+comes back as `qwen,qwen,qwen,qwen` (all three BytePlus slots died, qwen backfilled them)
+and most attempts `failed` at 84–106s. The upstream probed **fine from a laptop** the whole
+time — because that key was checked before the balance mattered. Check the *balance*, not
+just the endpoint.
+
+Keep both funded: **BytePlus/ARK** (primary, all seedream) and **PiAPI** (qwen + fallback).
+
+### PiAPI is a queue, not a bottleneck we can tune
+
+PiAPI's slowness is **not** our polling. Its own task metadata decomposes it:
+`created_at → started_at` (their queue) measured **78–122s** while `started_at → ended_at`
+(actual generation) was **0.3–33s**, and our polling overhead was **0.2–3.7s**. Same model,
+same origin, ~20s direct from BytePlus. The account is `hobbyist` with
+`max_concurrent_task_count: 3` on the shared public pool.
+
+Consequence: **when PiAPI's queue is hot, the PiAPI fallback cannot save us** — 100s+ of
+queueing exceeds both our 85s cap and the 100s wall. The cross-vendor redundancy is real
+only while PiAPI's dispatch is fast. Do not assume it is.
+
 ## Watch the success rate, not the container
 
 `POST /api/cron/generation-health` (Bearer `CRON_SECRET`) every 6h from GitHub Actions:

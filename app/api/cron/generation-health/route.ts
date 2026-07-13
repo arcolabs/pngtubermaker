@@ -80,10 +80,12 @@ export async function POST(req: Request) {
     await alertLark(
       `🚨 PNGTuberMaker: generation is broken\n\n` +
         `${pct}% of the last ${total} attempts failed (${failed} failed / ${ok} ok, ${WINDOW_HOURS}h window).\n\n` +
-        `Probe the upstream first — do not spelunk client logs:\n` +
-        `  BytePlus: POST ark.ap-southeast.bytepluses.com/api/v3/images/generations\n` +
-        `  PiAPI:    POST api.piapi.ai/api/v1/task\n` +
-        `Then check the PiAPI balance (piapi quota) — a drained account fails every task.`,
+        `Check the upstream BALANCES first — a drained account does not fail fast, it\n` +
+        `hangs until our timeout, so the endpoint still looks alive when you probe it:\n` +
+        `  BytePlus/ARK (primary, all seedream) — console.byteplus.com\n` +
+        `  PiAPI (qwen + fallback) — piapi quota\n\n` +
+        `Tell-tale in the data: candidate_providers = qwen,qwen,qwen,qwen means every\n` +
+        `BytePlus slot died and qwen backfilled them.`,
     );
     console.error(
       `[HealthCheck] UNHEALTHY: ${pct}% failure over ${total} attempts`,
