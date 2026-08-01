@@ -10,7 +10,7 @@ import type {
   SelectedAvatar,
 } from "@/hooks/use-avatar-generator";
 import { useBuyCreditsModal } from "@/hooks/use-buy-credits-modal";
-import { TASK_COSTS } from "@/lib/services/credits";
+import { TASK_COSTS } from "@/lib/services/credit-config";
 import { CandidateCard } from "./CandidateCard";
 import { ImagePreviewModal } from "./ImagePreviewModal";
 

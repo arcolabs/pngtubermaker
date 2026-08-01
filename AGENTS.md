@@ -26,7 +26,17 @@ AI-powered PNGTuber avatar generator for streamers. Production-ready Next.js 16 
 |-------|------|
 | Framework | Next.js 16.1.3 (App Router) |
 | UI | React 19.2.3, Tailwind v4, DaisyUI v5, Geist font |
-| DB | Neon PostgreSQL + Drizzle ORM |
+| DB | PostgreSQL (self-hosted db-frankfurt; migrated off Neon 2026-08) + Drizzle ORM |
+
+> **DB driver constraint (2026-08-02 incident)**: the driver MUST stay a plain TCP
+> driver (`pg` via `drizzle-orm/node-postgres` in `lib/db.ts`). `@neondatabase/serverless`
+> speaks WebSocket to Neon endpoints only — it fails against any plain PostgreSQL and
+> took down Google login for ~1h during the first migration attempt. Self-hosted PG has
+> a self-signed cert: its `DATABASE_URL` needs `sslmode=require&uselibpqcompat=true`
+> (pg v8.22+ treats bare `require` as verify-full).
+> Credit constants (`TASK_COSTS`/`TIER_CREDITS`) live in `lib/services/credit-config.ts`
+> and must stay DB-free — client components import them, and importing `credits.ts`
+> from a client component pulls `pg` into the browser bundle and breaks the build.
 | Auth | better-auth (Google/GitHub/Discord/Twitch OAuth) |
 | Payment | Stripe (3-tier subscriptions: Free/Start/Pro) |
 | Storage | Cloudflare R2 |

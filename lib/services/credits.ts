@@ -2,23 +2,9 @@ import { and, desc, eq, lt, sql } from "drizzle-orm";
 import { creditTransactions, wallets } from "@/database/schema";
 import { getDatabase } from "@/lib/db";
 
-// ============================================================================
-// Credit configuration
-// ============================================================================
-
-/** Credits granted per subscription tier per month */
-export const TIER_CREDITS = {
-  free: 0,
-  creator: 6_000,
-} as const;
-
-/** Credit costs per task type */
-export const TASK_COSTS = {
-  avatar_generation: 300,
-  expression_edit: 200,
-  hd_upscale: 100,
-  reference_sheet: 200,
-} as const;
+// Constants live in ./credit-config (DB-free) so client components can import
+// them without pulling the server-only pg driver into the browser bundle.
+export { TASK_COSTS, TIER_CREDITS } from "./credit-config";
 
 // ============================================================================
 // Balance queries

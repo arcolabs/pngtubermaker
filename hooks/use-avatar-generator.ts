@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useBuyCreditsModal } from "@/hooks/use-buy-credits-modal";
 import { useSubscriptionStore } from "@/hooks/use-subscription-store";
-import { TASK_COSTS } from "@/lib/services/credits";
+import { TASK_COSTS } from "@/lib/services/credit-config";
 
 // ============================================================================
 // Types

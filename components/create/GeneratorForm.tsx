@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAutoResizeTextarea } from "@/hooks/use-auto-resize-textarea";
 import type { ArtStyle } from "@/hooks/use-avatar-generator";
 import { useBuyCreditsModal } from "@/hooks/use-buy-credits-modal";
-import { TASK_COSTS } from "@/lib/services/credits";
+import { TASK_COSTS } from "@/lib/services/credit-config";
 import type { ReferenceHandlers } from "@/types/reference";
 import { ReferenceUploadArea } from "./ReferenceUploadArea";
 

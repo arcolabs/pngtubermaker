@@ -14,7 +14,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { neon } from "@neondatabase/serverless";
+import postgres from "postgres";
 import sharp from "sharp";
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -39,7 +39,7 @@ const r2Endpoint = R2_ENDPOINT;
 const r2AccessKeyId = R2_ACCESS_KEY_ID;
 const r2SecretAccessKey = R2_SECRET_ACCESS_KEY;
 
-const sql = neon(databaseUrl);
+const sql = postgres(databaseUrl);
 
 // 模拟一个测试用户（实际使用时应使用真实登录用户）
 const TEST_USER_ID = "test-user-123";
@@ -188,7 +188,9 @@ async function testUploadFlow() {
   console.log("   - Cleanup: ✓");
 }
 
-testUploadFlow().catch((error) => {
-  console.error("\n❌ Test failed:", error);
-  process.exit(1);
-});
+testUploadFlow()
+  .then(() => sql.end())
+  .catch((error) => {
+    console.error("\n❌ Test failed:", error);
+    process.exit(1);
+  });

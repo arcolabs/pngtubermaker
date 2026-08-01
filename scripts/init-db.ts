@@ -1,10 +1,10 @@
-import { neon } from "@neondatabase/serverless";
+import postgres from "postgres";
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
   throw new Error("DATABASE_URL environment variable is not set");
 }
-const sql = neon(databaseUrl);
+const sql = postgres(databaseUrl);
 
 async function initDb() {
   console.log("Creating database tables...");
@@ -169,7 +169,9 @@ async function initDb() {
   console.log("\n✅ All tables created successfully!");
 }
 
-initDb().catch((error) => {
-  console.error("❌ Error creating tables:", error);
-  process.exit(1);
-});
+initDb()
+  .then(() => sql.end())
+  .catch((error) => {
+    console.error("❌ Error creating tables:", error);
+    process.exit(1);
+  });

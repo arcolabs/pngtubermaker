@@ -1,18 +1,12 @@
-import { neonConfig, Pool } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-serverless";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 import * as schema from "@/database/schema";
 
-// Neon serverless defaults webSocketConstructor to undefined.
-// On Node.js 22+ use native WebSocket; fall back to ws package.
-neonConfig.webSocketConstructor =
-  globalThis.WebSocket ??
-  (() => {
-    const load = new Function("m", "return require(m)");
-    return load("ws");
-  })();
-
+// Plain node-postgres pool — works against any PostgreSQL (Neon, self-hosted, RDS).
+// sslmode=require in the URL encrypts without CA verification (psql semantics),
+// which is what the self-hosted db-frankfurt PG (self-signed cert) needs.
 let pool: Pool | undefined;
-let db: ReturnType<typeof drizzle> | undefined;
+let db: ReturnType<typeof drizzle<typeof schema>> | undefined;
 
 export function getDatabase() {
   const databaseUrl = process.env.DATABASE_URL;

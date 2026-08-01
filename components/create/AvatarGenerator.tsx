@@ -9,7 +9,7 @@ import {
 } from "@/hooks/use-avatar-generator";
 import { useBuyCreditsModal } from "@/hooks/use-buy-credits-modal";
 import { useReferencePersistentState } from "@/hooks/use-reference-persistent-state";
-import { TASK_COSTS } from "@/lib/services/credits";
+import { TASK_COSTS } from "@/lib/services/credit-config";
 import type { ReferenceHandlers } from "@/types/reference";
 import { ExpressionResultsCard } from "./ExpressionResultsCard";
 import { GenerationGroup } from "./GenerationGroup";
