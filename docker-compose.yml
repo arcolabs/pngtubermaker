@@ -9,6 +9,9 @@ services:
         - NEXT_PUBLIC_SOCIAL_DISCORD=${NEXT_PUBLIC_SOCIAL_DISCORD}
         - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
     restart: unless-stopped
-    env_file: .env
+    # App env lives in apps/web/.env — run with:
+    #   docker compose --env-file apps/web/.env up -d
+    # (--env-file also feeds the NEXT_PUBLIC_* build-arg interpolation above)
+    env_file: apps/web/.env
     ports:
       - "3000:3000"

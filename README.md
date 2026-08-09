@@ -1,41 +1,41 @@
 # PNGTuberMaker
 
-AI-powered PNGTuber avatar generator for streamers. Create professional streaming avatars, expressions, and animations in minutes — not weeks.
+AI-powered PNGTuber avatar generator for streamers. Create professional
+streaming avatars, expressions, and animations in minutes — not weeks.
+
+This repository is a **Bun workspaces monorepo**. The product is a single
+Next.js full-stack application in [`apps/web`](apps/web). Authoritative
+project context lives in [`docs/context`](docs/context) — read it before
+changing anything. `AGENTS.md` holds the monorepo-wide agent rules.
 
 ## 🚀 Quick Start
 
 ```bash
-# Install dependencies
+# Install dependencies (workspace root)
 bun install
 
-# Copy environment variables
-cp .env.example .env
+# Configure environment
+cp apps/web/.env.example apps/web/.env   # then fill in values
 
 # Initialize database
-bun run scripts/init-db.ts
+bun run init-db
 
 # Start development server
 bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the app.
+Open [http://localhost:4000](http://localhost:4000) to view the app.
 
-## 🎨 What is PNGTuberMaker?
+## 📁 Repository Layout
 
-PNGTuberMaker helps streamers create custom PNG avatars for platforms like Twitch, YouTube, and Discord:
-
-- **AI Avatar Generation** — Turn text descriptions into unique characters
-- **Expression Packs** — Auto-generate happy, angry, sad, surprised expressions
-- **Animation Tools** — Add blinking, mouth movements, and transitions
-- **Smart Upscale** — Polish avatars to HD/4K quality
-
-## 💰 Pricing
-
-| Plan | Price | Features |
-|------|-------|----------|
-| **Free** | $0 | 3 generations/month, watermarked, low-res |
-| **Start** | $9/mo | 50 generations/month, HD export, no watermark |
-| **Pro** | $30/mo | Unlimited, 4K export, all features, commercial license |
+```
+apps/web/        # Next.js 16 app (App Router, standalone output)
+docs/context/    # authoritative product / architecture / operations / invariants
+docs/legacy/     # historical plans & task lists (not current truth)
+.github/         # CI (pr.yml) and scheduled HTTP jobs (cron.yml)
+Dockerfile       # production image — Zeabur builds it from the repo root
+docker-compose.yml, Caddyfile   # self-hosted fallback path
+```
 
 ## 🛠 Tech Stack
 
@@ -43,121 +43,47 @@ PNGTuberMaker helps streamers create custom PNG avatars for platforms like Twitc
 |-------|------------|
 | Framework | Next.js 16 (App Router) |
 | UI | React 19, Tailwind CSS v4, DaisyUI v5 |
-| Database | Neon PostgreSQL + Drizzle ORM |
+| Database | PostgreSQL (self-hosted) + Drizzle ORM (`pg` driver) |
 | Auth | better-auth (Google, GitHub, Discord, Twitch OAuth) |
-| Payment | Stripe (subscriptions) |
+| Payment | Stripe (subscriptions: Free / Start / Pro) |
 | Storage | Cloudflare R2 |
+| Package manager | Bun workspaces |
 
-## 📁 Project Structure
+## 📝 Root Commands
 
-```
-app/
-├── (main)/                 # Main route group
-│   ├── page.tsx           # Landing page with Hero, Features, Pricing
-│   ├── pricing/           # Pricing page
-│   └── legal/             # Terms & Privacy
-├── login/                 # Auth page
-├── api/                   # API routes
-│   ├── auth/             # better-auth handlers
-│   ├── payments/         # Stripe checkout
-│   └── webhooks/         # Stripe webhooks
-components/
-├── sections/             # Page sections
-│   ├── Hero.tsx
-│   ├── CharacterShowcase.tsx
-│   ├── AITools.tsx
-│   ├── Comparison.tsx
-│   ├── PricingSection.tsx
-│   ├── Testimonials.tsx
-│   └── FAQ.tsx
-├── pricing/              # Pricing components
-├── layout/               # Header, Footer
-└── ui/                   # Reusable UI
-lib/
-├── brand.ts              # Brand config
-├── stripe.ts             # Pricing & Stripe helpers
-├── auth.ts               # Auth config
-└── services/
-    └── r2.ts             # Cloudflare R2 upload
-database/
-├── schema.ts             # Drizzle schema
-└── migrations/           # DB migrations
+```bash
+bun install --frozen-lockfile   # reproducible workspace install
+bun run dev                     # dev server (apps/web, :4000)
+bun run check                   # Biome lint + format check
+bun run build                   # production build
+bun run start                   # production server
+bun run db:push                 # push schema changes
+bun run db:generate             # generate migrations
+bun run db:migrate              # run migrations
+bun run init-db                 # one-time DB setup
 ```
 
 ## ⚙️ Environment Variables
 
-Copy `.env.example` → `.env` and fill in:
+Copy `apps/web/.env.example` → `apps/web/.env` and fill in values. The full
+variable list, the `CRON_SECRET` arrangement for scheduled jobs, and the
+deployment contract (Zeabur root Dockerfile, port 3000, health check) are
+documented in [`docs/context/operations.md`](docs/context/operations.md).
+Never commit env values.
+
+## 🐳 Production Build
 
 ```bash
-# Required
-NEXT_PUBLIC_APP_NAME=PNGTuberMaker
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-DATABASE_URL=postgresql://...
-BETTER_AUTH_SECRET=openssl rand -hex 32
-BETTER_AUTH_URL=http://localhost:3000
-
-# OAuth (optional)
-GOOGLE_CLIENT_ID=...
-GOOGLE_CLIENT_SECRET=...
-GITHUB_CLIENT_ID=...
-GITHUB_CLIENT_SECRET=...
-DISCORD_CLIENT_ID=...
-DISCORD_CLIENT_SECRET=...
-TWITCH_CLIENT_ID=...
-TWITCH_CLIENT_SECRET=...
-
-# Stripe (required for payments)
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-STRIPE_PUBLISHABLE_KEY=pk_test_...
-STRIPE_PRICE_START_MONTHLY=price_...
-STRIPE_PRICE_START_YEARLY=price_...
-STRIPE_PRICE_PRO_MONTHLY=price_...
-STRIPE_PRICE_PRO_YEARLY=price_...
-
-# R2 Storage (optional)
-R2_ENDPOINT=...
-R2_ACCESS_KEY_ID=...
-R2_SECRET_ACCESS_KEY=...
-R2_BUCKET_NAME=...
-R2_PUBLIC_URL=...
+docker build .
 ```
 
-## 📝 Available Scripts
-
-```bash
-bun run dev               # Development server
-bun run build             # Production build
-bun run check             # Biome lint check
-bun run format            # Format code
-bun run db:push           # Push schema changes
-bun run db:generate       # Generate migrations
-bun run db:migrate        # Run migrations
-```
-
-## 🎭 Features
-
-### Authentication
-- Email/password login
-- OAuth: Google, GitHub, Discord, Twitch
-- Session management with better-auth
-
-### Avatar Generation
-- Text-to-avatar AI generation
-- Reference image upload
-- Transparent PNG output
-- Expression pack generation
-- Animation creation (MP4/GIF/WebM)
-
-### Payments
-- 3-tier subscription (Free/Start/Pro)
-- Stripe checkout integration
-- Customer portal for management
-- Webhook handling for subscription events
+The root Dockerfile preserves the existing deployment contract: multi-stage
+Bun build → Next.js standalone server on port 3000 with a `/` health check.
 
 ## 🤝 Contributing
 
-Join our community on [Discord](https://discord.gg/zysPAnvP8f)
+Join our community on [Discord](https://discord.gg/zysPAnvP8f). Engineering
+context and invariants: [`docs/context`](docs/context).
 
 ## 📄 License
 
