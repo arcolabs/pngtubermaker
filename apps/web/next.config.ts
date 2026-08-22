@@ -5,6 +5,10 @@ const withNextIntl = createNextIntlPlugin("./lib/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  env: {
+    APP_RELEASE_COMMIT_SHA:
+      process.env.ZEABUR_GIT_COMMIT_SHA ?? process.env.GITHUB_SHA ?? "dev",
+  },
   images: {
     qualities: [70, 75, 85],
     remotePatterns: [

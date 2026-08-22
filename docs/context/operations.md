@@ -17,6 +17,12 @@ require a service-root change.
 - **Port 3000** (`PORT=3000`, `HOSTNAME=0.0.0.0`), `TZ=UTC` (DB timestamps are
   naive local time; pre-2026-06-10 rows are UTC-8), non-root user `nextjs`.
 - Health check: `curl -f http://localhost:3000/` every 30s.
+- Release readback: `GET` or `HEAD /api/release` returns the exact deployed
+  source commit in `x-release-commit` with `Cache-Control: no-store`. The value
+  is frozen at build time from Zeabur's `ZEABUR_GIT_COMMIT_SHA` (or
+  `GITHUB_SHA` in CI); an absent or malformed commit returns 503 without the
+  header. This endpoint is the production/rollback proof for controlled Git
+  releases and must never fall back to a branch name or a runtime timestamp.
 - `docker-compose.yml` + `Caddyfile` at root mirror the same build
   (`reverse_proxy app:3000`) for the self-hosted fallback path; run it with
   `docker compose --env-file apps/web/.env up -d`.
