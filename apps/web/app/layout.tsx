@@ -11,11 +11,11 @@ import { isRtl, type Locale } from "@/lib/i18n/config";
 
 export const metadata: Metadata = {
   title: {
-    default: `PNGTuber Maker — Free AI PNGTuber Avatar Generator | ${brand.name}`,
+    default: `PNGTuber Maker — Free, OBS-Ready Avatar | ${brand.name}`,
     template: `%s | ${brand.name}`,
   },
   description:
-    "Free AI PNGTuber Maker — Create custom PNGTuber avatars, expression packs & animations for Twitch, YouTube & Discord streaming. No art skills needed. Go live in minutes.",
+    "Create your free PNGTuber avatar in minutes. AI-generated expressions as transparent PNGs, ready for OBS, Twitch & YouTube — no drawing skills needed.",
   keywords: [
     "PNGTuber Maker",
     "PNGTuber",
