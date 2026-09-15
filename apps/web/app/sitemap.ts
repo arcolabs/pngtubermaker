@@ -62,9 +62,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
       entries.push({
         url: getLocalizedUrl(route.path, locale),
-        // Only emit lastmod when the route declares one. `new Date()` made
-        // every entry claim "changed right now" on every request, which
-        // devalues the freshness signal site-wide.
+        // Only emit lastmod when the route declares one. The old fallback
+        // was a generation-time new Date(): on live (2026-09-15 probe) all
+        // 180 entries shared one build instant (2026-09-11T22:53:19.8xx),
+        // which devalues the freshness signal site-wide.
         ...(route.lastModified ? { lastModified: route.lastModified } : {}),
         changeFrequency: route.changeFrequency,
         priority: route.priority,
