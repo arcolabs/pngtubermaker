@@ -26,6 +26,11 @@ chk "sitemap trailing-slash locs == 0" "0" "$(echo "$sm" | grep -acE '<loc>[^<]*
 chk "sitemap has no /create == 0" "0" "$(echo "$sm" | grep -ac '/create' || true)"
 chk "sitemap lastmod count == 0" "0" "$(echo "$sm" | grep -ac '<lastmod>' || true)"
 
+# asset-death class: follow the emitted og:image URL (live /og-image.jpg is 200)
+home_og=$(page / | grep -aoE 'property="og:image" content="[^"]*"' | head -1 | sed -E 's/.*content="([^"]*)".*/\1/')
+oc=$(curl -s -o /dev/null -w '%{http_code}' --max-time 60 "$home_og")
+chk "emitted og:image URL serves 200" "200" "$oc"
+
 echo
 echo "TOTAL: $((pass+fail)) checks, $pass PASS, $fail FAIL"
 [ "$fail" -eq 0 ]
