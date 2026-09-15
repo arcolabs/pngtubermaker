@@ -5,6 +5,8 @@ import { company } from "@/lib/company";
 export const metadata: Metadata = {
   title: "Refund & Cancellation Policy",
   description: `Refund and cancellation policy for ${brand.name}`,
+  alternates: { canonical: "/legal/refund" },
+  openGraph: { url: "https://pngtubermaker.com/legal/refund" },
 };
 
 const lastUpdated = "July 1, 2026";

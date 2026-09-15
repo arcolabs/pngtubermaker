@@ -20,7 +20,8 @@ interface SitemapRoute {
 const staticRoutes: SitemapRoute[] = [
   { path: "/", priority: 1.0, changeFrequency: "daily" },
   { path: "/pricing", priority: 0.9, changeFrequency: "weekly" },
-  { path: "/create", priority: 0.8, changeFrequency: "weekly" },
+  // /create removed: it is auth-gated and 307s anonymous visitors (all
+  // crawlers) to /login — a permanent redirect trap in the sitemap.
   { path: "/showcase", priority: 0.7, changeFrequency: "daily" },
   { path: "/partners", priority: 0.4, changeFrequency: "monthly" },
   { path: "/legal/terms", priority: 0.3, changeFrequency: "monthly" },
@@ -40,8 +41,12 @@ const staticRoutes: SitemapRoute[] = [
 ];
 
 function getLocalizedUrl(path: string, locale: Locale): string {
-  if (locale === defaultLocale) return `${baseUrl}${path}`;
-  return `${baseUrl}/${locale}${path}`;
+  // Collapse "/" route paths so locale roots do not become ".../ja/" —
+  // Next 308-redirects the trailing-slash form, making every locale-root
+  // sitemap entry a redirect (a crawl trap).
+  const clean = path === "/" ? "" : path;
+  if (locale === defaultLocale) return `${baseUrl}${clean}`;
+  return `${baseUrl}/${locale}${clean}`;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -57,7 +62,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
       entries.push({
         url: getLocalizedUrl(route.path, locale),
-        lastModified: route.lastModified || new Date(),
+        // Only emit lastmod when the route declares one. `new Date()` made
+        // every entry claim "changed right now" on every request, which
+        // devalues the freshness signal site-wide.
+        ...(route.lastModified ? { lastModified: route.lastModified } : {}),
         changeFrequency: route.changeFrequency,
         priority: route.priority,
         alternates: { languages: alternates },

@@ -8,6 +8,10 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Partners | PNGTuberMaker",
   description: "Our amazing partners and friends in the creator ecosystem.",
+  // Self-referencing canonical: without it this page inherited the root
+  // layout's canonical "/" and told Google it IS the homepage.
+  alternates: { canonical: "/partners" },
+  openGraph: { url: "https://pngtubermaker.com/partners" },
 };
 
 export default async function PartnersPage() {

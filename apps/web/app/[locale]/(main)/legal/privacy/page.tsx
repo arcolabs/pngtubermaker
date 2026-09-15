@@ -5,6 +5,8 @@ import { company } from "@/lib/company";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: `Privacy Policy for ${brand.name}`,
+  alternates: { canonical: "/legal/privacy" },
+  openGraph: { url: "https://pngtubermaker.com/legal/privacy" },
 };
 
 const lastUpdated = "July 1, 2026";

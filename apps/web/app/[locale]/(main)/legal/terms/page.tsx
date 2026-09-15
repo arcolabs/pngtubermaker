@@ -5,6 +5,8 @@ import { company } from "@/lib/company";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: `Terms of Service for ${brand.name}`,
+  alternates: { canonical: "/legal/terms" },
+  openGraph: { url: "https://pngtubermaker.com/legal/terms" },
 };
 
 const effectiveDate = "July 1, 2026";
