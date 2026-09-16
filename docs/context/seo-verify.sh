@@ -28,8 +28,12 @@ chk "sitemap lastmod count == 0" "0" "$(echo "$sm" | grep -ac '<lastmod>' || tru
 
 # asset-death class: follow the emitted og:image URL (live /og-image.jpg is 200)
 home_og=$(page / | grep -aoE 'property="og:image" content="[^"]*"' | head -1 | sed -E 's/.*content="([^"]*)".*/\1/')
-oc=$(curl -s -o /dev/null -w '%{http_code}' --max-time 60 "$home_og")
-chk "emitted og:image URL serves 200" "200" "$oc"
+if [ -n "$home_og" ]; then
+  oc=$(curl -s -o /dev/null -w '%{http_code}' --max-time 60 "$home_og")
+  chk "emitted og:image URL serves 200" "200" "$oc"
+else
+  chk "page emits an og:image at all" "yes" "no"
+fi
 
 echo
 echo "TOTAL: $((pass+fail)) checks, $pass PASS, $fail FAIL"
