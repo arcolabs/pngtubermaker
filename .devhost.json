@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "name": "pngtubermaker",
+  "localDevsrv": "pngtubermaker",
+  "database": {
+    "image": "postgres:17-alpine",
+    "database": "pngtubermaker_dev",
+    "user": "pngtubermaker_dev",
+    "localPort": 55433,
+    "remotePort": 55433,
+    "memory": "768m",
+    "cpus": "1.5",
+    "ttlMinutes": 45
+  },
+  "migrate": {
+    "cwd": "apps/web",
+    "command": ["bun", "run", "db:migrate"]
+  }
+}
