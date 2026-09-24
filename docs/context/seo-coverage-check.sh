@@ -52,8 +52,20 @@ EXCLUDED=(
   "avatars/[id]:dynamic per-user route, unbounded URL space"
 )
 
+# Routes that are SITEMAP-LISTED but deliberately carry no inbound link, and so
+# are exempt from check 6 only (they are still required to be listed by check 3).
+# Format: <route>:<reason>
+#
+# This is a debt ledger, not a pass. Every entry prints WARN and is counted, and
+# emptying the ledger turns the route into a hard FAIL (verified 2026-09-24), so
+# the exemption cannot become the default way to make check 6 green.
+LINK_EXEMPT=(
+  "showcase:KNOWN ORPHAN, unfixed. Measured 2026-09-24: in the sitemap at all 12 locales, serves 200 with 354 lines of real content, and a crawl of all 14 EN sitemap surfaces found ZERO navigational inbound hrefs - its only inbound is its own <link rel=canonical> self-reference, which is not navigation. Same class as the three organic pages this ratchet was written for, but it was not created by the Arcops loop and linking it is a product/nav decision (label, placement, whether it deserves chrome space), so it is recorded here rather than silently shipped. See docs/context/seo-audit-2026-09-24.md"
+)
+
 pass=0
 fail=0
+warn=0
 
 chk() {
   if [ "$2" = "$3" ]; then
@@ -68,6 +80,17 @@ chk() {
 exclusion_reason() {
   local route="$1" entry
   for entry in "${EXCLUDED[@]}"; do
+    if [ "${entry%%:*}" = "$route" ]; then
+      echo "${entry#*:}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+link_exempt_reason() {
+  local route="$1" entry
+  for entry in "${LINK_EXEMPT[@]}"; do
     if [ "${entry%%:*}" = "$route" ]; then
       echo "${entry#*:}"
       return 0
@@ -186,11 +209,56 @@ for r in pngtuber-models obs-pngtuber picrew-pngtuber-maker; do
   chk "EN-only /$r emits 0 locale variants" "0" "$n"
 done
 
+# ── 6. every sitemap-listed route must also be LINKED from global chrome ─────
+# The other half of acceptance 6 in runbook 0075: "sitemap contains it AND a
+# reachable page links it". Check 3 alone cannot see this, and the gap is not
+# hypothetical: /showcase is listed at all 12 locales, serves 200, and had zero
+# navigational inbound links (measured 2026-09-24 by crawling all 14 EN sitemap
+# surfaces; its only inbound was its own <link rel=canonical> self-reference).
+# A sitemap-only ratchet passes that silently, which is the exact failure mode
+# this file exists to prevent.
+#
+# Scope is deliberately Footer.tsx + Header.tsx rather than a full crawl: global
+# chrome renders on every page, so a link there proves reachability from any
+# entry point, and a source read is deterministic and needs no server. Documented
+# limit: it does not catch a route linked only from one other page's body, so a
+# route could pass here while being one link from orphaned.
+CHROME=("apps/web/components/layout/Footer.tsx" "apps/web/components/layout/Header.tsx")
+chrome_hrefs=""
+chrome_found=0
+for cf in "${CHROME[@]}"; do
+  if [ ! -f "$cf" ]; then
+    echo "FAIL  global chrome file missing: $cf"
+    fail=$((fail + 1))
+    continue
+  fi
+  n=$(grep -oE 'href="/[^"]*"' "$cf" | wc -l)
+  chrome_found=$((chrome_found + n))
+  chrome_hrefs="$chrome_hrefs
+$(grep -oE 'href="/[^"]*"' "$cf" | sed -E 's/^href="//; s/"$//')"
+done
+chk "global chrome yields >0 hrefs" "yes" "$([ "$chrome_found" -gt 0 ] && echo yes || echo no)"
+
+for r in "${routes[@]}"; do
+  # Excluded routes are auth-gated or non-indexable: linking them in global chrome
+  # would expose surfaces robots.txt is told not to crawl.
+  exclusion_reason "$r" >/dev/null && continue
+  if printf '%s\n' "$chrome_hrefs" | grep -qxF "/$r"; then
+    chk "linked /$r" "yes" "yes"
+  elif reason=$(link_exempt_reason "$r"); then
+    echo "WARN  /$r  (link-exempt debt: $reason)"
+    warn=$((warn + 1))
+  else
+    chk "linked /$r" "yes" "no"
+    fail=$((fail + 1))
+  fi
+done
+
 echo
 if [ "$missing" -gt 0 ]; then
   echo "UNLISTED PUBLIC ROUTES: $missing  (register in apps/web/app/sitemap.ts,"
   echo "  or add to EXCLUDED above with a reason)"
 fi
-echo "TOTAL: $((pass + fail)) checks, $pass PASS, $fail FAIL"
+echo "TOTAL: $((pass + fail)) checks, $pass PASS, $fail FAIL, $warn WARN (link-exempt debt)"
 
 [ "$fail" -eq 0 ]
