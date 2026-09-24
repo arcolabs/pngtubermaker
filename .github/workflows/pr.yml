@@ -5,18 +5,40 @@ name: PR
 on:
   pull_request:
     branches: [main]
+  # Manual, for the same reason arcops-server's ci.yml has it: main is
+  # unprotected, so a direct push lands and deploys with no check having run.
+  # The Arcops release path does open PRs (all five pr.yml runs fired on
+  # `arcops/gwc_*` branches), but human fixes like this one go straight to main,
+  # and dispatch lets a change be proven on demand rather than only when someone
+  # happens to open a PR.
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 # One run per PR head — pushing a new commit cancels the stale run.
+#
+# The run_id fallback matters: `github.event.pull_request.number` is empty for a
+# workflow_dispatch, and without a fallback every dispatch would share the group
+# name `pr-` and cancel each other.
 concurrency:
-  group: pr-${{ github.event.pull_request.number }}
+  group: pr-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    # Self-hosted, matching arcolabs/arcops-server. This repo is PRIVATE in the
+    # same org, and GitHub-hosted minutes here are blocked by the org billing
+    # failure documented in arcops-server's ci.yml, so `ubuntu-latest` does not
+    # merely cost money - the job never starts and reports "The job was not
+    # started because recent account payments have failed". Last green run of
+    # this workflow was 2026-09-11, four days BEFORE the 2026-09-15 block, so
+    # the ratchet step added on 2026-09-24 has never executed in CI.
+    #
+    # The org's Default runner group is `visibility: all`, so the `arcops`
+    # runner (nab9-arcops-ci, self-hosted/Linux/X64/arcops, online 2026-09-24)
+    # is available to this repo without registering one of its own.
+    runs-on: arcops
     timeout-minutes: 20
     steps:
       - name: Checkout
@@ -53,4 +75,23 @@ jobs:
         run: bash docs/context/seo-coverage-check.sh
 
       - name: Root Docker build (Zeabur contract)
-        run: docker build .
+        # Same two flags arcops-server needs on this runner, and for the same
+        # measured reasons: the daemon's proxy env reaches build steps and breaks
+        # them (empty build-args unset the predefined proxy args), and a build
+        # container has no DNS of its own on this host so it runs in the host
+        # namespace where the resolver works. Retried because the host's
+        # connection is residential and has been measured dropping large
+        # transfers, so one failure is not a verdict.
+        run: |
+          for attempt in 1 2 3; do
+            if docker build --network host \
+              --build-arg HTTP_PROXY= --build-arg HTTPS_PROXY= \
+              --build-arg http_proxy= --build-arg https_proxy= \
+              -t pngtubermaker-ci .; then
+              exit 0
+            fi
+            echo "docker build attempt $attempt failed; retrying in 15s"
+            sleep 15
+          done
+          echo "docker build failed after 3 attempts"
+          exit 1
