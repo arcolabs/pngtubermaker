@@ -167,6 +167,24 @@ export default function Footer() {
             >
               {t("youtubeAvatarMaker")}
             </Link>
+            <Link
+              href="/pngtuber-models"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              {t("pngtuberModels")}
+            </Link>
+            <Link
+              href="/obs-pngtuber"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              {t("obsPngtuber")}
+            </Link>
+            <Link
+              href="/picrew-pngtuber-maker"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              {t("picrewPngtuberMaker")}
+            </Link>
           </nav>
 
           <nav className="flex flex-col gap-2">
@@ -280,6 +298,24 @@ export default function Footer() {
               className="text-base-content/70 hover:text-primary transition-colors"
             >
               {t("youtubeAvatarMaker")}
+            </Link>
+            <Link
+              href="/pngtuber-models"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              {t("pngtuberModels")}
+            </Link>
+            <Link
+              href="/obs-pngtuber"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              {t("obsPngtuber")}
+            </Link>
+            <Link
+              href="/picrew-pngtuber-maker"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              {t("picrewPngtuberMaker")}
             </Link>
             <Link
               href={brand.social.discord || "https://discord.com"}

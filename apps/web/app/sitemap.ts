@@ -15,6 +15,21 @@ interface SitemapRoute {
     | "yearly"
     | "never";
   lastModified?: Date;
+  /**
+   * Whether this route has per-locale translated content. Defaults to true.
+   *
+   * Set `false` for pages that are English-only by construction: their copy is
+   * hardcoded in the route file rather than loaded from `messages/<locale>/`,
+   * so `/ja/<path>` serves the identical English body and canonicalises back to
+   * the EN URL. Emitting 12 locale entries for such a page would add 12
+   * unlisted-content URLs per route to the sitemap, growing the fake locale
+   * fleet that `docs/context/seo-audit-2026-09-15.md` already flags as an open
+   * policy question. One EN entry is the honest listing; the locale variants
+   * stay reachable and still canonicalise correctly, they are just not
+   * advertised. Flip to translated (or drop the flag) once the page gets real
+   * per-locale content.
+   */
+  localized?: boolean;
 }
 
 const staticRoutes: SitemapRoute[] = [
@@ -38,6 +53,34 @@ const staticRoutes: SitemapRoute[] = [
   { path: "/for/discord", priority: 0.6, changeFrequency: "monthly" },
   { path: "/for/twitch", priority: 0.6, changeFrequency: "monthly" },
   { path: "/for/youtube", priority: 0.6, changeFrequency: "monthly" },
+  // Shipped by the organic Work loop (PRs #5/#6/#7) but never registered here,
+  // so they served 200 with real content that nothing reachable linked to and
+  // the sitemap stayed at 14 x 12 = 168. A discoverability bug, not a broken
+  // page; the footer links landed in the same change. Full record and the CI
+  // ratchet that keeps it shut: docs/context/seo-audit-2026-09-24.md.
+  //
+  // Listed EN-only because their copy is hardcoded in the route file rather than
+  // loaded via getLandingPage()/messages/<locale>/landing-*.json like the seven
+  // registered landing pages, only shared sections localise, and each canonical
+  // already points at the EN URL. See `localized` above.
+  {
+    path: "/pngtuber-models",
+    priority: 0.7,
+    changeFrequency: "weekly",
+    localized: false,
+  },
+  {
+    path: "/obs-pngtuber",
+    priority: 0.7,
+    changeFrequency: "weekly",
+    localized: false,
+  },
+  {
+    path: "/picrew-pngtuber-maker",
+    priority: 0.7,
+    changeFrequency: "weekly",
+    localized: false,
+  },
 ];
 
 function getLocalizedUrl(path: string, locale: Locale): string {
@@ -53,6 +96,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   for (const route of staticRoutes) {
+    // An EN-only route gets one entry and no language alternates. Advertising
+    // hreflang for locales whose content does not exist is a false claim to the
+    // crawler, and the page already canonicalises to the EN URL.
+    if (route.localized === false) {
+      entries.push({
+        url: getLocalizedUrl(route.path, defaultLocale),
+        ...(route.lastModified ? { lastModified: route.lastModified } : {}),
+        changeFrequency: route.changeFrequency,
+        priority: route.priority,
+        alternates: {
+          languages: {
+            "x-default": getLocalizedUrl(route.path, defaultLocale),
+          },
+        },
+      });
+      continue;
+    }
+
     for (const locale of locales) {
       const alternates: Record<string, string> = {};
       for (const altLocale of locales) {

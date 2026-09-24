@@ -38,5 +38,19 @@ jobs:
           # collection; never used for an actual connection.
           DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
 
+      - name: Sitemap coverage ratchet
+        # Must run AFTER the production build: it reads the emitted
+        # .next/server/app/sitemap.xml.body rather than re-deriving routes, so it
+        # checks the artifact that actually ships. Placed before the Docker build
+        # to fail fast on the cheaper signal.
+        #
+        # Fails when a public route ships a page.tsx but is absent from the
+        # sitemap (and not in the script's EXCLUDED allowlist). That is the
+        # 2026-09-24 defect class: three pages released by the organic Work loop
+        # returned 200 with real content but were listed nowhere, so no crawler
+        # could ever reach them, and the top-down 2026-09-15 audit could not see
+        # them because it enumerated sitemap -> URLs.
+        run: bash docs/context/seo-coverage-check.sh
+
       - name: Root Docker build (Zeabur contract)
         run: docker build .
