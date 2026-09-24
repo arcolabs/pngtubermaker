@@ -64,9 +64,9 @@ print, or commit its value. Rotating it means updating both sides.
 
 Two cron mechanisms exist and both must keep working:
 
-1. **GitHub Actions** (`.github/workflows/cron.yml`) — runs on GitHub's
-   infrastructure on purpose: an alarm that shares a failure domain with the
-   thing it watches is not an alarm. GitHub holds only `CRON_SECRET`; the jobs
+1. **GitHub Actions** (`.github/workflows/cron.yml`) — designed to run on
+   GitHub's infrastructure on purpose: an alarm that shares a failure domain with
+   the thing it watches is not an alarm. GitHub holds only `CRON_SECRET`; the jobs
    are plain authenticated HTTPS calls, so no database credential leaves our
    infrastructure.
    - Every 6h: `POST /api/cron/generation-health` — if the generation failure
@@ -74,6 +74,26 @@ Two cron mechanisms exist and both must keep working:
      Lark alert and returns 503, which also fails the Actions job (GitHub
      emails on top).
    - Daily 03:17 UTC: `POST /api/cron/expire-credits`.
+
+   **⚠️ Measured reality (2026-09-24), which contradicts the schedule above:**
+   `cron.yml` is `state=disabled_manually` and has `total_runs=0` — it has
+   **never executed**, not merely stopped since some date. Someone disabled it
+   deliberately, and this is Chesterton's Fence: **do not re-enable it without
+   first finding out why** (it may have been turned off for a reason — cost,
+   noise, a superseded alarm path — that is not recorded here). The consequence
+   to weigh before touching it: `generation-health` has **no other caller**. A
+   repo-wide grep for it matches only the route file and generated type files;
+   the in-process fallback below covers `expire-credits` only, not
+   `generation-health`. So as measured, the generation-failure alarm described in
+   "Monitoring philosophy" has never fired on a schedule. (The `CRON_SECRET`
+   presence is **not** established either way here: the Actions secrets API
+   returned `total_count=0` for this repo *and* for arcops-server, which is known
+   to hold secrets, so the read is uninformative rather than proof of absence.)
+   The fix, if one is wanted, is to re-enable the workflow on GitHub-hosted
+   runners — **not** to move it to the self-hosted `arcops` runner the way
+   `pr.yml` had to be, because self-hosting would put the alarm in the same
+   failure domain as production and defeat the entire reason it exists. That
+   choice, and the reason for the disable, are Kai's.
 2. **In-process** (`apps/web/instrumentation.ts`, node-cron, daily 01:00):
    expires subscription credits past their date. Credit expiration is
    housekeeping — `getBalance` and the spend path already treat an expired
