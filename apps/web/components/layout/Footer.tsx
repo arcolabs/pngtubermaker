@@ -198,6 +198,12 @@ export default function Footer() {
               {t("discord")}
             </Link>
             <Link
+              href="/showcase"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              {t("showcase")}
+            </Link>
+            <Link
               href="/partners"
               className="text-base-content/70 hover:text-primary transition-colors text-sm"
             >
@@ -324,6 +330,12 @@ export default function Footer() {
               className="text-base-content/70 hover:text-primary transition-colors"
             >
               {t("discord")}
+            </Link>
+            <Link
+              href="/showcase"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              {t("showcase")}
             </Link>
             <Link
               href="/partners"

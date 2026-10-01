@@ -59,8 +59,12 @@ EXCLUDED=(
 # This is a debt ledger, not a pass. Every entry prints WARN and is counted, and
 # emptying the ledger turns the route into a hard FAIL (verified 2026-09-24), so
 # the exemption cannot become the default way to make check 6 green.
+#
+# 2026-10-01: the "showcase" entry was retired (Kai decision): /showcase now has
+# a literal footer link (components/layout/Footer.tsx, community column,
+# desktop + mobile) plus a "showcase" label in all 12 footer.json locales, so
+# check 6 passes it on the same terms as every other route.
 LINK_EXEMPT=(
-  "showcase:KNOWN ORPHAN, unfixed. Measured 2026-09-24: in the sitemap at all 12 locales, serves 200 with 354 lines of real content, and a crawl of all 14 EN sitemap surfaces found ZERO navigational inbound hrefs - its only inbound is its own <link rel=canonical> self-reference, which is not navigation. Same class as the three organic pages this ratchet was written for, but it was not created by the Arcops loop and linking it is a product/nav decision (label, placement, whether it deserves chrome space), so it is recorded here rather than silently shipped. See docs/context/seo-audit-2026-09-24.md"
 )
 
 pass=0
