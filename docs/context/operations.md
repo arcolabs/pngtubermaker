@@ -64,36 +64,41 @@ print, or commit its value. Rotating it means updating both sides.
 
 Two cron mechanisms exist and both must keep working:
 
-1. **GitHub Actions** (`.github/workflows/cron.yml`) — designed to run on
-   GitHub's infrastructure on purpose: an alarm that shares a failure domain with
-   the thing it watches is not an alarm. GitHub holds only `CRON_SECRET`; the jobs
-   are plain authenticated HTTPS calls, so no database credential leaves our
-   infrastructure.
+1. **GitHub Actions** (`.github/workflows/cron.yml`) — self-hosted `arcops`
+   runner as of 2026-10-01 (Kai decision). History of the fence: the workflow
+   was created 2026-08-09 and disabled within 17 seconds, before ever running
+   (`total_runs=0`); the reason for the original disable was never recorded.
+   The 2026-09-24 note below ruled out re-enabling on GitHub-hosted runners
+   *in favor of* the design's failure-domain argument — but that lane stopped
+   existing on 2026-09-15, when the org's GitHub-hosted minutes were
+   billing-blocked (measured: a `ubuntu-latest` job dies in ~3s with "account
+   payments have failed"). Self-hosting does not actually break the design
+   here: the watched system is the **Vercel + Neon** production deployment,
+   which shares no failure domain with the NAB9 CI runner. The header comment
+   in `cron.yml` carries the full reasoning.
    - Every 6h: `POST /api/cron/generation-health` — if the generation failure
      rate over the last 6h exceeds 50% (min 10 attempts), the endpoint sends a
      Lark alert and returns 503, which also fails the Actions job (GitHub
      emails on top).
    - Daily 03:17 UTC: `POST /api/cron/expire-credits`.
 
-   **⚠️ Measured reality (2026-09-24), which contradicts the schedule above:**
-   `cron.yml` is `state=disabled_manually` and has `total_runs=0` — it has
-   **never executed**, not merely stopped since some date. Someone disabled it
-   deliberately, and this is Chesterton's Fence: **do not re-enable it without
-   first finding out why** (it may have been turned off for a reason — cost,
-   noise, a superseded alarm path — that is not recorded here). The consequence
-   to weigh before touching it: `generation-health` has **no other caller**. A
-   repo-wide grep for it matches only the route file and generated type files;
-   the in-process fallback below covers `expire-credits` only, not
-   `generation-health`. So as measured, the generation-failure alarm described in
-   "Monitoring philosophy" has never fired on a schedule. (The `CRON_SECRET`
-   presence is **not** established either way here: the Actions secrets API
-   returned `total_count=0` for this repo *and* for arcops-server, which is known
-   to hold secrets, so the read is uninformative rather than proof of absence.)
-   The fix, if one is wanted, is to re-enable the workflow on GitHub-hosted
-   runners — **not** to move it to the self-hosted `arcops` runner the way
-   `pr.yml` had to be, because self-hosting would put the alarm in the same
-   failure domain as production and defeat the entire reason it exists. That
-   choice, and the reason for the disable, are Kai's.
+   **⚠️ Re-enable is ONE action away, blocked as of 2026-10-01.** Both sides
+   of `CRON_SECRET` must carry the same value:
+   - **GitHub side: done** — a fresh random `CRON_SECRET` was generated and set
+     as a repo Actions secret on 2026-10-01 (confirmed via the per-secret
+     endpoint). The earlier ops-doc claim that it equals arcops-server's cron
+     secret was never verified and is now false by construction (fresh value).
+   - **Vercel side: stale.** Production provably has *some* `CRON_SECRET`
+     (wrong bearer → 401, missing env → 500; prod returns 401), but the value
+     is not recorded anywhere on the admin machines and cannot be read without
+     Vercel dashboard/CLI access, which this machine does not have. Rotating
+     is safe — no consumer of the old value exists (the workflow never ran,
+     the GitHub secret was absent).
+   - **Remaining step (Kai, ~1 min):** set `CRON_SECRET` in the Vercel
+     dashboard (Production env) to the fresh value, then ping the agent to
+     re-enable the workflow and dispatch one manual run as end-to-end proof.
+     Until then the workflow stays disabled: a 401-every-6h alarm is worse than
+     none.
 2. **In-process** (`apps/web/instrumentation.ts`, node-cron, daily 01:00):
    expires subscription credits past their date. Credit expiration is
    housekeeping — `getBalance` and the spend path already treat an expired

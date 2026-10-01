@@ -1,9 +1,22 @@
 name: Scheduled jobs
 
-# Runs on GitHub's infrastructure on purpose: an alarm that shares a failure
-# domain with the thing it watches is not an alarm. Both jobs are plain
-# authenticated HTTP calls, so no production database credential ever leaves
-# our own infrastructure — GitHub holds only CRON_SECRET.
+# Self-hosted (arcops runner group) as of 2026-10-01. The original design said
+# "GitHub's infrastructure on purpose: an alarm that shares a failure domain
+# with the thing it watches is not an alarm" — but the org's GitHub-hosted
+# minutes have been billing-blocked since 2026-09-15 (measured: a job on
+# ubuntu-latest dies in ~3s with "account payments have failed"), so GitHub
+# infra is not an available lane. The failure-domain argument still holds on
+# the self-hosted lane: the watched system is the Vercel + Neon production
+# deployment, which shares no failure domain with the NAB9 CI runner. Both
+# jobs are plain authenticated HTTP calls, so no production database
+# credential ever leaves our own infrastructure — GitHub holds only
+# CRON_SECRET.
+#
+# History: created 2026-08-09 and disabled within 17 seconds, before ever
+# running (total_runs=0). The GitHub-side CRON_SECRET was provisioned
+# 2026-10-01; the workflow is re-enabled once the Vercel production env var
+# CRON_SECRET carries the same value (the app returns 401 otherwise, and an
+# alarm that fires constantly is worse than none).
 on:
   schedule:
     - cron: "0 */6 * * *" # generation health
@@ -16,7 +29,7 @@ env:
 jobs:
   generation-health:
     if: github.event.schedule != '17 3 * * *'
-    runs-on: ubuntu-latest
+    runs-on: arcops
     steps:
       # --fail-with-body: a 503 (generation broken) fails the job, so GitHub
       # emails on top of the Lark alert the endpoint itself sends.
@@ -28,7 +41,7 @@ jobs:
 
   expire-credits:
     if: github.event.schedule != '0 */6 * * *'
-    runs-on: ubuntu-latest
+    runs-on: arcops
     steps:
       - name: Expire subscription credits
         run: |
