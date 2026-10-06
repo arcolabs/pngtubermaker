@@ -4,6 +4,7 @@ import FinalCTA from "@/components/landing/FinalCTA";
 import HowItWorks from "@/components/landing/HowItWorks";
 import LandingHero from "@/components/landing/LandingHero";
 import ProseSection from "@/components/landing/ProseSection";
+import RelatedPages from "@/components/landing/RelatedPages";
 import DiscordCTA from "@/components/sections/DiscordCTA";
 import FAQ from "@/components/sections/FAQ";
 import Breadcrumb from "@/components/ui/Breadcrumb";
@@ -62,6 +63,7 @@ export default async function HowToMakeAPNGTuberPage({ params }: Props) {
       )}
       {page.prose && <ProseSection prose={page.prose} />}
       {page.comparison && <ComparisonTable comparison={page.comparison} />}
+      <RelatedPages pages={page.relatedPages} />
       <FAQ faqData={page.faqs} />
       <FinalCTA cta={page.cta} />
       <DiscordCTA />

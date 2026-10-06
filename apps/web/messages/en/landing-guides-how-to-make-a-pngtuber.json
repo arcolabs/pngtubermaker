@@ -1,13 +1,15 @@
 {
   "slug": "guides/how-to-make-a-pngtuber",
   "metadata": {
-    "title": "How to Make a PNGTuber for Free (2026) — 5-Minute Guide",
-    "description": "Learn how to make a PNGTuber avatar for free in 5 minutes. Complete 2026 guide: create your character, generate expressions, set up OBS, and start streaming on Twitch/YouTube. No art skills needed.",
+    "title": "PNGTuber Tutorial: How to Make a PNGTuber Free in 5 Minutes (2026)",
+    "description": "Step-by-step PNGTuber tutorial for beginners. Make a free AI PNGTuber avatar, generate expressions, set it up in OBS, and go live on Twitch or YouTube — no art skills needed.",
     "keywords": [
+      "pngtuber tutorial",
+      "pngtuber tutorial for beginners",
       "how to make a pngtuber",
+      "how to make a pngtuber step by step",
       "how to be a pngtuber",
       "how to become a pngtuber",
-      "pngtuber tutorial",
       "pngtuber guide",
       "create pngtuber",
       "what is a pngtuber",
@@ -22,14 +24,14 @@
     "canonical": "/guides/how-to-make-a-pngtuber"
   },
   "hero": {
-    "badge": "Complete Beginner's Guide 2026",
-    "title": "How to Make a PNGTuber: From Zero to Streaming in 5 Minutes",
-    "subtitle": "The ultimate step-by-step guide to creating your own PNGTuber avatar — completely free. No drawing skills, no expensive software, no complicated setup. Just follow along and go live today.",
+    "badge": "Beginner Tutorial 2026",
+    "title": "PNGTuber Tutorial: From Zero to Streaming in 5 Minutes",
+    "subtitle": "A complete, follow-along PNGTuber tutorial for beginners — create your own avatar completely free. No drawing skills, no expensive software, no complicated setup. Just follow the steps and go live today.",
     "ctaText": "Start Creating Your PNGTuber Free",
     "ctaHref": "/create"
   },
   "steps": {
-    "title": "How to Make a PNGTuber: 4 Simple Steps",
+    "title": "PNGTuber Tutorial: 4 Steps From Blank Canvas to Live",
     "items": [
       {
         "title": "Step 1: Describe Your Character",
@@ -52,6 +54,10 @@
   "prose": {
     "title": "Everything You Need to Know About PNGTubers",
     "blocks": [
+      {
+        "subtitle": "Before You Start: PNGTuber Tutorial Prerequisites",
+        "text": "This PNGTuber tutorial is designed for complete beginners, so the requirements are minimal. You need: a device with a modern web browser (PNGTuberMaker runs entirely online — no download), a free OBS Studio install for streaming, and a microphone (a headset or built-in laptop mic works fine). That's it. No webcam, no drawing tablet, no art skills, and no paid software. Budget about 5 minutes: roughly 1 minute to generate your avatar, 1-2 minutes for expressions, and under a minute to paste your Browser Source URL into OBS. Keep this page open and work through the 4 steps below in order — each one builds on the last."
+      },
       {
         "subtitle": "What Is a PNGTuber?",
         "text": "A PNGTuber is a streamer who uses a static 2D avatar instead of showing their real face on camera. The avatar typically has multiple expressions (happy, sad, talking, surprised) that switch automatically based on microphone input. When you speak, the 'talking' expression appears. When you're silent, it switches to a neutral or idle pose. Unlike VTubers that require expensive Live2D rigs, face-tracking software, and powerful computers, PNGTubers use simple PNG images. This makes them the perfect entry point for new streamers who want privacy, personality, and professionalism without technical complexity or high costs."
@@ -142,6 +148,11 @@
       "answer": "Absolutely! Anyone can make their own PNGTuber using PNGTuberMaker. You don't need art skills, expensive software, or technical knowledge. Just describe your character in words, and our AI generates a professional avatar for you. The entire process takes under 5 minutes, and you can start streaming immediately."
     },
     {
+      "id": "htmp-tutorial",
+      "question": "Is there a step-by-step PNGTuber tutorial for beginners?",
+      "answer": "Yes — the 4 steps above are a complete beginner PNGTuber tutorial. Step 1: describe your character in PNGTuberMaker. Step 2: pick one of the 4 AI-generated designs. Step 3: generate your expression pack (talking, happy, sad, angry, surprised). Step 4: copy your Browser Source URL into OBS and go live. No prior art or streaming experience is needed, and the whole tutorial takes about 5 minutes from start to streaming."
+    },
+    {
       "id": "htmp-2",
       "question": "Is PNGTuber maker free?",
       "answer": "Yes, PNGTuberMaker is free to start. New users get 1 free avatar generation — no credit card required. You can create, customize, and start streaming without spending anything. Free exports are at 512px resolution, which is perfect for streaming. Optional upgrades unlock HD/4K exports, expression packs, and additional generations."
@@ -183,8 +194,8 @@
     }
   ],
   "cta": {
-    "title": "Ready to Start Your PNGTuber Journey?",
-    "subtitle": "Join thousands of streamers who started with PNGTuberMaker. Create your avatar free in under 5 minutes.",
+    "title": "Ready to Follow the Tutorial Yourself?",
+    "subtitle": "Head to PNGTuberMaker and create your avatar free in under 5 minutes, then use the 4 steps above to go live. Join thousands of streamers who started exactly this way.",
     "ctaText": "Create My Free PNGTuber Now",
     "ctaHref": "/create"
   },
@@ -193,6 +204,11 @@
       "title": "Free PNGTuber Maker",
       "description": "Try 1 free avatar generation — no credit card required.",
       "href": "/free-pngtuber-maker"
+    },
+    {
+      "title": "OBS PNGTuber Setup",
+      "description": "Step-by-step help adding your avatar as an OBS Browser Source.",
+      "href": "/obs-pngtuber"
     },
     {
       "title": "VTuber Maker",
