@@ -185,6 +185,12 @@ export default function Footer() {
             >
               {t("picrewPngtuberMaker")}
             </Link>
+            <Link
+              href="/pngtuber-programs"
+              className="text-base-content/70 hover:text-primary transition-colors text-sm"
+            >
+              {t("pngtuberPrograms")}
+            </Link>
           </nav>
 
           <nav className="flex flex-col gap-2">
@@ -322,6 +328,12 @@ export default function Footer() {
               className="text-base-content/70 hover:text-primary transition-colors"
             >
               {t("picrewPngtuberMaker")}
+            </Link>
+            <Link
+              href="/pngtuber-programs"
+              className="text-base-content/70 hover:text-primary transition-colors"
+            >
+              {t("pngtuberPrograms")}
             </Link>
             <Link
               href={brand.social.discord || "https://discord.com"}

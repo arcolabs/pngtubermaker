@@ -204,11 +204,11 @@ root_count=$(printf '%s\n' "$paths" | grep -cxE '/' || true)
 chk "homepage listed exactly once" "1" "$root_count"
 
 # ── 5. EN-only routes must not emit locale variants ──────────────────────────
-# The three organic pages are English-only by construction: their own copy is
-# hardcoded in the route file while only shared sections localise. Listing
-# /ja/<page> would advertise a translation that does not exist, and each page
-# already canonicalises to the EN URL.
-for r in pngtuber-models obs-pngtuber picrew-pngtuber-maker; do
+# These pages are English-only by construction: their own copy is hardcoded in
+# the route file while only shared sections localise. Listing /ja/<page> would
+# advertise a translation that does not exist, and each page already
+# canonicalises to the EN URL.
+for r in pngtuber-models obs-pngtuber picrew-pngtuber-maker pngtuber-programs; do
   n=$(printf '%s\n' "$paths" | grep -cE "^/[a-z]{2}(-[A-Z]{2})?/$r$" || true)
   chk "EN-only /$r emits 0 locale variants" "0" "$n"
 done
