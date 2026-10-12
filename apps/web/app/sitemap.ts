@@ -81,6 +81,12 @@ const staticRoutes: SitemapRoute[] = [
     changeFrequency: "weekly",
     localized: false,
   },
+  {
+    path: "/pngtuber-programs",
+    priority: 0.7,
+    changeFrequency: "weekly",
+    localized: false,
+  },
 ];
 
 function getLocalizedUrl(path: string, locale: Locale): string {
